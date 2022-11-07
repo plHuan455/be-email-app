@@ -1,0 +1,48 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "baseUrl": ".",
+    "jsx": "react-jsx",
+    "noImplicitAny": false,
+    "sourceMap": true,
+    "paths": {
+      "@*": [
+        "src/*"
+      ],
+      "@@*": [
+        "./*"
+      ],
+      "@@packages/hooks": [
+        "packages/hooks/src/index.ts"
+      ],
+      "@@packages/localization": [
+        "packages/localization/src/index.tsx"
+      ],
+      "@@packages/utils": [
+        "packages/utils"
+      ]
+    }
+  },
+  "include": [
+    "src/**/*",
+    "config/**/*",
+    "webpack"
+  ]
+}
