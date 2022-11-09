@@ -2,9 +2,9 @@ import { Box, Button } from '@mui/material';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import styles from './styles.module.scss';
 
-import HourglassBottomIcon from '@mui/icons-material/HourglassBottom';
 import pdfFileImg from '@assets/images/icons/pdf-file.png';
 import zipFileImg from '@assets/images/icons/zip-file.png';
+import EmailStatus from '@components/atoms/EmailStatus';
 
 interface AttachFile {
   type: string;
@@ -49,7 +49,7 @@ function createMarkup(text: string) {
   return { __html: text };
 }
 
-function EmailPending() {
+function Email({ status }) {
   const { title, sendTo, mailContent, attachFiles } = newPendingEmailList;
 
   const renderSendTo = () => {
@@ -154,15 +154,12 @@ function EmailPending() {
 
   return (
     <Box
-      className={`bg-white rounded-tr-3xl rounded-bl-3xl overflow-hidden pb-4 ${styles.emailWrap}`}>
+      className={`bg-white rounded-tr-3xl rounded-bl-3xl overflow-hidden pb-4 ${styles.emailWrap} ml-20 mb-8`}>
       {/* Header */}
       <Box className={`pb-6 bg-violet-200 py-4 rounded-bl-3xl relative`}>
         <h1 className="text-stone-700 font-bold text-base mb-2">{title}</h1>
         {renderSendTo()}
-        <Box className="absolute top-0 right-0 -translate-x-1/2 translate-y-3 bg-indigo-400 text-white rounded-full py-1.5 px-3 text-[14px] font-medium flex items-center">
-          <HourglassBottomIcon className="text-[18px]" />
-          <span className="inline-block pl-2">Pending</span>
-        </Box>
+        <EmailStatus emailStatus={status} />
       </Box>
       {/* Email Content */}
       <Box className="py-9">
@@ -177,14 +174,16 @@ function EmailPending() {
       {/* Files List If have */}
       {attachFiles.length !== 0 && renderAttachFiles()}
       {/* Actions */}
-      <Box className="flex actions justify-end border-t-2 py-4">
-        <Button className="mx-1 bg-rose-600 py-1.5 px-5 hover:bg-rose-500">
-          DECLINE
-        </Button>
-        <Button className="mx-1 py-1.5 px-5">APPROVE</Button>
-      </Box>
+      {status === 'pending' && (
+        <Box className="flex actions justify-end border-t-2 py-4">
+          <Button className="mx-1 bg-rose-600 py-1.5 px-5 hover:bg-rose-500">
+            DECLINE
+          </Button>
+          <Button className="mx-1 py-1.5 px-5">APPROVE</Button>
+        </Box>
+      )}
     </Box>
   );
 }
 
-export default EmailPending;
+export default Email;

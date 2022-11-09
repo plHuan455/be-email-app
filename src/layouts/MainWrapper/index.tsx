@@ -62,10 +62,10 @@ function MainWrapper() {
 
   return (
     <React.Fragment>
-      <Header
+      {/* <Header
         toggleIcon={<MenuIcon />}
         onToggleMobileSidebar={toggleMobileSideBar(true)}
-      />
+      /> */}
       <Box className={cx(classes.body)}>
         <Box className={cx(classes.sideBar)}>
           <IconTabs />

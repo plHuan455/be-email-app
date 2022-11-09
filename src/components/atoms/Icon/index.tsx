@@ -7,6 +7,12 @@ import UploadCloud from '@assets/icon/UploadCloud';
 import Dot from '@assets/icon/Dot';
 
 // Icon
+const Sending = React.lazy(() => import('@assets/icon/Sending'));
+const Sent = React.lazy(() => import('@assets/icon/Sent'));
+const Seen = React.lazy(() => import('@assets/icon/Seen'));
+const Declined = React.lazy(() => import('@assets/icon/Declined'));
+const Approved = React.lazy(() => import('@assets/icon/Approved'));
+const Pending = React.lazy(() => import('@assets/icon/Pending'));
 const Bell = React.lazy(() => import('@assets/icon/Bell'));
 const Star = React.lazy(() => import('@assets/icon/Star'));
 const Print = React.lazy(() => import('@assets/icon/Print'));
@@ -39,6 +45,12 @@ export interface SVGProps {
 }
 
 const ICON = {
+  sending: Sending,
+  sent: Sent,
+  seen: Seen,
+  declined: Declined,
+  approved: Approved,
+  pending: Pending,
   bell: Bell,
   uploadCloud: UploadCloud,
   star: Star,
