@@ -13,13 +13,16 @@ import { useAppDispatch } from '@redux/configureStore';
 import { getCity } from '@api/location';
 import { setLocation } from '@redux/Global/reducer';
 import IconTabs from '@layouts/IconTabs';
+import EmailStatusBar from '@layouts/EmailStatusBar';
 
-const headerHeight = 80;
+const sideBarWidth = 75;
+const emailStatusWidth = 290;
 
 const useStyles = makeStyles()((theme) => ({
   body: {
     display: 'flex',
     height: '100%',
+    justifyContent: 'space-between',
   },
   sideBar: {
     display: 'block',
@@ -67,13 +70,16 @@ function MainWrapper() {
         <Box className={cx(classes.sideBar)}>
           <IconTabs />
         </Box>
-        <Container className={cx(classes.content)}>
+        <Box
+          sx={{
+            width: '100%',
+          }}
+          className={cx(classes.content)}>
           {/* Breadcrumbs */}
           <Breadcrumbs breadcrumbs={breadcrumbs} />
-
           {/* Main content */}
           <Outlet />
-        </Container>
+        </Box>
       </Box>
       <Drawer
         open={openMobileSideBar}

@@ -2,20 +2,26 @@ import * as React from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import { styled } from '@mui/material/styles';
-
 import EmailIcon from '@mui/icons-material/Email';
 import ChatIcon from '@mui/icons-material/Chat';
 import PeopleIcon from '@mui/icons-material/People';
 import DialpadIcon from '@mui/icons-material/Dialpad';
 import DonutSmallIcon from '@mui/icons-material/DonutSmall';
+import logo from '../../assets/images/logo_without_text.png';
+import { Box } from '@mui/material';
 
-interface TabItem {
-  title: string;
+export interface TabItem {
+  title?: string;
   url?: string;
-  icon: React.ReactElement;
+  logo?: string;
+  icon?: React.ReactElement;
 }
 
 const TabsData: TabItem[] = [
+  {
+    logo: logo,
+    url: '/',
+  },
   {
     title: 'Email',
     icon: <EmailIcon />,
@@ -39,11 +45,15 @@ const TabsData: TabItem[] = [
 ];
 
 const MyTabs = styled(Tabs)`
+  .MuiTabs-root {
+    padding: 19px auto;
+  }
   & .MuiTabs-indicator {
     display: none;
   }
   & .MuiButtonBase-root {
     padding-block: 24px;
+    min-width: 100%;
     & .MuiSvgIcon-root {
       position: relative;
       z-index: 1;
@@ -79,9 +89,21 @@ export default function IconTabs() {
   };
 
   const renderTabsData = () =>
-    TabsData.map((val, index) => (
-      <Tab key={index} icon={val.icon} aria-label={val.title} />
-    ));
+    TabsData.map((val, index) => {
+      return val.logo ? (
+        <Box
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '24px 0',
+          }}>
+          <Box component={'img'} src={val.logo} alt="logo" />
+        </Box>
+      ) : (
+        <Tab key={index} icon={val.icon} aria-label={val.title} />
+      );
+    });
 
   return (
     <MyTabs

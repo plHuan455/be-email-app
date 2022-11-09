@@ -111,18 +111,6 @@ function LoginContainer() {
             <form
               onSubmit={handleSubmit(onSubmit)}
               className="grid grid-rows-2 gap-4">
-              {/* <Controller
-                name="email"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    placeholder={t('txtEmail')}
-                    error={!!errors.email?.message}
-                    helperText={errors.email?.message}
-                  />
-                )}
-              /> */}
               <Controller
                 name="password"
                 control={control}
