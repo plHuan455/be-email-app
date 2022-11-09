@@ -11,8 +11,8 @@ import { Provider } from 'react-redux';
 import { store } from '@redux/configureStore';
 import { PersistGate } from 'redux-persist/integration/react';
 import 'rc-slider/assets/index.css';
-import Toastify from '@components/molecules/Toastify';
 import { ProSidebarProvider } from 'react-pro-sidebar';
+import Toastify from '@components/molecules/Toastify';
 import { LanguageProvider } from '@@packages/localization';
 import MuiThemeCustomization from '@themes';
 

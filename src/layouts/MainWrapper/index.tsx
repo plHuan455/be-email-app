@@ -18,13 +18,13 @@ const headerHeight = 80;
 const useStyles = makeStyles()((theme) => ({
   body: {
     display: 'flex',
-    height: `calc(100% - ${headerHeight}px)`,
+    height: '100%',
   },
   sideBar: {
     display: 'block',
     backgroundColor: theme.palette.background.paper,
     overflowY: 'auto',
-    minWidth: 270,
+    minWidth: 72,
     [theme.breakpoints.down('md')]: {
       display: 'none',
     },
@@ -62,10 +62,6 @@ function MainWrapper() {
 
   return (
     <React.Fragment>
-      <Header
-        toggleIcon={<MenuIcon />}
-        onToggleMobileSidebar={toggleMobileSideBar(true)}
-      />
       <Box className={cx(classes.body)}>
         <Box className={cx(classes.sideBar)}>
           <SideBar />

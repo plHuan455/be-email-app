@@ -94,7 +94,7 @@ const SideBar = () => {
   );
 
   return (
-    <Sidebar width="270px" className="overflow-auto" backgroundColor="white">
+    <Sidebar width="72px" className="overflow-auto" backgroundColor="white">
       <Menu>
         {newSideBar.map((elm) => {
           if (!elm) return null;
