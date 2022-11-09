@@ -61,17 +61,22 @@ function EmailPending() {
       const restLength = sendTo.length;
 
       return (
-        <p className="text-sm text-stone-600 first-letter:capitalize">
+        <Box className="text-sm text-stone-600 first-letter:capitalize">
           <span>{`${splice2FirstItems.join(', ')} and ${restLength} more`}</span>
-          <span className="pl-1 hover:cursor-pointer relative">
+          <span
+            className={`${styles.moreSendTo} pl-1 hover:cursor-pointer relative`}>
             <ArrowForwardIosIcon sx={{ fontSize: 12 }} />
-            <ul className="absolute top-0 ">
+            <ul className="absolute top-0 right-0 translate-x-full bg-white p-0.5 rounded">
               {sendTo.map((value, index) => (
-                <li key={index}>{value}</li>
+                <li key={index}>
+                  <p className="hover:bg-slate-200 py-0.5  px-2 text-[11px]">
+                    {value}
+                  </p>
+                </li>
               ))}
             </ul>
           </span>
-        </p>
+        </Box>
       );
     }
 

@@ -3,3 +3,17 @@
     padding-inline: 46px;
   }
 }
+
+.moreSendTo {
+  & > ul {
+    transition: 0.4s;
+    opacity: 0;
+    visibility: hidden;
+  }
+  &:hover {
+    & > ul {
+      opacity: 1;
+      visibility: visible;
+    }
+  }
+}
