@@ -12,6 +12,7 @@ import { toast } from 'react-toastify';
 import { useAppDispatch } from '@redux/configureStore';
 import { getCity } from '@api/location';
 import { setLocation } from '@redux/Global/reducer';
+import IconTabs from '@layouts/IconTabs';
 
 const headerHeight = 80;
 
@@ -64,7 +65,7 @@ function MainWrapper() {
     <React.Fragment>
       <Box className={cx(classes.body)}>
         <Box className={cx(classes.sideBar)}>
-          <SideBar />
+          <IconTabs />
         </Box>
         <Container className={cx(classes.content)}>
           {/* Breadcrumbs */}

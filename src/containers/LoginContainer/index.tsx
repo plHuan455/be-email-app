@@ -2,14 +2,21 @@ import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { Button, TextField } from '@mui/material';
+import {
+  Button,
+  Container,
+  FormControl,
+  InputLabel,
+  TextField,
+} from '@mui/material';
 import { useTranslation } from '@@packages/localization';
-import BannerImg from '@assets/images/banner.png';
-import BannerImg2x from '@assets/images/@2x/banner@2x.png';
-import BannerImg3x from '@assets/images/@3x/banner@3x.png';
+import logoImg from '@assets/images/logo.png';
+import onboardingImg from '@assets/images/Illustrations/Onboarding/2.png';
+import avatarImg from '@assets/images/avatars/avatar-1.jpg';
+
 const schema = yup
   .object({
-    email: yup.string().email().required(),
+    // email: yup.string().email().required(),
     password: yup.string().required(),
   })
   .required();
@@ -24,7 +31,7 @@ function LoginContainer() {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      email: '',
+      email: 'user101@gmail.com',
       password: '',
     },
     resolver: yupResolver(schema),
@@ -58,49 +65,93 @@ function LoginContainer() {
 
   return (
     <Root>
-      <WrapContent className="bg-app">
-        <Box alignSelf={'center'}>
-          <ImageComponent.Image
-            height={65}
-            width={200}
-            imageProps={{ srcSet: `${BannerImg2x} 2x , ${BannerImg3x} 3x` }}
-            src={BannerImg}
-            alt="logo"
-          />
-        </Box>
-        <Content className="grid grid-rows-2 gap-4">
-          <form onSubmit={handleSubmit(onSubmit)} className="grid grid-rows-2 gap-4">
-            <Controller
-              name="email"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  placeholder={t('txtEmail')}
-                  error={!!errors.email?.message}
-                  helperText={errors.email?.message}
-                />
-              )}
+      <WrapContainer>
+        <WrapLogo>
+          <Box alignSelf={'left'}>
+            <ImageComponent.Image height={33} width={88} src={logoImg} alt="logo" />
+          </Box>
+          <Box
+            alignSelf={'right'}
+            sx={{
+              transform: 'translateX(50%)',
+              padding: '0.64px 5.54px 6.8px 6.64px',
+            }}>
+            <ImageComponent.Image
+              height={272}
+              width={268}
+              src={onboardingImg}
+              alt="logo"
             />
-            <Controller
-              name="password"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  type={'password'}
-                  placeholder={t('Password')}
-                  error={!!errors.password?.message}
-                  helperText={errors.password?.message}
-                />
-              )}
-            />
-            <Button size="large" type="submit">
-              {t('Login')}
-            </Button>
-          </form>
-        </Content>
-      </WrapContent>
+          </Box>
+        </WrapLogo>
+        <WrapContent className="bg-app-2">
+          <WrapTitle>
+            <h3>Lock screen</h3>
+            <p>Enter your password to unlock the screen!</p>
+          </WrapTitle>
+          <WrapAvatar>
+            <Box
+              alignSelf={'center'}
+              sx={{
+                border: '4px solid #F8F8F8',
+                borderRadius: '50%',
+                overflow: 'hidden',
+                marginBottom: '15px',
+              }}>
+              <ImageComponent.Image
+                height={66}
+                width={66}
+                src={avatarImg}
+                alt="avatar"
+              />
+            </Box>
+            <h3>Katherine Vu</h3>
+          </WrapAvatar>
+          <Content className="grid grid-rows-2 gap-4">
+            <form
+              onSubmit={handleSubmit(onSubmit)}
+              className="grid grid-rows-2 gap-4">
+              {/* <Controller
+                name="email"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    placeholder={t('txtEmail')}
+                    error={!!errors.email?.message}
+                    helperText={errors.email?.message}
+                  />
+                )}
+              /> */}
+              <Controller
+                name="password"
+                control={control}
+                render={({ field }) => (
+                  <WrapInput>
+                    <label>Password</label>
+                    <TextField
+                      {...field}
+                      type={'password'}
+                      placeholder={t('Enter Password')}
+                      error={!!errors.password?.message}
+                      helperText={errors.password?.message}
+                    />
+                  </WrapInput>
+                )}
+              />
+              <WrapActions>
+                <Button size="large" type="submit">
+                  {t('Unlock')}
+                </Button>
+              </WrapActions>
+              <WrapTextLink>
+                Not you? return <Link to="/#/login">Login</Link>
+              </WrapTextLink>
+            </form>
+          </Content>
+          <p>2022 Metanode</p>
+        </WrapContent>
+      </WrapContainer>
     </Root>
   );
 }
@@ -113,6 +164,7 @@ import { Box } from '@mui/system';
 import { useAuth } from '@context/AppContext';
 import { toast } from 'react-toastify';
 import { Navigate, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 export const Root = styled.div`
   width: 100%;
@@ -121,42 +173,142 @@ export const Root = styled.div`
   justify-content: center;
   align-items: center;
   box-sizing: border-box;
+  background: #827cff;
+`;
+
+export const WrapContainer = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  padding: 19px 0 22px 51px;
+`;
+
+export const WrapLogo = styled.div`
+  position: relative;
+  z-index: 1;
+  width: 270px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding-block: 12px;
 `;
 
 export const WrapContent = styled.div`
-  width: 360px;
-  height: fit-content;
+  position: relative;
+  flex: 1;
+  height: 100%;
   display: flex;
   flex-direction: column;
+  align-items: center;
+  justify-content: center;
   padding: 20px;
-  border-radius: 10px;
+  border-radius: 10px 0 0 10px;
   box-shadow: 0px 25px 30px -13px rgb(40 40 40 / 40%);
+  & > p {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Cerebri Sans';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 15px;
+    text-align: center;
+    color: #797d8c;
+  }
 `;
 
-export const Logo = styled.div`
-  width: 100%;
-  height: 100px;
-  display: flex;
-  justify-content: center;
+export const WrapTitle = styled.div`
+  text-align: center;
+  font-family: 'Cerebri Sans';
+  font-style: normal;
+  & > h3 {
+    color: #495057;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 30px;
+    margin-bottom: 10px;
+  }
+  & > p {
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 18px;
 
-  img {
-    height: 100%;
+    color: #797d8c;
+  }
+`;
+
+export const WrapAvatar = styled.div`
+  margin: 40px 0 14px 0;
+  display: flex;
+  flex-direction: column;
+  & > h3 {
+    font-family: 'Cerebri Sans';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 18px;
+
+    color: #495057;
+  }
+`;
+
+export const WrapActions = styled.div`
+  display: flex;
+  padding-block: 10px;
+  align-items: flex-start;
+  & > button {
     width: 100%;
-    object-fit: contain;
+  }
+`;
+
+export const WrapTextLink = styled.p`
+  text-align: center;
+  font-family: 'Cerebri Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 18px;
+  text-align: center;
+  color: #797d8c;
+  & > a {
+    color: #827cff;
   }
 `;
 
 export const Content = styled.div`
-  width: 100%;
+  width: 320px;
   display: flex;
   flex-direction: column;
-  padding: 20px 10px;
+  padding: 20px 16px;
 `;
 export const WrapInput = styled.div`
   width: 100%;
   display: flex;
   margin: 6px 0;
   flex-direction: column;
+  & > label {
+    font-family: 'Cerebri Sans';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 16px;
+    line-height: 18px;
+    margin-bottom: 7px;
+    color: #495057;
+  }
+  & input {
+    font-family: 'Cerebri Sans';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 17px;
+    color: #797d8c;
+    padding-block: 9.2px;
+    border: 1px solid #e6ebf5;
+    border-radius: 5px;
+  }
 `;
 
 export const CheckBox = styled.input`

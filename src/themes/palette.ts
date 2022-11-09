@@ -19,7 +19,8 @@ const Palette = (mode: Theme['palette']['mode']) => {
         white: '#fff',
       },
       primary: {
-        main: '#9822F4',
+        // main: '#9822F4',
+        main: '#554CFF',
       },
       secondary: {
         main: alpha('#9822F4', 0.42),
