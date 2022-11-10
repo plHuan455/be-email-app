@@ -7,6 +7,12 @@ import UploadCloud from '@assets/icon/UploadCloud';
 import Dot from '@assets/icon/Dot';
 
 // Icon
+const Unread = React.lazy(() => import('@assets/icon/Unread'));
+const Spam = React.lazy(() => import('@assets/icon/Spam'));
+const Delete = React.lazy(() => import('@assets/icon/Delete'));
+const Forward = React.lazy(() => import('@assets/icon/Forward'));
+const ReplyAll = React.lazy(() => import('@assets/icon/ReplyAll'));
+const Reply = React.lazy(() => import('@assets/icon/Reply'));
 const Sending = React.lazy(() => import('@assets/icon/Sending'));
 const Sent = React.lazy(() => import('@assets/icon/Sent'));
 const Seen = React.lazy(() => import('@assets/icon/Seen'));
@@ -45,7 +51,13 @@ export interface SVGProps {
   type?: 'bold' | 'bulk';
 }
 
-const ICON = {
+export const ICON = {
+  unread: Unread,
+  spam: Spam,
+  delete: Delete,
+  forward: Forward,
+  replyAll: ReplyAll,
+  reply: Reply,
   sending: Sending,
   sent: Sent,
   seen: Seen,
