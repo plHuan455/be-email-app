@@ -5,15 +5,9 @@ import Sender from '@components/atoms/Sender';
 import UploadArea from '@components/atoms/UploadArea';
 import Email from '@components/email';
 import HomeContainer from '@containers/HomeContainer';
-import { Icon } from '@mui/material';
+import { Box, Icon } from '@mui/material';
 
 const HomePage = () => {
-  const [value, setValue] = useState(0);
-
-  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
-  };
-
   return (
     <Box>
       <Sender />
