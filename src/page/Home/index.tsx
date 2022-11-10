@@ -13,6 +13,10 @@ const HomePage = () => {
       <Sender />
       <Email status={'pending'} />
       <Email status={'approved'} />
+      <Email status={'sent'} />
+      <Email status={'seen'} />
+      <Email status={'declined'} />
+      <Email status={'sending'} />
     </Box>
   );
 };

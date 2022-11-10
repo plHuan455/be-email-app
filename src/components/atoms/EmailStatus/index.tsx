@@ -70,7 +70,7 @@ const EmailStatus: React.FC<EmailStatusProps> = ({ emailStatus, time }) => {
       </Box>
     );
 
-  mainEmailStatus.time = time;
+  if (time) mainEmailStatus.time = time;
 
   return (
     <Box
@@ -79,7 +79,7 @@ const EmailStatus: React.FC<EmailStatusProps> = ({ emailStatus, time }) => {
         background: mainEmailStatus.color,
       }}>
       <RenderButtonIcon item={mainEmailStatus.item} />
-      <span className="inline-block pl-2">{`${mainEmailStatus.content} in ${time}`}</span>
+      <span className="inline-block pl-2">{`${mainEmailStatus.content} in ${mainEmailStatus.time}`}</span>
     </Box>
   );
 };

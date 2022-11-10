@@ -52,13 +52,15 @@ function createMarkup(text: string) {
 function Email({ status }) {
   const { title, sendTo, mailContent, attachFiles } = newPendingEmailList;
 
+  const cloneSendTo = [...sendTo];
+
   const renderSendTo = () => {
-    const sendToLength = sendTo.length;
+    const sendToLength = cloneSendTo.length;
 
     if (sendToLength > 2) {
-      const splice2FirstItems = sendTo.splice(0, 2);
+      const splice2FirstItems = cloneSendTo.splice(0, 2);
 
-      const restLength = sendTo.length;
+      const restLength = cloneSendTo.length;
 
       return (
         <Box className="text-sm text-stone-600 first-letter:capitalize">
@@ -67,7 +69,7 @@ function Email({ status }) {
             className={`${styles.moreSendTo} pl-1 hover:cursor-pointer relative`}>
             <ArrowForwardIosIcon sx={{ fontSize: 12 }} />
             <ul className="absolute top-0 right-0 translate-x-full bg-white p-0.5 rounded">
-              {sendTo.map((value, index) => (
+              {cloneSendTo.map((value, index) => (
                 <li key={index}>
                   <p className="hover:bg-slate-200 py-0.5  px-2 text-[11px]">
                     {value}
@@ -82,7 +84,7 @@ function Email({ status }) {
 
     return (
       <p className="text-sm text-stone-600 first-letter:capitalize">
-        <span>{`${sendTo.join(', ')}`}</span>
+        <span>{`${cloneSendTo.join(', ')}`}</span>
       </p>
     );
   };
