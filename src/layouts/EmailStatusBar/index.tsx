@@ -37,7 +37,6 @@ const MyTabs = styled(Tabs)`
     display: none;
   }
   & .MuiButtonBase-root {
-    padding-block: 24px;
     min-width: 100%;
     & .MuiSvgIcon-root {
       position: relative;
