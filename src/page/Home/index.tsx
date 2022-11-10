@@ -4,6 +4,7 @@ import LabelOptionStyle from '@components/atoms/SelectBox/labelOptionStyles';
 import UploadArea from '@components/atoms/UploadArea';
 import EmailPending from '@components/email/EmailPending';
 import HomeContainer from '@containers/HomeContainer';
+import GlobalStateProvider from '@context/GlobalStateProvider';
 import EmailStatusBar from '@layouts/EmailStatusBar';
 import { Box, Icon, Tab, Tabs, Typography } from '@mui/material';
 import { useState } from 'react';
@@ -49,11 +50,7 @@ const HomePage = () => {
 
   return (
     <div className="w-full flex items-center content-around">
-      <EmailStatusBar
-        value={value}
-        handleChangeTab={handleChange}
-        arrayProps={a11yProps}
-      />
+      <EmailStatusBar />
       <Box sx={{ width: '100%' }}>
         <TabPanel value={value} index={0}>
           <EmailPending />

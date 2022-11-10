@@ -76,7 +76,7 @@ function MainWrapper() {
           }}
           className={cx(classes.content)}>
           {/* Breadcrumbs */}
-          <Breadcrumbs breadcrumbs={breadcrumbs} />
+          {/* <Breadcrumbs breadcrumbs={breadcrumbs} /> */}
           {/* Main content */}
           <Outlet />
         </Box>
