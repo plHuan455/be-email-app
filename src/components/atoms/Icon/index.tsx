@@ -25,6 +25,7 @@ const Edit = React.lazy(() => import('@assets/icon/Edit'));
 const Calendar = React.lazy(() => import('@assets/icon/Calendar'));
 const LockIcon = React.lazy(() => import('@assets/icon/Lock'));
 const SettingIcon = React.lazy(() => import('@assets/icon/Setting'));
+const SearchIcon = React.lazy(() => import('@assets/icon/Search'));
 
 export interface SVGIconProps {
   className?: string;
