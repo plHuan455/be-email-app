@@ -14,6 +14,30 @@ interface EmailTabs extends TabItem {
   notiNumber?: number;
 }
 
+interface hashtag {
+  title: string;
+  value: string;
+}
+
+const hashtagTabs: hashtag[] = [
+  {
+    title: 'metanode',
+    value: 'metanode',
+  },
+  {
+    title: 'sales',
+    value: 'sales',
+  },
+  {
+    title: 'tesla',
+    value: 'tesla',
+  },
+  {
+    title: 'yellow paper',
+    value: 'yellowpaper',
+  },
+];
+
 const emailTabs: EmailTabs[] = [
   {
     title: '#pending',
@@ -29,6 +53,8 @@ const emailTabs: EmailTabs[] = [
   },
 ];
 
+const tabData = [emailTabs, hashtagTabs];
+
 const MyTabs = styled(Tabs)`
   .MuiTabs-root {
     padding: 19px auto;
@@ -36,28 +62,27 @@ const MyTabs = styled(Tabs)`
   & .MuiTabs-indicator {
     display: none;
   }
+  & .MuiBox-root {
+    width: 100%;
+    justify-content: space-between;
+  }
   & .MuiButtonBase-root {
-    padding-block: 24px;
     min-width: 100%;
+    border-radius: 8px;
+    padding: 0 10px;
+    min-height: 32px;
+    flex-direction: row;
+
+    & p {
+      font-weight: bold;
+      color: #554cff;
+    }
     & .MuiSvgIcon-root {
       position: relative;
       z-index: 1;
     }
-    & .MuiTouchRipple-root {
-      opacity: 0;
-      visibility: hidden;
-      transition: 0.4s;
-      top: 50%;
-      left: 50%;
-      bottom: unset;
-      right: unset;
-      width: 40px;
-      height: 40px;
-      transform: translate(-50%, -50%);
-      border-radius: 8px;
-      background: #e9e4ff;
-    }
     &.Mui-selected {
+      background-color: #e4e2ff;
       & .MuiTouchRipple-root {
         opacity: 1;
         visibility: visible;
@@ -76,13 +101,29 @@ const EmailStatusBar = ({ value, arrayProps, handleChangeTab }: Props) => {
           justifyContent: 'space-between',
         }}>
         <Typography component={'p'}>{title}</Typography>
-        {notiNumber > 0 && <Typography component={'p'}>{notiNumber}</Typography>}
+        {notiNumber > 0 && (
+          <Typography
+            component={'p'}
+            sx={{
+              backgroundColor: '#ABA8D4',
+              width: '14px',
+              height: '18px',
+              fontSize: '10px',
+              borderRadius: '3px',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}>
+            {notiNumber}
+          </Typography>
+        )}
       </Box>
     );
   };
 
   return (
-    <Box sx={{ height: '100%', width: '290px', padding: '24px' }}>
+    <Box
+      sx={{ height: '100%', minWidth: '290px', maxWidth: '290px', padding: '24px' }}>
       <EmailStatusHeader
         title="Email"
         color="#827CFF"
@@ -95,13 +136,20 @@ const EmailStatusBar = ({ value, arrayProps, handleChangeTab }: Props) => {
         value={value}
         onChange={handleChangeTab}
         aria-label="email status tabs">
-        {emailTabs &&
-          emailTabs.map((item, index) => {
+        {tabData &&
+          tabData.map((item) => {
             return (
-              <Tab
-                label={renderEmailTab(item.title, item.notiNumber)}
-                {...arrayProps(index)}
-              />
+              <Box>
+                {item.map((ele, index) => {
+                  console.log('ele', ele);
+                  return (
+                    <Tab
+                      label={renderEmailTab(ele.title, ele.notiNumber)}
+                      {...arrayProps(index)}
+                    />
+                  );
+                })}
+              </Box>
             );
           })}
       </MyTabs>
