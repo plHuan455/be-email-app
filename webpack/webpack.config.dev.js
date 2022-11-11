@@ -11,7 +11,7 @@ module.exports = {
     path: '/',
     chunkFilename: '[name].chunk.js',
     publicPath: '/',
-    assetModuleFilename: 'images/[hash][ext][query]'
+    assetModuleFilename: 'images/[hash][ext][query]',
   },
   plugins: require('./webpack.plugins'),
   resolve: {

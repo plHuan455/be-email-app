@@ -16,11 +16,7 @@ import { genCRUD } from '@utils/routerHelper';
 import ErrorBoundary from './ErrorBoudary';
 import ErrorPage from './ErrorPage';
 
-export const sideBarRouter: RouteObject[] = [
-  {
-    
-  }
-];
+export const sideBarRouter: RouteObject[] = [{}];
 
 export const declareRouter: RouteObject[] = [
   {
