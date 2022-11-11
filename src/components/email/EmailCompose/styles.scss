@@ -1,0 +1,8 @@
+.emailComposeTo {
+  & fieldset {
+    border-color: transparent !important;
+  }
+  & .MuiInputBase-root {
+    padding-block: 0 !important;
+  }
+}
