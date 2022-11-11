@@ -7,21 +7,26 @@ import Email from '@components/email';
 import EmailActions from '@components/email/EmailActions';
 import EmailCompose from '@components/email/EmailCompose';
 import HomeContainer from '@containers/HomeContainer';
+import EmailStatusBar from '@layouts/EmailStatusBar';
+import IconTabs from '@layouts/IconTabs';
 import { Box, Icon } from '@mui/material';
 
 const HomePage = () => {
   return (
-    <Box>
-      <EmailCompose />
-      <EmailActions />
-      <Sender />
-      <Email status={'pending'} />
-      <Email status={'approved'} />
-      <Email status={'sent'} />
-      <Email status={'seen'} />
-      <Email status={'declined'} />
-      <Email status={'sending'} />
-    </Box>
+    <div className="w-full flex items-center content-around">
+      <EmailStatusBar />
+      <Box>
+        <EmailCompose />
+        <EmailActions />
+        <Sender />
+        <Email status={'pending'} />
+        <Email status={'approved'} />
+        <Email status={'sent'} />
+        <Email status={'seen'} />
+        <Email status={'declined'} />
+        <Email status={'sending'} />
+      </Box>
+    </div>
   );
 };
 
