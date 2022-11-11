@@ -6,61 +6,22 @@ import UploadArea from '@components/atoms/UploadArea';
 import Email from '@components/email';
 import EmailActions from '@components/email/EmailActions';
 import EmailCompose from '@components/email/EmailCompose';
-import EmailComposeFormGroup from '@components/email/hocs/EmailComposeFormGroup';
 import HomeContainer from '@containers/HomeContainer';
-import EmailStatusBar from '@layouts/EmailStatusBar';
-import { Box, Icon, Tab, Tabs, Typography } from '@mui/material';
-import { useState } from 'react';
-
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
-}
-
-function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}>
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
-}
-
-function a11yProps(index: number) {
-  return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
-  };
-}
+import { Box, Icon } from '@mui/material';
 
 const HomePage = () => {
   return (
-    <div className="w-full flex items-center content-around">
-      <EmailStatusBar />
-      <EmailComposeFormGroup />
-      {/* <Box sx={{ width: '100%' }}>
-        <TabPanel value={value} index={0}>
-          <EmailPending />
-        </TabPanel>
-        <TabPanel value={value} index={1}>
-          Item Two
-        </TabPanel>
-        <TabPanel value={value} index={2}>
-          Item Three
-        </TabPanel>
-      </Box> */}
-    </div>
+    <Box>
+      <EmailCompose />
+      <EmailActions />
+      <Sender />
+      <Email status={'pending'} />
+      <Email status={'approved'} />
+      <Email status={'sent'} />
+      <Email status={'seen'} />
+      <Email status={'declined'} />
+      <Email status={'sending'} />
+    </Box>
   );
 };
 
