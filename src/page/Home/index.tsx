@@ -5,20 +5,22 @@ import Sender from '@components/atoms/Sender';
 import UploadArea from '@components/atoms/UploadArea';
 import Email from '@components/email';
 import EmailActions from '@components/email/EmailActions';
+import EmailCompose from '@components/email/EmailCompose';
 import HomeContainer from '@containers/HomeContainer';
 import { Box, Icon } from '@mui/material';
 
 const HomePage = () => {
   return (
     <Box>
-      <EmailActions />
+      <EmailCompose />
+      {/* <EmailActions />
       <Sender />
       <Email status={'pending'} />
       <Email status={'approved'} />
       <Email status={'sent'} />
       <Email status={'seen'} />
       <Email status={'declined'} />
-      <Email status={'sending'} />
+      <Email status={'sending'} /> */}
     </Box>
   );
 };

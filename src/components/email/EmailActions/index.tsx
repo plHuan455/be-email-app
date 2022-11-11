@@ -7,67 +7,78 @@ interface EmailActionIcon {
   width?: number;
   height?: number;
   color?: string;
+  className?: string;
+  onClick?: React.MouseEventHandler | undefined;
 }
 
-const RenderButtonIcon: React.FC<EmailActionIcon> = ({
+export const RenderButtonIcon: React.FC<EmailActionIcon> = ({
   item,
   width = 20,
   height = 20,
   color,
+  className,
+  onClick = () => {},
 }) => {
-  return <Icon icon={item} width={width} height={height} color={color} />;
+  return (
+    <Icon
+      icon={item}
+      width={width}
+      height={height}
+      rawColor={color}
+      className={className}
+      onClick={onClick}
+    />
+  );
 };
 
-interface EmailActionItem {
-  icon: string;
-  label: string;
-  color: string;
-}
-
-const EmailActionsList: EmailActionItem[] = [
-  {
+const EmailActionsList = {
+  reply: {
     icon: 'reply',
     label: 'Reply',
     color: '#8E8E91',
   },
-  {
+  replyAll: {
     icon: 'replyAll',
     label: 'Reply All',
     color: '#8E8E91',
   },
-  {
+  forward: {
     icon: 'forward',
     label: 'Forward',
     color: '#8E8E91',
   },
-  {
+  delete: {
     icon: 'delete',
     label: 'Delete',
-    color: '#EDEDF3',
+    color: '#D0676C',
   },
-  {
+  spam: {
     icon: 'spam',
     label: 'Spam',
     color: '#E3A054',
   },
-  {
+  unread: {
     icon: 'unread',
     label: 'Unread',
     color: '#8E8E91',
   },
-];
+};
 
 const EmailActions = () => {
   return (
-    <Box>
-      {EmailActionsList.map((val, index) => (
-        <Box
-          className={`absolute top-0 right-0 -translate-x-1/2 translate-y-3 text-white rounded-full py-1.5 px-3 text-[14px] font-medium flex items-center`}
-          key={index}>
-          <RenderButtonIcon item={ICON[val.icon]} color={val.color} />
-          <span className="inline-block pl-2">{`${val.label}`}</span>
-        </Box>
-      ))}
+    <Box className="flex mb-4">
+      {Object.keys(EmailActionsList).map((key, index) => {
+        const currVal = EmailActionsList[key];
+
+        return (
+          <Box
+            className={`py-1.5 px-3 text-[14px] font-medium flex items-center`}
+            key={index}>
+            <RenderButtonIcon item={currVal.icon} color={currVal.color} />
+            <span className="inline-block pl-2">{`${currVal.label}`}</span>
+          </Box>
+        );
+      })}
     </Box>
   );
 };

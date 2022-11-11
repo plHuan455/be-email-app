@@ -7,6 +7,9 @@ import UploadCloud from '@assets/icon/UploadCloud';
 import Dot from '@assets/icon/Dot';
 
 // Icon
+const Close = React.lazy(() => import('@assets/icon/Close'));
+const Square = React.lazy(() => import('@assets/icon/Square'));
+const Minus = React.lazy(() => import('@assets/icon/Minus'));
 const Unread = React.lazy(() => import('@assets/icon/Unread'));
 const Spam = React.lazy(() => import('@assets/icon/Spam'));
 const Delete = React.lazy(() => import('@assets/icon/Delete'));
@@ -42,6 +45,8 @@ export interface SVGIconProps {
   modifiers?: Modifiers;
   type?: 'bold' | 'bulk';
   rawColor?: string;
+  isWindowIcon?: boolean;
+  onClick?: React.MouseEventHandler | undefined;
 }
 export interface SVGProps {
   className?: string;
@@ -52,6 +57,9 @@ export interface SVGProps {
 }
 
 export const ICON = {
+  close: Close,
+  square: Square,
+  minus: Minus,
   unread: Unread,
   spam: Spam,
   delete: Delete,
@@ -89,6 +97,7 @@ export const IconFactory: React.FC<SVGIconProps> = ({
   color = 'grey',
   modifiers = [],
   rawColor,
+  onClick,
   ...props
 }) => {
   const Component = ICON[icon];
@@ -98,7 +107,8 @@ export const IconFactory: React.FC<SVGIconProps> = ({
         `svg_icon svg_icon-${icon} svg_icon-${props.type}`,
         ['flex', 'items-center', 'justify-center', ...modifiers],
         className,
-      )}>
+      )}
+      onClick={onClick}>
       <Suspense fallback={<div>...</div>}>
         {Component && <Component color={rawColor || AppColors[color]} {...props} />}
       </Suspense>
