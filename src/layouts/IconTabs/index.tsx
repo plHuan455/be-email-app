@@ -97,7 +97,8 @@ export default function IconTabs() {
             alignItems: 'center',
             justifyContent: 'center',
             padding: '24px 0',
-          }}>
+          }}
+          key={index}>
           <Box component={'img'} src={val.logo} alt="logo" />
         </Box>
       ) : (
