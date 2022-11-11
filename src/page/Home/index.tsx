@@ -6,8 +6,8 @@ import UploadArea from '@components/atoms/UploadArea';
 import Email from '@components/email';
 import EmailActions from '@components/email/EmailActions';
 import EmailCompose from '@components/email/EmailCompose';
+import EmailComposeFormGroup from '@components/email/hocs/EmailComposeFormGroup';
 import HomeContainer from '@containers/HomeContainer';
-import GlobalStateProvider from '@context/GlobalStateProvider';
 import EmailStatusBar from '@layouts/EmailStatusBar';
 import { Box, Icon, Tab, Tabs, Typography } from '@mui/material';
 import { useState } from 'react';
@@ -48,7 +48,8 @@ const HomePage = () => {
   return (
     <div className="w-full flex items-center content-around">
       <EmailStatusBar />
-      <Box sx={{ width: '100%' }}>
+      <EmailComposeFormGroup />
+      {/* <Box sx={{ width: '100%' }}>
         <TabPanel value={value} index={0}>
           <EmailPending />
         </TabPanel>
@@ -58,7 +59,7 @@ const HomePage = () => {
         <TabPanel value={value} index={2}>
           Item Three
         </TabPanel>
-      </Box>
+      </Box> */}
     </div>
   );
 };
