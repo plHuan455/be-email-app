@@ -13,14 +13,14 @@ const HomePage = () => {
   return (
     <Box>
       <EmailCompose />
-      {/* <EmailActions />
+      <EmailActions />
       <Sender />
       <Email status={'pending'} />
       <Email status={'approved'} />
       <Email status={'sent'} />
       <Email status={'seen'} />
       <Email status={'declined'} />
-      <Email status={'sending'} /> */}
+      <Email status={'sending'} />
     </Box>
   );
 };
