@@ -47,7 +47,7 @@ function a11yProps(index: number) {
 const HomePage = () => {
   return (
     <div className="w-full flex items-center content-around">
-      <EmailStatusBar />
+      {/* <EmailStatusBar />
       <Box sx={{ width: '100%' }}>
         <TabPanel value={value} index={0}>
           <EmailPending />
@@ -58,7 +58,8 @@ const HomePage = () => {
         <TabPanel value={value} index={2}>
           Item Three
         </TabPanel>
-      </Box>
+      </Box> */}
+      <EmailCompose />
     </div>
   );
 };
