@@ -33,7 +33,6 @@ const receiversList: ReceiverData[] = [
 function EmailCompose() {
   const [attachedFiles, setAttachedFile] = useState<any>([]);
   const [attachFiles, setAttachFile] = useState<any>([]);
-  const [avatar, setAvatar] = useState<any>();
 
   const refInputAttachFile = useRef<HTMLInputElement>(null);
 
@@ -107,7 +106,6 @@ function EmailCompose() {
       <Box className="bg-white">
         {/* Window Compose Actions  */}
         <WindowComposeActions className="pt-3 pr-3" />
-        {avatar && <img src={avatar.preview} alt="avatar" />}
         <Box className="px-9 py-10 pt-2">
           {/* Compose To */}
           <EmailComposeFormGroup label={'To:'}>

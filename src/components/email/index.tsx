@@ -1,8 +1,9 @@
-import { Box, Button } from '@mui/material';
+import { Avatar, Box, Button } from '@mui/material';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import styles from './styles.module.scss';
 import AttachFiles, { File } from '@components/atoms/AttachFiles';
 import EmailStatus from '@components/atoms/EmailStatus';
+import OptionalAvatar from '@components/atoms/OptionalAvatar';
 
 interface PendingEmail {
   title: string;
@@ -41,8 +42,15 @@ function createMarkup(text: string) {
   return { __html: text };
 }
 
-function Email({ status }) {
-  const { title, sendTo, mailContent, attachFiles } = newPendingEmailList;
+function Email({
+  status,
+  type,
+  userInfo,
+  emailData,
+  onShowHistory,
+  isShowHistory = false,
+}) {
+  const { title, sendTo, mailContent, attachFiles } = emailData;
 
   const cloneSendTo = [...sendTo];
 
@@ -82,35 +90,100 @@ function Email({ status }) {
   };
 
   return (
-    <Box
-      className={`bg-white rounded-tr-3xl rounded-bl-3xl overflow-hidden pb-4 ${styles.emailWrap} ml-20 mb-8`}>
-      {/* Header */}
-      <Box className={`pb-6 bg-violet-200 py-4 rounded-bl-3xl relative`}>
-        <h1 className="text-stone-700 font-bold text-base mb-2">{title}</h1>
-        {renderSendTo()}
-        <EmailStatus emailStatus={status} />
-      </Box>
-      {/* Email Content */}
-      <Box className="py-9">
-        <Box>
-          <p
-            className="text-black font-medium text-[16px]"
-            dangerouslySetInnerHTML={createMarkup(mailContent)}
+    <Box className={`flex flex-wrap ${type === 'send' && styles.flexRowReverse}`}>
+      <Box className={`w-full flex  ${type === 'send' && styles.flexRowReverse}`}>
+        <Box className="w-[10%]"></Box>
+        <Box
+          className={`${styles.userInfo} ${
+            isShowHistory && styles.showUserInfo
+          } flex-1`}>
+          <OptionalAvatar
+            className={` ${type === 'send' && styles.flexRowReverse}`}
+            data={userInfo}
+            isShowAvatar={false}
           />
         </Box>
-        <Box></Box>
       </Box>
-      {/* Files List If have */}
-      {attachFiles.length !== 0 && <AttachFiles data={attachFiles} />}
-      {/* Actions */}
-      {status === 'pending' && (
-        <Box className="flex actions justify-end border-t-2 py-4">
-          <Button className="mx-1 bg-rose-600 py-1.5 px-5 hover:bg-rose-500">
-            DECLINE
-          </Button>
-          <Button className="mx-1 py-1.5 px-5">APPROVE</Button>
+      <Box className="w-[10%] flex justify-center">
+        <Avatar alt={userInfo.name} src={userInfo.avatar} />
+      </Box>
+      <Box
+        className={`flex-1 bg-white ${
+          type === 'send'
+            ? 'rounded-tl-[36px] rounded-br-[36px]'
+            : 'rounded-tr-[36px] rounded-bl-[36px]'
+        } overflow-hidden pb-4 ${styles.emailWrap} mb-8`}>
+        {/* Header */}
+        <Box
+          className={`pb-6 bg-violet-200 py-4 ${
+            type === 'send' ? 'rounded-br-[36px]' : 'rounded-bl-[36px]'
+          }  relative`}
+          onClick={() => onShowHistory(emailData, emailData.id)}>
+          <h1 className="text-stone-700 font-bold text-base mb-2">{title}</h1>
+          {renderSendTo()}
+          <EmailStatus emailStatus={status} />
         </Box>
-      )}
+        {/* Email Content */}
+        <Box className="py-9">
+          <Box>
+            <p
+              className="text-black font-medium text-[16px]"
+              dangerouslySetInnerHTML={createMarkup(mailContent)}
+            />
+          </Box>
+          <Box></Box>
+        </Box>
+        {/* Files List If have */}
+        {attachFiles.length !== 0 && <AttachFiles data={attachFiles} />}
+        {/* Actions */}
+        {(status === 'pending' || status === 'sending') && (
+          <Box className="flex flex-wrap actions justify-end py-4">
+            <Box className="w-full h-[1px] bg-[#E0E0E0] mb-5"></Box>
+            {status === 'pending' ? (
+              <>
+                <Button className="mx-1 bg-rose-600 py-1.5 px-5 hover:bg-rose-500">
+                  DECLINE
+                </Button>
+                <Button className="mx-1 py-1.5 px-5">APPROVE</Button>
+              </>
+            ) : (
+              <Box className="flex items-center bg-[#F6F3FD] rounded-[12px] py-1 px-2.5">
+                <Box className="pr-4">
+                  <p className="text-[#181818] text-[14px] font-medium">
+                    This email will be sent in:{' '}
+                    <span className="text-[#554CFF]">13 minutes</span>
+                  </p>
+                </Box>
+                <Box>
+                  <Button className="bg-transparent text-[#181818] font-bold hover:bg-slate-200">
+                    Undo
+                  </Button>
+                  <Button className="bg-transparent text-[#FFB800] font-bold hover:bg-slate-200">
+                    Send
+                  </Button>
+                </Box>
+              </Box>
+            )}
+          </Box>
+        )}
+        {status === 'approved' && (
+          <Box className="flex actions justify-end py-4">
+            <Box className="flex items-center border border-[#9696C6] px-4 py-2 rounded-[16px]">
+              <Box className="pr-7">
+                <p className="text-[#181818] text-[14px] font-normal">
+                  Your email will be sent in
+                  <span className="text-[#554CFF] inline-block pl-1">8 minutes</span>
+                </p>
+              </Box>
+              <Box>
+                <Button className="bg-transparent hover:bg-slate-200 text-[#554CFF] font-bold">
+                  Cancel
+                </Button>
+              </Box>
+            </Box>
+          </Box>
+        )}
+      </Box>
     </Box>
   );
 }
