@@ -1,22 +1,14 @@
 import { Box, Button } from '@mui/material';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import styles from './styles.module.scss';
-
-import pdfFileImg from '@assets/images/icons/pdf-file.png';
-import zipFileImg from '@assets/images/icons/zip-file.png';
+import AttachFiles, { File } from '@components/atoms/AttachFiles';
 import EmailStatus from '@components/atoms/EmailStatus';
-
-interface AttachFile {
-  type: string;
-  name: string;
-  url: string;
-}
 
 interface PendingEmail {
   title: string;
   sendTo: Array<string>;
   mailContent: string;
-  attachFiles: Array<AttachFile>;
+  attachFiles: Array<File>;
 }
 
 const newPendingEmailList: PendingEmail = {
@@ -89,71 +81,6 @@ function Email({ status }) {
     );
   };
 
-  const renderFileIconByType = (type: string) => {
-    switch (type) {
-      case 'pdf':
-        return (
-          <img
-            className="w-[22px] h-full object-center object-contain"
-            src={pdfFileImg}
-            alt="file"
-          />
-        );
-
-      case 'zip':
-        return (
-          <img
-            className="w-[22px] h-full object-center object-contain"
-            src={zipFileImg}
-            alt="file"
-          />
-        );
-
-      default:
-        return (
-          <img
-            className="w-[22px] h-full object-center object-contain"
-            src={pdfFileImg}
-            alt="file"
-          />
-        );
-    }
-  };
-
-  const renderAttachFiles = () => (
-    <Box>
-      <h3 className="text-[#495057] font-bold leading-4 mb-4 text-[16px]">
-        Files ({attachFiles.length})
-      </h3>
-      <Box>
-        {attachFiles.map((val, index) => {
-          const { name, type, url } = val;
-
-          return (
-            <Box className="flex mb-4" key={index}>
-              <Box>
-                <a href={url} target="_blank">
-                  {renderFileIconByType(type)}
-                </a>
-              </Box>
-              <Box className="pl-3 flex-1">
-                <p className="text-[#495057] text-[14px] font-medium leading-5">
-                  {name}
-                </p>
-                <a
-                  className="text-[#0F6AF1] text-[13px] font-medium hover:underline"
-                  href={url}
-                  target="_blank">
-                  {url}
-                </a>
-              </Box>
-            </Box>
-          );
-        })}
-      </Box>
-    </Box>
-  );
-
   return (
     <Box
       className={`bg-white rounded-tr-3xl rounded-bl-3xl overflow-hidden pb-4 ${styles.emailWrap} ml-20 mb-8`}>
@@ -174,7 +101,7 @@ function Email({ status }) {
         <Box></Box>
       </Box>
       {/* Files List If have */}
-      {attachFiles.length !== 0 && renderAttachFiles()}
+      {attachFiles.length !== 0 && <AttachFiles data={attachFiles} />}
       {/* Actions */}
       {status === 'pending' && (
         <Box className="flex actions justify-end border-t-2 py-4">
