@@ -5,4 +5,14 @@
   & .MuiInputBase-root {
     padding-block: 0 !important;
   }
+  & .MuiAutocomplete-endAdornment {
+    &::before {
+      content: 'Cc, From';
+      display: inline-block;
+      color: #7e7e7e;
+      font-weight: 400;
+      font-size: 14px;
+      line-height: 15px;
+    }
+  }
 }

@@ -16,7 +16,7 @@ const EmailComposeFormGroup: React.FC<EmailComposeFormGroupProps> = ({
     <Box className="border-b border-[#DBDBDB] py-3 flex">
       <label
         htmlFor={htmlFor}
-        className="inline-block text-[#7E7E7E] first-letter:uppercase font-medium text-[14px]">
+        className="inline-block text-[#7E7E7E] first-letter:uppercase font-medium text-[14px] leading-[38px]">
         {label}
       </label>
       <Box className="flex-1 pl-2">{children}</Box>

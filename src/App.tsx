@@ -5,6 +5,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import '@assets/styles/global.scss';
 import './App.scss';
 import './index.css';
+import 'quill/dist/quill.snow.css';
 // import "@assets/styles/tailwind.scss";
 import MainRoute from './page/MainRoute';
 import { Provider } from 'react-redux';

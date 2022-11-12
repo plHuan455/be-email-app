@@ -1,22 +1,15 @@
-import { Box, Button } from '@mui/material';
+import { Avatar, Box, Button } from '@mui/material';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import styles from './styles.module.scss';
-
-import pdfFileImg from '@assets/images/icons/pdf-file.png';
-import zipFileImg from '@assets/images/icons/zip-file.png';
+import AttachFiles, { File } from '@components/atoms/AttachFiles';
 import EmailStatus from '@components/atoms/EmailStatus';
-
-interface AttachFile {
-  type: string;
-  name: string;
-  url: string;
-}
+import OptionalAvatar from '@components/atoms/OptionalAvatar';
 
 interface PendingEmail {
   title: string;
   sendTo: Array<string>;
   mailContent: string;
-  attachFiles: Array<AttachFile>;
+  attachFiles: Array<File>;
 }
 
 const newPendingEmailList: PendingEmail = {
@@ -49,8 +42,15 @@ function createMarkup(text: string) {
   return { __html: text };
 }
 
-function Email({ status }) {
-  const { title, sendTo, mailContent, attachFiles } = newPendingEmailList;
+function Email({
+  status,
+  type,
+  userInfo,
+  emailData,
+  onShowHistory,
+  isShowHistory = false,
+}) {
+  const { title, sendTo, mailContent, attachFiles } = emailData;
 
   const cloneSendTo = [...sendTo];
 
@@ -89,101 +89,101 @@ function Email({ status }) {
     );
   };
 
-  const renderFileIconByType = (type: string) => {
-    switch (type) {
-      case 'pdf':
-        return (
-          <img
-            className="w-[22px] h-full object-center object-contain"
-            src={pdfFileImg}
-            alt="file"
+  return (
+    <Box className={`flex flex-wrap ${type === 'send' && styles.flexRowReverse}`}>
+      <Box className={`w-full flex  ${type === 'send' && styles.flexRowReverse}`}>
+        <Box className="w-[10%]"></Box>
+        <Box
+          className={`${styles.userInfo} ${
+            isShowHistory && styles.showUserInfo
+          } flex-1`}>
+          <OptionalAvatar
+            className={` ${type === 'send' && styles.flexRowReverse}`}
+            data={userInfo}
+            isShowAvatar={false}
           />
-        );
-
-      case 'zip':
-        return (
-          <img
-            className="w-[22px] h-full object-center object-contain"
-            src={zipFileImg}
-            alt="file"
-          />
-        );
-
-      default:
-        return (
-          <img
-            className="w-[22px] h-full object-center object-contain"
-            src={pdfFileImg}
-            alt="file"
-          />
-        );
-    }
-  };
-
-  const renderAttachFiles = () => (
-    <Box>
-      <h3 className="text-[#495057] font-bold leading-4 mb-4 text-[16px]">
-        Files ({attachFiles.length})
-      </h3>
-      <Box>
-        {attachFiles.map((val, index) => {
-          const { name, type, url } = val;
-
-          return (
-            <Box className="flex mb-4" key={index}>
-              <Box>
-                <a href={url} target="_blank">
-                  {renderFileIconByType(type)}
-                </a>
+        </Box>
+      </Box>
+      <Box className="w-[10%] flex justify-center">
+        <Avatar alt={userInfo.name} src={userInfo.avatar} />
+      </Box>
+      <Box
+        className={`flex-1 bg-white ${
+          type === 'send'
+            ? 'rounded-tl-[36px] rounded-br-[36px]'
+            : 'rounded-tr-[36px] rounded-bl-[36px]'
+        } overflow-hidden pb-4 ${styles.emailWrap} mb-8`}>
+        {/* Header */}
+        <Box
+          className={`pb-6 bg-violet-200 py-4 ${
+            type === 'send' ? 'rounded-br-[36px]' : 'rounded-bl-[36px]'
+          }  relative`}
+          onClick={() => onShowHistory(emailData, emailData.id)}>
+          <h1 className="text-stone-700 font-bold text-base mb-2">{title}</h1>
+          {renderSendTo()}
+          <EmailStatus emailStatus={status} />
+        </Box>
+        {/* Email Content */}
+        <Box className="py-9">
+          <Box>
+            <p
+              className="text-black font-medium text-[16px]"
+              dangerouslySetInnerHTML={createMarkup(mailContent)}
+            />
+          </Box>
+          <Box></Box>
+        </Box>
+        {/* Files List If have */}
+        {attachFiles.length !== 0 && <AttachFiles data={attachFiles} />}
+        {/* Actions */}
+        {(status === 'pending' || status === 'sending') && (
+          <Box className="flex flex-wrap actions justify-end py-4">
+            <Box className="w-full h-[1px] bg-[#E0E0E0] mb-5"></Box>
+            {status === 'pending' ? (
+              <>
+                <Button className="mx-1 bg-rose-600 py-1.5 px-5 hover:bg-rose-500">
+                  DECLINE
+                </Button>
+                <Button className="mx-1 py-1.5 px-5">APPROVE</Button>
+              </>
+            ) : (
+              <Box className="flex items-center bg-[#F6F3FD] rounded-[12px] py-1 px-2.5">
+                <Box className="pr-4">
+                  <p className="text-[#181818] text-[14px] font-medium">
+                    This email will be sent in:{' '}
+                    <span className="text-[#554CFF]">13 minutes</span>
+                  </p>
+                </Box>
+                <Box>
+                  <Button className="bg-transparent text-[#181818] font-bold hover:bg-slate-200">
+                    Undo
+                  </Button>
+                  <Button className="bg-transparent text-[#FFB800] font-bold hover:bg-slate-200">
+                    Send
+                  </Button>
+                </Box>
               </Box>
-              <Box className="pl-3 flex-1">
-                <p className="text-[#495057] text-[14px] font-medium leading-5">
-                  {name}
+            )}
+          </Box>
+        )}
+        {status === 'approved' && (
+          <Box className="flex actions justify-end py-4">
+            <Box className="flex items-center border border-[#9696C6] px-4 py-2 rounded-[16px]">
+              <Box className="pr-7">
+                <p className="text-[#181818] text-[14px] font-normal">
+                  Your email will be sent in
+                  <span className="text-[#554CFF] inline-block pl-1">8 minutes</span>
                 </p>
-                <a
-                  className="text-[#0F6AF1] text-[13px] font-medium hover:underline"
-                  href={url}
-                  target="_blank">
-                  {url}
-                </a>
+              </Box>
+              <Box>
+                <Button className="bg-transparent hover:bg-slate-200 text-[#554CFF] font-bold">
+                  Cancel
+                </Button>
               </Box>
             </Box>
-          );
-        })}
+          </Box>
+        )}
       </Box>
-    </Box>
-  );
-
-  return (
-    <Box
-      className={`bg-white rounded-tr-3xl rounded-bl-3xl overflow-hidden pb-4 ${styles.emailWrap} ml-20 mb-8`}>
-      {/* Header */}
-      <Box className={`pb-6 bg-violet-200 py-4 rounded-bl-3xl relative`}>
-        <h1 className="text-stone-700 font-bold text-base mb-2">{title}</h1>
-        {renderSendTo()}
-        <EmailStatus emailStatus={status} />
-      </Box>
-      {/* Email Content */}
-      <Box className="py-9">
-        <Box>
-          <p
-            className="text-black font-medium text-[16px]"
-            dangerouslySetInnerHTML={createMarkup(mailContent)}
-          />
-        </Box>
-        <Box></Box>
-      </Box>
-      {/* Files List If have */}
-      {attachFiles.length !== 0 && renderAttachFiles()}
-      {/* Actions */}
-      {status === 'pending' && (
-        <Box className="flex actions justify-end border-t-2 py-4">
-          <Button className="mx-1 bg-rose-600 py-1.5 px-5 hover:bg-rose-500">
-            DECLINE
-          </Button>
-          <Button className="mx-1 py-1.5 px-5">APPROVE</Button>
-        </Box>
-      )}
     </Box>
   );
 }
