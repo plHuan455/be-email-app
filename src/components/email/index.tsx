@@ -5,11 +5,15 @@ import styles from './styles.module.scss';
 import pdfFileImg from '@assets/images/icons/pdf-file.png';
 import zipFileImg from '@assets/images/icons/zip-file.png';
 import EmailStatus from '@components/atoms/EmailStatus';
-
-interface AttachFile {
+export interface UserRead {
+  name: string;
+  time: string;
+}
+export interface AttachFile {
   type: string;
   name: string;
   url: string;
+  userRead?: UserRead[];
 }
 
 interface PendingEmail {
@@ -30,7 +34,7 @@ const newPendingEmailList: PendingEmail = {
     'email4@mail.com',
   ],
   mailContent:
-    'Hi,Ingredia, Ingredia Nutrisha,<br> A collection of textile samples lay spread out on the table - Samsa was a travelling salesman - and above it there hung a picture<br><br> Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of Lorem.<br><br> Kind Regards<br> Mr Smith',
+    '<p><p>Hi,Ingredia, Ingredia Nutrisha,</p><p> A collection of textile samples lay spread out on the table - Samsa was a travelling salesman - and above it there hung a picture</p><p> Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of Lorem.</p><p>Kind Regards</p> <p>Mr Smith</p> </p>',
   attachFiles: [
     {
       name: 'Metanode - White Paper v.1.5.2',
@@ -48,6 +52,90 @@ const newPendingEmailList: PendingEmail = {
 function createMarkup(text: string) {
   return { __html: text };
 }
+
+const renderFileIconByType = (type: string) => {
+  switch (type) {
+    case 'pdf':
+      return (
+        <img
+          className="w-[22px] h-full object-center object-contain"
+          src={pdfFileImg}
+          alt="file"
+        />
+      );
+
+    case 'zip':
+      return (
+        <img
+          className="w-[22px] h-full object-center object-contain"
+          src={zipFileImg}
+          alt="file"
+        />
+      );
+
+    default:
+      return (
+        <img
+          className="w-[22px] h-full object-center object-contain"
+          src={pdfFileImg}
+          alt="file"
+        />
+      );
+  }
+};
+
+export const renderAttachFiles = (
+  attachFiles: AttachFile[],
+  userRead?: UserRead[],
+) => (
+  <Box>
+    <h3 className="text-[#495057] font-bold leading-4 mb-4 text-[16px]">
+      Files ({attachFiles.length})
+    </h3>
+    <Box>
+      {attachFiles.map((val, index) => {
+        const { name, type, url } = val;
+
+        return (
+          <Box className="mb-4">
+            <Box className="flex" key={index}>
+              <Box>
+                <a href={url} target="_blank">
+                  {renderFileIconByType(type)}
+                </a>
+              </Box>
+              <Box className="pl-3 flex-1">
+                <p className="text-[#495057] text-[14px] font-medium leading-5">
+                  {name}
+                </p>
+                <a
+                  className="text-[#0F6AF1] text-[13px] font-medium hover:underline"
+                  href={url}
+                  target="_blank">
+                  {url}
+                </a>
+              </Box>
+            </Box>
+            <Box>
+              {val.userRead &&
+                val.userRead.map((item) => {
+                  return (
+                    <Box className="flex items-center content-between">
+                      <p className="w-[70%] whitespace-nowrap overflow-hidden overflow-ellipsis text-[9px]">
+                        Read by{' '}
+                        <span className="font-bold text-[11px]">{item.name}</span>
+                      </p>
+                      <p className="text-[9px]">{item.time}</p>
+                    </Box>
+                  );
+                })}
+            </Box>
+          </Box>
+        );
+      })}
+    </Box>
+  </Box>
+);
 
 function Email({ status }) {
   const { title, sendTo, mailContent, attachFiles } = newPendingEmailList;
@@ -89,71 +177,6 @@ function Email({ status }) {
     );
   };
 
-  const renderFileIconByType = (type: string) => {
-    switch (type) {
-      case 'pdf':
-        return (
-          <img
-            className="w-[22px] h-full object-center object-contain"
-            src={pdfFileImg}
-            alt="file"
-          />
-        );
-
-      case 'zip':
-        return (
-          <img
-            className="w-[22px] h-full object-center object-contain"
-            src={zipFileImg}
-            alt="file"
-          />
-        );
-
-      default:
-        return (
-          <img
-            className="w-[22px] h-full object-center object-contain"
-            src={pdfFileImg}
-            alt="file"
-          />
-        );
-    }
-  };
-
-  const renderAttachFiles = () => (
-    <Box>
-      <h3 className="text-[#495057] font-bold leading-4 mb-4 text-[16px]">
-        Files ({attachFiles.length})
-      </h3>
-      <Box>
-        {attachFiles.map((val, index) => {
-          const { name, type, url } = val;
-
-          return (
-            <Box className="flex mb-4" key={index}>
-              <Box>
-                <a href={url} target="_blank">
-                  {renderFileIconByType(type)}
-                </a>
-              </Box>
-              <Box className="pl-3 flex-1">
-                <p className="text-[#495057] text-[14px] font-medium leading-5">
-                  {name}
-                </p>
-                <a
-                  className="text-[#0F6AF1] text-[13px] font-medium hover:underline"
-                  href={url}
-                  target="_blank">
-                  {url}
-                </a>
-              </Box>
-            </Box>
-          );
-        })}
-      </Box>
-    </Box>
-  );
-
   return (
     <Box
       className={`bg-white rounded-tr-3xl rounded-bl-3xl overflow-hidden pb-4 ${styles.emailWrap} ml-20 mb-8`}>
@@ -174,7 +197,7 @@ function Email({ status }) {
         <Box></Box>
       </Box>
       {/* Files List If have */}
-      {attachFiles.length !== 0 && renderAttachFiles()}
+      {attachFiles.length !== 0 && renderAttachFiles(attachFiles)}
       {/* Actions */}
       {status === 'pending' && (
         <Box className="flex actions justify-end border-t-2 py-4">

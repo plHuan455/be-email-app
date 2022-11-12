@@ -71,9 +71,9 @@ function MainWrapper() {
         onToggleMobileSidebar={toggleMobileSideBar(true)}
       /> */}
       <Box className={cx(classes.body)}>
-        {/* <Box className={cx(classes.sideBar)}>
+        <Box className={cx(classes.sideBar)}>
           <IconTabs />
-        </Box> */}
+        </Box>
         <Box
           sx={{
             width: '100%',
