@@ -3,3 +3,14 @@
         border-bottom: none;
     }
 }
+
+.cover__email__block {
+    &:last-child {
+        border-bottom: none;
+    }
+    .email__item {
+        &:hover {
+            background-color: #e4e2ff;
+        }
+    }
+}

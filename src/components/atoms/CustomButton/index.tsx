@@ -16,6 +16,7 @@ type Props = {
   isBeforeIcon?: boolean;
   beforeIcon?: React.ReactNode;
   isHasSlash?: boolean;
+  onClick?: Function;
 };
 
 const CustomButton = (props: Props) => {

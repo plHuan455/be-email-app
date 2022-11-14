@@ -12,17 +12,13 @@ import TableViewIcon from '@mui/icons-material/TableView';
 
 import avatarImg from '@assets/images/avatars/avatar-1.jpg';
 
-import './styles.scss';
 import EditContent from '@components/atoms/EditContent';
 import CustomButton from '@components/atoms/CustomButton';
 import { RefObject, useCallback, useEffect, useRef, useState } from 'react';
 import AttachFiles from '@components/atoms/AttachFiles';
-
-interface ReceiverData {
-  avatar: string;
-  mail: string;
-  abbreviations: string;
-}
+import AutoCompleteReceive, {
+  ReceiverData,
+} from '@components/atoms/AutoCompleteReceive';
 
 const receiversList: ReceiverData[] = [
   { avatar: avatarImg, mail: 'giangz0009@gmail.com', abbreviations: 'GI' },
@@ -109,39 +105,7 @@ function EmailCompose() {
         <Box className="px-9 py-10 pt-2">
           {/* Compose To */}
           <EmailComposeFormGroup label={'To:'}>
-            <Autocomplete
-              className="emailComposeTo"
-              multiple
-              id="tags-outlined"
-              options={receiversList}
-              getOptionLabel={(option) => option.mail}
-              defaultValue={[]}
-              filterSelectedOptions
-              renderInput={(params) => {
-                return (
-                  <Box className="flex justify-between items-center">
-                    <TextField
-                      {...params}
-                      className="outline-none border-transparent"
-                    />
-                    {/* <span>Cc,From</span> */}
-                  </Box>
-                );
-              }}
-              renderTags={(list, getTagProps) => {
-                return list.map((receiver, index) => {
-                  const props = getTagProps({ index: index });
-
-                  return (
-                    <Receiver
-                      key={index}
-                      data={receiver}
-                      onDelete={() => props.onDelete(index)}
-                    />
-                  );
-                });
-              }}
-            />
+            <AutoCompleteReceive data={receiversList} />
           </EmailComposeFormGroup>
           {/* Subject */}
           <EmailComposeFormGroup label={'Subject:'}>

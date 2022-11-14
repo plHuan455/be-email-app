@@ -64,7 +64,7 @@ const EmailActionsList = {
   },
 };
 
-const EmailActions = () => {
+const EmailActions = ({ emailIndex, handleChangeStatus }) => {
   return (
     <Box className="flex mb-4">
       {Object.keys(EmailActionsList).map((key, index) => {
@@ -72,8 +72,9 @@ const EmailActions = () => {
 
         return (
           <Box
-            className={`py-1.5 px-3 text-[14px] font-medium flex items-center`}
-            key={index}>
+            className={`py-1.5 px-3 text-[14px] font-medium flex items-center hover:bg-slate-200 hover:cursor-pointer rounded p-2`}
+            key={index}
+            onClick={() => handleChangeStatus(currVal.icon, emailIndex)}>
             <RenderButtonIcon item={currVal.icon} color={currVal.color} />
             <span className="inline-block pl-2">{`${currVal.label}`}</span>
           </Box>

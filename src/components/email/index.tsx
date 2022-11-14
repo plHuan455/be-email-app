@@ -4,12 +4,25 @@ import styles from './styles.module.scss';
 import AttachFiles, { File } from '@components/atoms/AttachFiles';
 import EmailStatus from '@components/atoms/EmailStatus';
 import OptionalAvatar from '@components/atoms/OptionalAvatar';
+import EmailActions from './EmailActions';
+import EmailReply from './EmailReply';
+import useTest from '../../zustand/useTest';
+export interface UserRead {
+  name: string;
+  time: string;
+}
+export interface AttachFile {
+  type: string;
+  name: string;
+  url: string;
+  userRead?: UserRead[];
+}
 
 interface PendingEmail {
   title: string;
   sendTo: Array<string>;
   mailContent: string;
-  attachFiles: Array<File>;
+  attachFiles: Array<AttachFile>;
 }
 
 const newPendingEmailList: PendingEmail = {
@@ -23,7 +36,7 @@ const newPendingEmailList: PendingEmail = {
     'email4@mail.com',
   ],
   mailContent:
-    'Hi,Ingredia, Ingredia Nutrisha,<br> A collection of textile samples lay spread out on the table - Samsa was a travelling salesman - and above it there hung a picture<br><br> Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of Lorem.<br><br> Kind Regards<br> Mr Smith',
+    '<p><p>Hi,Ingredia, Ingredia Nutrisha,</p><p> A collection of textile samples lay spread out on the table - Samsa was a travelling salesman - and above it there hung a picture</p><p> Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of Lorem.</p><p>Kind Regards</p> <p>Mr Smith</p> </p>',
   attachFiles: [
     {
       name: 'Metanode - White Paper v.1.5.2',
@@ -48,7 +61,10 @@ function Email({
   userInfo,
   emailData,
   onShowHistory,
-  isShowHistory = false,
+  isShowHeader = false,
+  isShowActions = false,
+  index,
+  onChangeStatus,
 }) {
   const { title, sendTo, mailContent, attachFiles } = emailData;
 
@@ -64,7 +80,9 @@ function Email({
 
       return (
         <Box className="text-sm text-stone-600 first-letter:capitalize">
-          <span>{`${splice2FirstItems.join(', ')} and ${restLength} more`}</span>
+          <span>{`${splice2FirstItems
+            .map((item) => item.mail)
+            .join(', ')} and ${restLength} more`}</span>
           <span
             className={`${styles.moreSendTo} pl-1 hover:cursor-pointer relative`}>
             <ArrowForwardIosIcon sx={{ fontSize: 12 }} />
@@ -72,7 +90,7 @@ function Email({
               {cloneSendTo.map((value, index) => (
                 <li key={index}>
                   <p className="hover:bg-slate-200 py-0.5  px-2 text-[11px]">
-                    {value}
+                    {value.mail}
                   </p>
                 </li>
               ))}
@@ -84,19 +102,30 @@ function Email({
 
     return (
       <p className="text-sm text-stone-600 first-letter:capitalize">
-        <span>{`${cloneSendTo.join(', ')}`}</span>
+        <span>{`${cloneSendTo.map((item) => item.mail).join(', ')}`}</span>
       </p>
     );
   };
 
   return (
-    <Box className={`flex flex-wrap ${type === 'send' && styles.flexRowReverse}`}>
-      <Box className={`w-full flex  ${type === 'send' && styles.flexRowReverse}`}>
+    <Box
+      className={`relative flex flex-wrap ${
+        type === 'send' && styles.flexRowReverse
+      }`}>
+      <Box
+        className={`w-full flex flex-wrap ${styles.emailHeader} ${
+          isShowHeader && styles.showEmailHeader
+        } ${type === 'send' && styles.flexRowReverse}`}>
+        {isShowActions && (
+          <Box className="w-full flex">
+            <Box className="w-[5%]"></Box>
+            <Box className="flex-1">
+              <EmailActions emailIndex={index} handleChangeStatus={onChangeStatus} />
+            </Box>
+          </Box>
+        )}
         <Box className="w-[10%]"></Box>
-        <Box
-          className={`${styles.userInfo} ${
-            isShowHistory && styles.showUserInfo
-          } flex-1`}>
+        <Box className={`flex-1`}>
           <OptionalAvatar
             className={` ${type === 'send' && styles.flexRowReverse}`}
             data={userInfo}
@@ -112,11 +141,13 @@ function Email({
           type === 'send'
             ? 'rounded-tl-[36px] rounded-br-[36px]'
             : 'rounded-tr-[36px] rounded-bl-[36px]'
-        } overflow-hidden pb-4 ${styles.emailWrap} mb-8`}>
+        } pb-4 ${styles.emailWrap} mb-8`}>
         {/* Header */}
         <Box
           className={`pb-6 bg-violet-200 py-4 ${
-            type === 'send' ? 'rounded-br-[36px]' : 'rounded-bl-[36px]'
+            type === 'send'
+              ? 'rounded-br-[36px] rounded-tl-[36px]'
+              : 'rounded-bl-[36px] rounded-tr-[36px]'
           }  relative`}
           onClick={() => onShowHistory(emailData, emailData.id)}>
           <h1 className="text-stone-700 font-bold text-base mb-2">{title}</h1>
@@ -184,6 +215,17 @@ function Email({
           </Box>
         )}
       </Box>
+      {/* Layer if status === 'Reply || ReplyAll' */}
+      {(status === 'reply' || status === 'replyAll') && (
+        <EmailReply
+          onChangeEmailStatus={() => {
+            onChangeStatus('pending', index);
+          }}
+          classNameLayer="absolute top-0 left-0 w-full h-full"
+          classNameContent="shadow-lg p-4 absolute z-10 top-1/2 right-[40px] w-[90%] -translate-y-1/2 bg-white rounded-[11px] border border-[#E3E3E3] "
+          data={emailData}
+        />
+      )}
     </Box>
   );
 }
