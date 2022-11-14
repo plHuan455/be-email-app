@@ -5,6 +5,7 @@ import styles from './styles.module.scss';
 import pdfFileImg from '@assets/images/icons/pdf-file.png';
 import zipFileImg from '@assets/images/icons/zip-file.png';
 import EmailStatus from '@components/atoms/EmailStatus';
+import useTest from '../../zustand/useTest';
 export interface UserRead {
   name: string;
   time: string;
@@ -138,6 +139,9 @@ export const renderAttachFiles = (
 );
 
 function Email({ status }) {
+  const { name, setName } = useTest();
+  console.log('🚀 ~ file: index.tsx ~ line 143 ~ Email ~ name', name);
+
   const { title, sendTo, mailContent, attachFiles } = newPendingEmailList;
 
   const cloneSendTo = [...sendTo];
@@ -204,7 +208,9 @@ function Email({ status }) {
           <Button className="mx-1 bg-rose-600 py-1.5 px-5 hover:bg-rose-500">
             DECLINE
           </Button>
-          <Button className="mx-1 py-1.5 px-5">APPROVE</Button>
+          <Button onClick={() => setName('asdasdasd')} className="mx-1 py-1.5 px-5">
+            APPROVE
+          </Button>
         </Box>
       )}
     </Box>

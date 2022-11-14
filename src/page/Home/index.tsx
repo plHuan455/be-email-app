@@ -11,6 +11,7 @@ import EmailStatusBar from '@layouts/EmailStatusBar';
 import IconTabs from '@layouts/IconTabs';
 import InformationBar, { Receiver } from '@layouts/InformationBar';
 import { Box, Icon } from '@mui/material';
+import useTest from '../../zustand/useTest';
 
 const receiverData: Receiver[] = [
   {
@@ -23,13 +24,6 @@ const receiverData: Receiver[] = [
     id: 3,
   },
 ];
-
-// const inFormationData = [
-//   {
-//     title: 'Information',
-//     receiver: [],
-//   },
-// ];
 
 const HomePage = () => {
   return (

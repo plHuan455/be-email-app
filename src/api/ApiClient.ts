@@ -1,8 +1,5 @@
 /* eslint-disable global-require */
-import axios, {
-  AxiosResponse,
-  AxiosRequestConfig,
-} from 'axios';
+import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
 import { stringify } from 'qs';
 
 type QueryObject = { [key: string]: string | number | boolean };
@@ -14,10 +11,10 @@ export interface ApiResponse<T = any> {
 }
 
 const url = process.env.REACT_APP_API_BASE_URL;
-const local = 'http://10.0.0.173:5000/cms/';
+const local = 'http://10.0.2.248:5001/api/';
 
 const axiosInstance = axios.create({
-  baseURL: url,
+  baseURL: local,
   timeout: 5000,
 });
 
