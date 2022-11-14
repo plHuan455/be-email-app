@@ -2,7 +2,8 @@ import { IconFactory } from '@components/atoms/Icon';
 import SelectBox, { SelectBoxOptionInterface } from '@components/atoms/SelectBox';
 import LabelOptionStyle from '@components/atoms/SelectBox/labelOptionStyles';
 import UploadArea from '@components/atoms/UploadArea';
-import EmailReceive from '@components/email/EmailReceive';
+import EmailCompose from '@components/email/EmailCompose';
+import EmailMess from '@components/email/EmailMess';
 import HomeContainer from '@containers/HomeContainer';
 import GlobalStateProvider from '@context/GlobalStateProvider';
 import EmailStatusBar from '@layouts/EmailStatusBar';
@@ -57,7 +58,7 @@ const HomePage = () => {
         </TabPanel>
       </Box> */}
       {/* <EmailCompose /> */}
-      <EmailReceive />
+      <EmailMess />
     </div>
   );
 };

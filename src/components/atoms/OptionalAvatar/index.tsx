@@ -1,7 +1,7 @@
 import React from 'react';
 import { Avatar, Box } from '@mui/material';
 
-export interface UserAvatar {
+export interface UserInfo {
   avatar: string;
   name: string;
   mail: string;
@@ -9,7 +9,7 @@ export interface UserAvatar {
 }
 
 interface Props {
-  data: UserAvatar;
+  data: UserInfo;
   className?: string;
   isShowAvatar?: boolean;
   isShowContent?: boolean;

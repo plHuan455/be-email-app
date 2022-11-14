@@ -20,7 +20,7 @@ const Receiver: React.FC<ReceiverProps> = ({ data, onDelete }) => {
   return (
     <Box className="flex">
       {/* Main Content */}
-      <Box className="flex bg-[#F6F5FE] relative pl-7 p-2 py-1 rounded-md">
+      <Box className="flex bg-[#F6F5FE] relative pl-7 p-2 py-1 rounded-xl mx-1">
         <SingleAvatar
           src={avatar}
           abbreviations={abbreviations}

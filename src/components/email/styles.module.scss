@@ -18,18 +18,34 @@
   }
 }
 
-.userInfo {
+// .userInfo {
+//   opacity: 0;
+//   visibility: hidden;
+//   transform: scaleY(0);
+//   transition: 0.4s;
+//   &.showUserInfo {
+//     opacity: 1;
+//     visibility: visible;
+//     transform: scaleY(1);
+//   }
+// }
+
+.flexRowReverse {
+  flex-direction: row-reverse;
+}
+
+.emailHeader {
   opacity: 0;
   visibility: hidden;
   transform: scaleY(0);
+  height: 100%;
+  max-height: 0;
+  transform-origin: bottom;
   transition: 0.4s;
-  &.showUserInfo {
+  &.showEmailHeader {
+    max-height: 1000px;
     opacity: 1;
     visibility: visible;
     transform: scaleY(1);
   }
-}
-
-.flexRowReverse {
-  flex-direction: row-reverse;
 }

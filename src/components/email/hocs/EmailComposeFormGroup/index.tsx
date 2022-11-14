@@ -4,7 +4,7 @@ import React from 'react';
 interface EmailComposeFormGroupProps {
   label: string;
   htmlFor?: string;
-  children: React.ReactNode;
+  children?: React.ReactNode;
 }
 
 const EmailComposeFormGroup: React.FC<EmailComposeFormGroupProps> = ({
