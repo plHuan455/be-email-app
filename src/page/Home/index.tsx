@@ -5,42 +5,23 @@ import UploadArea from '@components/atoms/UploadArea';
 import EmailCompose from '@components/email/EmailCompose';
 import EmailMess from '@components/email/EmailMess';
 import HomeContainer from '@containers/HomeContainer';
-import GlobalStateProvider from '@context/GlobalStateProvider';
 import EmailStatusBar from '@layouts/EmailStatusBar';
-import { Box, Icon, Tab, Tabs, Typography } from '@mui/material';
-import { useState } from 'react';
+import IconTabs from '@layouts/IconTabs';
+import InformationBar, { Receiver } from '@layouts/InformationBar';
+import { Box, Icon } from '@mui/material';
+import useTest from '../../zustand/useTest';
 
-interface TabPanelProps {
-  children?: React.ReactNode;
-  index: number;
-  value: number;
-}
-
-function TabPanel(props: TabPanelProps) {
-  const { children, value, index, ...other } = props;
-
-  return (
-    <div
-      role="tabpanel"
-      hidden={value !== index}
-      id={`simple-tabpanel-${index}`}
-      aria-labelledby={`simple-tab-${index}`}
-      {...other}>
-      {value === index && (
-        <Box sx={{ p: 3 }}>
-          <Typography>{children}</Typography>
-        </Box>
-      )}
-    </div>
-  );
-}
-
-function a11yProps(index: number) {
-  return {
-    id: `simple-tab-${index}`,
-    'aria-controls': `simple-tabpanel-${index}`,
-  };
-}
+const receiverData: Receiver[] = [
+  {
+    id: 1,
+  },
+  {
+    id: 2,
+  },
+  {
+    id: 3,
+  },
+];
 
 const HomePage = () => {
   return (
@@ -58,7 +39,33 @@ const HomePage = () => {
         </TabPanel>
       </Box> */}
       {/* <EmailCompose /> */}
-      <EmailMess />
+      <EmailStatusBar />
+      <Box
+        sx={{
+          width: '70%',
+          height: '100vh',
+          padding: '28px',
+          backgroundColor: '#EDEDF3',
+          borderTopLeftRadius: '65px',
+          overflow: 'scroll',
+        }}>
+        <EmailMess />
+        {/* <EmailCompose /> */}
+        {/* <EmailActions />
+        <Sender />
+        <Email status={'pending'} />
+        <Email status={'approved'} />
+        <Email status={'sent'} />
+        <Email status={'seen'} />
+        <Email status={'declined'} />
+        <Email status={'sending'} /> */}
+      </Box>
+      <InformationBar
+        title="Information"
+        isBorderBottom={true}
+        sender={1}
+        receiver={receiverData}
+      />
     </div>
   );
 };

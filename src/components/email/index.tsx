@@ -6,6 +6,50 @@ import EmailStatus from '@components/atoms/EmailStatus';
 import OptionalAvatar from '@components/atoms/OptionalAvatar';
 import EmailActions from './EmailActions';
 import EmailReply from './EmailReply';
+import useTest from '../../zustand/useTest';
+export interface UserRead {
+  name: string;
+  time: string;
+}
+export interface AttachFile {
+  type: string;
+  name: string;
+  url: string;
+  userRead?: UserRead[];
+}
+
+interface PendingEmail {
+  title: string;
+  sendTo: Array<string>;
+  mailContent: string;
+  attachFiles: Array<AttachFile>;
+}
+
+const newPendingEmailList: PendingEmail = {
+  title: 'M&A Testa to Metanode',
+  sendTo: [
+    'me',
+    'billgates@microsoft.com',
+    'email1@mail.com',
+    'email2@mail.com',
+    'email3@mail.com',
+    'email4@mail.com',
+  ],
+  mailContent:
+    '<p><p>Hi,Ingredia, Ingredia Nutrisha,</p><p> A collection of textile samples lay spread out on the table - Samsa was a travelling salesman - and above it there hung a picture</p><p> Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of Lorem.</p><p>Kind Regards</p> <p>Mr Smith</p> </p>',
+  attachFiles: [
+    {
+      name: 'Metanode - White Paper v.1.5.2',
+      type: 'pdf',
+      url: 'meta.node/9YQC7us',
+    },
+    {
+      name: 'Metanode - SDK Bundle',
+      type: 'zip',
+      url: 'meta.node/34ED7uc',
+    },
+  ],
+};
 
 function createMarkup(text: string) {
   return { __html: text };
@@ -177,7 +221,7 @@ function Email({
           onChangeEmailStatus={() => {
             onChangeStatus('pending', index);
           }}
-          classNameLayer="fixed top-0 left-0 w-full h-full"
+          classNameLayer="absolute top-0 left-0 w-full h-full"
           classNameContent="shadow-lg p-4 absolute z-10 top-1/2 right-[40px] w-[90%] -translate-y-1/2 bg-white rounded-[11px] border border-[#E3E3E3] "
           data={emailData}
         />
