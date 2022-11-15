@@ -41,20 +41,17 @@ function LoginContainer() {
 
   const submitLogin = async ({ email, password }) => {
     try {
-      const res = login({ email, password });
-      console.log('🚀 ~ file: index.tsx ~ line 45 ~ submitLogin ~ res', res);
-      auth.signin({ name: 'test' }, 'test', () => {
+      const res = await login({ email, password });
+      auth.signin({}, res.data, () => {
         navigate('/');
       });
     } catch (error: any) {
       toast.error(t('Tài khoản chưa tồn tại hoặc sai thông tin đăng nhập'));
-      console.log(error);
     }
   };
 
   const onSubmit = (data) => {
     submitLogin({ email: data.email, password: data.password });
-    // handleLogin(data);
   };
 
   // if (auth.token) return <Navigate to={'/'} replace={true} />;

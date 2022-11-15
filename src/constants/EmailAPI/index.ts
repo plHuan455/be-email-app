@@ -1,1 +1,1 @@
-export const EMAIL_API_URL = '/email';
+export const EMAIL_API_URL = '/api/email';

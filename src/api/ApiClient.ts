@@ -11,7 +11,7 @@ export interface ApiResponse<T = any> {
 }
 
 const url = process.env.REACT_APP_API_BASE_URL;
-const local = 'http://10.0.2.248:5001/api/';
+const local = 'http://10.0.2.248:5001/';
 
 const axiosInstance = axios.create({
   baseURL: local,
