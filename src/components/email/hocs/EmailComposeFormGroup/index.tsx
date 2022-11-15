@@ -4,16 +4,23 @@ import React from 'react';
 interface EmailComposeFormGroupProps {
   label: string;
   htmlFor?: string;
+  isHaveBorderBottom?: boolean;
+  className?: string;
   children?: React.ReactNode;
 }
 
 const EmailComposeFormGroup: React.FC<EmailComposeFormGroupProps> = ({
-  label,
+  label = '',
   htmlFor,
+  isHaveBorderBottom = true,
+  className,
   children,
 }) => {
   return (
-    <Box className="border-b border-[#DBDBDB] py-3 flex">
+    <Box
+      className={`${
+        isHaveBorderBottom ? 'border-b border-[#DBDBDB]' : ''
+      } py-3 flex ${className}`}>
       <label
         htmlFor={htmlFor}
         className="inline-block text-[#7E7E7E] first-letter:uppercase font-medium text-[14px] leading-[38px]">

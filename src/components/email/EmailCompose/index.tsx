@@ -23,6 +23,10 @@ import AutoCompleteReceive, {
 import { EditorState, convertToRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 
+const fromData: ReceiverData[] = [
+  { avatar: avatarImg, mail: 'sender@gmail.com', abbreviations: 'GI' },
+];
+
 const receiversList: ReceiverData[] = [
   { avatar: avatarImg, mail: 'giangz0009@gmail.com', abbreviations: 'GI' },
   { avatar: '', mail: 'mail1@gmail.com', abbreviations: 'T2' },
@@ -35,7 +39,13 @@ function EmailCompose() {
 
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
 
+  const [isShowCcFrom, setIsShowCcFrom] = useState(false);
+
   const refInputAttachFile = useRef<HTMLInputElement>(null);
+
+  const handleClickCcFromLabel = useCallback(() => {
+    setIsShowCcFrom((preState) => !preState);
+  }, []);
 
   const handleAttachFile = (e) => {
     const checkRef = !!refInputAttachFile.current;
@@ -118,14 +128,47 @@ function EmailCompose() {
         <Box className="px-9 py-10 pt-2">
           {/* Compose To */}
           <EmailComposeFormGroup label={'To:'}>
-            <AutoCompleteReceive data={receiversList} />
+            <AutoCompleteReceive
+              data={receiversList}
+              onClickCcFromLabel={handleClickCcFromLabel}
+            />
           </EmailComposeFormGroup>
           {/* Subject */}
           <EmailComposeFormGroup label={'Subject:'}>
             <SingleOTPInputComponent className="outline-none w-full text-black text-[18px] font-bold h-full" />
           </EmailComposeFormGroup>
+          {/* Cc, From */}
+          {isShowCcFrom && (
+            <Box className="mb-2">
+              <EmailComposeFormGroup
+                className="py-1"
+                label="Cc:"
+                isHaveBorderBottom={false}>
+                <SingleOTPInputComponent className="outline-none w-full text-[14px] font-medium h-full" />
+              </EmailComposeFormGroup>
+              <EmailComposeFormGroup
+                className="py-1"
+                label="Bcc:"
+                isHaveBorderBottom={false}>
+                <SingleOTPInputComponent className="outline-none w-full text-[14px] font-medium h-full" />
+              </EmailComposeFormGroup>
+              <EmailComposeFormGroup
+                className="py-1"
+                label="From:"
+                isHaveBorderBottom={false}>
+                <AutoCompleteReceive
+                  data={fromData}
+                  defaultValue={fromData}
+                  isShowCcFromLabel={false}
+                  isReadOnly={true}
+                />
+              </EmailComposeFormGroup>
+            </Box>
+          )}
+
           {/* Edit Content */}
           {/* <EditContent /> */}
+
           <Editor
             editorState={editorState}
             onEditorStateChange={onEditorStateChange}

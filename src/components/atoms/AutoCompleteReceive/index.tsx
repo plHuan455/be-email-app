@@ -1,5 +1,5 @@
 import { Autocomplete, Box, TextField } from '@mui/material';
-import React from 'react';
+import React, { MouseEventHandler, useEffect } from 'react';
 import { UserInfo } from '../OptionalAvatar';
 import Receiver from '../Receiver';
 
@@ -14,11 +14,21 @@ export interface ReceiverData {
 interface Props {
   data: ReceiverData[];
   defaultValue?: ReceiverData[];
+  isShowCcFromLabel?: boolean;
+  onClickCcFromLabel?: React.MouseEventHandler<HTMLSpanElement> | undefined;
+  isReadOnly?: boolean;
 }
 
-const AutoCompleteReceive: React.FC<Props> = ({ data, defaultValue }) => {
+const AutoCompleteReceive: React.FC<Props> = ({
+  data,
+  defaultValue,
+  isShowCcFromLabel = true,
+  onClickCcFromLabel,
+  isReadOnly = false,
+}) => {
   return (
     <Autocomplete
+      readOnly={isReadOnly}
       className="emailComposeTo"
       multiple
       id="tags-outlined"
@@ -30,7 +40,13 @@ const AutoCompleteReceive: React.FC<Props> = ({ data, defaultValue }) => {
         return (
           <Box className="flex justify-between items-center">
             <TextField {...params} className="outline-none border-transparent" />
-            {/* <span>Cc,From</span> */}
+            {isShowCcFromLabel && (
+              <span
+                className="text-[#7E7E7E] text-[14px]"
+                onClick={onClickCcFromLabel}>
+                Cc,From
+              </span>
+            )}
           </Box>
         );
       }}
