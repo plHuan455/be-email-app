@@ -114,7 +114,7 @@ const EmailReply: React.FC<Props> = ({
         </Box>
         <Box>
           <Box className="py-3">
-            <AutoCompleteReceive data={data.sendTo} />
+            <AutoCompleteReceive data={data.sendTo} defaultValue={data.sendTo} />
           </Box>
         </Box>
         <Box>

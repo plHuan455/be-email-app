@@ -2,22 +2,31 @@ import { RenderButtonIcon } from '@components/email/EmailActions';
 import { Box } from '@mui/material';
 import React from 'react';
 
-const WINDOWCOMPOSEACTIONS = {
-  minus: {
-    item: 'minus',
-    color: '#9E96BE',
-  },
-  square: {
-    item: 'square',
-    color: '#9E96BE',
-  },
-  close: {
-    item: 'close',
-    color: '#9E96BE',
-  },
-};
+import useEmail from '../../../zustand/useEmail';
 
 function WindowComposeActions({ className }: any) {
+  const negativeIsCompose = useEmail((state) => state.negativeIsCompose);
+
+  const WINDOWCOMPOSEACTIONS = {
+    minus: {
+      item: 'minus',
+      color: '#9E96BE',
+      onClick() {},
+    },
+    square: {
+      item: 'square',
+      color: '#9E96BE',
+      onClick() {},
+    },
+    close: {
+      item: 'close',
+      color: '#9E96BE',
+      onClick() {
+        negativeIsCompose();
+      },
+    },
+  };
+
   return (
     <Box className={`flex gap-x-1.5 justify-end ${className}`}>
       {Object.keys(WINDOWCOMPOSEACTIONS).map((val) => {
@@ -25,6 +34,7 @@ function WindowComposeActions({ className }: any) {
 
         return (
           <RenderButtonIcon
+            onClick={currVal.onClick}
             item={currVal.item}
             key={val}
             color={currVal.color}

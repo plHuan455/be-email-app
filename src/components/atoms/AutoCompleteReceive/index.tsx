@@ -13,9 +13,10 @@ export interface ReceiverData {
 
 interface Props {
   data: ReceiverData[];
+  defaultValue?: ReceiverData[];
 }
 
-const AutoCompleteReceive: React.FC<Props> = ({ data }) => {
+const AutoCompleteReceive: React.FC<Props> = ({ data, defaultValue }) => {
   return (
     <Autocomplete
       className="emailComposeTo"
@@ -23,7 +24,7 @@ const AutoCompleteReceive: React.FC<Props> = ({ data }) => {
       id="tags-outlined"
       options={data}
       getOptionLabel={(option) => option.mail}
-      defaultValue={[...data]}
+      defaultValue={defaultValue ? [...defaultValue] : []}
       filterSelectedOptions
       renderInput={(params) => {
         return (

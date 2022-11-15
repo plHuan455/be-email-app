@@ -16,7 +16,7 @@ type Props = {
   isBeforeIcon?: boolean;
   beforeIcon?: React.ReactNode;
   isHasSlash?: boolean;
-  onClick?: Function;
+  onClick?: React.MouseEventHandler<HTMLButtonElement> | undefined;
 };
 
 const CustomButton = (props: Props) => {
@@ -33,7 +33,8 @@ const CustomButton = (props: Props) => {
         borderRadius: '6px',
         color: `${props.textColor}`,
         padding: `${props.padding ? props.padding : '6px 10px'}`,
-      }}>
+      }}
+      onClick={props.onClick}>
       {props.isBeforeIcon && props.beforeIcon}
       <Typography
         component={'p'}
