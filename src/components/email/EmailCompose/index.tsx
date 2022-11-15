@@ -82,25 +82,35 @@ function EmailCompose() {
 
     setAttachFile((prevState) => [...prevState, ...files]);
     setAttachedFile((prevState) => [...prevState, ...customFiles]);
+
+    e.target.value = null;
     // const file = e.target.files[0];
 
     // file.preview = URL.createObjectURL(file);
     // setAvatar(file);
   };
 
-  useEffect(() => {
-    return () => {
+  // useEffect(() => {
+  //   return () => {
+  //     attachFiles.length !== 0 &&
+  //       Object.keys(attachFiles).forEach((key) => {
+  //         const file = attachFiles[key];
+
+  //         URL.revokeObjectURL(file.preview);
+  //       });
+  //   };
+  // }, [attachFiles]);
+
+  const handleDeleteAllAttachedFiles = useCallback(() => {
+    setAttachedFile([]);
+    {
       attachFiles.length !== 0 &&
         Object.keys(attachFiles).forEach((key) => {
           const file = attachFiles[key];
 
           URL.revokeObjectURL(file.preview);
         });
-    };
-  }, [attachFiles]);
-
-  const handleDeleteAllAttachedFiles = useCallback(() => {
-    setAttachedFile([]);
+    }
     setAttachFile([]);
   }, []);
 
