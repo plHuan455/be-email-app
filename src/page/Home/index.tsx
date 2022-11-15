@@ -12,6 +12,7 @@ import { Box, Icon } from '@mui/material';
 import useTest from '../../zustand/useTest';
 import useEmail from '../../zustand/useEmail';
 import { clearScreenDown } from 'readline';
+import EmailActions from '@components/email/EmailActions';
 
 const receiverData: Receiver[] = [
   {
@@ -54,8 +55,8 @@ const HomePage = () => {
           overflow: 'scroll',
         }}>
         {isCompose ? <EmailCompose /> : <EmailMess />}
-        {/* <EmailActions />
-        <Sender />
+        {/* <EmailActions /> */}
+        {/* <Sender />
         <Email status={'pending'} />
         <Email status={'approved'} />
         <Email status={'sent'} />

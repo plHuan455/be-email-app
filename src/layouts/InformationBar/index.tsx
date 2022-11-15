@@ -79,7 +79,14 @@ type Props = {
 
 const InformationBar = (props: Props) => {
   return (
-    <Box sx={{ minWidth: 222, width: '15%', height: '100%', padding: '30px 18px' }}>
+    <Box
+      sx={{
+        minWidth: 222,
+        width: '15%',
+        height: '100%',
+        padding: '30px 18px',
+        overflow: 'scroll',
+      }}>
       <Typography
         component={'p'}
         sx={{

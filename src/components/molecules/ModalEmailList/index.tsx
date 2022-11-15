@@ -52,11 +52,11 @@ function a11yProps(index: number) {
   };
 }
 
-export type statusOptions = 'pending' | 'approved' | 'cancel';
+export type StatusOptions = 'pending' | 'approved' | 'cancel' | 'hashtag';
 
 type Props = {
   title: string;
-  status: statusOptions;
+  status: StatusOptions;
   emailData: EmailList[];
   isActive: boolean;
   handleChangeModalStatus: (status: boolean) => void;
@@ -75,7 +75,7 @@ const ModalEmailList = (props: Props) => {
         className={props.isActive ? 'modal__active' : 'modal__inactive'}
         sx={{
           width: '100%',
-          height: 'calc(100vh - 200px)',
+          height: 'calc(100vh - 165px)',
           position: 'absolute',
           transition: '.3s ease-in-out',
           backgroundColor: '#f7f7fc',
@@ -123,7 +123,7 @@ const ModalEmailList = (props: Props) => {
         className={props.isActive ? 'modal__active' : 'modal__inactive'}
         sx={{
           width: '100%',
-          height: 'calc(100vh - 200px)',
+          height: 'calc(100vh - 165px)',
           position: 'absolute',
           transition: '.3s ease-in-out',
           backgroundColor: '#f7f7fc',
@@ -171,7 +171,55 @@ const ModalEmailList = (props: Props) => {
         className={props.isActive ? 'modal__active' : 'modal__inactive'}
         sx={{
           width: '100%',
-          height: 'calc(100vh - 200px)',
+          height: 'calc(100vh - 165px)',
+          position: 'absolute',
+          transition: '.3s ease-in-out',
+          backgroundColor: '#f7f7fc',
+          zIndex: 10,
+        }}>
+        <ButtonBase
+          onClick={() => props.handleChangeModalStatus(false)}
+          sx={{
+            color: '#554CFF',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '0 10px',
+          }}>
+          <ArrowLeft width={12} height={12} />
+          <Typography
+            component={'p'}
+            sx={{ fontWeight: 'bold', marginLeft: '10px' }}>
+            {props.title}
+          </Typography>
+        </ButtonBase>
+        <Box sx={{}}>
+          <Tabs
+            className="cover__tabs"
+            value={value}
+            onChange={handleChange}
+            aria-label="basic tabs example">
+            <Tab className="tab" label="All" {...a11yProps(0)} />
+            <Tab className="tab" label="Me" {...a11yProps(1)} />
+          </Tabs>
+        </Box>
+        <TabPanel value={value} index={0}>
+          props
+        </TabPanel>
+        <TabPanel value={value} index={1}>
+          Item Two
+        </TabPanel>
+      </Box>
+    );
+  }, [value, props]);
+
+  const ModalHashtag = useMemo(() => {
+    return (
+      <Box
+        className={props.isActive ? 'modal__active' : 'modal__inactive'}
+        sx={{
+          width: '100%',
+          height: 'calc(100vh - 165px)',
           position: 'absolute',
           transition: '.3s ease-in-out',
           backgroundColor: '#f7f7fc',
@@ -221,6 +269,8 @@ const ModalEmailList = (props: Props) => {
         return ModalEmailApproved;
       case 'cancel':
         return ModalEmailCancel;
+      case 'hashtag':
+        return ModalHashtag;
 
       default:
         return ModalEmailPending;

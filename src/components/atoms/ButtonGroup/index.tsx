@@ -18,18 +18,19 @@ interface ButtonGroupProps {
 
 const ButtonGroup: React.FC<ButtonGroupProps> = ({ buttonList, onClick }) => {
   return (
-      <div className="double-button-bottom">
-        ahihi
-        {buttonList.map(({ title, ...props }, index) => (
-          <Button
-            variant="contained"
-            size="large"
-            onClick={() => onClick(title)}
-            {...props}>
-            {title}
-          </Button>
-        ))}
-      </div>
+    <div className="double-button-bottom">
+      ahihi
+      {buttonList.map(({ title, ...props }, index) => (
+        <Button
+          key={index}
+          variant="contained"
+          size="large"
+          onClick={() => onClick(title)}
+          {...props}>
+          {title}
+        </Button>
+      ))}
+    </div>
   );
 };
 

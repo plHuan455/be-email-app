@@ -46,7 +46,7 @@ const EmailStatusHeader = ({
           <CustomButton
             label="Compose"
             bgButtonColor="#554CFF"
-            textColor="#fff"
+            color="#fff"
             isAfterIcon={true}
             width={100}
             isHasSlash={true}

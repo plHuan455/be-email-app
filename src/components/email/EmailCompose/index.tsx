@@ -171,7 +171,7 @@ function EmailCompose() {
             padding="8px 10px"
             label="SEND NOW"
             bgButtonColor="#554CFF"
-            textColor="#FFFFFF"
+            color="#fff"
             textSize={15}
             isBeforeIcon={true}
             beforeIcon={<SendIcon fontSize="small" />}

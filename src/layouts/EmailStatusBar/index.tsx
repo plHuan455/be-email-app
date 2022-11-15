@@ -1,7 +1,7 @@
 import EmailStatusHeader from '@components/molecules/EmailStatusHeader';
 import ModalEmailList, {
   EmailList,
-  statusOptions,
+  StatusOptions,
 } from '@components/molecules/ModalEmailList';
 import { TabItem } from '@layouts/IconTabs';
 import { Avatar, Box, ButtonBase, Tab, Tabs, Typography } from '@mui/material';
@@ -72,13 +72,15 @@ const aproveEmail: EmailItem[] = [
 ];
 
 interface EmailTabs extends TabItem {
-  status: statusOptions;
+  status: StatusOptions;
   notiNumber?: number;
   emailData: EmailList[];
 }
 interface HashtagTabs {
   title: string;
   value: string;
+  status: StatusOptions;
+  emailData: EmailList[];
 }
 
 const emailData: EmailList[] = [
@@ -143,38 +145,42 @@ const hashtagTabs: HashtagTabs[] = [
   {
     title: '#metanode',
     value: 'metanode',
+    status: 'hashtag',
+    emailData: emailData,
   },
   {
     title: '#sales',
     value: 'sales',
+    status: 'hashtag',
+    emailData: emailData,
   },
   {
     title: '#tesla',
     value: 'tesla',
+    status: 'hashtag',
+    emailData: emailData,
   },
   {
     title: '#yellow paper',
     value: 'yellowpaper',
+    status: 'hashtag',
+    emailData: emailData,
   },
 ];
 
 // const hashtagTabs:
 
 const EmailStatusBar = (props: Props) => {
-  const [modalStatus, setmodalStatus] = useState(false);
-  const handleChangeModalStatus = (status: boolean) => {
-    setmodalStatus(status);
-  };
-
   const renderEmailTab = (
     title: string,
     notiNumber: number,
     emailData: EmailList[],
-    status: statusOptions,
+    status: StatusOptions,
+    key: number,
   ) => {
     const [modalStatus, setModalStatus] = useState(false);
     return (
-      <Box>
+      <Box key={key}>
         <ButtonBase
           onClick={() => setModalStatus(true)}
           sx={{
@@ -216,20 +222,37 @@ const EmailStatusBar = (props: Props) => {
     );
   };
 
-  const renderHashtagTab = (title, value) => {
+  const renderHashtagTab = (
+    title: string,
+    status: StatusOptions,
+    emailData: EmailList[],
+    key: number,
+  ) => {
+    const [modalStatus, setModalStatus] = useState(false);
+
     return (
-      <ButtonBase
-        sx={{
-          width: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '5px 10px',
-        }}>
-        <Typography component={'p'} sx={{ color: '#4BAAA2', fontWeight: 'bold' }}>
-          {title}
-        </Typography>
-      </ButtonBase>
+      <Box key={key}>
+        <ButtonBase
+          onClick={() => setModalStatus(true)}
+          sx={{
+            width: '100%',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '5px 10px',
+          }}>
+          <Typography component={'p'} sx={{ color: '#4BAAA2', fontWeight: 'bold' }}>
+            {title}
+          </Typography>
+        </ButtonBase>
+        <ModalEmailList
+          title={title}
+          status={status}
+          emailData={emailData}
+          isActive={modalStatus}
+          handleChangeModalStatus={setModalStatus}
+        />
+      </Box>
     );
   };
 
@@ -240,9 +263,10 @@ const EmailStatusBar = (props: Props) => {
         sx={{ borderBottom: '1px solid #DBDBDB', padding: '20px 0' }}>
         {TitleOfInformationBlock(title, true)}
         {emailData &&
-          emailData.map((item) => {
+          emailData.map((item, index) => {
             return (
               <Box
+                key={index}
                 className="email__item"
                 sx={{
                   display: 'flex',
@@ -307,6 +331,7 @@ const EmailStatusBar = (props: Props) => {
         width: '15%',
         padding: '24px',
         overflowX: 'hidden',
+        overflowY: 'scroll',
       }}>
       <EmailStatusHeader
         title="Email"
@@ -320,24 +345,23 @@ const EmailStatusBar = (props: Props) => {
           paddingBottom: '10px',
           position: 'relative',
         }}>
-        {importantEmail && renderEmailBlock('Important', importantEmail)}
-        {aproveEmail && renderEmailBlock('Approve', aproveEmail)}
-        {/* {emailTabs &&
-          emailTabs.map((item) => {
+        {emailTabs &&
+          emailTabs.map((item, index) => {
             if (item.title && item.notiNumber != undefined && item.emailData) {
               return renderEmailTab(
                 item.title,
                 item.notiNumber,
                 item.emailData,
                 item.status,
+                index,
               );
             }
-          })} */}
+          })}
+        {hashtagTabs &&
+          hashtagTabs.map((item, index) => {
+            return renderHashtagTab(item.title, item.status, item.emailData, index);
+          })}
       </Box>
-      {hashtagTabs &&
-        hashtagTabs.map((item) => {
-          return renderHashtagTab(item.title, item.value);
-        })}
     </Box>
   );
 };

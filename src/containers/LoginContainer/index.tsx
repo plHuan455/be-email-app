@@ -31,7 +31,7 @@ function LoginContainer() {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      email: 'user101@gmail.com',
+      email: '',
       password: '',
     },
     resolver: yupResolver(schema),
@@ -41,15 +41,11 @@ function LoginContainer() {
 
   const submitLogin = async ({ email, password }) => {
     try {
-      // const res = await login({ email, password });
-      // console.log({ res });
+      const res = login({ email, password });
+      console.log('🚀 ~ file: index.tsx ~ line 45 ~ submitLogin ~ res', res);
       auth.signin({ name: 'test' }, 'test', () => {
         navigate('/');
       });
-      // if (res?.message === 'success') {
-      // toast.success(t('Đăng nhập thành công!'));
-      // navigate('/');
-      // }
     } catch (error: any) {
       toast.error(t('Tài khoản chưa tồn tại hoặc sai thông tin đăng nhập'));
       console.log(error);
@@ -75,6 +71,7 @@ function LoginContainer() {
             sx={{
               transform: 'translateX(50%)',
               padding: '0.64px 5.54px 6.8px 6.64px',
+              opacity: '0.85',
             }}>
             <ImageComponent.Image
               height={272}
@@ -85,32 +82,50 @@ function LoginContainer() {
           </Box>
         </WrapLogo>
         <WrapContent className="bg-app-2">
-          <WrapTitle>
-            <h3>Lock screen</h3>
-            <p>Enter your password to unlock the screen!</p>
-          </WrapTitle>
-          <WrapAvatar>
-            <Box
-              alignSelf={'center'}
-              sx={{
-                border: '4px solid #F8F8F8',
-                borderRadius: '50%',
-                overflow: 'hidden',
-                marginBottom: '15px',
-              }}>
-              <ImageComponent.Image
-                height={66}
-                width={66}
-                src={avatarImg}
-                alt="avatar"
-              />
-            </Box>
-            <h3>Katherine Vu</h3>
-          </WrapAvatar>
+          <Box>
+            <WrapTitle>
+              <h3>Lock screen</h3>
+              <p>Enter your password to unlock the screen!</p>
+            </WrapTitle>
+            <WrapAvatar>
+              <Box
+                alignSelf={'center'}
+                sx={{
+                  border: '4px solid #F8F8F8',
+                  borderRadius: '50%',
+                  overflow: 'hidden',
+                  marginBottom: '15px',
+                }}>
+                <ImageComponent.Image
+                  height={66}
+                  width={66}
+                  src={avatarImg}
+                  alt="avatar"
+                />
+              </Box>
+              <h3>Katherine Vu</h3>
+            </WrapAvatar>
+          </Box>
           <Content className="grid grid-rows-2 gap-4">
             <form
               onSubmit={handleSubmit(onSubmit)}
               className="grid grid-rows-2 gap-4">
+              <Controller
+                name="email"
+                control={control}
+                render={({ field }) => (
+                  <WrapInput>
+                    <label>Email</label>
+                    <TextField
+                      {...field}
+                      type={'email'}
+                      placeholder={t('Enter Email')}
+                      error={!!errors.email?.message}
+                      helperText={errors.email?.message}
+                    />
+                  </WrapInput>
+                )}
+              />
               <Controller
                 name="password"
                 control={control}
@@ -127,6 +142,7 @@ function LoginContainer() {
                   </WrapInput>
                 )}
               />
+
               <WrapActions>
                 <Button size="large" type="submit">
                   {t('Unlock')}
@@ -153,6 +169,7 @@ import { useAuth } from '@context/AppContext';
 import { toast } from 'react-toastify';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import { login } from '@api/auth';
 
 export const Root = styled.div`
   width: 100%;

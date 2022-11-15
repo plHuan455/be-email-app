@@ -1,8 +1,9 @@
 import { Avatar, Box, Typography } from '@mui/material';
 import avt from '../../../assets/images/avatars/avatar-2.jpg';
 import React, { useMemo } from 'react';
-import { AttachFile, UserRead } from '@components/email';
+// import { AttachFile, UserRead } from '@components/email';
 import AttachFiles from '@components/atoms/AttachFiles';
+import { AttachFile, UserRead } from '@components/email';
 
 export interface ReceiverData {
   name: string;
@@ -95,9 +96,9 @@ const InformationDetailBlock = (props: Props) => {
         }}>
         {TitleOfInformationBlock(props.title)}
         {props.receiverData &&
-          props.receiverData.map((item) => {
+          props.receiverData.map((item, index) => {
             return (
-              <Box>
+              <Box key={index}>
                 {item.isCC && (
                   <Typography
                     component={'p'}
@@ -148,9 +149,9 @@ const InformationDetailBlock = (props: Props) => {
         }}>
         {TitleOfInformationBlock(props.title)}
         {props.activityData &&
-          props.activityData.map((item) => {
+          props.activityData.map((item, index) => {
             return (
-              <Box sx={{ marginBottom: '10px' }}>
+              <Box key={index} sx={{ marginBottom: '10px' }}>
                 <Box
                   sx={{
                     display: 'flex',

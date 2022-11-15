@@ -5,7 +5,7 @@ import { TSVGIcon } from '../Icon';
 type Props = {
   label: string;
   bgButtonColor: string;
-  textColor: string;
+  color: string;
   padding?: string;
   textSize?: number;
   fontWeight?: number;
@@ -31,7 +31,7 @@ const CustomButton = (props: Props) => {
         justifyContent: 'space-between',
         backgroundColor: `${props.bgButtonColor}`,
         borderRadius: '6px',
-        color: `${props.textColor}`,
+        color: `${props.color}`,
         padding: `${props.padding ? props.padding : '6px 10px'}`,
       }}
       onClick={props.onClick}>
