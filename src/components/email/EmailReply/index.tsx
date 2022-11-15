@@ -87,6 +87,8 @@ const EmailReply: React.FC<Props> = ({
 
     setAttachFile((prevState) => [...prevState, ...files]);
     setAttachedFile((prevState) => [...prevState, ...customFiles]);
+
+    e.target.value = null;
     // const file = e.target.files[0];
 
     // file.preview = URL.createObjectURL(file);
