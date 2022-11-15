@@ -7,6 +7,10 @@ import OptionalAvatar from '@components/atoms/OptionalAvatar';
 import EmailActions from './EmailActions';
 import EmailReply from './EmailReply';
 import useTest from '../../zustand/useTest';
+
+import { EditorState, convertToRaw, convertFromRaw } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
+import { useEffect, useState } from 'react';
 export interface UserRead {
   name: string;
   time: string;
@@ -16,43 +20,6 @@ export interface AttachFile {
   name: string;
   url: string;
   userRead?: UserRead[];
-}
-
-interface PendingEmail {
-  title: string;
-  sendTo: Array<string>;
-  mailContent: string;
-  attachFiles: Array<AttachFile>;
-}
-
-const newPendingEmailList: PendingEmail = {
-  title: 'M&A Testa to Metanode',
-  sendTo: [
-    'me',
-    'billgates@microsoft.com',
-    'email1@mail.com',
-    'email2@mail.com',
-    'email3@mail.com',
-    'email4@mail.com',
-  ],
-  mailContent:
-    '<p><p>Hi,Ingredia, Ingredia Nutrisha,</p><p> A collection of textile samples lay spread out on the table - Samsa was a travelling salesman - and above it there hung a picture</p><p> Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of Lorem.</p><p>Kind Regards</p> <p>Mr Smith</p> </p>',
-  attachFiles: [
-    {
-      name: 'Metanode - White Paper v.1.5.2',
-      type: 'pdf',
-      url: 'meta.node/9YQC7us',
-    },
-    {
-      name: 'Metanode - SDK Bundle',
-      type: 'zip',
-      url: 'meta.node/34ED7uc',
-    },
-  ],
-};
-
-function createMarkup(text: string) {
-  return { __html: text };
 }
 
 function Email({
@@ -67,6 +34,13 @@ function Email({
   onChangeStatus,
 }) {
   const { title, sendTo, mailContent, attachFiles } = emailData;
+
+  const [editor, setEditor] = useState(() => EditorState.createEmpty());
+
+  useEffect(() => {
+    const contentState = convertFromRaw(JSON.parse(mailContent));
+    setEditor(EditorState.createWithContent(contentState));
+  }, []);
 
   const cloneSendTo = [...sendTo];
 
@@ -157,9 +131,13 @@ function Email({
         {/* Email Content */}
         <Box className="py-9">
           <Box>
-            <p
-              className="text-black font-medium text-[16px]"
-              dangerouslySetInnerHTML={createMarkup(mailContent)}
+            <Editor
+              editorState={editor}
+              toolbarHidden
+              wrapperClassName="wrapper-class"
+              editorClassName="editor-class border"
+              toolbarClassName="toolbar-class"
+              // onContentStateChange={onContentStateChange}
             />
           </Box>
           <Box></Box>

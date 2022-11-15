@@ -6,6 +6,9 @@ import '@assets/styles/global.scss';
 import './App.scss';
 import './index.css';
 import 'quill/dist/quill.snow.css';
+import 'draft-js/dist/Draft.css';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+
 // import "@assets/styles/tailwind.scss";
 import MainRoute from './page/MainRoute';
 import { Provider } from 'react-redux';
