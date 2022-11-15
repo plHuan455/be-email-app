@@ -422,8 +422,25 @@ body {
   & > .rdw-editor-toolbar {
     border-color: transparent;
     justify-content: center;
-    & .rdw-option-wrapper {
+    & > .rdw-inline-wrapper {
+      & > .rdw-option-wrapper {
+        border-color: transparent;
+        opacity: 0.5;
+        margin-inline: 0;
+      }
+    }
+    & .rdw-dropdown-wrapper {
       border-color: transparent;
+      width: 100px;
+      opacity: 0.5;
+    }
+    & .rdw-option-wrapper {
+      margin-inline: 0;
+      opacity: 0.5;
+    }
+
+    & > div:not(:last-child) {
+      border-right: 1px solid #c7c7c7;
     }
   }
   & > .editor-class {
