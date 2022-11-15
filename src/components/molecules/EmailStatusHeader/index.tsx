@@ -3,7 +3,8 @@ import Search from '@assets/icon/Search';
 import CustomButton from '@components/atoms/CustomButton';
 import Input from '@components/atoms/Input';
 import { Box, ButtonBase, colors, Grid, Typography } from '@mui/material';
-import React from 'react';
+import React, { useCallback } from 'react';
+import useEmail from '../../../zustand/useEmail';
 
 type Props = {
   title: string;
@@ -20,6 +21,12 @@ const EmailStatusHeader = ({
   color,
   bgButtonColor,
 }: Props) => {
+  const negativeIsCompose = useEmail((state) => state.negativeIsCompose);
+
+  const handleComposeEmail = useCallback(() => {
+    negativeIsCompose();
+  }, []);
+
   return (
     <Box sx={{ width: '100%' }}>
       <Box
@@ -44,6 +51,7 @@ const EmailStatusHeader = ({
             width={100}
             isHasSlash={true}
             afterIcon={<Plus width={10} height={10} color={'#fff'} />}
+            onClick={handleComposeEmail}
           />
         )}
       </Box>

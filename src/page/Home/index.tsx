@@ -10,6 +10,8 @@ import IconTabs from '@layouts/IconTabs';
 import InformationBar, { Receiver } from '@layouts/InformationBar';
 import { Box, Icon } from '@mui/material';
 import useTest from '../../zustand/useTest';
+import useEmail from '../../zustand/useEmail';
+import { clearScreenDown } from 'readline';
 
 const receiverData: Receiver[] = [
   {
@@ -24,6 +26,8 @@ const receiverData: Receiver[] = [
 ];
 
 const HomePage = () => {
+  const isCompose = useEmail((state) => state.isCompose);
+
   return (
     <div className="w-full flex items-center content-around">
       {/* <EmailStatusBar />
@@ -49,8 +53,7 @@ const HomePage = () => {
           borderTopLeftRadius: '65px',
           overflow: 'scroll',
         }}>
-        <EmailMess />
-        {/* <EmailCompose /> */}
+        {isCompose ? <EmailCompose /> : <EmailMess />}
         {/* <EmailActions />
         <Sender />
         <Email status={'pending'} />
