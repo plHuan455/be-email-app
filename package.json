@@ -26,6 +26,7 @@
     "daisyui": "^2.31.0",
     "date-fns": "^2.29.2",
     "draft-js": "^0.11.7",
+    "es6-shim": "^0.35.6",
     "framer-motion": "^7.2.0",
     "loaders.css": "^0.1.2",
     "lodash": "^4.17.21",

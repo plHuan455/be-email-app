@@ -36,7 +36,7 @@ const EmailMess = () => {
         { avatar: avatarImg, mail: 'mail2@gmail.com', abbreviations: 'T3' },
       ],
       mailContent:
-        'Hi,Ingredia, Ingredia Nutrisha,<br> A collection of textile samples lay spread out on the table - Samsa was a travelling salesman - and above it there hung a picture<br><br> Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of Lorem.<br><br> Kind Regards<br> Mr Smith',
+        '{"blocks":[{"key":"67ic5","text":"asdasdasdasdasdasd","type":"unstyled","depth":0,"inlineStyleRanges":[{"offset":9,"length":9,"style":"BOLD"}],"entityRanges":[],"data":{}},{"key":"8mieu","text":"","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}},{"key":"82c34","text":"","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}},{"key":"frjqt","text":"😛👼","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{}}',
       attachFiles: [
         {
           name: 'Metanode - White Paper v.1.5.2',
@@ -67,7 +67,7 @@ const EmailMess = () => {
         { avatar: avatarImg, mail: 'mail2@gmail.com', abbreviations: 'T3' },
       ],
       mailContent:
-        'Hi,Ingredia, Ingredia Nutrisha,<br> A collection of textile samples lay spread out on the table - Samsa was a travelling salesman - and above it there hung a picture<br><br> Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of Lorem.<br><br> Kind Regards<br> Mr Smith',
+        '{"blocks":[{"key":"67ic5","text":"asdasdasdasdasdasd","type":"unstyled","depth":0,"inlineStyleRanges":[{"offset":9,"length":9,"style":"BOLD"}],"entityRanges":[],"data":{}},{"key":"8mieu","text":"","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}},{"key":"82c34","text":"","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}},{"key":"frjqt","text":"😛👼","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{}}',
       attachFiles: [
         {
           name: 'Metanode - White Paper v.1.5.2',
@@ -98,7 +98,7 @@ const EmailMess = () => {
         { avatar: avatarImg, mail: 'mail2@gmail.com', abbreviations: 'T3' },
       ],
       mailContent:
-        'Hi,Ingredia, Ingredia Nutrisha,<br> A collection of textile samples lay spread out on the table - Samsa was a travelling salesman - and above it there hung a picture<br><br> Even the all-powerful Pointing has no control about the blind texts it is an almost unorthographic life One day however a small line of blind text by the name of Lorem.<br><br> Kind Regards<br> Mr Smith',
+        '{"blocks":[{"key":"67ic5","text":"asdasdasdasdasdasd","type":"unstyled","depth":0,"inlineStyleRanges":[{"offset":9,"length":9,"style":"BOLD"}],"entityRanges":[],"data":{}},{"key":"8mieu","text":"","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}},{"key":"82c34","text":"","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}},{"key":"frjqt","text":"😛👼","type":"unstyled","depth":0,"inlineStyleRanges":[],"entityRanges":[],"data":{}}],"entityMap":{}}',
       attachFiles: [
         {
           name: 'Metanode - White Paper v.1.5.2',
