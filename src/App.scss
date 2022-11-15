@@ -417,3 +417,16 @@ body {
 .display-center {
   @include adjust-flex();
 }
+
+.rdw-editor-wrapper {
+  & > .rdw-editor-toolbar {
+    border-color: transparent;
+    justify-content: center;
+    & .rdw-option-wrapper {
+      border-color: transparent;
+    }
+  }
+  & > .editor-class {
+    border-color: transparent;
+  }
+}

@@ -20,6 +20,9 @@ import AutoCompleteReceive, {
   ReceiverData,
 } from '@components/atoms/AutoCompleteReceive';
 
+import { EditorState, convertToRaw } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
+
 const receiversList: ReceiverData[] = [
   { avatar: avatarImg, mail: 'giangz0009@gmail.com', abbreviations: 'GI' },
   { avatar: '', mail: 'mail1@gmail.com', abbreviations: 'T2' },
@@ -29,6 +32,8 @@ const receiversList: ReceiverData[] = [
 function EmailCompose() {
   const [attachedFiles, setAttachedFile] = useState<any>([]);
   const [attachFiles, setAttachFile] = useState<any>([]);
+
+  const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
 
   const refInputAttachFile = useRef<HTMLInputElement>(null);
 
@@ -96,6 +101,14 @@ function EmailCompose() {
     });
   }, []);
 
+  const onEditorStateChange = (val) => {
+    setEditorState(val);
+    console.log(
+      'state -->',
+      JSON.stringify(convertToRaw(editorState.getCurrentContent())),
+    );
+  };
+
   return (
     <Box className="w-[654px] mx-auto shadow-xl rounded-3xl overflow-hidden">
       {/* Header */}
@@ -112,7 +125,15 @@ function EmailCompose() {
             <SingleOTPInputComponent className="outline-none w-full text-black text-[18px] font-bold h-full" />
           </EmailComposeFormGroup>
           {/* Edit Content */}
-          <EditContent />
+          {/* <EditContent /> */}
+          <Editor
+            editorState={editorState}
+            onEditorStateChange={onEditorStateChange}
+            wrapperClassName="wrapper-class"
+            editorClassName="editor-class border"
+            toolbarClassName="toolbar-class"
+            placeholder="Enter content here..."
+          />
           {/* Files List */}
           <Box>
             {attachedFiles.length !== 0 && (

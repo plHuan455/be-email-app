@@ -10,11 +10,13 @@ import AutoCompleteReceive, {
   ReceiverData,
 } from '@components/atoms/AutoCompleteReceive';
 import { SingleOTPInputComponent } from '@components/atoms/Input/PinInput/SingleInput';
-import InputDangerousHtml from '@components/atoms/InputDangerousHtml';
 import { Email } from '../EmailMess';
 import CustomButton from '@components/atoms/CustomButton';
 import AttachButton from '@components/atoms/AttachButton';
 import AttachFiles from '@components/atoms/AttachFiles';
+
+import { EditorState, convertToRaw } from 'draft-js';
+import { Editor } from 'react-draft-wysiwyg';
 
 interface Props {
   onChangeEmailStatus: Function;
@@ -38,6 +40,8 @@ const EmailReply: React.FC<Props> = ({
   const [attachedFiles, setAttachedFile] = useState<any>([]);
   const [attachFiles, setAttachFile] = useState<any>([]);
 
+  const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
+
   const refInputAttachFile = useRef<HTMLInputElement>(null);
 
   const handleAttachFile = (e) => {
@@ -46,6 +50,14 @@ const EmailReply: React.FC<Props> = ({
     if (checkRef) {
       refInputAttachFile.current.click();
     }
+  };
+
+  const onEditorStateChange = (val) => {
+    setEditorState(val);
+    console.log(
+      'state -->',
+      JSON.stringify(convertToRaw(editorState.getCurrentContent())),
+    );
   };
 
   const handleOnAttachedFiles = (e) => {
@@ -119,16 +131,14 @@ const EmailReply: React.FC<Props> = ({
         </Box>
         <Box>
           <Box>
-            <InputDangerousHtml
+            <Editor
+              toolbarHidden
+              editorState={editorState}
+              onEditorStateChange={onEditorStateChange}
+              wrapperClassName="wrapper-class"
+              editorClassName="editor-class border"
+              toolbarClassName="toolbar-class"
               placeholder="Write something..."
-              styles={{
-                '& .ql-container.ql-snow': {
-                  borderColor: 'transparent',
-                  '& .ql-editor.ql-blank::before': {
-                    fontStyle: 'normal',
-                  },
-                },
-              }}
             />
           </Box>
           <Box>
