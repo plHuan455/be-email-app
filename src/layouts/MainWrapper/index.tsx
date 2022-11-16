@@ -6,7 +6,7 @@ import { Box, Container, Drawer } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import React, { useEffect, useState } from 'react';
-import { Outlet } from 'react-router-dom';
+import { Outlet, useNavigate } from 'react-router-dom';
 import { makeStyles } from 'tss-react/mui';
 import { toast } from 'react-toastify';
 import { useAppDispatch } from '@redux/configureStore';
@@ -15,6 +15,7 @@ import { setLocation } from '@redux/Global/reducer';
 import IconTabs from '@layouts/IconTabs';
 import EmailStatusBar from '@layouts/EmailStatusBar';
 import AvatarWithPopup from '@components/atoms/AvatarWithPopup';
+import { useAuth } from '@context/AppContext';
 
 const sideBarWidth = 75;
 const emailStatusWidth = 290;
@@ -45,42 +46,53 @@ interface Setting {
   id: number;
   label: string;
   path: string;
+  handleClick?: () => void;
 }
-
-const settings: Setting[] = [
-  {
-    id: 0,
-    label: 'Profile',
-    path: '/profile',
-  },
-  {
-    id: 1,
-    label: 'Setting',
-    path: '/setting',
-  },
-  {
-    id: 2,
-    label: 'Change Password',
-    path: '/change-password',
-  },
-  {
-    id: 3,
-    label: 'Log out',
-    path: '/log-out',
-  },
-];
 
 function MainWrapper() {
   // Hooks
   const { classes, cx } = useStyles();
   const { breadcrumbs } = useBreadcrumbs();
-
+  const auth = useAuth();
   // States
   const [openMobileSideBar, setOpenMobileSideBar] = useState(false);
 
   const toggleMobileSideBar = (value: boolean) => {
     return () => setOpenMobileSideBar(value);
   };
+
+  const handleLogout = () => {
+    auth.signout(() => {
+      toast.success('Bái bai!');
+    });
+  };
+
+  const settings: Setting[] = [
+    {
+      id: 0,
+      label: 'Profile',
+      path: '/profile',
+      handleClick: handleLogout,
+    },
+    {
+      id: 1,
+      label: 'Setting',
+      path: '/setting',
+      handleClick: handleLogout,
+    },
+    {
+      id: 2,
+      label: 'Change Password',
+      path: '/change-password',
+      handleClick: handleLogout,
+    },
+    {
+      id: 3,
+      label: 'Log out',
+      path: '/log-out',
+      handleClick: handleLogout,
+    },
+  ];
 
   // const dispatch = useAppDispatch();
 

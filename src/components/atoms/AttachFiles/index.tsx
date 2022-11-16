@@ -2,15 +2,14 @@ import { Box } from '@mui/material';
 import React from 'react';
 
 import CloseIcon from '@mui/icons-material/Close';
-
 import pdfFileImg from '@assets/images/icons/pdf-file.png';
 import zipFileImg from '@assets/images/icons/zip-file.png';
 
 import styles from './styles.module.scss';
-import { File } from '@components/email/Interface';
+import { AttachFile } from '@components/email/EmailMess';
 
 type Props = {
-  data: File[];
+  data: AttachFile[];
   isDelete?: boolean;
   onDeleteAll?: Function;
   onDeleteFile?: Function;
@@ -19,7 +18,7 @@ type Props = {
 const AttachFiles = (props: Props) => {
   const { data, isDelete, onDeleteAll, onDeleteFile } = props;
 
-  const renderFileIconByType = (file: File) => {
+  const renderFileIconByType = (file: AttachFile) => {
     switch (file.type) {
       case 'pdf':
         return (

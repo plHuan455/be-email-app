@@ -69,7 +69,6 @@ const EmailActions = ({ emailIndex, handleChangeStatus }) => {
     <Box className="flex mb-4">
       {Object.keys(EmailActionsList).map((key, index) => {
         const currVal = EmailActionsList[key];
-
         return (
           <Box
             className={`py-1.5 px-3 text-[14px] font-medium flex items-center hover:bg-slate-200 hover:cursor-pointer rounded p-2`}

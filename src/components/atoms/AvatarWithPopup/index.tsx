@@ -11,6 +11,7 @@ import {
 import React from 'react';
 import CustomButton from '../CustomButton';
 import { SVGIconProps } from '../Icon';
+import avt from '../../../assets/images/avatars/avatar-2.jpg';
 
 const iconsList: {
   [key: string]: SVGIconProps['icon'];
@@ -63,7 +64,7 @@ const AvatarWithPopup: React.FC<Props> = ({
     <Box className={className} sx={{ flexGrow: 0 }}>
       <Tooltip placement={popupPlacement} title={label}>
         <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-          <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+          <Avatar alt="Remy Sharp" src={avt} />
         </IconButton>
       </Tooltip>
       <Menu
@@ -84,25 +85,32 @@ const AvatarWithPopup: React.FC<Props> = ({
         }}
         open={Boolean(anchorElUser)}
         onClose={handleCloseUserMenu}>
-        {settings.map((setting, index) => (
-          <MenuItem className="w-full" key={index} onClick={handleCloseUserMenu}>
-            {/* <Typography textAlign="center">{setting}</Typography> */}
-            <CustomButton
-              classNameLabel="text-left pr-4 text-[14px] text-[medium]"
+        {settings.map((setting, index) => {
+          return (
+            <MenuItem
               className="w-full"
-              label={setting.label}
-              bgButtonColor="transparent"
-              color="#212529"
-              isAfterIcon={true}
-              afterIcon={
-                <RenderButtonIcon
-                  item={setting.path ? iconsList[setting.path] : 'approved'}
-                  color="#212529"
-                />
-              }
-            />
-          </MenuItem>
-        ))}
+              key={index}
+              onClick={() => {
+                handleCloseUserMenu();
+              }}>
+              {/* <Typography textAlign="center">{setting}</Typography> */}
+              <CustomButton
+                classNameLabel="text-left pr-4 text-[14px] text-[medium]"
+                label={setting.label}
+                onClick={setting.handleClick}
+                bgButtonColor="transparent"
+                color="#212529"
+                isAfterIcon={true}
+                afterIcon={
+                  <RenderButtonIcon
+                    item={setting.path ? iconsList[setting.path] : 'approved'}
+                    color="#212529"
+                  />
+                }
+              />
+            </MenuItem>
+          );
+        })}
       </Menu>
     </Box>
   );
