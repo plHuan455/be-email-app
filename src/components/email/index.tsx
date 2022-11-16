@@ -1,7 +1,7 @@
 import { Avatar, Box, Button } from '@mui/material';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import styles from './styles.module.scss';
-import AttachFiles, { File } from '@components/atoms/AttachFiles';
+import AttachFiles from '@components/atoms/AttachFiles';
 import EmailStatus from '@components/atoms/EmailStatus';
 import OptionalAvatar from '@components/atoms/OptionalAvatar';
 import EmailActions from './EmailActions';
@@ -83,7 +83,7 @@ function Email({
 
   return (
     <Box
-      className={`relative flex flex-wrap ${
+      className={`w-full relative flex flex-wrap ${
         type === 'send' && styles.flexRowReverse
       }`}>
       <Box

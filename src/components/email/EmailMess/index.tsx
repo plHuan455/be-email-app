@@ -1,11 +1,9 @@
 import { Box } from '@mui/material';
 import React, { useCallback, useState } from 'react';
-import Email from '..';
-
 import avatarImg from '@assets/images/avatars/avatar-2.jpg';
 import { UserInfo } from '@components/atoms/OptionalAvatar';
-import { File } from '@components/atoms/AttachFiles';
 import { ReceiverData } from '@components/atoms/AutoCompleteReceive';
+import Email, { AttachFile } from '..';
 
 export interface Email {
   id: string;
@@ -13,7 +11,7 @@ export interface Email {
   sender: UserInfo;
   sendTo: Array<ReceiverData>;
   mailContent: string;
-  attachFiles: Array<File>;
+  attachFiles: AttachFile[];
   status: string;
   type: string;
 }
