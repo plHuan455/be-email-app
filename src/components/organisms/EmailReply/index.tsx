@@ -1,12 +1,11 @@
 import Receiver from '@components/atoms/Receiver';
 import { Autocomplete, Box, Button, TextField } from '@mui/material';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import EmailComposeFormGroup from '../hocs/EmailComposeFormGroup';
 
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 
-import AutoCompleteReceive from '@components/atoms/AutoCompleteReceive';
+import AutoCompleteReceive from '@components/molecules/AutoCompleteReceive';
 import { SingleOTPInputComponent } from '@components/atoms/Input/PinInput/SingleInput';
 import CustomButton from '@components/atoms/CustomButton';
 import AttachButton from '@components/atoms/AttachButton';
@@ -16,7 +15,8 @@ import { EditorState, convertToRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 
 import avatarImg from '@assets/images/avatars/avatar-1.jpg';
-import { Email, ReceiverData } from '../Interface';
+import { Email, ReceiverData } from '../Email/Interface';
+import EmailComposeFormGroup from '@components/molecules/EmailComposeFormGroup';
 
 interface Props {
   onChangeEmailStatus: Function;

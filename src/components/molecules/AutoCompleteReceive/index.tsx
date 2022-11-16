@@ -1,7 +1,7 @@
-import { ReceiverData } from '@components/email/Interface';
+import { ReceiverData } from '@components/organisms/Email/Interface';
 import { Autocomplete, Box, TextField } from '@mui/material';
 import React, { MouseEventHandler, useEffect } from 'react';
-import Receiver from '../Receiver';
+import Receiver from '../../atoms/Receiver';
 
 import './styles.scss';
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Avatar, Box } from '@mui/material';
-import { UserInfo } from '@components/email/Interface';
+import { UserInfo } from '@components/organisms/Email/Interface';
 
 interface Props {
   data: UserInfo;
