@@ -6,6 +6,8 @@ type Props = {
   label: string;
   bgButtonColor: string;
   color: string;
+  className?: string;
+  classNameLabel?: string;
   padding?: string;
   textSize?: number;
   fontWeight?: number;
@@ -22,6 +24,7 @@ type Props = {
 const CustomButton = (props: Props) => {
   return (
     <ButtonBase
+      className={props.className}
       sx={{
         gap: '4px',
         width: `${props.width}px`,
@@ -38,6 +41,7 @@ const CustomButton = (props: Props) => {
       {props.isBeforeIcon && props.beforeIcon}
       <Typography
         component={'p'}
+        className={props.classNameLabel}
         sx={{
           flex: 1,
           textAlign: 'center',
