@@ -345,18 +345,20 @@ const EmailStatusBar = (props: Props) => {
           paddingBottom: '10px',
           position: 'relative',
         }}>
-        {emailTabs &&
-          emailTabs.map((item, index) => {
-            if (item.title && item.notiNumber != undefined && item.emailData) {
-              return renderEmailTab(
-                item.title,
-                item.notiNumber,
-                item.emailData,
-                item.status,
-                index,
-              );
-            }
-          })}
+        <Box sx={{ borderBottom: '1px solid #e5e7eb' }}>
+          {emailTabs &&
+            emailTabs.map((item, index) => {
+              if (item.title && item.notiNumber != undefined && item.emailData) {
+                return renderEmailTab(
+                  item.title,
+                  item.notiNumber,
+                  item.emailData,
+                  item.status,
+                  index,
+                );
+              }
+            })}
+        </Box>
         {hashtagTabs &&
           hashtagTabs.map((item, index) => {
             return renderHashtagTab(item.title, item.status, item.emailData, index);

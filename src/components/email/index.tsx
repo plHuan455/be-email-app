@@ -86,6 +86,32 @@ const Email = () => {
       type: 'receive',
       date: '2018-02-21 12:01:00',
     },
+    {
+      id: '3',
+      title: 'M&A Testa to Metanode',
+      sender: new UserInfo(avatarImg, 'Elon Musk', 'elon.musk@tesla.com'),
+      sendTo: [
+        new ReceiverData(avatarImg, 'name', 'mail@gmail.com'),
+        new ReceiverData('', 'name1', 'mail1@gmail.com'),
+        new ReceiverData(avatarImg, 'name2', 'mail2@gmail.com'),
+      ],
+      mailContent: '<p>Test</p><br><br><p>Test line 2</p>',
+      attachFiles: [
+        {
+          name: 'Metanode - White Paper v.1.5.2',
+          type: 'pdf',
+          url: 'meta.node/9YQC7us',
+        },
+        {
+          name: 'Metanode - SDK Bundle',
+          type: 'zip',
+          url: 'meta.node/34ED7uc',
+        },
+      ],
+      status: 'declined',
+      type: 'receive',
+      date: '2018-02-21 12:01:00',
+    },
   ]);
 
   const checkIsReceiveEmail = useCallback(
