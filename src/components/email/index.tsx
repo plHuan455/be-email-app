@@ -118,7 +118,7 @@ function Email({
         } pb-4 ${styles.emailWrap} mb-8`}>
         {/* Header */}
         <Box
-          className={`pb-6 bg-violet-200 py-4 ${
+          className={`pb-6 bg-violet-200 py-4 cursor-pointer ${
             type === 'send'
               ? 'rounded-br-[36px] rounded-tl-[36px]'
               : 'rounded-bl-[36px] rounded-tr-[36px]'

@@ -42,7 +42,7 @@ const AutoCompleteReceive: React.FC<Props> = ({
             <TextField {...params} className="outline-none border-transparent" />
             {isShowCcFromLabel && (
               <span
-                className="text-[#7E7E7E] text-[14px]"
+                className="text-[#7E7E7E] text-[14px] cursor-pointer"
                 onClick={onClickCcFromLabel}>
                 Cc,From
               </span>

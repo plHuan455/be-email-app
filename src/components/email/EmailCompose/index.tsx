@@ -130,7 +130,7 @@ function EmailCompose() {
   };
 
   return (
-    <Box className="w-[654px] mx-auto shadow-xl rounded-3xl overflow-hidden">
+    <Box className="w-full mx-auto shadow-xl rounded-3xl overflow-hidden">
       {/* Header */}
       <Box className="bg-white">
         {/* Window Compose Actions  */}
