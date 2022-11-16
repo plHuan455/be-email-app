@@ -1,13 +1,5 @@
+import { Box } from '@mui/material';
 import React, { useCallback, useState } from 'react';
-import { Avatar, Box, Button } from '@mui/material';
-import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
-import styles from './styles.module.scss';
-import AttachFiles from '@components/atoms/AttachFiles';
-import EmailStatus from '@components/atoms/EmailStatus';
-import OptionalAvatar from '@components/atoms/OptionalAvatar';
-import EmailActions from './EmailActions';
-import EmailReply from './EmailReply';
-import useTest from '../../zustand/useTest';
 
 import avatarImg from '@assets/images/avatars/avatar-2.jpg';
 import EmailMess from './EmailMess';
