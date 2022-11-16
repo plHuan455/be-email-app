@@ -5,7 +5,7 @@ import InformationDetailBlock, {
 import { Box, Typography } from '@mui/material';
 import avt from '../../../src/assets/images/avatars/avatar-2.jpg';
 import React from 'react';
-import { AttachFile, UserRead } from '@components/email';
+import { AttachFile, UserRead } from '@components/email/EmailMess';
 
 const userReadList: UserRead[] = [
   {

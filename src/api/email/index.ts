@@ -28,14 +28,34 @@ export interface EmailResponse {
   from: string;
 }
 
-export const getAllEmail = async (): Promise<AxiosResponse<EmailResponse>> => {
+//GET EMAIL WITH STATUS
+export const getEmailWithStatus = async (
+  status: string,
+): Promise<AxiosResponse<EmailResponse>> => {
   const url = EMAIL_API_URL;
   const res = await ApiClient.get(url, undefined, {});
-  console.log('🚀 ~ file: index.ts ~ line 24 ~ getAllEmail ~ res', res);
   return res;
 };
 
-export const postEmail = async (
+//APPROVE EMAIL
+export const changeEmailStatus = async (
+  email: string,
+  status: string,
+): Promise<AxiosResponse<EmailResponse>> => {
+  const url = EMAIL_API_URL;
+  const res = await ApiClient.put(url, undefined, {});
+  return res;
+};
+
+//GET ALL EMAIL
+export const getAllEmail = async (): Promise<AxiosResponse<EmailResponse>> => {
+  const url = EMAIL_API_URL;
+  const res = await ApiClient.get(url, undefined, {});
+  return res;
+};
+
+//SEND EMAIL
+export const sendEmail = async (
   param: CreateEmailParam,
 ): Promise<AxiosResponse<EmailResponse>> => {
   const url = EMAIL_API_URL;
@@ -44,6 +64,7 @@ export const postEmail = async (
   return res;
 };
 
+//DELETE EMAIL
 export const deleteEmail = async (
   id: string,
 ): Promise<AxiosResponse<EmailResponse>> => {

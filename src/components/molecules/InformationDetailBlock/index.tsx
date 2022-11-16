@@ -3,7 +3,7 @@ import avt from '../../../assets/images/avatars/avatar-2.jpg';
 import React, { useMemo } from 'react';
 // import { AttachFile, UserRead } from '@components/email';
 import AttachFiles from '@components/atoms/AttachFiles';
-import { AttachFile, UserRead } from '@components/email';
+import { AttachFile, UserRead } from '@components/email/EmailMess';
 
 export interface ReceiverData {
   name: string;

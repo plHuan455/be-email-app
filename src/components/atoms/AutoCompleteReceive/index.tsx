@@ -1,15 +1,9 @@
+import { ReceiverData } from '@components/email/Interface';
 import { Autocomplete, Box, TextField } from '@mui/material';
 import React, { MouseEventHandler, useEffect } from 'react';
-import { UserInfo } from '../OptionalAvatar';
 import Receiver from '../Receiver';
 
 import './styles.scss';
-
-export interface ReceiverData {
-  avatar: string;
-  mail: string;
-  abbreviations: string;
-}
 
 interface Props {
   data: ReceiverData[];

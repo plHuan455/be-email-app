@@ -6,17 +6,17 @@ import EmailComposeFormGroup from '../hocs/EmailComposeFormGroup';
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 
-import AutoCompleteReceive, {
-  ReceiverData,
-} from '@components/atoms/AutoCompleteReceive';
+import AutoCompleteReceive from '@components/atoms/AutoCompleteReceive';
 import { SingleOTPInputComponent } from '@components/atoms/Input/PinInput/SingleInput';
-import { Email } from '../EmailMess';
 import CustomButton from '@components/atoms/CustomButton';
 import AttachButton from '@components/atoms/AttachButton';
 import AttachFiles from '@components/atoms/AttachFiles';
 
 import { EditorState, convertToRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
+
+import avatarImg from '@assets/images/avatars/avatar-1.jpg';
+import { Email, ReceiverData } from '../Interface';
 
 interface Props {
   onChangeEmailStatus: Function;
@@ -31,6 +31,10 @@ interface Props {
 //   { avatar: avatarImg, mail: 'mail2@gmail.com', abbreviations: 'T3' },
 // ];
 
+const fromData: ReceiverData[] = [
+  new ReceiverData(avatarImg, 'sender', 'sender@gmail.com'),
+];
+
 const EmailReply: React.FC<Props> = ({
   classNameLayer,
   classNameContent,
@@ -42,7 +46,13 @@ const EmailReply: React.FC<Props> = ({
 
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
 
+  const [isShowCcFrom, setIsShowCcFrom] = useState(false);
+
   const refInputAttachFile = useRef<HTMLInputElement>(null);
+
+  const handleClickCcFromLabel = useCallback(() => {
+    setIsShowCcFrom((preState) => !preState);
+  }, []);
 
   const handleAttachFile = (e) => {
     const checkRef = !!refInputAttachFile.current;
@@ -148,10 +158,42 @@ const EmailReply: React.FC<Props> = ({
         </Box>
         <Box>
           <Box className="py-3">
-            <AutoCompleteReceive data={data.sendTo} defaultValue={data.sendTo} />
+            <AutoCompleteReceive
+              data={data.sendTo}
+              defaultValue={data.sendTo}
+              onClickCcFromLabel={handleClickCcFromLabel}
+            />
           </Box>
         </Box>
         <Box>
+          {/* Cc, From */}
+          {isShowCcFrom && (
+            <Box className="mb-2">
+              <EmailComposeFormGroup
+                className="py-1"
+                label="Cc:"
+                isHaveBorderBottom={false}>
+                <SingleOTPInputComponent className="outline-none w-full text-[14px] font-medium h-full" />
+              </EmailComposeFormGroup>
+              <EmailComposeFormGroup
+                className="py-1"
+                label="Bcc:"
+                isHaveBorderBottom={false}>
+                <SingleOTPInputComponent className="outline-none w-full text-[14px] font-medium h-full" />
+              </EmailComposeFormGroup>
+              <EmailComposeFormGroup
+                className="py-1"
+                label="From:"
+                isHaveBorderBottom={false}>
+                <AutoCompleteReceive
+                  data={fromData}
+                  defaultValue={fromData}
+                  isShowCcFromLabel={false}
+                  isReadOnly={true}
+                />
+              </EmailComposeFormGroup>
+            </Box>
+          )}
           <Box>
             <Editor
               toolbarHidden
