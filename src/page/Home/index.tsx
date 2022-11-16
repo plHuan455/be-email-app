@@ -2,18 +2,15 @@ import { IconFactory } from '@components/atoms/Icon';
 import SelectBox, { SelectBoxOptionInterface } from '@components/atoms/SelectBox';
 import LabelOptionStyle from '@components/atoms/SelectBox/labelOptionStyles';
 import UploadArea from '@components/atoms/UploadArea';
-import EmailCompose from '@components/email/EmailCompose';
-import EmailMess from '@components/email/EmailMess';
 import HomeContainer from '@containers/HomeContainer';
 import EmailStatusBar from '@layouts/EmailStatusBar';
 import IconTabs from '@layouts/IconTabs';
 import InformationBar, { Receiver } from '@layouts/InformationBar';
 import { Box, Icon } from '@mui/material';
 import useTest from '../../zustand/useTest';
-import useEmail from '../../zustand/useEmail';
 import { clearScreenDown } from 'readline';
-import EmailActions from '@components/email/EmailActions';
-import Email from '@components/email';
+import Email from '@components/organisms/Email';
+import EmailContainer from '@layouts/EmailContainer';
 
 const receiverData: Receiver[] = [
   {
@@ -28,8 +25,6 @@ const receiverData: Receiver[] = [
 ];
 
 const HomePage = () => {
-  const isCompose = useEmail((state) => state.isCompose);
-
   return (
     <div className="w-full flex items-center content-around">
       {/* <EmailStatusBar />
@@ -46,25 +41,9 @@ const HomePage = () => {
       </Box> */}
       {/* <EmailCompose /> */}
       <EmailStatusBar />
-      <Box
-        sx={{
-          width: '70%',
-          height: '100vh',
-          padding: '28px',
-          backgroundColor: '#EDEDF3',
-          borderTopLeftRadius: '65px',
-          overflow: 'scroll',
-        }}>
-        {isCompose ? <EmailCompose /> : <Email />}
-        {/* <EmailActions /> */}
-        {/* <Sender />
-        <Email status={'pending'} />
-        <Email status={'approved'} />
-        <Email status={'sent'} />
-        <Email status={'seen'} />
-        status={'declined'} />
-        <Email status={'sending'} /> */}
-      </Box>
+
+      <EmailContainer />
+
       <InformationBar
         title="Information"
         isBorderBottom={true}

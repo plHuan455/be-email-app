@@ -8,8 +8,8 @@ import OptionalAvatar from '@components/atoms/OptionalAvatar';
 import { EditorState, convertToRaw, convertFromRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import { useEffect, useState } from 'react';
-import EmailActions from '../EmailActions';
 import EmailReply from '../EmailReply';
+import EmailActions from '@components/molecules/EmailActions';
 export interface UserRead {
   name: string;
   time: string;

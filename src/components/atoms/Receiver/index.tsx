@@ -1,5 +1,5 @@
-import { RenderButtonIcon } from '@components/email/EmailActions';
-import { ReceiverData } from '@components/email/Interface';
+import { RenderButtonIcon } from '@components/molecules/EmailActions';
+import { ReceiverData } from '@components/organisms/Email/Interface';
 import { Box } from '@mui/material';
 import React from 'react';
 import SingleAvatar from '../SingleAvatar';

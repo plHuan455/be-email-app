@@ -6,7 +6,7 @@ import pdfFileImg from '@assets/images/icons/pdf-file.png';
 import zipFileImg from '@assets/images/icons/zip-file.png';
 
 import styles from './styles.module.scss';
-import { AttachFile } from '@components/email/EmailMess';
+import { AttachFile } from '@components/organisms/EmailMess';
 
 type Props = {
   data: AttachFile[];
