@@ -2,8 +2,8 @@ import { Box } from '@mui/material';
 import React, { useCallback, useState } from 'react';
 
 import avatarImg from '@assets/images/avatars/avatar-2.jpg';
-import EmailMess from './EmailMess';
 import { Email, ReceiverData, UserInfo } from './Interface';
+import EmailMess from '../EmailMess';
 
 const Email = () => {
   const [showHistory, setShowHistory] = useState<string | null>(null);

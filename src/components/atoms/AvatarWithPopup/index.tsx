@@ -1,4 +1,3 @@
-import { RenderButtonIcon } from '@components/email/EmailActions';
 import {
   Avatar,
   Box,
@@ -12,6 +11,7 @@ import React from 'react';
 import CustomButton from '../CustomButton';
 import { SVGIconProps } from '../Icon';
 import avt from '../../../assets/images/avatars/avatar-2.jpg';
+import { RenderButtonIcon } from '@components/molecules/EmailActions';
 
 const iconsList: {
   [key: string]: SVGIconProps['icon'];

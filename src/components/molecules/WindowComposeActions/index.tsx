@@ -1,8 +1,8 @@
-import { RenderButtonIcon } from '@components/email/EmailActions';
 import { Box } from '@mui/material';
 import React from 'react';
 
 import useEmail from '../../../zustand/useEmail';
+import { RenderButtonIcon } from '../EmailActions';
 
 function WindowComposeActions({ className }: any) {
   const negativeIsCompose = useEmail((state) => state.negativeIsCompose);
