@@ -13,6 +13,7 @@ import {
   UserName,
 } from '@components/molecules/InformationDetailBlock';
 import './index.scss';
+import { useGetEmail } from '@hooks/Email/useGetEmail';
 
 type Props = {};
 
@@ -120,27 +121,6 @@ const emailData: EmailList[] = [
   },
 ];
 
-const emailTabs: EmailTabs[] = [
-  {
-    status: 'pending',
-    title: '#pending',
-    notiNumber: 5,
-    emailData: emailData,
-  },
-  {
-    status: 'approved',
-    title: '#approved',
-    notiNumber: 2,
-    emailData: emailData,
-  },
-  {
-    status: 'cancel',
-    title: '#cancel',
-    notiNumber: 0,
-    emailData: emailData,
-  },
-];
-
 const hashtagTabs: HashtagTabs[] = [
   {
     title: '#metanode',
@@ -171,6 +151,26 @@ const hashtagTabs: HashtagTabs[] = [
 // const hashtagTabs:
 
 const EmailStatusBar = (props: Props) => {
+  const emailTabs: EmailTabs[] = [
+    {
+      status: 'pending',
+      title: '#pending',
+      notiNumber: 5,
+      emailData: emailData,
+    },
+    {
+      status: 'approved',
+      title: '#approved',
+      notiNumber: 2,
+      emailData: emailData,
+    },
+    {
+      status: 'cancel',
+      title: '#cancel',
+      notiNumber: 0,
+      emailData: emailData,
+    },
+  ];
   const renderEmailTab = (
     title: string,
     notiNumber: number,
@@ -179,6 +179,8 @@ const EmailStatusBar = (props: Props) => {
     key: number,
   ) => {
     const [modalStatus, setModalStatus] = useState(false);
+    const email = useGetEmail('status', status);
+    console.log('🚀 ~ file: index.tsx ~ line 183 ~ EmailStatusBar ~ email', email);
     return (
       <Box key={key}>
         <ButtonBase
