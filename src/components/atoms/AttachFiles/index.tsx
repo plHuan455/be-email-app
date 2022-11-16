@@ -84,7 +84,7 @@ const AttachFiles = (props: Props) => {
       </Box>
       <Box className={styles.files}>
         {data.map((val, index) => {
-          const { name, url } = val;
+          const { name, url, userRead } = val;
 
           return (
             <Box className={`${styles.file} flex mb-4 relative`} key={index}>
@@ -104,6 +104,7 @@ const AttachFiles = (props: Props) => {
                   {url}
                 </a>
               </Box>
+              {userRead && <Box>asd</Box>}
               {isDelete && (
                 <button
                   className="flex items-center justify-center shadow-md absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 rounded-full"
