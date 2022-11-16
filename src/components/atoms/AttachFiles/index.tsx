@@ -87,24 +87,39 @@ const AttachFiles = (props: Props) => {
           const { name, url, userRead } = val;
 
           return (
-            <Box className={`${styles.file} flex mb-4 relative`} key={index}>
-              <Box>
-                <a href={url} target="_blank">
-                  {renderFileIconByType(val)}
-                </a>
+            <Box
+              className={`${styles.file} flex mb-4 relative flex-col`}
+              key={index}>
+              <Box className="flex">
+                <Box>
+                  <a href={url} target="_blank">
+                    {renderFileIconByType(val)}
+                  </a>
+                </Box>
+                <Box className={`${styles.main} pl-3 flex-1`}>
+                  <p className="text-[#495057] text-[14px] font-medium leading-5">
+                    {name}
+                  </p>
+                  <a
+                    className="text-[#0F6AF1] text-[13px] font-medium hover:underline"
+                    href={url}
+                    target="_blank">
+                    {url}
+                  </a>
+                </Box>
               </Box>
-              <Box className={`${styles.main} pl-3 flex-1`}>
-                <p className="text-[#495057] text-[14px] font-medium leading-5">
-                  {name}
-                </p>
-                <a
-                  className="text-[#0F6AF1] text-[13px] font-medium hover:underline"
-                  href={url}
-                  target="_blank">
-                  {url}
-                </a>
-              </Box>
-              {userRead && <Box>asd</Box>}
+              {userRead &&
+                userRead.map((item) => {
+                  return (
+                    <Box className="flex items-center content-between">
+                      <p className="w-[70%] whitespace-nowrap overflow-hidden overflow-ellipsis text-[9px]">
+                        Read by{' '}
+                        <span className="font-bold text-[11px]">{item.name}</span>
+                      </p>
+                      <p className="text-[9px]">{item.time}</p>
+                    </Box>
+                  );
+                })}
               {isDelete && (
                 <button
                   className="flex items-center justify-center shadow-md absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 rounded-full"

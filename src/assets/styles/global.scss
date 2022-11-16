@@ -418,8 +418,8 @@
     width: 22px;
 }
 
-.w-\[654px\] {
-    width: 654px;
+.w-\[70\%\] {
+    width: 70%;
 }
 
 .flex-1 {
@@ -920,8 +920,16 @@
     white-space: nowrap;
 }
 
+.overflow-ellipsis {
+    text-overflow: ellipsis;
+}
+
 .whitespace-normal {
     white-space: normal;
+}
+
+.whitespace-nowrap {
+    white-space: nowrap;
 }
 
 .whitespace-pre {
@@ -1708,16 +1716,16 @@
     font-size: 13px;
 }
 
-.text-\[28px\] {
-    font-size: 28px;
-}
-
-.text-\[15px\] {
-    font-size: 15px;
+.text-\[9px\] {
+    font-size: 9px;
 }
 
 .text-\[medium\] {
     font-size: medium;
+}
+
+.text-\[28px\] {
+    font-size: 28px;
 }
 
 .font-thin {
