@@ -16,21 +16,20 @@ import EditContent from '@components/atoms/EditContent';
 import CustomButton from '@components/atoms/CustomButton';
 import { RefObject, useCallback, useEffect, useRef, useState } from 'react';
 import AttachFiles from '@components/atoms/AttachFiles';
-import AutoCompleteReceive, {
-  ReceiverData,
-} from '@components/atoms/AutoCompleteReceive';
+import AutoCompleteReceive from '@components/atoms/AutoCompleteReceive';
 
 import { EditorState, convertToRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
+import { ReceiverData } from '../Interface';
 
 const fromData: ReceiverData[] = [
-  { avatar: avatarImg, mail: 'sender@gmail.com', abbreviations: 'GI' },
+  new ReceiverData(avatarImg, 'sender', 'sender@gmail.com'),
 ];
 
 const receiversList: ReceiverData[] = [
-  { avatar: avatarImg, mail: 'giangz0009@gmail.com', abbreviations: 'GI' },
-  { avatar: '', mail: 'mail1@gmail.com', abbreviations: 'T2' },
-  { avatar: avatarImg, mail: 'mail2@gmail.com', abbreviations: 'T3' },
+  new ReceiverData(avatarImg, 'Giang', 'giangz0009@gmail.com'),
+  new ReceiverData('', 'mail1', 'mail1@gmail.com'),
+  new ReceiverData(avatarImg, 'mail2', 'mail2@gmail.com'),
 ];
 
 function EmailCompose() {

@@ -13,6 +13,7 @@ import useTest from '../../zustand/useTest';
 import useEmail from '../../zustand/useEmail';
 import { clearScreenDown } from 'readline';
 import EmailActions from '@components/email/EmailActions';
+import Email from '@components/email';
 
 const receiverData: Receiver[] = [
   {
@@ -54,7 +55,7 @@ const HomePage = () => {
           borderTopLeftRadius: '65px',
           overflow: 'scroll',
         }}>
-        {isCompose ? <EmailCompose /> : <EmailMess />}
+        {isCompose ? <EmailCompose /> : <Email />}
         {/* <EmailActions /> */}
         {/* <Sender />
         <Email status={'pending'} />

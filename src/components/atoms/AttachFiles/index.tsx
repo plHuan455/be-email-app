@@ -7,12 +7,7 @@ import pdfFileImg from '@assets/images/icons/pdf-file.png';
 import zipFileImg from '@assets/images/icons/zip-file.png';
 
 import styles from './styles.module.scss';
-
-export interface File {
-  name: string;
-  type: string;
-  url: string;
-}
+import { File } from '@components/email/Interface';
 
 type Props = {
   data: File[];

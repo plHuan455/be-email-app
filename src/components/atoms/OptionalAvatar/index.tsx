@@ -1,12 +1,6 @@
 import React from 'react';
 import { Avatar, Box } from '@mui/material';
-
-export interface UserInfo {
-  avatar: string;
-  name: string;
-  mail: string;
-  date: string;
-}
+import { UserInfo } from '@components/email/Interface';
 
 interface Props {
   data: UserInfo;
@@ -16,6 +10,7 @@ interface Props {
   isShowName?: boolean;
   isShowDate?: boolean;
   isShowMail?: boolean;
+  optionDate: string;
 }
 
 const OptionalAvatar: React.FC<Props> = ({
@@ -26,8 +21,9 @@ const OptionalAvatar: React.FC<Props> = ({
   isShowName = true,
   isShowDate = true,
   isShowMail = true,
+  optionDate,
 }) => {
-  const date = new Date(data.date);
+  const date = new Date(optionDate);
   const month = date.toLocaleString('default', {
     month: 'long',
   });
