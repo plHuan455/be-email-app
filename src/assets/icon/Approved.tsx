@@ -8,6 +8,7 @@ const Approved: React.FC<SVGProps> = ({ width, height, color }) => {
       sx={{
         width: width,
         height: height,
+        color: color,
       }}
     />
   );

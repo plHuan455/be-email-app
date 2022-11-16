@@ -95,28 +95,48 @@ const EmailReply: React.FC<Props> = ({
     // setAvatar(file);
   };
 
-  useEffect(() => {
-    return () => {
+  // useEffect(() => {
+  //   return () => {
+  //     attachFiles.length !== 0 &&
+  //       Object.keys(attachFiles).forEach((key) => {
+  //         const file = attachFiles[key];
+
+  //         URL.revokeObjectURL(file.preview);
+  //       });
+  //   };
+  // }, [attachFiles]);
+
+  const handleDeleteAllAttachedFiles = useCallback(() => {
+    setAttachedFile([]);
+
+    {
       attachFiles.length !== 0 &&
         Object.keys(attachFiles).forEach((key) => {
           const file = attachFiles[key];
 
           URL.revokeObjectURL(file.preview);
         });
-    };
-  }, [attachFiles]);
+    }
 
-  const handleDeleteAllAttachedFiles = useCallback(() => {
-    setAttachedFile([]);
     setAttachFile([]);
   }, []);
 
-  const handleDeleteAttachedFile = useCallback((index) => {
-    setAttachedFile((prevState) => {
-      prevState.splice(index, 1);
-      return [...prevState];
-    });
-  }, []);
+  const handleDeleteAttachedFile = useCallback(
+    (index) => {
+      const file = attachFiles[index];
+
+      URL.revokeObjectURL(file.preview);
+      setAttachFile((prevState) => {
+        prevState.splice(index, 1);
+        return [...prevState];
+      });
+      setAttachedFile((prevState) => {
+        prevState.splice(index, 1);
+        return [...prevState];
+      });
+    },
+    [attachFiles, attachedFiles],
+  );
 
   return (
     <Box className={`${classNameLayer} `} onClick={() => onChangeEmailStatus()}>

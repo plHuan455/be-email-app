@@ -1,9 +1,9 @@
+import HttpsOutlinedIcon from '@mui/icons-material/HttpsOutlined';
 import { SVGProps } from '@components/atoms/Icon';
-import CloseIcon from '@mui/icons-material/Close';
 
-const Declined: React.FC<SVGProps> = ({ width, height, color }) => {
+const Password: React.FC<SVGProps> = ({ width, height, color }) => {
   return (
-    <CloseIcon
+    <HttpsOutlinedIcon
       className="text-[18px]"
       sx={{
         width: width,
@@ -14,4 +14,4 @@ const Declined: React.FC<SVGProps> = ({ width, height, color }) => {
   );
 };
 
-export default Declined;
+export default Password;

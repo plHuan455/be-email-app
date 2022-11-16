@@ -114,12 +114,22 @@ function EmailCompose() {
     setAttachFile([]);
   }, []);
 
-  const handleDeleteAttachedFile = useCallback((index) => {
-    setAttachedFile((prevState) => {
-      prevState.splice(index, 1);
-      return [...prevState];
-    });
-  }, []);
+  const handleDeleteAttachedFile = useCallback(
+    (index) => {
+      const file = attachFiles[index];
+
+      URL.revokeObjectURL(file.preview);
+      setAttachFile((prevState) => {
+        prevState.splice(index, 1);
+        return [...prevState];
+      });
+      setAttachedFile((prevState) => {
+        prevState.splice(index, 1);
+        return [...prevState];
+      });
+    },
+    [attachFiles, attachedFiles],
+  );
 
   const onEditorStateChange = (val) => {
     setEditorState(val);

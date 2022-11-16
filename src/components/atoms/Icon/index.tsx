@@ -7,6 +7,9 @@ import UploadCloud from '@assets/icon/UploadCloud';
 import Dot from '@assets/icon/Dot';
 
 // Icon
+const AccountCircle = React.lazy(() => import('@assets/icon/AccountCircle'));
+const Password = React.lazy(() => import('@assets/icon/Password'));
+const Logout = React.lazy(() => import('@assets/icon/Logout'));
 const Close = React.lazy(() => import('@assets/icon/Close'));
 const Square = React.lazy(() => import('@assets/icon/Square'));
 const Minus = React.lazy(() => import('@assets/icon/Minus'));
@@ -57,6 +60,9 @@ export interface SVGProps {
 }
 
 export const ICON = {
+  accountCircle: AccountCircle,
+  password: Password,
+  logout: Logout,
   close: Close,
   square: Square,
   minus: Minus,

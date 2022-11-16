@@ -14,6 +14,7 @@ import { getCity } from '@api/location';
 import { setLocation } from '@redux/Global/reducer';
 import IconTabs from '@layouts/IconTabs';
 import EmailStatusBar from '@layouts/EmailStatusBar';
+import AvatarWithPopup from '@components/atoms/AvatarWithPopup';
 
 const sideBarWidth = 75;
 const emailStatusWidth = 290;
@@ -39,6 +40,35 @@ const useStyles = makeStyles()((theme) => ({
     overflowY: 'auto',
   },
 }));
+
+interface Setting {
+  id: number;
+  label: string;
+  path: string;
+}
+
+const settings: Setting[] = [
+  {
+    id: 0,
+    label: 'Profile',
+    path: '/profile',
+  },
+  {
+    id: 1,
+    label: 'Setting',
+    path: '/setting',
+  },
+  {
+    id: 2,
+    label: 'Change Password',
+    path: '/change-password',
+  },
+  {
+    id: 3,
+    label: 'Log out',
+    path: '/log-out',
+  },
+];
 
 function MainWrapper() {
   // Hooks
@@ -71,8 +101,22 @@ function MainWrapper() {
         onToggleMobileSidebar={toggleMobileSideBar(true)}
       /> */}
       <Box className={cx(classes.body)}>
-        <Box className={cx(classes.sideBar)}>
+        <Box className={`${cx(classes.sideBar)} flex flex-col justify-between`}>
           <IconTabs />
+          <AvatarWithPopup
+            popupStyles={{
+              '& > .MuiPaper-root': {
+                transform: 'translate(0,-100px) !important',
+                padding: 0,
+                borderRadius: '8px',
+                '& > .MuiList-root': {
+                  paddingBlock: 1,
+                },
+              },
+            }}
+            className="flex items-center justify-center mb-3"
+            settings={settings}
+          />
         </Box>
         <Box
           sx={{
