@@ -1,8 +1,7 @@
 import { SingleOTPInputComponent } from '@components/atoms/Input/PinInput/SingleInput';
 import Receiver from '@components/atoms/Receiver';
-import WindowComposeActions from '@components/atoms/WindowComposeActions';
+import WindowComposeActions from '@components/molecules/WindowComposeActions';
 import { Autocomplete, Box, Button, TextField, Tooltip } from '@mui/material';
-import EmailComposeFormGroup from '../hocs/EmailComposeFormGroup';
 
 import ArticleIcon from '@mui/icons-material/Article';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
@@ -16,11 +15,12 @@ import EditContent from '@components/atoms/EditContent';
 import CustomButton from '@components/atoms/CustomButton';
 import { RefObject, useCallback, useEffect, useRef, useState } from 'react';
 import AttachFiles from '@components/atoms/AttachFiles';
-import AutoCompleteReceive from '@components/atoms/AutoCompleteReceive';
+import AutoCompleteReceive from '@components/molecules/AutoCompleteReceive';
 
 import { EditorState, convertToRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
-import { ReceiverData } from '../Interface';
+import { ReceiverData } from '../Email/Interface';
+import EmailComposeFormGroup from '@components/molecules/EmailComposeFormGroup';
 
 const fromData: ReceiverData[] = [
   new ReceiverData(avatarImg, 'sender', 'sender@gmail.com'),
