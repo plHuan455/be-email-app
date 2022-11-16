@@ -62,7 +62,7 @@ const HomePage = () => {
         <Email status={'approved'} />
         <Email status={'sent'} />
         <Email status={'seen'} />
-        status={'declined'} />
+        <Email status={'declined'} />
         <Email status={'sending'} /> */}
       </Box>
       <InformationBar
