@@ -8,6 +8,7 @@ import { render } from '@testing-library/react';
 import './index.scss';
 import { ButtonBase } from '@mui/material';
 import ArrowLeft from '@assets/icon/ArrowLeft';
+import EmailItem from '@components/atoms/Emailitem';
 
 export interface EmailList {
   userId: number;
@@ -63,6 +64,10 @@ type Props = {
 };
 
 const ModalEmailList = (props: Props) => {
+  console.log(
+    '🚀 ~ file: index.tsx ~ line 66 ~ ModalEmailList ~ props',
+    props.emailData,
+  );
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -97,7 +102,7 @@ const ModalEmailList = (props: Props) => {
             {props.title}
           </Typography>
         </ButtonBase>
-        <Box sx={{}}>
+        <Box>
           <Tabs
             className="cover__tabs"
             value={value}
@@ -108,7 +113,10 @@ const ModalEmailList = (props: Props) => {
           </Tabs>
         </Box>
         <TabPanel value={value} index={0}>
-          props
+          {props.emailData &&
+            props.emailData.map((item) => {
+              return <EmailItem emailData={item} />;
+            })}
         </TabPanel>
         <TabPanel value={value} index={1}>
           Item Two

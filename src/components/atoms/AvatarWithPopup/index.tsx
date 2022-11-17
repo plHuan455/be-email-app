@@ -63,8 +63,14 @@ const AvatarWithPopup: React.FC<Props> = ({
   return (
     <Box className={className} sx={{ flexGrow: 0 }}>
       <Tooltip placement={popupPlacement} title={label}>
-        <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-          <Avatar alt="Remy Sharp" src={avt} />
+        <IconButton
+          onClick={handleOpenUserMenu}
+          sx={{ p: 0, border: '4px solid #554CFF' }}>
+          <Avatar
+            alt="Remy Sharp"
+            src={avt}
+            sx={{ width: '45px', height: '45px' }}
+          />
         </IconButton>
       </Tooltip>
       <Menu

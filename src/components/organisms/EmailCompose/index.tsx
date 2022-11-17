@@ -38,8 +38,8 @@ const receiversList: ReceiverData[] = [
 ];
 
 function EmailCompose() {
-  const [attachedFiles, setAttachedFile] = useState<any>([]);
-  const [attachFiles, setAttachFile] = useState<any>([]);
+  const [attachedFiles, setAttachedFiles] = useState<any>([]);
+  const [attachFiles, setAttachFiles] = useState<any>([]);
 
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
 
@@ -88,14 +88,14 @@ function EmailCompose() {
       return res;
     });
 
-    setAttachFile((prevState) => [...prevState, ...files]);
-    setAttachedFile((prevState) => [...prevState, ...customFiles]);
+    setAttachFiles((prevState) => [...prevState, ...files]);
+    setAttachedFiles((prevState) => [...prevState, ...customFiles]);
 
     e.target.value = null;
   };
 
   const handleDeleteAllAttachedFiles = useCallback(() => {
-    setAttachedFile([]);
+    setAttachedFiles([]);
     {
       attachFiles.length !== 0 &&
         Object.keys(attachFiles).forEach((key) => {
@@ -104,7 +104,7 @@ function EmailCompose() {
           URL.revokeObjectURL(file.preview);
         });
     }
-    setAttachFile([]);
+    setAttachFiles([]);
   }, []);
 
   const handleDeleteAttachedFile = useCallback(
@@ -112,11 +112,11 @@ function EmailCompose() {
       const file = attachFiles[index];
 
       URL.revokeObjectURL(file.preview);
-      setAttachFile((prevState) => {
+      setAttachFiles((prevState) => {
         prevState.splice(index, 1);
         return [...prevState];
       });
-      setAttachedFile((prevState) => {
+      setAttachedFiles((prevState) => {
         prevState.splice(index, 1);
         return [...prevState];
       });

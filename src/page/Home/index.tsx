@@ -27,19 +27,6 @@ const receiverData: Receiver[] = [
 const HomePage = () => {
   return (
     <div className="w-full flex items-center content-around">
-      {/* <EmailStatusBar />
-      <Box sx={{ width: '100%' }}>
-        <TabPanel value={value} index={0}>
-          <EmailPending />
-        </TabPanel>
-        <TabPanel value={value} index={1}>
-          Item Two
-        </TabPanel>
-        <TabPanel value={value} index={2}>
-          Item Three
-        </TabPanel>
-      </Box> */}
-      {/* <EmailCompose /> */}
       <EmailStatusBar />
 
       <EmailContainer />

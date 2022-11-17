@@ -86,7 +86,7 @@ function EmailMess({
 
   return (
     <Box
-      className={`relative flex flex-wrap ${
+      className={`w-full relative flex flex-wrap ${
         type === 'send' && styles.flexRowReverse
       }`}>
       <Box
@@ -111,10 +111,12 @@ function EmailMess({
           />
         </Box>
       </Box>
+
       <Box className="w-[10%] flex justify-center">
         <Avatar alt={userInfo.name} src={userInfo.avatar} />
       </Box>
       <Box
+        sx={{ boxShadow: '0px 10px 23px -15px rgba(159,159,159,0.54)' }}
         className={`flex-1 bg-white ${
           type === 'send'
             ? 'rounded-tl-[36px] rounded-br-[36px]'

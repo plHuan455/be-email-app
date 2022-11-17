@@ -23,14 +23,26 @@ export interface CreateEmailParam {
 }
 export interface EmailResponse {
   id: number;
-  writer_id: number;
-  receiver: string[];
+  to: string[];
   from: string;
+  content: string;
+  cc: string[];
+  status: string;
+  writer_id: number;
 }
 
 //GET EMAIL WITH STATUS
 export const getEmailWithStatus = async (
   status: string,
+): Promise<AxiosResponse<EmailResponse>> => {
+  const url = `${EMAIL_API_URL}?query=${status}`;
+  const res = await ApiClient.get(url, undefined, {});
+  return res;
+};
+
+//GET EMAIL WITH sender
+export const getEmailWithSender = async (
+  email: string,
 ): Promise<AxiosResponse<EmailResponse>> => {
   const url = EMAIL_API_URL;
   const res = await ApiClient.get(url, undefined, {});

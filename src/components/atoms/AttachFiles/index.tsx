@@ -109,9 +109,9 @@ const AttachFiles = (props: Props) => {
                 </Box>
               </Box>
               {userRead &&
-                userRead.map((item) => {
+                userRead.map((item, index) => {
                   return (
-                    <Box className="flex items-center content-between">
+                    <Box className="flex items-center content-between" key={index}>
                       <p className="w-[70%] whitespace-nowrap overflow-hidden overflow-ellipsis text-[9px]">
                         Read by{' '}
                         <span className="font-bold text-[11px]">{item.name}</span>

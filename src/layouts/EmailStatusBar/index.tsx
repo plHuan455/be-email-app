@@ -13,10 +13,11 @@ import {
   UserName,
 } from '@components/molecules/InformationDetailBlock';
 import './index.scss';
+import { useGetEmail } from '@hooks/Email/useGetEmail';
 
 type Props = {};
 
-interface EmailItem {
+export interface EmailItem {
   userAvt: string;
   userName: string;
   userEmail: string;
@@ -120,27 +121,6 @@ const emailData: EmailList[] = [
   },
 ];
 
-const emailTabs: EmailTabs[] = [
-  {
-    status: 'pending',
-    title: '#pending',
-    notiNumber: 5,
-    emailData: emailData,
-  },
-  {
-    status: 'approved',
-    title: '#approved',
-    notiNumber: 2,
-    emailData: emailData,
-  },
-  {
-    status: 'cancel',
-    title: '#cancel',
-    notiNumber: 0,
-    emailData: emailData,
-  },
-];
-
 const hashtagTabs: HashtagTabs[] = [
   {
     title: '#metanode',
@@ -171,6 +151,26 @@ const hashtagTabs: HashtagTabs[] = [
 // const hashtagTabs:
 
 const EmailStatusBar = (props: Props) => {
+  const emailTabs: EmailTabs[] = [
+    {
+      status: 'pending',
+      title: '#pending',
+      notiNumber: 5,
+      emailData: emailData,
+    },
+    {
+      status: 'approved',
+      title: '#approved',
+      notiNumber: 2,
+      emailData: emailData,
+    },
+    {
+      status: 'cancel',
+      title: '#cancel',
+      notiNumber: 0,
+      emailData: emailData,
+    },
+  ];
   const renderEmailTab = (
     title: string,
     notiNumber: number,
@@ -179,6 +179,8 @@ const EmailStatusBar = (props: Props) => {
     key: number,
   ) => {
     const [modalStatus, setModalStatus] = useState(false);
+    const email = useGetEmail('status', status);
+    console.log('🚀 ~ file: index.tsx ~ line 183 ~ EmailStatusBar ~ email', email);
     return (
       <Box key={key}>
         <ButtonBase
@@ -256,73 +258,6 @@ const EmailStatusBar = (props: Props) => {
     );
   };
 
-  const renderEmailBlock = (title: string, emailData: EmailItem[]) => {
-    return (
-      <Box
-        className="cover__email__block"
-        sx={{ borderBottom: '1px solid #DBDBDB', padding: '20px 0' }}>
-        {TitleOfInformationBlock(title, true)}
-        {emailData &&
-          emailData.map((item, index) => {
-            return (
-              <Box
-                key={index}
-                className="email__item"
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  cursor: 'pointer',
-                  transition: '.3s ease-in-out',
-                  padding: '0 5px',
-                  borderRadius: '8px',
-                }}>
-                <Box
-                  sx={{
-                    padding: '10px 0',
-                  }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Avatar
-                      src={avt}
-                      alt="sender avt"
-                      sx={{ width: '35px', height: '35px' }}
-                    />
-                    <Box sx={{ padding: '0 10px' }}>
-                      {UserName('Elon Musk')}
-                      <Typography
-                        component={'p'}
-                        sx={{ fontSize: '10px', color: '#999DA0' }}>
-                        elon.musk@tesla.com
-                      </Typography>
-                    </Box>
-                  </Box>
-                </Box>
-                {item.totalEmail && item.totalEmail > 0 ? (
-                  <Typography
-                    component={'p'}
-                    sx={{
-                      backgroundColor: '#DADCDD',
-                      height: '18px',
-                      fontSize: '10px',
-                      borderRadius: '3px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      padding: '0 5px',
-                      color: '#495057',
-                    }}>
-                    {item.totalEmail > 9 ? '9+' : item.totalEmail}
-                  </Typography>
-                ) : (
-                  ''
-                )}
-              </Box>
-            );
-          })}
-      </Box>
-    );
-  };
-
   return (
     <Box
       sx={{
@@ -345,18 +280,20 @@ const EmailStatusBar = (props: Props) => {
           paddingBottom: '10px',
           position: 'relative',
         }}>
-        {emailTabs &&
-          emailTabs.map((item, index) => {
-            if (item.title && item.notiNumber != undefined && item.emailData) {
-              return renderEmailTab(
-                item.title,
-                item.notiNumber,
-                item.emailData,
-                item.status,
-                index,
-              );
-            }
-          })}
+        <Box sx={{ borderBottom: '1px solid #e5e7eb' }}>
+          {emailTabs &&
+            emailTabs.map((item, index) => {
+              if (item.title && item.notiNumber != undefined && item.emailData) {
+                return renderEmailTab(
+                  item.title,
+                  item.notiNumber,
+                  item.emailData,
+                  item.status,
+                  index,
+                );
+              }
+            })}
+        </Box>
         {hashtagTabs &&
           hashtagTabs.map((item, index) => {
             return renderHashtagTab(item.title, item.status, item.emailData, index);
