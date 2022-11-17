@@ -159,6 +159,7 @@ const EmailReply: React.FC<Props> = ({
         <Box>
           <Box className="py-3">
             <AutoCompleteReceive
+              isReadOnly={true}
               data={data.sendTo}
               defaultValue={data.sendTo}
               onClickCcFromLabel={handleClickCcFromLabel}

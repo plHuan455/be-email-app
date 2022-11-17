@@ -1,5 +1,6 @@
 import { ReceiverData } from '@components/organisms/Email/Interface';
 import { Autocomplete, Box, TextField } from '@mui/material';
+import useEmailCompose from '../../../zustand/useEmailCompose';
 import React, { MouseEventHandler, useEffect } from 'react';
 import Receiver from '../../atoms/Receiver';
 
@@ -20,8 +21,22 @@ const AutoCompleteReceive: React.FC<Props> = ({
   onClickCcFromLabel,
   isReadOnly = false,
 }) => {
+  const { clearReceivers, setNewReceivers } = useEmailCompose();
+
+  useEffect(() => {
+    if (!defaultValue) clearReceivers();
+  }, []);
+
+  const handleOnChangeAutocomplete: (e: any, newValue: ReceiverData[]) => void = (
+    e,
+    newValue,
+  ) => {
+    setNewReceivers(newValue);
+  };
+
   return (
     <Autocomplete
+      onChange={handleOnChangeAutocomplete}
       readOnly={isReadOnly}
       className="emailComposeTo"
       multiple

@@ -1,7 +1,7 @@
 import { SingleOTPInputComponent } from '@components/atoms/Input/PinInput/SingleInput';
 import Receiver from '@components/atoms/Receiver';
 import WindowComposeActions from '@components/molecules/WindowComposeActions';
-import { Autocomplete, Box, Button, TextField, Tooltip } from '@mui/material';
+import { Box, Button } from '@mui/material';
 
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import SendIcon from '@mui/icons-material/Send';
@@ -9,9 +9,8 @@ import TableViewIcon from '@mui/icons-material/TableView';
 
 import avatarImg from '@assets/images/avatars/avatar-1.jpg';
 
-import EditContent from '@components/atoms/EditContent';
 import CustomButton from '@components/atoms/CustomButton';
-import { RefObject, useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import AttachFiles from '@components/atoms/AttachFiles';
 import AutoCompleteReceive from '@components/molecules/AutoCompleteReceive';
 
@@ -23,6 +22,10 @@ import { toolbarCustom } from '@constants/constants';
 import LogoWithLabel from '@components/atoms/LogoWithLabel';
 import EmailGreeting from '@components/molecules/EmailGreeting';
 import UseTemplateButton from '@components/atoms/UseTemplateButton';
+import { toast } from 'react-toastify';
+import { useTranslation } from '@@packages/localization/src';
+import useEmailCompose from '../../../zustand/useEmailCompose';
+import draftToHtml from 'draftjs-to-html';
 
 const fromData: ReceiverData[] = [
   new ReceiverData(avatarImg, 'sender', 'sender@gmail.com'),
@@ -43,6 +46,10 @@ function EmailCompose() {
   const [isShowCcFrom, setIsShowCcFrom] = useState(false);
 
   const refInputAttachFile = useRef<HTMLInputElement>(null);
+
+  const { t } = useTranslation();
+
+  const { receivers } = useEmailCompose();
 
   const handleClickCcFromLabel = useCallback(() => {
     setIsShowCcFrom((preState) => !preState);
@@ -85,22 +92,7 @@ function EmailCompose() {
     setAttachedFile((prevState) => [...prevState, ...customFiles]);
 
     e.target.value = null;
-    // const file = e.target.files[0];
-
-    // file.preview = URL.createObjectURL(file);
-    // setAvatar(file);
   };
-
-  // useEffect(() => {
-  //   return () => {
-  //     attachFiles.length !== 0 &&
-  //       Object.keys(attachFiles).forEach((key) => {
-  //         const file = attachFiles[key];
-
-  //         URL.revokeObjectURL(file.preview);
-  //       });
-  //   };
-  // }, [attachFiles]);
 
   const handleDeleteAllAttachedFiles = useCallback(() => {
     setAttachedFile([]);
@@ -132,11 +124,16 @@ function EmailCompose() {
     [attachFiles, attachedFiles],
   );
 
+  const handleOnClickSubmitCompose = (e) => {
+    if (receivers.length === 0) return toast.error(t('Chưa chọn người nhận!'));
+    return toast.success(t('Ok!'));
+  };
+
   const onEditorStateChange = (val) => {
     setEditorState(val);
     console.log(
       'state -->',
-      JSON.stringify(convertToRaw(editorState.getCurrentContent())),
+      JSON.stringify(draftToHtml(convertToRaw(editorState.getCurrentContent()))),
     );
   };
 
@@ -252,6 +249,7 @@ function EmailCompose() {
             beforeIcon={<SendIcon fontSize="small" />}
             isAfterIcon={true}
             afterIcon={<TableViewIcon fontSize="small" />}
+            onClick={handleOnClickSubmitCompose}
           />
         </Box>
       </Box>

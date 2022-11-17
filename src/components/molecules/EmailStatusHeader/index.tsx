@@ -4,7 +4,7 @@ import CustomButton from '@components/atoms/CustomButton';
 import Input from '@components/atoms/Input';
 import { Box, ButtonBase, colors, Grid, Typography } from '@mui/material';
 import React, { useCallback } from 'react';
-import useEmail from '../../../zustand/useEmail';
+import useEmailCompose from '../../../zustand/useEmailCompose';
 
 type Props = {
   title: string;
@@ -21,7 +21,7 @@ const EmailStatusHeader = ({
   color,
   bgButtonColor,
 }: Props) => {
-  const negativeIsCompose = useEmail((state) => state.negativeIsCompose);
+  const negativeIsCompose = useEmailCompose((state) => state.negativeIsCompose);
 
   const handleComposeEmail = useCallback(() => {
     negativeIsCompose();

@@ -2,10 +2,10 @@ import Email from '@components/organisms/Email';
 import EmailCompose from '@components/organisms/EmailCompose';
 import { Box } from '@mui/material';
 import React from 'react';
-import useEmail from '../../zustand/useEmail';
+import useEmailCompose from '../../zustand/useEmailCompose';
 
 const EmailContainer = () => {
-  const isCompose = useEmail((state) => state.isCompose);
+  const isCompose = useEmailCompose((state) => state.isCompose);
 
   return (
     <Box
