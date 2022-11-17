@@ -3,9 +3,7 @@ import Receiver from '@components/atoms/Receiver';
 import WindowComposeActions from '@components/molecules/WindowComposeActions';
 import { Autocomplete, Box, Button, TextField, Tooltip } from '@mui/material';
 
-import ArticleIcon from '@mui/icons-material/Article';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
-import logoImg from '@assets/images/logo_without_text.png';
 import SendIcon from '@mui/icons-material/Send';
 import TableViewIcon from '@mui/icons-material/TableView';
 
@@ -21,6 +19,10 @@ import { EditorState, convertToRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import { ReceiverData } from '../Email/Interface';
 import EmailComposeFormGroup from '@components/molecules/EmailComposeFormGroup';
+import { toolbarCustom } from '@constants/constants';
+import LogoWithLabel from '@components/atoms/LogoWithLabel';
+import EmailGreeting from '@components/molecules/EmailGreeting';
+import UseTemplateButton from '@components/atoms/UseTemplateButton';
 
 const fromData: ReceiverData[] = [
   new ReceiverData(avatarImg, 'sender', 'sender@gmail.com'),
@@ -195,6 +197,7 @@ function EmailCompose() {
             editorClassName="editor-class border"
             toolbarClassName="toolbar-class"
             placeholder="Enter content here..."
+            toolbar={toolbarCustom}
           />
           {/* Files List */}
           <Box>
@@ -208,18 +211,11 @@ function EmailCompose() {
             )}
           </Box>
           {/* Greeting */}
-          <Box>
-            <p className="text-black text-[16px] font-normal">
-              Thanks and Best regards, ------
-            </p>
-          </Box>
-          {/* Logo */}
-          <Box className="flex items-center">
-            <img src={logoImg} alt="Logo" />
-            <span className="bg-gradient-to-r text-[#675FFF] font-[900] text-[28px] pl-3">
-              METANODE
-            </span>
-          </Box>
+          <EmailGreeting
+            greetingLabel="Thanks and Best regards, ------"
+            isHaveLogo={true}
+            logo={<LogoWithLabel />}
+          />
         </Box>
       </Box>
       {/* Footer */}
@@ -228,27 +224,23 @@ function EmailCompose() {
         <Box></Box>
         {/* Actions */}
         <Box className="flex justify-end items-center">
-          <Tooltip title="Use template">
-            <Button className="bg-transparent p-2 hover:bg-transparent">
-              <ArticleIcon className="text-[#7D7E80]" />
-            </Button>
-          </Tooltip>
-          <Tooltip title="Insert link">
-            <Button
-              className="bg-transparent p-2 hover:bg-transparent"
-              onClick={handleAttachFile}>
-              <input
-                type="file"
-                name="file"
-                id="file"
-                hidden
-                ref={refInputAttachFile}
-                onChange={handleOnAttachedFiles}
-                multiple
-              />
-              <AttachFileIcon className="text-[#7D7E80]" />
-            </Button>
-          </Tooltip>
+          <UseTemplateButton />
+          {/* <Tooltip title="Insert link"> */}
+          <Button
+            className="bg-transparent p-2 hover:bg-transparent"
+            onClick={handleAttachFile}>
+            <input
+              type="file"
+              name="file"
+              id="file"
+              hidden
+              ref={refInputAttachFile}
+              onChange={handleOnAttachedFiles}
+              multiple
+            />
+            <AttachFileIcon className="text-[#7D7E80]" />
+          </Button>
+          {/* </Tooltip> */}
 
           <CustomButton
             padding="8px 10px"
