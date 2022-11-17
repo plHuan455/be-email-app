@@ -17,7 +17,7 @@ import { useGetEmail } from '@hooks/Email/useGetEmail';
 
 type Props = {};
 
-interface EmailItem {
+export interface EmailItem {
   userAvt: string;
   userName: string;
   userEmail: string;
@@ -254,73 +254,6 @@ const EmailStatusBar = (props: Props) => {
           isActive={modalStatus}
           handleChangeModalStatus={setModalStatus}
         />
-      </Box>
-    );
-  };
-
-  const renderEmailBlock = (title: string, emailData: EmailItem[]) => {
-    return (
-      <Box
-        className="cover__email__block"
-        sx={{ borderBottom: '1px solid #DBDBDB', padding: '20px 0' }}>
-        {TitleOfInformationBlock(title, true)}
-        {emailData &&
-          emailData.map((item, index) => {
-            return (
-              <Box
-                key={index}
-                className="email__item"
-                sx={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  cursor: 'pointer',
-                  transition: '.3s ease-in-out',
-                  padding: '0 5px',
-                  borderRadius: '8px',
-                }}>
-                <Box
-                  sx={{
-                    padding: '10px 0',
-                  }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                    <Avatar
-                      src={avt}
-                      alt="sender avt"
-                      sx={{ width: '35px', height: '35px' }}
-                    />
-                    <Box sx={{ padding: '0 10px' }}>
-                      {UserName('Elon Musk')}
-                      <Typography
-                        component={'p'}
-                        sx={{ fontSize: '10px', color: '#999DA0' }}>
-                        elon.musk@tesla.com
-                      </Typography>
-                    </Box>
-                  </Box>
-                </Box>
-                {item.totalEmail && item.totalEmail > 0 ? (
-                  <Typography
-                    component={'p'}
-                    sx={{
-                      backgroundColor: '#DADCDD',
-                      height: '18px',
-                      fontSize: '10px',
-                      borderRadius: '3px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      padding: '0 5px',
-                      color: '#495057',
-                    }}>
-                    {item.totalEmail > 9 ? '9+' : item.totalEmail}
-                  </Typography>
-                ) : (
-                  ''
-                )}
-              </Box>
-            );
-          })}
       </Box>
     );
   };

@@ -69,7 +69,7 @@ const AvatarWithPopup: React.FC<Props> = ({
           <Avatar
             alt="Remy Sharp"
             src={avt}
-            sx={{ width: '50px', height: '50px' }}
+            sx={{ width: '45px', height: '45px' }}
           />
         </IconButton>
       </Tooltip>
