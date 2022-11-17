@@ -23,9 +23,12 @@ export interface CreateEmailParam {
 }
 export interface EmailResponse {
   id: number;
-  writer_id: number;
-  receiver: string[];
+  to: string[];
   from: string;
+  content: string;
+  cc: string[];
+  status: string;
+  writer_id: number;
 }
 
 //GET EMAIL WITH STATUS

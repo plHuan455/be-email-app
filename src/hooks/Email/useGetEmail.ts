@@ -11,6 +11,10 @@ type Props = {
 };
 
 export const useGetEmail = (filterField: string, fieldData: string) => {
+  console.log(
+    '🚀 ~ file: useGetEmail.ts ~ line 14 ~ useGetEmail ~ fieldData',
+    fieldData,
+  );
   const [response, setResponse] = useState<EmailResponse>();
 
   useEffect(() => {

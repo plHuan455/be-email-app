@@ -30,7 +30,6 @@ export default class ApiClient {
       headers: await this.getHeaders(),
       data: {},
     });
-
     return response;
   }
 
@@ -40,12 +39,10 @@ export default class ApiClient {
     params?: object,
   ): Promise<AxiosResponse> {
     const requestUrl = query ? `${url}?${stringify(query)}` : url;
-
     const config: AxiosRequestConfig = {
       headers: await this.getHeaders(),
       // validateStatus,
     };
-
     const response = await axiosInstance.patch(requestUrl, params, config);
     return response;
   }
