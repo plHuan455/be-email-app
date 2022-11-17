@@ -1,18 +1,16 @@
 import create from 'zustand';
 import React from 'react';
-import { ReceiverData, UserInfo } from '@components/organisms/Email/Interface';
+import { EmailState } from './useEmail';
+import { UserInfo } from '@components/organisms/Email/Interface';
 
-export interface EmailState {
-  sender: UserInfo | null;
-  receivers: ReceiverData[];
+export interface EmailComposeState extends EmailState {
+  isCompose: boolean;
 
-  clearReceivers: () => void;
-  pushReceivers: (receiver: ReceiverData) => void;
-  deleteReceivers: (index: number) => void;
-  setNewReceivers: (receivers: ReceiverData[]) => void;
+  negativeIsCompose: () => void;
 }
 
-const useEmail = create<EmailState>((set) => ({
+const useEmailCompose = create<EmailComposeState>((set) => ({
+  isCompose: false,
   sender: new UserInfo('', 'Giang', 'giang@mail.com'),
   receivers: [],
 
@@ -34,6 +32,7 @@ const useEmail = create<EmailState>((set) => ({
       receivers: receivers,
     }));
   },
+  negativeIsCompose: () => set((state) => ({ isCompose: !state.isCompose })),
 }));
 
-export default useEmail;
+export default useEmailCompose;
