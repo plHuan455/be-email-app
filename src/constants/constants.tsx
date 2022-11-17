@@ -29,6 +29,25 @@ export const defaultStatus = [
   'Reimbursed',
 ];
 
+export const toolbarCustom = {
+  options: [
+    'history',
+    'inline',
+    'fontFamily',
+    'fontSize',
+    'colorPicker',
+    'emoji',
+    'link',
+    'image',
+    'textAlign',
+    'list',
+    'remove',
+  ],
+  inline: { options: ['bold', 'italic', 'underline', 'strikethrough'] },
+  textAlign: { inDropdown: true },
+  list: { inDropdown: true },
+};
+
 export const disableStatus = ['Reimbursed', 'Rejected'];
 
 export const AccountSettingFields = [
