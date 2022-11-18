@@ -59,7 +59,7 @@ const AutoCompleteReceive: React.FC<Props> = ({
               <span
                 className="text-[#7E7E7E] text-[14px] cursor-pointer"
                 onClick={onClickCcFromLabel}>
-                Cc,From
+                Cc,Bcc
               </span>
             )}
           </Box>
