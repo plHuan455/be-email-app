@@ -14,6 +14,8 @@ import {
 } from '@components/molecules/InformationDetailBlock';
 import './index.scss';
 import { useGetEmail } from '@hooks/Email/useGetEmail';
+import CustomButton from '@components/atoms/CustomButton';
+import Plus from '@assets/icon/Plus';
 
 type Props = {};
 
@@ -23,54 +25,6 @@ export interface EmailItem {
   userEmail: string;
   totalEmail: number;
 }
-
-const importantEmail: EmailItem[] = [
-  {
-    userName: 'Maria Ozawa',
-    userAvt: avt,
-    userEmail: 'maria.ozawa@jav.com',
-    totalEmail: 5,
-  },
-  {
-    userName: 'Michael Owen',
-    userAvt: avt,
-    userEmail: 'owen.forever12345678@gmail.com',
-    totalEmail: 15,
-  },
-  {
-    userName: 'Brian Johnson',
-    userAvt: avt,
-    userEmail: 'brian.johnson@gmail.com',
-    totalEmail: 0,
-  },
-  {
-    userName: 'Elon Musk',
-    userAvt: avt,
-    userEmail: 'elon.musk@tesla.com',
-    totalEmail: 0,
-  },
-  {
-    userName: 'Bill Gates',
-    userAvt: avt,
-    userEmail: 'billgates@microsoft.com',
-    totalEmail: 0,
-  },
-];
-
-const aproveEmail: EmailItem[] = [
-  {
-    userName: 'Maria Ozawa',
-    userAvt: avt,
-    userEmail: 'maria.ozawa@jav.com',
-    totalEmail: 1,
-  },
-  {
-    userName: 'Michael Owen',
-    userAvt: avt,
-    userEmail: 'owen.forever12345678@gmail.com',
-    totalEmail: 1,
-  },
-];
 
 interface EmailTabs extends TabItem {
   status: StatusOptions;
@@ -299,6 +253,15 @@ const EmailStatusBar = (props: Props) => {
             return renderHashtagTab(item.title, item.status, item.emailData, index);
           })}
       </Box>
+      <CustomButton
+        label="Create hashtag"
+        bgButtonColor="#554CFF"
+        color="#fff"
+        isAfterIcon={true}
+        isFullWidth
+        isHasSlash={true}
+        afterIcon={<Plus width={10} height={10} color={'#fff'} />}
+      />
     </Box>
   );
 };

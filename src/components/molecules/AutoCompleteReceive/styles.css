@@ -1,0 +1,6 @@
+.emailComposeTo fieldset {
+  border-color: transparent !important;
+}
+.emailComposeTo .MuiInputBase-root {
+  padding-block: 0 !important;
+}/*# sourceMappingURL=styles.css.map */

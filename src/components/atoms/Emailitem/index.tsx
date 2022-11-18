@@ -19,13 +19,14 @@ const EmailItem = ({ emailData }: Props) => {
         justifyContent: 'space-between',
         cursor: 'pointer',
         transition: '.3s ease-in-out',
-        padding: '0 5px',
         borderRadius: '8px',
+        margin: '5px 0',
+        padding: '0 5px',
       }}>
       <Box
         sx={{
           width: '90%',
-          padding: '10px 0',
+          padding: '5px 0',
         }}>
         <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
           <Avatar
@@ -33,7 +34,7 @@ const EmailItem = ({ emailData }: Props) => {
             alt="sender avt"
             sx={{ width: '35px', height: '35px' }}
           />
-          <Box sx={{ width: '80%' }}>
+          <Box sx={{ width: '70%' }}>
             <Typography
               component={'p'}
               sx={{
@@ -45,20 +46,22 @@ const EmailItem = ({ emailData }: Props) => {
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
               }}>
-              {emailData.userName} | {emailData.userEmail}
+              <span className="font-bold">{emailData.userName}</span> |{' '}
+              {emailData.userEmail}
             </Typography>
             <Typography
               component={'p'}
               sx={{
                 width: '100%',
-                fontSize: '10px',
-                color: '#999DA0',
+                fontSize: '12px',
+                color: '#495057',
                 paddingLeft: '10px',
                 textOverflow: 'ellipsis',
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
+                fontWeight: 'bold',
               }}>
-              {emailData.userName} | {emailData.userEmail}
+              {emailData.title}
             </Typography>
           </Box>
         </Box>

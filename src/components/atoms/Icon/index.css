@@ -1,0 +1,14 @@
+.svg_icon-arrowRight, .svg_icon.-arrowRightLong {
+  transform: rotate(180deg);
+}
+.svg_icon-importRight {
+  transform: rotate(-90deg);
+}
+.svg_icon-threeDotsHorizontal {
+  transform: rotate(-90deg);
+}
+
+.svg_icon_window {
+  padding: 4px;
+  cursor: pointer;
+}/*# sourceMappingURL=index.css.map */

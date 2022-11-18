@@ -1,0 +1,29 @@
+.Empty-main {
+  min-height: 500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cms-main {
+  width: 800px;
+  max-width: 100%;
+}
+
+.cms-title {
+  font-size: 3.5rem;
+  line-height: 1;
+  font-weight: 400;
+  width: 400px;
+  max-width: 100%;
+  margin: 0 auto;
+  margin-bottom: 1.5rem;
+}
+
+.cms-desc {
+  margin-bottom: 3rem;
+  text-align: center;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 16px;
+}/*# sourceMappingURL=index.css.map */

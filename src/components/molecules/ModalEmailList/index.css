@@ -1,0 +1,28 @@
+.modal__active {
+  top: 0;
+  left: 0;
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal__inactive {
+  top: 0;
+  opacity: 0;
+  visibility: hidden;
+  left: 290px;
+}
+
+.cover__tabs .tab {
+  border: none !important;
+  font-weight: bold;
+  color: #bdbdbd;
+  min-width: auto !important;
+  padding: 0 10px;
+  font-size: 15px;
+}
+.cover__tabs .Mui-selected {
+  color: #554cff;
+}
+.cover__tabs .MuiTabs-indicator {
+  display: none;
+}/*# sourceMappingURL=index.css.map */

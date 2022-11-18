@@ -170,6 +170,11 @@ function EmailCompose() {
       'state -->',
       JSON.stringify(draftToHtml(convertToRaw(editorState.getCurrentContent()))),
     );
+
+    // const test = convertToRaw(editorState.getCurrentContent()).blocks.map(
+    //   (item) => item.text,
+    // );
+    // console.log('state --> test', test);
   };
 
   return (

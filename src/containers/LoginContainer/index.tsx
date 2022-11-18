@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import {
+  Avatar,
   Button,
+  ButtonBase,
   Container,
   FormControl,
   InputLabel,
@@ -24,6 +26,16 @@ const schema = yup
 function LoginContainer() {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const isLogined = localStorage.getItem('current_email') ? true : false;
+  const currentEmail = localStorage.getItem('current_email')
+    ? localStorage.getItem('current_email')
+    : '';
+  const currentUserName = localStorage.getItem('current_user_name')
+    ? localStorage.getItem('current_user_name')
+    : '';
+  const currentUserAvt = localStorage.getItem('current_user_avt')
+    ? localStorage.getItem('current_user_avt')
+    : '';
 
   const {
     control,
@@ -31,7 +43,7 @@ function LoginContainer() {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      email: '',
+      email: currentEmail,
       password: '',
     },
     resolver: yupResolver(schema),
@@ -40,11 +52,16 @@ function LoginContainer() {
   const auth = useAuth();
 
   const submitLogin = async ({ email, password }) => {
+    console.log('🚀 ~ file: index.tsx ~ line 60 ~ submitLogin ~ email', email);
     try {
       const res = await login({ email, password });
-      console.log('🚀 ~ file: index.tsx ~ line 45 ~ submitLogin ~ res', res);
-      auth.signin({}, res.data, () => {
+      console.log('🚀 ~ file: index.tsx ~ line 57 ~ submitLogin ~ email', email);
+      auth.signin({}, res.data, async () => {
         if (res.message === 'Login successful') {
+          const currentUser = await getUserWithEmail(email);
+          localStorage.setItem('current_user_name', currentUser.data.user_name);
+          localStorage.setItem('current_user_avt', currentUser.data.avatar);
+          localStorage.setItem('current_email', email);
           toast.success('Đăng nhập thành công!');
           navigate('/');
         }
@@ -57,6 +74,27 @@ function LoginContainer() {
   const onSubmit = (data) => {
     submitLogin({ email: data.email, password: data.password });
   };
+
+  // useEffect(() => {
+  //   navigate(0);
+  // }, [navigate]);
+
+  const handleReLoginWithEmail = () => {
+    localStorage.removeItem('current_email');
+    navigate(0);
+  };
+
+  // useEffect(() => {
+  //   const handleReLoginWithEmail = () => {
+  //     if (localStorage.getItem('current_email')) {
+  //       return;
+  //     } else {
+  //       localStorage.removeItem('current_email');
+  //     }
+  //   };
+
+  //   handleReLoginWithEmail();
+  // }, [isLogined]);
 
   if (auth.token) return <Navigate to={'/'} replace={true} />;
 
@@ -84,49 +122,60 @@ function LoginContainer() {
         </WrapLogo>
         <WrapContent className="bg-app-2">
           <Box>
-            <WrapTitle>
-              <h3>Lock screen</h3>
-              <p>Enter your password to unlock the screen!</p>
-            </WrapTitle>
-            <WrapAvatar>
-              <Box
-                alignSelf={'center'}
-                sx={{
-                  border: '4px solid #F8F8F8',
-                  borderRadius: '50%',
-                  overflow: 'hidden',
-                  marginBottom: '15px',
-                }}>
-                <ImageComponent.Image
-                  height={66}
-                  width={66}
-                  src={avatarImg}
-                  alt="avatar"
-                />
-              </Box>
-              <h3>Katherine Vu</h3>
-            </WrapAvatar>
+            {isLogined ? (
+              <WrapTitle>
+                <h3>Lock screen</h3>
+                <p>Enter your password to unlock the screen!</p>
+              </WrapTitle>
+            ) : (
+              <WrapTitle>
+                <h3>Login screen</h3>
+                <p>Enter your email and password to login!</p>
+              </WrapTitle>
+            )}
+
+            {isLogined && currentUserName && currentUserAvt && (
+              <WrapAvatar>
+                <Box
+                  alignSelf={'center'}
+                  sx={{
+                    border: '4px solid #F8F8F8',
+                    borderRadius: '50%',
+                    overflow: 'hidden',
+                    marginBottom: '15px',
+                  }}>
+                  <Avatar
+                    sx={{ width: '75px', height: '75px' }}
+                    src={currentUserAvt}
+                    alt="avatar"
+                  />
+                </Box>
+                <h3 className="text-center">{currentUserName}</h3>
+              </WrapAvatar>
+            )}
           </Box>
           <Content className="grid grid-rows-2 gap-4">
             <form
               onSubmit={handleSubmit(onSubmit)}
               className="grid grid-rows-2 gap-4">
-              <Controller
-                name="email"
-                control={control}
-                render={({ field }) => (
-                  <WrapInput>
-                    <label>Email</label>
-                    <TextField
-                      {...field}
-                      type={'email'}
-                      placeholder={t('Enter Email')}
-                      error={!!errors.email?.message}
-                      helperText={errors.email?.message}
-                    />
-                  </WrapInput>
-                )}
-              />
+              {!isLogined && (
+                <Controller
+                  name="email"
+                  control={control}
+                  render={({ field }) => (
+                    <WrapInput>
+                      <label>Email</label>
+                      <TextField
+                        {...field}
+                        type={'email'}
+                        placeholder={t('Enter Email')}
+                        error={!!errors.email?.message}
+                        helperText={errors.email?.message}
+                      />
+                    </WrapInput>
+                  )}
+                />
+              )}
               <Controller
                 name="password"
                 control={control}
@@ -150,7 +199,17 @@ function LoginContainer() {
                 </Button>
               </WrapActions>
               <WrapTextLink>
-                Not you? return <Link to="/#/login">Login</Link>
+                {/* Not you? return <Link to="/#/login">Login</Link> */}
+                Not you? return{' '}
+                <ButtonBase
+                  sx={{
+                    verticalAlign: 'initial',
+                    color: '#827CFF',
+                    fontWeight: 'bold',
+                  }}
+                  onClick={handleReLoginWithEmail}>
+                  Login
+                </ButtonBase>
               </WrapTextLink>
             </form>
           </Content>
@@ -171,6 +230,7 @@ import { toast } from 'react-toastify';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { login } from '@api/auth';
+import { getUserWithEmail } from '@api/user';
 
 export const Root = styled.div`
   width: 100%;
