@@ -2,7 +2,7 @@ import { Box } from '@mui/material';
 import React, { useCallback, useState } from 'react';
 
 import avatarImg from '@assets/images/avatars/avatar-2.jpg';
-import { Email, ReceiverData, UserInfo } from './Interface';
+import { Email, UserInfo } from './Interface';
 import EmailMess from '../EmailMess';
 
 const Email = () => {
@@ -13,9 +13,9 @@ const Email = () => {
       title: 'M&A Testa to Metanode',
       sender: new UserInfo(avatarImg, 'Elon Musk', 'elon.musk@tesla.com'),
       sendTo: [
-        new ReceiverData(avatarImg, 'name', 'mail@gmail.com'),
-        new ReceiverData('', 'name1', 'mail1@gmail.com'),
-        new ReceiverData(avatarImg, 'name2', 'mail2@gmail.com'),
+        new UserInfo(avatarImg, 'name', 'mail@gmail.com'),
+        new UserInfo('', 'name1', 'mail1@gmail.com'),
+        new UserInfo(avatarImg, 'name2', 'mail2@gmail.com'),
       ],
       mailContent: '<p>Test</p><br><br><p>Test line 2</p>',
       attachFiles: [
@@ -39,9 +39,9 @@ const Email = () => {
       title: 'M&A Testa to Metanode',
       sender: new UserInfo(avatarImg, 'Elon Musk', 'elon.musk@tesla.com'),
       sendTo: [
-        new ReceiverData(avatarImg, 'name', 'mail@gmail.com'),
-        new ReceiverData('', 'name1', 'mail1@gmail.com'),
-        new ReceiverData(avatarImg, 'name2', 'mail2@gmail.com'),
+        new UserInfo(avatarImg, 'name', 'mail@gmail.com'),
+        new UserInfo('', 'name1', 'mail1@gmail.com'),
+        new UserInfo(avatarImg, 'name2', 'mail2@gmail.com'),
       ],
       mailContent: '<p>Test</p><br><br><p>Test line 2</p>',
       attachFiles: [
@@ -65,9 +65,9 @@ const Email = () => {
       title: 'M&A Testa to Metanode',
       sender: new UserInfo(avatarImg, 'Elon Musk', 'elon.musk@tesla.com'),
       sendTo: [
-        new ReceiverData(avatarImg, 'name', 'mail@gmail.com'),
-        new ReceiverData('', 'name1', 'mail1@gmail.com'),
-        new ReceiverData(avatarImg, 'name2', 'mail2@gmail.com'),
+        new UserInfo(avatarImg, 'name', 'mail@gmail.com'),
+        new UserInfo('', 'name1', 'mail1@gmail.com'),
+        new UserInfo(avatarImg, 'name2', 'mail2@gmail.com'),
       ],
       mailContent: '<p>Test</p><br><br><p>Test line 2</p>',
       attachFiles: [
@@ -91,9 +91,9 @@ const Email = () => {
       title: 'M&A Testa to Metanode',
       sender: new UserInfo(avatarImg, 'Elon Musk', 'elon.musk@tesla.com'),
       sendTo: [
-        new ReceiverData(avatarImg, 'name', 'mail@gmail.com'),
-        new ReceiverData('', 'name1', 'mail1@gmail.com'),
-        new ReceiverData(avatarImg, 'name2', 'mail2@gmail.com'),
+        new UserInfo(avatarImg, 'name', 'mail@gmail.com'),
+        new UserInfo('', 'name1', 'mail1@gmail.com'),
+        new UserInfo(avatarImg, 'name2', 'mail2@gmail.com'),
       ],
       mailContent: '<p>Test</p><br><br><p>Test line 2</p>',
       attachFiles: [

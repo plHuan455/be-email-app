@@ -1,5 +1,11 @@
-import { ReceiverData } from '@components/organisms/Email/Interface';
-import { Autocomplete, Box, TextField } from '@mui/material';
+import { UserInfo } from '@components/organisms/Email/Interface';
+import {
+  Autocomplete,
+  AutocompleteChangeDetails,
+  AutocompleteChangeReason,
+  Box,
+  TextField,
+} from '@mui/material';
 import useEmailCompose from '../../../zustand/useEmailCompose';
 import React, { MouseEventHandler, useEffect } from 'react';
 import Receiver from '../../atoms/Receiver';
@@ -7,11 +13,19 @@ import Receiver from '../../atoms/Receiver';
 import './styles.scss';
 
 interface Props {
-  data: ReceiverData[];
-  defaultValue?: ReceiverData[];
+  data: UserInfo[];
+  defaultValue?: UserInfo[];
   isShowCcFromLabel?: boolean;
   onClickCcFromLabel?: React.MouseEventHandler<HTMLSpanElement> | undefined;
   isReadOnly?: boolean;
+  onChange?:
+    | ((
+        event: React.SyntheticEvent<Element, Event>,
+        value: UserInfo[],
+        reason: AutocompleteChangeReason,
+        details?: AutocompleteChangeDetails<UserInfo> | undefined,
+      ) => void)
+    | undefined;
 }
 
 const AutoCompleteReceive: React.FC<Props> = ({
@@ -20,23 +34,13 @@ const AutoCompleteReceive: React.FC<Props> = ({
   isShowCcFromLabel = true,
   onClickCcFromLabel,
   isReadOnly = false,
+  onChange = (e) => {},
 }) => {
   const { clearReceivers, setNewReceivers } = useEmailCompose();
 
-  useEffect(() => {
-    if (!defaultValue) clearReceivers();
-  }, []);
-
-  const handleOnChangeAutocomplete: (e: any, newValue: ReceiverData[]) => void = (
-    e,
-    newValue,
-  ) => {
-    setNewReceivers(newValue);
-  };
-
   return (
     <Autocomplete
-      onChange={handleOnChangeAutocomplete}
+      onChange={onChange}
       readOnly={isReadOnly}
       className="emailComposeTo"
       multiple
@@ -46,6 +50,8 @@ const AutoCompleteReceive: React.FC<Props> = ({
       defaultValue={defaultValue ? [...defaultValue] : []}
       filterSelectedOptions
       renderInput={(params) => {
+        if (isReadOnly) params.InputProps.endAdornment = undefined;
+
         return (
           <Box className="flex justify-between items-center">
             <TextField {...params} className="outline-none border-transparent" />
@@ -67,7 +73,8 @@ const AutoCompleteReceive: React.FC<Props> = ({
             <Receiver
               key={index}
               data={receiver}
-              onDelete={() => props.onDelete(index)}
+              haveCloseIcon={!isReadOnly}
+              // onDelete={() => !isReadOnly && props.onDelete(index)}
             />
           );
         });
