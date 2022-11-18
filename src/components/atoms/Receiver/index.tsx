@@ -1,21 +1,26 @@
 import { RenderButtonIcon } from '@components/molecules/EmailActions';
-import { ReceiverData } from '@components/organisms/Email/Interface';
+import { UserInfo } from '@components/organisms/Email/Interface';
 import { Box } from '@mui/material';
 import React from 'react';
 import SingleAvatar from '../SingleAvatar';
 
-// interface ReceiverData {
+// interface UserInfo {
 //   avatar: string | undefined;
 //   mail: string;
 //   abbreviations: string;
 // }
 
 interface ReceiverProps {
-  data: ReceiverData;
-  onDelete: React.MouseEventHandler | undefined;
+  data: UserInfo;
+  onDelete?: React.MouseEventHandler | undefined;
+  haveCloseIcon?: boolean;
 }
 
-const Receiver: React.FC<ReceiverProps> = ({ data, onDelete }) => {
+const Receiver: React.FC<ReceiverProps> = ({
+  data,
+  onDelete,
+  haveCloseIcon = true,
+}) => {
   const { avatar, mail } = data;
 
   return (
@@ -28,11 +33,13 @@ const Receiver: React.FC<ReceiverProps> = ({ data, onDelete }) => {
           className="w-6 h-6 absolute inset-y-2/4 left-0 -translate-y-1/2"
         />
         <p className="text-[14px]">{mail}</p>
-        <RenderButtonIcon
-          item={'close'}
-          onClick={onDelete}
-          className="hover:cursor-pointer"
-        />
+        {haveCloseIcon && (
+          <RenderButtonIcon
+            item={'close'}
+            onClick={onDelete}
+            className="hover:cursor-pointer"
+          />
+        )}
       </Box>
     </Box>
   );

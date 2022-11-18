@@ -8,12 +8,6 @@ export class UserInfo {
     this.name = name;
     this.mail = mail;
   }
-}
-
-export class ReceiverData extends UserInfo {
-  constructor(avatar: string, name: string, mail: string) {
-    super(avatar, name, mail);
-  }
 
   getAbbreviations() {
     const cloneName = this.name;
@@ -36,7 +30,7 @@ export interface Email {
   id: string;
   title: string;
   sender: UserInfo;
-  sendTo: Array<ReceiverData>;
+  sendTo: Array<UserInfo>;
   mailContent: string;
   attachFiles: Array<File>;
   status: string;

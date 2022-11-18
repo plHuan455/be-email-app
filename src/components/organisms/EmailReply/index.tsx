@@ -15,7 +15,7 @@ import { EditorState, convertToRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 
 import avatarImg from '@assets/images/avatars/avatar-1.jpg';
-import { Email, ReceiverData } from '../Email/Interface';
+import { Email, UserInfo } from '../Email/Interface';
 import EmailComposeFormGroup from '@components/molecules/EmailComposeFormGroup';
 
 interface Props {
@@ -25,15 +25,13 @@ interface Props {
   data: Email;
 }
 
-// const receiversList: ReceiverData[] = [
+// const receiversList: UserInfo[] = [
 //   { avatar: avatarImg, mail: 'giangz0009@gmail.com', abbreviations: 'GI' },
 //   { avatar: '', mail: 'mail1@gmail.com', abbreviations: 'T2' },
 //   { avatar: avatarImg, mail: 'mail2@gmail.com', abbreviations: 'T3' },
 // ];
 
-const fromData: ReceiverData[] = [
-  new ReceiverData(avatarImg, 'sender', 'sender@gmail.com'),
-];
+const fromData: UserInfo[] = [new UserInfo(avatarImg, 'sender', 'sender@gmail.com')];
 
 const EmailReply: React.FC<Props> = ({
   classNameLayer,
