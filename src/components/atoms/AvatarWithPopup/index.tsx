@@ -44,12 +44,13 @@ interface Props {
 }
 
 const AvatarWithPopup: React.FC<Props> = ({
-  label = 'Open settings...',
   popupPlacement = 'top',
   settings,
   className,
   popupStyles = {},
 }) => {
+  const currentUserName = localStorage.getItem('current_user_name')?.toString();
+  const currentUserAvt = localStorage.getItem('current_user_avt')?.toString();
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
   const handleOpenUserMenu = (event) => {
@@ -62,13 +63,13 @@ const AvatarWithPopup: React.FC<Props> = ({
 
   return (
     <Box className={className} sx={{ flexGrow: 0 }}>
-      <Tooltip placement={popupPlacement} title={label}>
+      <Tooltip placement={popupPlacement} title={currentUserName} arrow>
         <IconButton
           onClick={handleOpenUserMenu}
           sx={{ p: 0, border: '4px solid #554CFF' }}>
           <Avatar
-            alt="Remy Sharp"
-            src={avt}
+            alt={currentUserName}
+            src={currentUserAvt}
             sx={{ width: '45px', height: '45px' }}
           />
         </IconButton>

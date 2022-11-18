@@ -18,6 +18,7 @@ type Props = {
   isBeforeIcon?: boolean;
   beforeIcon?: React.ReactNode;
   isHasSlash?: boolean;
+  isFullWidth?: boolean;
   onClick?: React.MouseEventHandler<HTMLButtonElement> | undefined;
 };
 
@@ -27,7 +28,7 @@ const CustomButton = (props: Props) => {
       className={props.className}
       sx={{
         gap: '4px',
-        width: `${props.width}px`,
+        width: `${props.isFullWidth ? '100%' : props.width}px`,
         height: `${props.height}px`,
         display: 'flex',
         alignItems: 'center',

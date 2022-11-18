@@ -17,6 +17,7 @@ export interface CreateEmailParam {
   to: string[];
   from: string;
   content: string;
+  html_string: string;
   cc: string[];
   bcc: string[];
   file: FileType[];
@@ -35,9 +36,9 @@ export interface EmailResponse {
 export const getEmailWithStatus = async (
   status: string,
 ): Promise<AxiosResponse<EmailResponse>> => {
-  const url = `${EMAIL_API_URL}?query=${status}`;
-  const res = await ApiClient.get(url, undefined, {});
-  return res;
+  const url = `${EMAIL_API_URL}`;
+  const res = await ApiClient.get(url, { query: status }, {});
+  return res.data;
 };
 
 //GET EMAIL WITH sender
@@ -68,10 +69,10 @@ export const getAllEmail = async (): Promise<AxiosResponse<EmailResponse>> => {
 
 //SEND EMAIL
 export const sendEmail = async (
-  param: CreateEmailParam,
+  params: CreateEmailParam,
 ): Promise<AxiosResponse<EmailResponse>> => {
   const url = EMAIL_API_URL;
-  const res = await ApiClient.post(url, undefined, param);
+  const res = await ApiClient.post(url, undefined, params);
   console.log('🚀 ~ file: index.ts ~ line 24 ~ getAllEmail ~ res', res);
   return res;
 };

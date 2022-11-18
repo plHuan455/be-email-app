@@ -1,7 +1,7 @@
 import create from 'zustand';
 import React from 'react';
-import { EmailState } from './useEmail';
 import { UserInfo } from '@components/organisms/Email/Interface';
+import { EmailState } from './useEmail';
 
 export interface EmailComposeState extends EmailState {
   isCompose: boolean;

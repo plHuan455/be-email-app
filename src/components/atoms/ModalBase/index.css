@@ -1,0 +1,44 @@
+.modal-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.modal-container .modal-header {
+  width: 100%;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-weight: 700;
+  color: #000;
+  margin-bottom: 16px;
+}
+.modal-container .modal-header .modal-close-button {
+  margin-right: 16px;
+  cursor: pointer;
+}
+.modal-container .modal-content {
+  width: 100%;
+  height: calc(100% - 110px);
+  overflow: hidden;
+  padding-bottom: 50px;
+}
+.modal-container .modal-content .modal-content-scroll {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+.modal-container .modal-button-bottom {
+  position: absolute;
+  bottom: 4px;
+  width: 100%;
+  height: 46px;
+}
+.modal-container .modal-button-bottom .button-create-mui {
+  width: 100%;
+  height: 100%;
+  background-color: #9822f4;
+  border-radius: 15px;
+}/*# sourceMappingURL=index.css.map */

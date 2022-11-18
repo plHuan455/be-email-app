@@ -54,6 +54,7 @@ function MainWrapper() {
   const { classes, cx } = useStyles();
   const { breadcrumbs } = useBreadcrumbs();
   const auth = useAuth();
+  const navigate = useNavigate();
   // States
   const [openMobileSideBar, setOpenMobileSideBar] = useState(false);
 

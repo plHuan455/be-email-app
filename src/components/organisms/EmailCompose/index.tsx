@@ -18,7 +18,6 @@ import { EditorState, convertToRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import { ReceiverData } from '../Email/Interface';
 import EmailComposeFormGroup from '@components/molecules/EmailComposeFormGroup';
-import { toolbarCustom } from '@constants/constants';
 import LogoWithLabel from '@components/atoms/LogoWithLabel';
 import EmailGreeting from '@components/molecules/EmailGreeting';
 import UseTemplateButton from '@components/atoms/UseTemplateButton';
@@ -26,6 +25,8 @@ import { toast } from 'react-toastify';
 import { useTranslation } from '@@packages/localization/src';
 import useEmailCompose from '../../../zustand/useEmailCompose';
 import draftToHtml from 'draftjs-to-html';
+import { useSendEmail } from '@hooks/Email/useSendEmail';
+import { toolbarCustom } from '@constants/constants';
 
 const fromData: ReceiverData[] = [
   new ReceiverData(avatarImg, 'sender', 'sender@gmail.com'),
@@ -126,6 +127,7 @@ function EmailCompose() {
 
   const handleOnClickSubmitCompose = (e) => {
     if (receivers.length === 0) return toast.error(t('Chưa chọn người nhận!'));
+    // const res = useSendEmail();
     return toast.success(t('Ok!'));
   };
 
@@ -135,6 +137,11 @@ function EmailCompose() {
       'state -->',
       JSON.stringify(draftToHtml(convertToRaw(editorState.getCurrentContent()))),
     );
+
+    // const test = convertToRaw(editorState.getCurrentContent()).blocks.map(
+    //   (item) => item.text,
+    // );
+    // console.log('state --> test', test);
   };
 
   return (

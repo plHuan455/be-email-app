@@ -28,9 +28,7 @@ const HomePage = () => {
   return (
     <div className="w-full flex items-center content-around">
       <EmailStatusBar />
-
       <EmailContainer />
-
       <InformationBar
         title="Information"
         isBorderBottom={true}
