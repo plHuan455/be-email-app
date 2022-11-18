@@ -74,7 +74,7 @@ const AutoCompleteReceive: React.FC<Props> = ({
               key={index}
               data={receiver}
               haveCloseIcon={!isReadOnly}
-              // onDelete={() => !isReadOnly && props.onDelete(index)}
+              onDelete={() => !isReadOnly && props.onDelete(index)}
             />
           );
         });
