@@ -10,14 +10,14 @@ import TableViewIcon from '@mui/icons-material/TableView';
 import avatarImg from '@assets/images/avatars/avatar-1.jpg';
 
 import CustomButton from '@components/atoms/CustomButton';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import AttachFiles from '@components/atoms/AttachFiles';
 import AutoCompleteReceive from '@components/molecules/AutoCompleteReceive';
 
 import { EditorState, convertToRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
-import { ReceiverData } from '../Email/Interface';
 import EmailComposeFormGroup from '@components/molecules/EmailComposeFormGroup';
+import { toolbarCustom } from '@constants/constants';
 import LogoWithLabel from '@components/atoms/LogoWithLabel';
 import EmailGreeting from '@components/molecules/EmailGreeting';
 import UseTemplateButton from '@components/atoms/UseTemplateButton';
@@ -25,17 +25,14 @@ import { toast } from 'react-toastify';
 import { useTranslation } from '@@packages/localization/src';
 import useEmailCompose from '../../../zustand/useEmailCompose';
 import draftToHtml from 'draftjs-to-html';
-import { useSendEmail } from '@hooks/Email/useSendEmail';
-import { toolbarCustom } from '@constants/constants';
+import { UserInfo } from '../Email/Interface';
 
-const fromData: ReceiverData[] = [
-  new ReceiverData(avatarImg, 'sender', 'sender@gmail.com'),
-];
+const fromData: UserInfo[] = [new UserInfo(avatarImg, 'sender', 'sender@gmail.com')];
 
-const receiversList: ReceiverData[] = [
-  new ReceiverData(avatarImg, 'Giang', 'giangz0009@gmail.com'),
-  new ReceiverData('', 'mail1', 'mail1@gmail.com'),
-  new ReceiverData(avatarImg, 'mail2', 'mail2@gmail.com'),
+const receiversList: UserInfo[] = [
+  new UserInfo(avatarImg, 'Giang', 'giangz0009@gmail.com'),
+  new UserInfo('', 'mail1', 'mail1@gmail.com'),
+  new UserInfo(avatarImg, 'mail2', 'mail2@gmail.com'),
 ];
 
 function EmailCompose() {
@@ -50,7 +47,25 @@ function EmailCompose() {
 
   const { t } = useTranslation();
 
-  const { receivers } = useEmailCompose();
+  const {
+    cc,
+    setCc,
+    bcc,
+    setBcc,
+    content,
+    setContent,
+    subject,
+    setSubject,
+    receivers,
+    check,
+    getAll,
+    reset,
+    setNewReceivers,
+  } = useEmailCompose();
+
+  useEffect(() => {
+    reset();
+  }, []);
 
   const handleClickCcFromLabel = useCallback(() => {
     setIsShowCcFrom((preState) => !preState);
@@ -125,13 +140,31 @@ function EmailCompose() {
     [attachFiles, attachedFiles],
   );
 
-  const handleOnClickSubmitCompose = (e) => {
-    if (receivers.length === 0) return toast.error(t('Chưa chọn người nhận!'));
-    // const res = useSendEmail();
-    return toast.success(t('Ok!'));
+  const handleChangeSubject = (e) => {
+    setSubject(e.target.value);
+  };
+
+  const handleChangeReceivers = useCallback((e, newValue) => {
+    setNewReceivers(newValue);
+  }, []);
+  const handleChangeCc = useCallback((e, newValue) => {
+    setCc(newValue);
+  }, []);
+  const handleChangeBcc = useCallback((e, newValue) => {
+    setBcc(newValue);
+  }, []);
+
+  const handleOnClickSubmitCompose = async (e) => {
+    const checkData = await check();
+
+    if (checkData) {
+      return toast.success('Ok!');
+    }
+    return toast.error('*Vui lòng nhập người nhận!');
   };
 
   const onEditorStateChange = (val) => {
+    setContent(draftToHtml(convertToRaw(editorState.getCurrentContent())));
     setEditorState(val);
     console.log(
       'state -->',
@@ -156,11 +189,16 @@ function EmailCompose() {
             <AutoCompleteReceive
               data={receiversList}
               onClickCcFromLabel={handleClickCcFromLabel}
+              onChange={handleChangeReceivers}
             />
           </EmailComposeFormGroup>
           {/* Subject */}
           <EmailComposeFormGroup label={'Subject:'}>
-            <SingleOTPInputComponent className="outline-none w-full text-black text-[18px] font-bold h-full" />
+            <SingleOTPInputComponent
+              value={subject}
+              onChange={handleChangeSubject}
+              className="outline-none w-full text-black text-[18px] font-bold h-full"
+            />
           </EmailComposeFormGroup>
           {/* Cc, From */}
           {isShowCcFrom && (
@@ -169,13 +207,23 @@ function EmailCompose() {
                 className="py-1"
                 label="Cc:"
                 isHaveBorderBottom={false}>
-                <SingleOTPInputComponent className="outline-none w-full text-[14px] font-medium h-full" />
+                <AutoCompleteReceive
+                  isShowCcFromLabel={false}
+                  data={receiversList}
+                  onClickCcFromLabel={handleClickCcFromLabel}
+                  onChange={handleChangeCc}
+                />
               </EmailComposeFormGroup>
               <EmailComposeFormGroup
                 className="py-1"
                 label="Bcc:"
                 isHaveBorderBottom={false}>
-                <SingleOTPInputComponent className="outline-none w-full text-[14px] font-medium h-full" />
+                <AutoCompleteReceive
+                  isShowCcFromLabel={false}
+                  data={receiversList}
+                  onClickCcFromLabel={handleClickCcFromLabel}
+                  onChange={handleChangeBcc}
+                />
               </EmailComposeFormGroup>
               <EmailComposeFormGroup
                 className="py-1"

@@ -1,19 +1,36 @@
 import create from 'zustand';
 import React from 'react';
-import { ReceiverData, UserInfo } from '@components/organisms/Email/Interface';
+import { UserInfo } from '@components/organisms/Email/Interface';
+import { CreateCssVarsProviderResult } from '@mui/system';
 
 export interface EmailState {
-  sender: UserInfo | null;
-  receivers: ReceiverData[];
+  writer: UserInfo | null;
+  cc: UserInfo[];
+  bcc: UserInfo[];
+  subject?: string;
+  content?: string;
+
+  receivers: UserInfo[];
 
   clearReceivers: () => void;
-  pushReceivers: (receiver: ReceiverData) => void;
+  pushReceivers: (receiver: UserInfo) => void;
   deleteReceivers: (index: number) => void;
-  setNewReceivers: (receivers: ReceiverData[]) => void;
+  setNewReceivers: (receivers: UserInfo[]) => void;
+  setSubject: (newValue: string) => void;
+  setCc: (newValue: UserInfo[]) => void;
+  setBcc: (newValue: UserInfo[]) => void;
+  setContent: (newValue: string) => void;
+  check: () => Promise<boolean>;
+  reset: () => void;
 }
 
 const useEmail = create<EmailState>((set) => ({
-  sender: new UserInfo('', 'Giang', 'giang@mail.com'),
+  writer: new UserInfo('', 'Giang', 'giang@mail.com'),
+  cc: [],
+  bcc: [],
+
+  subject: '',
+  content: '',
   receivers: [],
 
   clearReceivers() {
@@ -32,6 +49,41 @@ const useEmail = create<EmailState>((set) => ({
   setNewReceivers(receivers) {
     return set((state) => ({
       receivers: receivers,
+    }));
+  },
+  setSubject(newValue) {
+    return set((state) => ({
+      subject: newValue,
+    }));
+  },
+  setCc(newValue) {
+    return set((state) => ({
+      cc: newValue,
+    }));
+  },
+  setBcc(newValue) {
+    return set((state) => ({
+      bcc: newValue,
+    }));
+  },
+  setContent(newValue) {
+    return set((state) => ({
+      content: newValue,
+    }));
+  },
+  check: async () => {
+    console.log(useEmail());
+    return true;
+  },
+  reset() {
+    return set((state) => ({
+      writer: new UserInfo('', 'Giang', 'giang@mail.com'),
+      cc: [],
+      bcc: [],
+
+      subject: '',
+      content: '',
+      receivers: [],
     }));
   },
 }));
