@@ -158,6 +158,7 @@ function EmailCompose() {
     const checkData = await check();
 
     if (checkData) {
+      console.log(getAll());
       return toast.success('Ok!');
     }
     return toast.error('*Vui lòng nhập người nhận!');
