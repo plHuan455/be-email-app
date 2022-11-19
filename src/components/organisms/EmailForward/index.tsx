@@ -23,6 +23,8 @@ interface Props {
   classNameLayer?: string;
   classNameContent?: string;
   sendTo: UserInfo[];
+  sendToDefault: UserInfo[];
+  isReadOnlyReceivers?: boolean;
 }
 
 // const receiversList: UserInfo[] = [
@@ -33,11 +35,13 @@ interface Props {
 
 const fromData: UserInfo[] = [new UserInfo(avatarImg, 'sender', 'sender@gmail.com')];
 
-const EmailReply: React.FC<Props> = ({
+const EmailForward: React.FC<Props> = ({
   classNameLayer,
   classNameContent,
   sendTo,
+  sendToDefault,
   onChangeEmailStatus,
+  isReadOnlyReceivers = true,
 }) => {
   const [attachedFiles, setAttachedFile] = useState<any>([]);
   const [attachFiles, setAttachFile] = useState<any>([]);
@@ -142,9 +146,9 @@ const EmailReply: React.FC<Props> = ({
         <Box>
           <Box className="py-3">
             <AutoCompleteReceive
-              isReadOnly={true}
+              isReadOnly={isReadOnlyReceivers}
               data={sendTo}
-              defaultValue={sendTo}
+              defaultValue={sendToDefault}
               onClickCcFromLabel={handleClickCcFromLabel}
             />
           </Box>
@@ -224,4 +228,4 @@ const EmailReply: React.FC<Props> = ({
   );
 };
 
-export default EmailReply;
+export default EmailForward;

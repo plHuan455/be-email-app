@@ -77,7 +77,11 @@ const AutoCompleteReceive: React.FC<Props> = ({
       defaultValue={defaultValue ? [...defaultValue] : []}
       filterSelectedOptions
       renderOption={(props, option) => {
-        return <MenuItem {...props}>{option.mail}</MenuItem>;
+        return (
+          <MenuItem {...props} className="inline-block">
+            <Receiver data={option} haveCloseIcon={false} />
+          </MenuItem>
+        );
       }}
       renderInput={(params) => {
         if (isReadOnly) params.InputProps.endAdornment = undefined;

@@ -62,6 +62,11 @@ const EMAILSTATUS = {
     content: '',
     bgColor: '#554CFF',
   },
+  forward: {
+    item: 'approved',
+    content: '',
+    bgColor: '#554CFF',
+  },
 };
 
 interface EmailStatusProps {
