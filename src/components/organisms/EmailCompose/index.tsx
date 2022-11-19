@@ -14,7 +14,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import AttachFiles from '@components/atoms/AttachFiles';
 import AutoCompleteReceive from '@components/molecules/AutoCompleteReceive';
 
-import { EditorState, convertToRaw } from 'draft-js';
+import { EditorState, ContentState, convertToRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import EmailComposeFormGroup from '@components/molecules/EmailComposeFormGroup';
 import { toolbarCustom } from '@constants/constants';
@@ -26,6 +26,7 @@ import { useTranslation } from '@@packages/localization/src';
 import useEmailCompose from '../../../zustand/useEmailCompose';
 import draftToHtml from 'draftjs-to-html';
 import { UserInfo } from '../Email/Interface';
+import htmlToDraft from 'html-to-draftjs';
 
 const fromData: UserInfo[] = [new UserInfo(avatarImg, 'sender', 'sender@gmail.com')];
 
@@ -48,6 +49,7 @@ function EmailCompose() {
   const { t } = useTranslation();
 
   const {
+    isZoom,
     cc,
     setCc,
     bcc,
@@ -61,10 +63,18 @@ function EmailCompose() {
     getAll,
     reset,
     setNewReceivers,
+    negativeIsCompose,
   } = useEmailCompose();
 
   useEffect(() => {
-    reset();
+    const contentBlock = htmlToDraft(content);
+
+    if (contentBlock) {
+      const contentState = ContentState.createFromBlockArray(
+        contentBlock.contentBlocks,
+      );
+      setEditorState(EditorState.createWithContent(contentState));
+    }
   }, []);
 
   const handleClickCcFromLabel = useCallback(() => {
@@ -158,6 +168,9 @@ function EmailCompose() {
     const checkData = await check();
 
     if (checkData) {
+      console.log(getAll());
+      reset();
+      negativeIsCompose();
       return toast.success('Ok!');
     }
     return toast.error('*Vui lòng nhập người nhận!');
@@ -178,16 +191,20 @@ function EmailCompose() {
   };
 
   return (
-    <Box className="w-full mx-auto shadow-xl rounded-3xl overflow-hidden">
+    <Box
+      className={`flex flex-col w-full mx-auto shadow-xl rounded-3xl overflow-hidden z-5 transition-all ${
+        isZoom && 'fixed top-0 left-0 bottom-0'
+      }`}>
       {/* Header */}
-      <Box className="bg-white">
+      <Box className="bg-white flex-1 flex flex-col">
         {/* Window Compose Actions  */}
         <WindowComposeActions className="pt-3 pr-3" />
-        <Box className="px-9 py-10 pt-2">
+        <Box className="px-9 py-10 pt-2 flex-1 flex flex-col">
           {/* Compose To */}
           <EmailComposeFormGroup label={'To:'}>
             <AutoCompleteReceive
               data={receiversList}
+              defaultValue={receivers}
               onClickCcFromLabel={handleClickCcFromLabel}
               onChange={handleChangeReceivers}
             />
@@ -210,6 +227,7 @@ function EmailCompose() {
                 <AutoCompleteReceive
                   isShowCcFromLabel={false}
                   data={receiversList}
+                  defaultValue={cc}
                   onClickCcFromLabel={handleClickCcFromLabel}
                   onChange={handleChangeCc}
                 />
@@ -221,6 +239,7 @@ function EmailCompose() {
                 <AutoCompleteReceive
                   isShowCcFromLabel={false}
                   data={receiversList}
+                  defaultValue={bcc}
                   onClickCcFromLabel={handleClickCcFromLabel}
                   onChange={handleChangeBcc}
                 />
@@ -240,34 +259,37 @@ function EmailCompose() {
           )}
 
           {/* Edit Content */}
-          {/* <EditContent /> */}
 
-          <Editor
-            editorState={editorState}
-            onEditorStateChange={onEditorStateChange}
-            wrapperClassName="wrapper-class"
-            editorClassName="editor-class border"
-            toolbarClassName="toolbar-class"
-            placeholder="Enter content here..."
-            toolbar={toolbarCustom}
-          />
-          {/* Files List */}
-          <Box>
-            {attachedFiles.length !== 0 && (
-              <AttachFiles
-                data={attachedFiles}
-                isDelete={true}
-                onDeleteAll={handleDeleteAllAttachedFiles}
-                onDeleteFile={handleDeleteAttachedFile}
+          <Box className="flex flex-col flex-1">
+            <Editor
+              editorState={editorState}
+              onEditorStateChange={onEditorStateChange}
+              wrapperClassName="wrapper-class flex-1"
+              editorClassName="editor-class border"
+              toolbarClassName="toolbar-class"
+              placeholder="Enter content here..."
+              toolbar={toolbarCustom}
+            />
+            <Box>
+              {/* Files List */}
+              <Box>
+                {attachedFiles.length !== 0 && (
+                  <AttachFiles
+                    data={attachedFiles}
+                    isDelete={true}
+                    onDeleteAll={handleDeleteAllAttachedFiles}
+                    onDeleteFile={handleDeleteAttachedFile}
+                  />
+                )}
+              </Box>
+              {/* Greeting */}
+              <EmailGreeting
+                greetingLabel="Thanks and Best regards, ------"
+                isHaveLogo={true}
+                logo={<LogoWithLabel />}
               />
-            )}
+            </Box>
           </Box>
-          {/* Greeting */}
-          <EmailGreeting
-            greetingLabel="Thanks and Best regards, ------"
-            isHaveLogo={true}
-            logo={<LogoWithLabel />}
-          />
         </Box>
       </Box>
       {/* Footer */}

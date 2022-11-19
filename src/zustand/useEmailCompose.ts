@@ -7,13 +7,17 @@ import { useTranslation } from '@@packages/localization/src';
 import { toast } from 'react-toastify';
 export interface EmailComposeState extends EmailState {
   isCompose: boolean;
+  isZoom: boolean;
 
+  negativeIsZoom: () => void;
   negativeIsCompose: () => void;
   getAll: () => void;
 }
 
 const useEmailCompose = create<EmailComposeState>((set, get) => ({
   isCompose: false,
+  isZoom: false,
+
   writer: new UserInfo('', 'Giang', 'giang@mail.com'),
   cc: [],
   bcc: [],
@@ -22,6 +26,10 @@ const useEmailCompose = create<EmailComposeState>((set, get) => ({
 
   subject: '',
   content: '',
+
+  negativeIsZoom() {
+    return set((state) => ({ isZoom: !state.isZoom }));
+  },
 
   clearReceivers() {
     return set((state) => ({ receivers: [] }));

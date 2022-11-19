@@ -57,6 +57,11 @@ const EMAILSTATUS = {
     content: '',
     bgColor: '#554CFF',
   },
+  replyAll: {
+    item: 'approved',
+    content: '',
+    bgColor: '#554CFF',
+  },
 };
 
 interface EmailStatusProps {
@@ -67,7 +72,7 @@ interface EmailStatusProps {
 const EmailStatus: React.FC<EmailStatusProps> = ({ emailStatus, time }) => {
   const mainEmailStatus = EMAILSTATUS[emailStatus];
 
-  if (emailStatus === 'reply')
+  if (emailStatus === 'reply' || emailStatus === 'replyAll')
     return (
       <Box
         className={`p-1 absolute top-0 right-[20px] translate-y-3 text-white rounded-full text-[14px] font-medium flex items-center`}

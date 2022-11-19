@@ -5,25 +5,36 @@ import useEmailCompose from '../../../zustand/useEmailCompose';
 import { RenderButtonIcon } from '../EmailActions';
 
 function WindowComposeActions({ className }: any) {
-  const negativeIsCompose = useEmailCompose((state) => state.negativeIsCompose);
+  const { isZoom, reset, negativeIsCompose, negativeIsZoom } = useEmailCompose();
+
+  const handleClose = () => {
+    reset();
+    negativeIsCompose();
+  };
+
+  const handleMinimize = () => {
+    negativeIsCompose();
+  };
+
+  const handleZoom = () => {
+    negativeIsZoom();
+  };
 
   const WINDOWCOMPOSEACTIONS = {
     minus: {
       item: 'minus',
       color: '#9E96BE',
-      onClick() {},
+      onClick: handleMinimize,
     },
     square: {
-      item: 'square',
+      item: isZoom ? 'squareCropDin' : 'square',
       color: '#9E96BE',
-      onClick() {},
+      onClick: handleZoom,
     },
     close: {
       item: 'close',
       color: '#9E96BE',
-      onClick() {
-        negativeIsCompose();
-      },
+      onClick: handleClose,
     },
   };
 
