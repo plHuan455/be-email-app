@@ -15,22 +15,28 @@ import useInjectLocales from '@hooks/useInjectLocales';
 import { genCRUD } from '@utils/routerHelper';
 import ErrorBoundary from './ErrorBoudary';
 import ErrorPage from './ErrorPage';
-
+import EmailHashTag from './Email/EmailHashTag';
+import Email from './Email';
 export const sideBarRouter: RouteObject[] = [
   {
     path: '/emails',
+    element: <Email />,
   },
   {
     path: '/chats',
+    element: <HomePage />,
   },
   {
     path: '/contact',
+    element: <HomePage />,
   },
   {
     path: '/call',
+    element: <HomePage />,
   },
   {
     path: '/bookmark',
+    element: <HomePage />,
   },
 ];
 
@@ -40,11 +46,11 @@ export const declareRouter: RouteObject[] = [
     children: [
       {
         path: '/',
-        element: <HomePage />,
+        element: <Navigate to={'/emails'} replace={true} />,
       },
       {
         path: '/home',
-        element: <Navigate to={'/'} replace={true} />,
+        element: <Navigate to={'/emails'} replace={true} />,
       },
       { path: '/about', element: <AboutPage /> },
       ...sideBarRouter,

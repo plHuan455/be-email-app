@@ -16,6 +16,10 @@ import './index.scss';
 import { useGetEmail } from '@hooks/Email/useGetEmail';
 import CustomButton from '@components/atoms/CustomButton';
 import Plus from '@assets/icon/Plus';
+import { useNavigate } from 'react-router-dom';
+import SingleOTPInput from '@components/atoms/Input/PinInput/SingleInput';
+import Hashtag from '@components/atoms/Hashtag';
+import { toast } from 'react-toastify';
 
 type Props = {};
 
@@ -38,7 +42,7 @@ interface HashtagTabs {
   emailData: EmailList[];
 }
 
-const emailData: EmailList[] = [
+export const emailData: EmailList[] = [
   {
     userId: 1,
     userAvt: avt,
@@ -75,29 +79,23 @@ const emailData: EmailList[] = [
   },
 ];
 
-const hashtagTabs: HashtagTabs[] = [
+export const emailTabs: EmailTabs[] = [
   {
-    title: '#metanode',
-    value: 'metanode',
-    status: 'hashtag',
+    status: 'pending',
+    title: '#pending',
+    notiNumber: 5,
     emailData: emailData,
   },
   {
-    title: '#sales',
-    value: 'sales',
-    status: 'hashtag',
+    status: 'approved',
+    title: '#approved',
+    notiNumber: 2,
     emailData: emailData,
   },
   {
-    title: '#tesla',
-    value: 'tesla',
-    status: 'hashtag',
-    emailData: emailData,
-  },
-  {
-    title: '#yellow paper',
-    value: 'yellowpaper',
-    status: 'hashtag',
+    status: 'cancel',
+    title: '#cancel',
+    notiNumber: 0,
     emailData: emailData,
   },
 ];
@@ -105,26 +103,101 @@ const hashtagTabs: HashtagTabs[] = [
 // const hashtagTabs:
 
 const EmailStatusBar = (props: Props) => {
-  const emailTabs: EmailTabs[] = [
+  const [isCreateHashTag, setIsCreateHashTag] = useState<boolean>(false);
+  const [newHashTagValue, setNewHashTagValue] = useState<string>('');
+  const [hashtagTabs, setHashtagTabs] = useState<HashtagTabs[]>([
     {
-      status: 'pending',
-      title: '#pending',
-      notiNumber: 5,
+      title: '#metanode',
+      value: 'metanode',
+      status: 'hashtag',
       emailData: emailData,
     },
     {
-      status: 'approved',
-      title: '#approved',
-      notiNumber: 2,
+      title: '#sales',
+      value: 'sales',
+      status: 'hashtag',
       emailData: emailData,
     },
     {
-      status: 'cancel',
-      title: '#cancel',
-      notiNumber: 0,
+      title: '#tesla',
+      value: 'tesla',
+      status: 'hashtag',
       emailData: emailData,
     },
-  ];
+    {
+      title: '#yellow paper',
+      value: 'yellowpaper',
+      status: 'hashtag',
+      emailData: emailData,
+    },
+  ]);
+
+  const handleClickCreateHashTag = (e) => {
+    setIsCreateHashTag(true);
+  };
+
+  const handleCreateHashTag = (e) => {
+    if (newHashTagValue === '') {
+      return toast.error('Please Enter new hashtag!');
+    } else {
+      const found = hashtagTabs.find((val) => val.value === newHashTagValue);
+
+      if (found) return toast.error('Hashtag already exist!');
+
+      const newValue: HashtagTabs = {
+        title: '#' + newHashTagValue,
+        value: newHashTagValue,
+        status: 'hashtag',
+        emailData: emailData,
+      };
+
+      setHashtagTabs((prevState) => [...prevState, newValue]);
+      setIsCreateHashTag(false);
+      setNewHashTagValue('');
+      return toast.success('Create hashtag successful!');
+    }
+  };
+
+  const handleCancelCreateHashTag = (e) => {
+    setNewHashTagValue('');
+    setIsCreateHashTag(false);
+  };
+
+  const handleChangeHashTagValue = (e) => {
+    setNewHashTagValue(e.target.value);
+  };
+
+  const CreateHashTag = () => {
+    return (
+      <Box>
+        <SingleOTPInput
+          value={newHashTagValue}
+          onChange={handleChangeHashTagValue}
+          className="rounded w-full outline-none p-2 text-[14px]"
+          placeholder="Enter New Hashtag..."
+        />
+        <Box className="flex mt-3">
+          <CustomButton
+            className="flex-1 mx-2"
+            classNameLabel="py-2"
+            onClick={handleCreateHashTag}
+            bgButtonColor="#6C64FF"
+            color="#ffffff"
+            label="Add"
+          />
+          <CustomButton
+            className="flex-1 mx-2"
+            classNameLabel="py-2"
+            onClick={handleCancelCreateHashTag}
+            bgButtonColor="#D3D3D3"
+            color="#ffffff"
+            label="Cancel"
+          />
+        </Box>
+      </Box>
+    );
+  };
+
   const renderEmailTab = (
     title: string,
     notiNumber: number,
@@ -178,40 +251,6 @@ const EmailStatusBar = (props: Props) => {
     );
   };
 
-  const renderHashtagTab = (
-    title: string,
-    status: StatusOptions,
-    emailData: EmailList[],
-    key: number,
-  ) => {
-    const [modalStatus, setModalStatus] = useState(false);
-
-    return (
-      <Box key={key}>
-        <ButtonBase
-          onClick={() => setModalStatus(true)}
-          sx={{
-            width: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '5px 10px',
-          }}>
-          <Typography component={'p'} sx={{ color: '#4BAAA2', fontWeight: 'bold' }}>
-            {title}
-          </Typography>
-        </ButtonBase>
-        <ModalEmailList
-          title={title}
-          status={status}
-          emailData={emailData}
-          isActive={modalStatus}
-          handleChangeModalStatus={setModalStatus}
-        />
-      </Box>
-    );
-  };
-
   return (
     <Box
       sx={{
@@ -250,18 +289,30 @@ const EmailStatusBar = (props: Props) => {
         </Box>
         {hashtagTabs &&
           hashtagTabs.map((item, index) => {
-            return renderHashtagTab(item.title, item.status, item.emailData, index);
+            return (
+              <Hashtag
+                title={item.title}
+                status={item.status}
+                emailData={item.emailData}
+                index={index}
+              />
+            );
           })}
       </Box>
-      <CustomButton
-        label="Create hashtag"
-        bgButtonColor="#554CFF"
-        color="#fff"
-        isAfterIcon={true}
-        isFullWidth
-        isHasSlash={true}
-        afterIcon={<Plus width={10} height={10} color={'#fff'} />}
-      />
+      {!isCreateHashTag ? (
+        <CustomButton
+          onClick={handleClickCreateHashTag}
+          label="Create hashtag"
+          bgButtonColor="#554CFF"
+          color="#fff"
+          isAfterIcon={true}
+          isFullWidth
+          isHasSlash={true}
+          afterIcon={<Plus width={10} height={10} color={'#fff'} />}
+        />
+      ) : (
+        CreateHashTag()
+      )}
     </Box>
   );
 };

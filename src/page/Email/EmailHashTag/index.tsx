@@ -14,7 +14,7 @@ const receiverData: Receiver[] = [
   },
 ];
 
-const HomePage = () => {
+const EmailHashTag = () => {
   return (
     <div className="w-full flex items-center content-around">
       <EmailStatusBar />
@@ -31,4 +31,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export default EmailHashTag;

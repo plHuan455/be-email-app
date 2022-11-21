@@ -12,6 +12,7 @@ import { Box } from '@mui/material';
 import { SVGIconProps } from '@components/atoms/Icon';
 import { sideBarRouter } from '@page/MainRoute';
 import { RenderButtonIcon } from '@components/molecules/EmailActions';
+import { useNavigate } from 'react-router-dom';
 
 export interface TabItem {
   title?: string;
@@ -100,8 +101,11 @@ const MyTabs = styled(Tabs)`
 export default function IconTabs() {
   const [value, setValue] = React.useState(0);
 
+  const navigate = useNavigate();
+
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
+    navigate(sideBarRouter[newValue - 1].path || '/');
   };
 
   const renderTabsData = () => {
