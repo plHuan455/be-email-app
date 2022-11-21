@@ -22,7 +22,9 @@ interface Props {
   onChangeEmailStatus: Function;
   classNameLayer?: string;
   classNameContent?: string;
-  data: Email;
+  sendTo: UserInfo[];
+  sendToDefault: UserInfo[];
+  isReadOnlyReceivers?: boolean;
 }
 
 // const receiversList: UserInfo[] = [
@@ -33,11 +35,13 @@ interface Props {
 
 const fromData: UserInfo[] = [new UserInfo(avatarImg, 'sender', 'sender@gmail.com')];
 
-const EmailReply: React.FC<Props> = ({
+const EmailForward: React.FC<Props> = ({
   classNameLayer,
   classNameContent,
-  data,
+  sendTo,
+  sendToDefault,
   onChangeEmailStatus,
+  isReadOnlyReceivers = true,
 }) => {
   const [attachedFiles, setAttachedFile] = useState<any>([]);
   const [attachFiles, setAttachFile] = useState<any>([]);
@@ -97,22 +101,7 @@ const EmailReply: React.FC<Props> = ({
     setAttachedFile((prevState) => [...prevState, ...customFiles]);
 
     e.target.value = null;
-    // const file = e.target.files[0];
-
-    // file.preview = URL.createObjectURL(file);
-    // setAvatar(file);
   };
-
-  // useEffect(() => {
-  //   return () => {
-  //     attachFiles.length !== 0 &&
-  //       Object.keys(attachFiles).forEach((key) => {
-  //         const file = attachFiles[key];
-
-  //         URL.revokeObjectURL(file.preview);
-  //       });
-  //   };
-  // }, [attachFiles]);
 
   const handleDeleteAllAttachedFiles = useCallback(() => {
     setAttachedFile([]);
@@ -157,9 +146,9 @@ const EmailReply: React.FC<Props> = ({
         <Box>
           <Box className="py-3">
             <AutoCompleteReceive
-              isReadOnly={true}
-              data={data.sendTo}
-              defaultValue={data.sendTo}
+              isReadOnly={isReadOnlyReceivers}
+              data={sendTo}
+              defaultValue={sendToDefault}
               onClickCcFromLabel={handleClickCcFromLabel}
             />
           </Box>
@@ -239,4 +228,4 @@ const EmailReply: React.FC<Props> = ({
   );
 };
 
-export default EmailReply;
+export default EmailForward;
