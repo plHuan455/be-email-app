@@ -17,18 +17,28 @@ interface EmailFormData {
 }
 export interface EmailComposeState extends EmailState {
   isCompose: boolean;
+  isZoom: boolean;
+
+  negativeIsZoom: () => void;
   negativeIsCompose: () => void;
   getAll: any;
 }
 
 const useEmailCompose = create<EmailComposeState>((set, get) => ({
   isCompose: false,
+  isZoom: false,
+
   writer: new UserInfo('', 'Giang', 'giang@mail.com'),
   cc: [],
   bcc: [],
   receivers: [],
   subject: '',
   content: '',
+
+  negativeIsZoom() {
+    return set((state) => ({ isZoom: !state.isZoom }));
+  },
+
   clearReceivers() {
     return set((state) => ({ receivers: [] }));
   },

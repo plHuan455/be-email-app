@@ -20,6 +20,14 @@ export class UserInfo {
   }
 }
 
+export class TempUserInfo extends UserInfo {
+  delete(arr: UserInfo[]) {
+    const pos = arr.findIndex((user) => user.mail === this.mail);
+
+    arr.splice(pos, 1);
+  }
+}
+
 export interface File {
   name: string;
   type: string;

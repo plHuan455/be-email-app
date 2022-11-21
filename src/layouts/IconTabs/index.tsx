@@ -2,13 +2,16 @@ import * as React from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import { styled } from '@mui/material/styles';
-import EmailIcon from '@mui/icons-material/Email';
-import ChatIcon from '@mui/icons-material/Chat';
-import PeopleIcon from '@mui/icons-material/People';
-import DialpadIcon from '@mui/icons-material/Dialpad';
-import DonutSmallIcon from '@mui/icons-material/DonutSmall';
+// import EmailIcon from '@mui/icons-material/Email';
+// import ChatIcon from '@mui/icons-material/Chat';
+// import PeopleIcon from '@mui/icons-material/People';
+// import DialpadIcon from '@mui/icons-material/Dialpad';
+// import DonutSmallIcon from '@mui/icons-material/DonutSmall';
 import logo from '../../assets/images/logo_without_text.png';
 import { Box } from '@mui/material';
+import { SVGIconProps } from '@components/atoms/Icon';
+import { sideBarRouter } from '@page/MainRoute';
+import { RenderButtonIcon } from '@components/molecules/EmailActions';
 
 export interface TabItem {
   title?: string;
@@ -17,32 +20,42 @@ export interface TabItem {
   icon?: React.ReactElement;
 }
 
-const TabsData: TabItem[] = [
-  {
-    logo: logo,
-    url: '/',
-  },
-  {
-    title: 'Email',
-    icon: <EmailIcon />,
-  },
-  {
-    title: 'Chats',
-    icon: <ChatIcon />,
-  },
-  {
-    title: 'Contact',
-    icon: <PeopleIcon />,
-  },
-  {
-    title: 'Call',
-    icon: <DialpadIcon />,
-  },
-  {
-    title: 'Book Mark',
-    icon: <DonutSmallIcon />,
-  },
-];
+// const TabsData: TabItem[] = [
+//   {
+//     logo: logo,
+//     url: '/',
+//   },
+//   {
+//     title: 'Email',
+//     icon: <EmailIcon />,
+//   },
+//   {
+//     title: 'Chats',
+//     icon: <ChatIcon />,
+//   },
+//   {
+//     title: 'Contact',
+//     icon: <PeopleIcon />,
+//   },
+//   {
+//     title: 'Call',
+//     icon: <DialpadIcon />,
+//   },
+//   {
+//     title: 'Book Mark',
+//     icon: <DonutSmallIcon />,
+//   },
+// ];
+
+const iconsList: {
+  [key: string]: SVGIconProps['icon'];
+} = {
+  '/emails': 'email',
+  '/chats': 'chat',
+  '/contact': 'people',
+  '/call': 'dialpad',
+  '/bookmark': 'donut',
+};
 
 const MyTabs = styled(Tabs)`
   .MuiTabs-root {
@@ -73,6 +86,9 @@ const MyTabs = styled(Tabs)`
       background: #e9e4ff;
     }
     &.Mui-selected {
+      & svg {
+        color: #7061e2;
+      }
       & .MuiTouchRipple-root {
         opacity: 1;
         visibility: visible;
@@ -88,23 +104,21 @@ export default function IconTabs() {
     setValue(newValue);
   };
 
-  const renderTabsData = () =>
-    TabsData.map((val, index) => {
-      return val.logo ? (
-        <Box
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            padding: '24px 0',
-          }}
-          key={index}>
-          <Box component={'img'} src={val.logo} alt="logo" />
-        </Box>
-      ) : (
-        <Tab key={index} icon={val.icon} aria-label={val.title} />
+  const renderTabsData = () => {
+    if (!sideBarRouter) return [];
+
+    return sideBarRouter.map((val, index) => {
+      return (
+        <Tab
+          key={index}
+          icon={
+            <RenderButtonIcon item={val.path ? iconsList[val.path] : 'approved'} />
+          }
+          aria-label={val.path ? String(val.path.split('/').pop()).capitalize() : ''}
+        />
       );
     });
+  };
 
   return (
     <MyTabs
@@ -112,6 +126,15 @@ export default function IconTabs() {
       orientation="vertical"
       onChange={handleChange}
       aria-label="icon tabs example">
+      <Box
+        sx={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '24px 0',
+        }}>
+        <Box component={'img'} src={logo} alt="logo" />
+      </Box>
       {renderTabsData()}
     </MyTabs>
   );

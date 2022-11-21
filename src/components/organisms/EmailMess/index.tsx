@@ -5,11 +5,9 @@ import AttachFiles from '@components/atoms/AttachFiles';
 import EmailStatus from '@components/atoms/EmailStatus';
 import OptionalAvatar from '@components/atoms/OptionalAvatar';
 
-import { EditorState, convertToRaw, convertFromRaw } from 'draft-js';
-import { Editor } from 'react-draft-wysiwyg';
-import { useEffect, useState } from 'react';
-import EmailReply from '../EmailReply';
 import EmailActions from '@components/molecules/EmailActions';
+import { useMemo } from 'react';
+import EmailForward from '../EmailForward';
 export interface UserRead {
   name: string;
   time: string;
@@ -37,6 +35,8 @@ function EmailMess({
   onChangeStatus,
 }) {
   const { title, sendTo, mailContent, attachFiles } = emailData;
+
+  const defaultStatus = useMemo(() => status, []);
 
   // const [editor, setEditor] = useState(() => EditorState.createEmpty());
 
@@ -201,14 +201,28 @@ function EmailMess({
         )}
       </Box>
       {/* Layer if status === 'Reply || ReplyAll' */}
-      {(status === 'reply' || status === 'replyAll') && (
-        <EmailReply
+      {(status === 'reply' || status === 'replyAll' || status === 'forward') && (
+        <EmailForward
           onChangeEmailStatus={() => {
-            onChangeStatus('pending', index);
+            onChangeStatus(defaultStatus, index);
           }}
+          isReadOnlyReceivers={!(status === 'forward')}
           classNameLayer="absolute top-0 left-0 w-full h-full"
           classNameContent="shadow-lg p-4 absolute z-10 top-1/2 right-[40px] w-[90%] -translate-y-1/2 bg-white rounded-[11px] border border-[#E3E3E3] "
-          data={emailData}
+          sendTo={
+            status === 'reply'
+              ? [emailData.sender]
+              : status === 'replyAll'
+              ? emailData.sendTo
+              : emailData.sendTo
+          }
+          sendToDefault={
+            status === 'reply'
+              ? [emailData.sender]
+              : status === 'replyAll'
+              ? emailData.sendTo
+              : []
+          }
         />
       )}
     </Box>
