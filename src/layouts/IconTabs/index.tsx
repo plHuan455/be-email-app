@@ -86,6 +86,9 @@ const MyTabs = styled(Tabs)`
       background: #e9e4ff;
     }
     &.Mui-selected {
+      & svg {
+        color: #7061e2;
+      }
       & .MuiTouchRipple-root {
         opacity: 1;
         visibility: visible;
@@ -109,10 +112,7 @@ export default function IconTabs() {
         <Tab
           key={index}
           icon={
-            <RenderButtonIcon
-              item={val.path ? iconsList[val.path] : 'approved'}
-              color="#7061E2"
-            />
+            <RenderButtonIcon item={val.path ? iconsList[val.path] : 'approved'} />
           }
           aria-label={val.path ? String(val.path.split('/').pop()).capitalize() : ''}
         />
