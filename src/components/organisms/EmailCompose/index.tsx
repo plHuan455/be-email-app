@@ -26,26 +26,34 @@ import { useTranslation } from '@@packages/localization/src';
 import useEmailCompose from '../../../zustand/useEmailCompose';
 import draftToHtml from 'draftjs-to-html';
 import { UserInfo } from '../Email/Interface';
+import { CreateEmailParam, sendEmail } from '@api/email';
+import {
+  MESSAGE_SEND_EMAIL_FAILED,
+  MESSAGE_SEND_EMAIL_SUCCESSFUL,
+} from '@constants/EmailAPI';
 
 const fromData: UserInfo[] = [new UserInfo(avatarImg, 'sender', 'sender@gmail.com')];
 
 const receiversList: UserInfo[] = [
-  new UserInfo(avatarImg, 'Giang', 'giangz0009@gmail.com'),
-  new UserInfo('', 'mail1', 'mail1@gmail.com'),
-  new UserInfo(avatarImg, 'mail2', 'mail2@gmail.com'),
+  new UserInfo(avatarImg, 'Giang', 'giangz0009@begmail.com'),
+  new UserInfo(
+    'https://vcdn1-vnexpress.vnecdn.net/2022/10/28/-5369-1666951215.jpg?w=0&h=0&q=100&dpr=2&fit=crop&s=RzncK6dCQpia2MrWYaQJ8g',
+    'Elon Musk',
+    'elonmusk@bemail.com',
+  ),
+  new UserInfo(avatarImg, 'Ri Đỗ Sa Tị', 'usertest@bemail.com'),
 ];
 
 function EmailCompose() {
   const [attachedFiles, setAttachedFiles] = useState<any>([]);
   const [attachFiles, setAttachFiles] = useState<any>([]);
-
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
-
   const [isShowCcFrom, setIsShowCcFrom] = useState(false);
-
   const refInputAttachFile = useRef<HTMLInputElement>(null);
-
   const { t } = useTranslation();
+  const currentUserEmail = localStorage.getItem('current_email')
+    ? localStorage.getItem('current_email')
+    : '';
 
   const {
     cc,
@@ -154,11 +162,32 @@ function EmailCompose() {
     setBcc(newValue);
   }, []);
 
-  const handleOnClickSubmitCompose = async (e) => {
+  const handleOnClickSubmitCompose = async () => {
     const checkData = await check();
-
+    const emailData = getAll();
+    console.log(
+      '🚀 ~ file: index.tsx ~ line 159 ~ handleOnClickSubmitCompose ~ emailData',
+      emailData,
+    );
     if (checkData) {
-      return toast.success('Ok!');
+      const params: CreateEmailParam = {
+        subject: emailData.subject,
+        to: emailData.receivers.map((item) => item.mail),
+        content: 'asdasdasdasd',
+        html_string: emailData.content,
+        from: currentUserEmail ? currentUserEmail : '',
+        cc: emailData.cc.map((item) => item.mail),
+        bcc: emailData.bcc.map((item) => item.mail),
+        file: [],
+      };
+      const res = await sendEmail(params);
+      if (res.statusText == 'OK') {
+        toast.success(MESSAGE_SEND_EMAIL_SUCCESSFUL);
+        reset();
+        return;
+      } else {
+        return toast.error(MESSAGE_SEND_EMAIL_FAILED);
+      }
     }
     return toast.error('*Vui lòng nhập người nhận!');
   };
