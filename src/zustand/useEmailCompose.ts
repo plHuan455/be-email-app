@@ -1,3 +1,4 @@
+import { Content } from './../containers/LoginContainer/index';
 import create from 'zustand';
 import React from 'react';
 import useEmail, { EmailState } from './useEmail';
@@ -5,13 +6,22 @@ import { UserInfo } from '@components/organisms/Email/Interface';
 import { isEmpty } from 'lodash';
 import { useTranslation } from '@@packages/localization/src';
 import { toast } from 'react-toastify';
+
+interface EmailFormData {
+  writer: string;
+  cc: string[];
+  bcc: string[];
+  receivers: string[];
+  subject: string;
+  content: string;
+}
 export interface EmailComposeState extends EmailState {
   isCompose: boolean;
   isZoom: boolean;
 
   negativeIsZoom: () => void;
   negativeIsCompose: () => void;
-  getAll: () => void;
+  getAll: any;
 }
 
 const useEmailCompose = create<EmailComposeState>((set, get) => ({
@@ -21,9 +31,7 @@ const useEmailCompose = create<EmailComposeState>((set, get) => ({
   writer: new UserInfo('', 'Giang', 'giang@mail.com'),
   cc: [],
   bcc: [],
-
   receivers: [],
-
   subject: '',
   content: '',
 
@@ -59,7 +67,6 @@ const useEmailCompose = create<EmailComposeState>((set, get) => ({
       writer: new UserInfo('', 'Giang', 'giang@mail.com'),
       cc: [],
       bcc: [],
-
       subject: '',
       content: '',
       receivers: [],

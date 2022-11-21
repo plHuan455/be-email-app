@@ -5,22 +5,19 @@ import { AxiosResponse } from 'axios';
 
 // export interface Receiver {}
 
-interface FileType {
-  email_id: number;
-  path: string;
-}
+// interface FileType {
+//   path: string;
+// }
 
 export interface CreateEmailParam {
-  title: string;
   subject: string;
-  writer_id: number;
   to: string[];
   from: string;
   content: string;
   html_string: string;
   cc: string[];
   bcc: string[];
-  file: FileType[];
+  file: any[];
 }
 export interface EmailResponse {
   id: number;

@@ -12,20 +12,12 @@ const EmailContainer = () => {
       sx={{
         width: '70%',
         height: '100vh',
-        padding: '28px',
+        padding: '80px 28px 28px 28px',
         backgroundColor: '#EDEDF3',
         borderTopLeftRadius: '65px',
         overflow: 'scroll',
       }}>
       {isCompose ? <EmailCompose /> : <Email />}
-      {/* <EmailActions /> */}
-      {/* <Sender />
-  <Email status={'pending'} />
-  <Email status={'approved'} />
-  <Email status={'sent'} />
-  <Email status={'seen'} />
-  <Email status={'declined'} />
-  <Email status={'sending'} /> */}
     </Box>
   );
 };
