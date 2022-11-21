@@ -7,6 +7,11 @@ import UploadCloud from '@assets/icon/UploadCloud';
 import Dot from '@assets/icon/Dot';
 
 // Icon
+const Chat = React.lazy(() => import('@assets/icon/Chat'));
+const Dialpad = React.lazy(() => import('@assets/icon/Dialpad'));
+const Donut = React.lazy(() => import('@assets/icon/Donut'));
+const Email = React.lazy(() => import('@assets/icon/Email'));
+const People = React.lazy(() => import('@assets/icon/People'));
 const SquareCropDin = React.lazy(() => import('@assets/icon/SquareCropDin'));
 const AccountCircle = React.lazy(() => import('@assets/icon/AccountCircle'));
 const Password = React.lazy(() => import('@assets/icon/Password'));
@@ -61,6 +66,11 @@ export interface SVGProps {
 }
 
 export const ICON = {
+  chat: Chat,
+  dialpad: Dialpad,
+  donut: Donut,
+  email: Email,
+  people: People,
   squareCropDin: SquareCropDin,
   accountCircle: AccountCircle,
   password: Password,

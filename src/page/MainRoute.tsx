@@ -16,7 +16,23 @@ import { genCRUD } from '@utils/routerHelper';
 import ErrorBoundary from './ErrorBoudary';
 import ErrorPage from './ErrorPage';
 
-export const sideBarRouter: RouteObject[] = [{}];
+export const sideBarRouter: RouteObject[] = [
+  {
+    path: '/emails',
+  },
+  {
+    path: '/chats',
+  },
+  {
+    path: '/contact',
+  },
+  {
+    path: '/call',
+  },
+  {
+    path: '/bookmark',
+  },
+];
 
 export const declareRouter: RouteObject[] = [
   {
@@ -31,7 +47,7 @@ export const declareRouter: RouteObject[] = [
         element: <Navigate to={'/'} replace={true} />,
       },
       { path: '/about', element: <AboutPage /> },
-      // ...sideBarRouter,
+      ...sideBarRouter,
     ],
     errorElement: <ErrorBoundary />,
   },
