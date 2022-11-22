@@ -82,88 +82,17 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
   );
 }
 
-const rows = [
-  new Manager('', 'adep adep', 'adep@adep.com', 'Marketing', 'Manager 02'),
-  new Manager(
-    '',
-    'Anh Nguyen The',
-    'theanh.nguyen@theanh.com',
-    'Front End',
-    'Admin',
-  ),
-  new Manager('', 'Anh Tran', 'anh.tran@test.com', 'Back End', 'Employee'),
-  new Manager('', 'Bùi Thùy Thị Minh', 'minhthuy.bui@test.com', 'CS', 'Manager'),
-  new Manager(
-    '',
-    'Bùi Phạn Hương Giang',
-    'huonggiang.bui@test.com',
-    'CS',
-    'Blocked',
-  ),
-  new Manager('', 'CSKH iBe', 'cskh', 'Front End', 'Employee'),
-  new Manager('', 'adep adep', 'adep@adep.com', 'Marketing', 'Manager 02'),
-  new Manager(
-    '',
-    'Anh Nguyen The',
-    'theanh.nguyen@theanh.com',
-    'Front End',
-    'Admin',
-  ),
-  new Manager('', 'Anh Tran', 'anh.tran@test.com', 'Back End', 'Employee'),
-  new Manager('', 'Bùi Thùy Thị Minh', 'minhthuy.bui@test.com', 'CS', 'Manager'),
-  new Manager(
-    '',
-    'Bùi Phạn Hương Giang',
-    'huonggiang.bui@test.com',
-    'CS',
-    'Blocked',
-  ),
-  new Manager('', 'CSKH iBe', 'cskh', 'Front End', 'Employee'),
-  new Manager('', 'adep adep', 'adep@adep.com', 'Marketing', 'Manager 02'),
-  new Manager(
-    '',
-    'Anh Nguyen The',
-    'theanh.nguyen@theanh.com',
-    'Front End',
-    'Admin',
-  ),
-  new Manager('', 'Anh Tran', 'anh.tran@test.com', 'Back End', 'Employee'),
-  new Manager('', 'Bùi Thùy Thị Minh', 'minhthuy.bui@test.com', 'CS', 'Manager'),
-  new Manager(
-    '',
-    'Bùi Phạn Hương Giang',
-    'huonggiang.bui@test.com',
-    'CS',
-    'Blocked',
-  ),
-  new Manager('', 'CSKH iBe', 'cskh', 'Front End', 'Employee'),
-  new Manager('', 'adep adep', 'adep@adep.com', 'Marketing', 'Manager 02'),
-  new Manager(
-    '',
-    'Anh Nguyen The',
-    'theanh.nguyen@theanh.com',
-    'Front End',
-    'Admin',
-  ),
-  new Manager('', 'Anh Tran', 'anh.tran@test.com', 'Back End', 'Employee'),
-  new Manager('', 'Bùi Thùy Thị Minh', 'minhthuy.bui@test.com', 'CS', 'Manager'),
-  new Manager(
-    '',
-    'Bùi Phạn Hương Giang',
-    'huonggiang.bui@test.com',
-    'CS',
-    'Blocked',
-  ),
-  new Manager('', 'CSKH iBe', 'cskh', 'Front End', 'Employee'),
-].sort((a, b) => (a.name < b.name ? -1 : 1));
+interface Props {
+  data: Manager[];
+}
 
-export default function TableManagerEmployee() {
+const TableManagerEmployee: React.FC<Props> = ({ data }) => {
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
@@ -189,13 +118,13 @@ export default function TableManagerEmployee() {
               style={{
                 color: '#778397',
                 fontSize: 14,
-              }}>{`${rows.length} employees in total`}</TableCell>
+              }}>{`${data.length} employees in total`}</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {(rowsPerPage > 0
-            ? rows.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-            : rows
+            ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+            : data
           ).map((row, index) => (
             <TableRow
               className={`managerRow ${row.role === 'Blocked' && 'blocked'}`}
@@ -236,7 +165,7 @@ export default function TableManagerEmployee() {
             <TablePagination
               rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
               colSpan={5}
-              count={rows.length}
+              count={data.length}
               rowsPerPage={rowsPerPage}
               page={page}
               SelectProps={{
@@ -254,4 +183,6 @@ export default function TableManagerEmployee() {
       </Table>
     </TableContainer>
   );
-}
+};
+
+export default TableManagerEmployee;

@@ -32,3 +32,13 @@ export class Manager implements ManagerFunctions {
     return this.name;
   }
 }
+
+export class Department {
+  constructor(
+    public name: string,
+    public number: number,
+    public address: string,
+    public employees: Manager[],
+    public description: string | '',
+  ) {}
+}

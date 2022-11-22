@@ -10,7 +10,7 @@ interface Props {
   isHaveActions?: boolean;
 }
 
-const TableManagerHeader: React.FC<Props> = ({ isHaveActions = true }) => {
+const TableHeader: React.FC<Props> = ({ isHaveActions = true }) => {
   const [value, setValue] = useState(0);
 
   const actionsList: {
@@ -29,45 +29,47 @@ const TableManagerHeader: React.FC<Props> = ({ isHaveActions = true }) => {
         value={value}
         onChange={handleChange}
         aria-label="disabled tabs example">
-        <Tab label="Active" />
-        <Tab label="Active" />
+        <Tab label="Employee" />
+        <Tab label="Departments" />
       </Tabs>
-      <Box className="flex gap-3 items-start">
-        <CustomButton
-          bgButtonColor="#282B33"
-          className="p-3 px-5"
-          classNameLabel="text-[12px]"
-          color="#ffffff"
-          label="Import"
-          isBeforeIcon={true}
-          beforeIcon={
-            <RenderButtonIcon
-              width={14}
-              height={14}
-              item={actionsList['import']}
-              color="#ffffff"
-            />
-          }
-        />
-        <CustomButton
-          bgButtonColor="#282B33"
-          className="p-3 px-5"
-          classNameLabel="text-[12px]"
-          color="#ffffff"
-          label="Add employee"
-          isBeforeIcon={true}
-          beforeIcon={
-            <RenderButtonIcon
-              width={14}
-              height={14}
-              item={actionsList['plus']}
-              color="#ffffff"
-            />
-          }
-        />
-      </Box>
+      {isHaveActions && (
+        <Box className="flex gap-3 items-start">
+          <CustomButton
+            bgButtonColor="#282B33"
+            className="p-3 px-5"
+            classNameLabel="text-[12px]"
+            color="#ffffff"
+            label="Import"
+            isBeforeIcon={true}
+            beforeIcon={
+              <RenderButtonIcon
+                width={14}
+                height={14}
+                item={actionsList['import']}
+                color="#ffffff"
+              />
+            }
+          />
+          <CustomButton
+            bgButtonColor="#282B33"
+            className="p-3 px-5"
+            classNameLabel="text-[12px]"
+            color="#ffffff"
+            label="Add employee"
+            isBeforeIcon={true}
+            beforeIcon={
+              <RenderButtonIcon
+                width={14}
+                height={14}
+                item={actionsList['plus']}
+                color="#ffffff"
+              />
+            }
+          />
+        </Box>
+      )}
     </div>
   );
 };
 
-export default TableManagerHeader;
+export default TableHeader;

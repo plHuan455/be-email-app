@@ -19,6 +19,7 @@ import EmailHashTag from './Email/EmailHashTag';
 import Email from './Email';
 import ManagerEmployee from './Manager/ManagerEmployee';
 import ManagerSettings from './Manager/ManagerSettings';
+import ManagerDepartment from './Manager/ManagerDepartment';
 export const sideBarRouter: RouteObject[] = [
   {
     path: '/emails',
@@ -59,6 +60,7 @@ export const declareRouter: RouteObject[] = [
         path: '/manager',
         children: [
           { path: '/manager/employee', element: <ManagerEmployee /> },
+          { path: '/manager/department', element: <ManagerDepartment /> },
           { path: '/manager/setting', element: <ManagerSettings /> },
         ],
       },

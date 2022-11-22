@@ -55,7 +55,7 @@ const SingleAvatar: React.FC<AvatarProps> = ({
         />
         {isAdminRole && (
           <Icon
-            className="absolute bottom-0 right-0 p-1 rounded-full translate-x-1/2 translate-y-1/4 bg-[#303541]"
+            className="absolute bottom-0 right-[10px] p-1 rounded-full translate-x-1/2 translate-y-1/4 bg-[#303541]"
             icon={'crown'}
             rawColor={'#FED654'}
             width={16}
@@ -66,10 +66,16 @@ const SingleAvatar: React.FC<AvatarProps> = ({
     );
 
   return (
-    <Box>
+    <Box className="relative">
       <Avatar alt={abbreviations} src={src} className={className} />
       {isAdminRole && (
-        <Icon icon={'crown'} rawColor={'#827CFF'} width={16} height={16} />
+        <Icon
+          className="absolute bottom-0 right-[10px] p-1 rounded-full translate-x-1/2 translate-y-1/4 bg-[#303541]"
+          icon={'crown'}
+          rawColor={'#827CFF'}
+          width={16}
+          height={16}
+        />
       )}
     </Box>
   );
