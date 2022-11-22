@@ -15,13 +15,16 @@ import useInjectLocales from '@hooks/useInjectLocales';
 import { genCRUD } from '@utils/routerHelper';
 import ErrorBoundary from './ErrorBoudary';
 import ErrorPage from './ErrorPage';
+import Chat from './Chat';
 
 export const sideBarRouter: RouteObject[] = [
   {
     path: '/emails',
+    element: <HomePage />,
   },
   {
     path: '/chats',
+    element: <Chat />,
   },
   {
     path: '/contact',

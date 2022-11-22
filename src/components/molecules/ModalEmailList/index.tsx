@@ -9,6 +9,7 @@ import './index.scss';
 import { ButtonBase } from '@mui/material';
 import ArrowLeft from '@assets/icon/ArrowLeft';
 import EmailItem from '@components/atoms/Emailitem';
+import { EmailResponse } from '@api/email';
 
 export interface EmailList {
   userId: number;
@@ -54,7 +55,7 @@ export type StatusOptions = 'pending' | 'approved' | 'cancel' | 'hashtag';
 type Props = {
   title: string;
   status: StatusOptions;
-  emailData: EmailList[];
+  emailData: EmailResponse;
   isActive: boolean;
   handleChangeModalStatus: (status: boolean) => void;
 };
@@ -108,12 +109,12 @@ const ModalEmailList = (props: Props) => {
             <Tab className="tab" label="Me" {...a11yProps(1)} />
           </Tabs>
         </Box>
-        <TabPanel value={value} index={0}>
+        {/* <TabPanel value={value} index={0}>
           {props.emailData &&
             props.emailData.map((item) => {
               return <EmailItem emailData={item} />;
             })}
-        </TabPanel>
+        </TabPanel> */}
         <TabPanel value={value} index={1}>
           Item Two
         </TabPanel>

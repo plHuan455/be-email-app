@@ -19,6 +19,7 @@ export interface CreateEmailParam {
   bcc: string[];
   file: any[];
 }
+
 export interface EmailResponse {
   id: number;
   to: string[];
@@ -30,11 +31,18 @@ export interface EmailResponse {
 }
 
 //GET EMAIL WITH STATUS
-export const getEmailWithStatus = async (
-  status: string,
-): Promise<AxiosResponse<EmailResponse>> => {
+export const getEmailWithQueryParam = async (params?: {
+  status?: string;
+  email?: string | null;
+  hashtag?: string;
+}): Promise<AxiosResponse<EmailResponse>> => {
   const url = `${EMAIL_API_URL}`;
-  const res = await ApiClient.get(url, { query: status }, {});
+  const res = await ApiClient.get(
+    url,
+    { status: params?.status, email: params?.email, hashtag: params?.hashtag },
+    {},
+  );
+  console.log('🚀 ~ file: index.ts ~ line 45 ~ res', res.data);
   return res.data;
 };
 
@@ -70,7 +78,6 @@ export const sendEmail = async (
 ): Promise<AxiosResponse<EmailResponse>> => {
   const url = EMAIL_API_URL;
   const res = await ApiClient.post(url, undefined, params);
-  console.log('🚀 ~ file: index.ts ~ line 24 ~ getAllEmail ~ res', res);
   return res;
 };
 
@@ -80,6 +87,5 @@ export const deleteEmail = async (
 ): Promise<AxiosResponse<EmailResponse>> => {
   const url = EMAIL_API_URL;
   const res = await ApiClient.delete(`${url}/${id}`, undefined);
-  console.log('🚀 ~ file: index.ts ~ line 24 ~ getAllEmail ~ res', res);
   return res;
 };

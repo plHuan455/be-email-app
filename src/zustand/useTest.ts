@@ -9,6 +9,8 @@ interface TestState {
 const useTest = create<TestState>((set) => ({
   name: '',
   setName: (name: string) => set({ name }),
+  age: 0,
+  setAge: (name: string) => set({ name }),
 }));
 
 export default useTest;

@@ -6,8 +6,6 @@ const ProtectedRoute = ({ children }) => {
   const location = useLocation();
   const { user, token } = useAuth();
 
-  console.log({ user, token });
-  // return children;
   return user && token ? (
     children
   ) : (

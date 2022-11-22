@@ -52,10 +52,8 @@ function LoginContainer() {
   const auth = useAuth();
 
   const submitLogin = async ({ email, password }) => {
-    console.log('🚀 ~ file: index.tsx ~ line 60 ~ submitLogin ~ email', email);
     try {
       const res = await login({ email, password });
-      console.log('🚀 ~ file: index.tsx ~ line 57 ~ submitLogin ~ email', email);
       auth.signin({}, res.data, async () => {
         if (res.message === 'Login successful') {
           const currentUser = await getUserWithEmail(email);

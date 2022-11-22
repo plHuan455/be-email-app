@@ -2,7 +2,9 @@ const path = require('path');
 
 module.exports = {
   mode: 'development',
-  entry: ['./src/index.tsx'],
+  entry: ['./src/index.tsx',
+    "webpack-dev-server/client?http://127.0.0.0:8080",
+    "webpack/hot/only-dev-server",],
   module: {
     rules: require('./webpack.rules'),
   },

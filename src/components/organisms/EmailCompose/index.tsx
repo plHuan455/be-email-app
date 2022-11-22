@@ -14,7 +14,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import AttachFiles from '@components/atoms/AttachFiles';
 import AutoCompleteReceive from '@components/molecules/AutoCompleteReceive';
 
-import { EditorState, ContentState, convertToRaw } from 'draft-js';
+import { EditorState, convertToRaw } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 import EmailComposeFormGroup from '@components/molecules/EmailComposeFormGroup';
 import { toolbarCustom } from '@constants/constants';
@@ -26,7 +26,6 @@ import { useTranslation } from '@@packages/localization/src';
 import useEmailCompose from '../../../zustand/useEmailCompose';
 import draftToHtml from 'draftjs-to-html';
 import { UserInfo } from '../Email/Interface';
-import htmlToDraft from 'html-to-draftjs';
 import { CreateEmailParam, sendEmail } from '@api/email';
 import {
   MESSAGE_SEND_EMAIL_FAILED,
@@ -57,7 +56,6 @@ function EmailCompose() {
     : '';
 
   const {
-    isZoom,
     cc,
     setCc,
     bcc,
@@ -71,18 +69,10 @@ function EmailCompose() {
     getAll,
     reset,
     setNewReceivers,
-    negativeIsCompose,
   } = useEmailCompose();
 
   useEffect(() => {
-    const contentBlock = htmlToDraft(content);
-
-    if (contentBlock) {
-      const contentState = ContentState.createFromBlockArray(
-        contentBlock.contentBlocks,
-      );
-      setEditorState(EditorState.createWithContent(contentState));
-    }
+    reset();
   }, []);
 
   const handleClickCcFromLabel = useCallback(() => {
@@ -175,10 +165,6 @@ function EmailCompose() {
   const handleOnClickSubmitCompose = async () => {
     const checkData = await check();
     const emailData = getAll();
-    console.log(
-      '🚀 ~ file: index.tsx ~ line 159 ~ handleOnClickSubmitCompose ~ emailData',
-      emailData,
-    );
     if (checkData) {
       const params: CreateEmailParam = {
         subject: emailData.subject,
@@ -191,6 +177,10 @@ function EmailCompose() {
         file: [],
       };
       const res = await sendEmail(params);
+      console.log(
+        '🚀 ~ file: index.tsx ~ line 180 ~ handleOnClickSubmitCompose ~ res',
+        res,
+      );
       if (res.statusText == 'OK') {
         toast.success(MESSAGE_SEND_EMAIL_SUCCESSFUL);
         reset();
@@ -217,20 +207,16 @@ function EmailCompose() {
   };
 
   return (
-    <Box
-      className={`flex flex-col w-full mx-auto shadow-xl rounded-3xl overflow-hidden z-5 transition-all ${
-        isZoom && 'fixed top-0 left-0 bottom-0'
-      }`}>
+    <Box className="w-full mx-auto shadow-xl rounded-3xl overflow-hidden">
       {/* Header */}
-      <Box className="bg-white flex-1 flex flex-col">
+      <Box className="bg-white">
         {/* Window Compose Actions  */}
         <WindowComposeActions className="pt-3 pr-3" />
-        <Box className="px-9 py-10 pt-2 flex-1 flex flex-col">
+        <Box className="px-9 py-10 pt-2">
           {/* Compose To */}
           <EmailComposeFormGroup label={'To:'}>
             <AutoCompleteReceive
               data={receiversList}
-              defaultValue={receivers}
               onClickCcFromLabel={handleClickCcFromLabel}
               onChange={handleChangeReceivers}
             />
@@ -253,7 +239,6 @@ function EmailCompose() {
                 <AutoCompleteReceive
                   isShowCcFromLabel={false}
                   data={receiversList}
-                  defaultValue={cc}
                   onClickCcFromLabel={handleClickCcFromLabel}
                   onChange={handleChangeCc}
                 />
@@ -265,7 +250,6 @@ function EmailCompose() {
                 <AutoCompleteReceive
                   isShowCcFromLabel={false}
                   data={receiversList}
-                  defaultValue={bcc}
                   onClickCcFromLabel={handleClickCcFromLabel}
                   onChange={handleChangeBcc}
                 />
@@ -285,37 +269,34 @@ function EmailCompose() {
           )}
 
           {/* Edit Content */}
+          {/* <EditContent /> */}
 
-          <Box className="flex flex-col flex-1">
-            <Editor
-              editorState={editorState}
-              onEditorStateChange={onEditorStateChange}
-              wrapperClassName="wrapper-class flex-1"
-              editorClassName="editor-class border"
-              toolbarClassName="toolbar-class"
-              placeholder="Enter content here..."
-              toolbar={toolbarCustom}
-            />
-            <Box>
-              {/* Files List */}
-              <Box>
-                {attachedFiles.length !== 0 && (
-                  <AttachFiles
-                    data={attachedFiles}
-                    isDelete={true}
-                    onDeleteAll={handleDeleteAllAttachedFiles}
-                    onDeleteFile={handleDeleteAttachedFile}
-                  />
-                )}
-              </Box>
-              {/* Greeting */}
-              <EmailGreeting
-                greetingLabel="Thanks and Best regards, ------"
-                isHaveLogo={true}
-                logo={<LogoWithLabel />}
+          <Editor
+            editorState={editorState}
+            onEditorStateChange={onEditorStateChange}
+            wrapperClassName="wrapper-class"
+            editorClassName="editor-class border"
+            toolbarClassName="toolbar-class"
+            placeholder="Enter content here..."
+            toolbar={toolbarCustom}
+          />
+          {/* Files List */}
+          <Box>
+            {attachedFiles.length !== 0 && (
+              <AttachFiles
+                data={attachedFiles}
+                isDelete={true}
+                onDeleteAll={handleDeleteAllAttachedFiles}
+                onDeleteFile={handleDeleteAttachedFile}
               />
-            </Box>
+            )}
           </Box>
+          {/* Greeting */}
+          <EmailGreeting
+            greetingLabel="Thanks and Best regards, ------"
+            isHaveLogo={true}
+            logo={<LogoWithLabel />}
+          />
         </Box>
       </Box>
       {/* Footer */}
