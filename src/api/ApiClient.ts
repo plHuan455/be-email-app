@@ -10,8 +10,10 @@ export interface ApiResponse<T = any> {
   data: T;
 }
 
-const url = process.env.REACT_APP_API_BASE_URL;
-const local = 'http://10.0.2.248:5001/';
+const url = process.env.EMAIL_APP_API_BASE_URL
+  ? process.env.EMAIL_APP_API_BASE_URL
+  : 'http://61.28.238.162:5001/';
+const local = 'http://10.0.0.53:5001/';
 
 const axiosInstance = axios.create({
   baseURL: local,
@@ -25,6 +27,10 @@ export default class ApiClient {
     query?: object,
   ): Promise<AxiosResponse> {
     let requestUrl = query ? `${url}?${stringify(query)}` : url;
+    console.log(
+      '🚀 ~ file: ApiClient.ts ~ line 30 ~ ApiClient ~ requestUrl:',
+      requestUrl,
+    );
     const response = await axiosInstance.get(requestUrl, {
       params,
       headers: await this.getHeaders(),

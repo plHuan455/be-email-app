@@ -9,6 +9,7 @@ import './index.scss';
 import { ButtonBase } from '@mui/material';
 import ArrowLeft from '@assets/icon/ArrowLeft';
 import EmailItem from '@components/atoms/Emailitem';
+import { EmailResponse } from '@api/email';
 
 export interface EmailList {
   userId: number;
@@ -108,12 +109,12 @@ const ModalEmailList = (props: Props) => {
             <Tab className="tab" label="Me" {...a11yProps(1)} />
           </Tabs>
         </Box>
-        <TabPanel value={value} index={0}>
+        {/* <TabPanel value={value} index={0}>
           {props.emailData &&
             props.emailData.map((item) => {
               return <EmailItem emailData={item} />;
             })}
-        </TabPanel>
+        </TabPanel> */}
         <TabPanel value={value} index={1}>
           Item Two
         </TabPanel>

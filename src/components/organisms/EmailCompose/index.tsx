@@ -175,10 +175,6 @@ function EmailCompose() {
   const handleOnClickSubmitCompose = async () => {
     const checkData = await check();
     const emailData = getAll();
-    console.log(
-      '🚀 ~ file: index.tsx ~ line 159 ~ handleOnClickSubmitCompose ~ emailData',
-      emailData,
-    );
     if (checkData) {
       const params: CreateEmailParam = {
         subject: emailData.subject,
@@ -191,6 +187,10 @@ function EmailCompose() {
         file: [],
       };
       const res = await sendEmail(params);
+      console.log(
+        '🚀 ~ file: index.tsx ~ line 180 ~ handleOnClickSubmitCompose ~ res',
+        res,
+      );
       if (res.statusText == 'OK') {
         toast.success(MESSAGE_SEND_EMAIL_SUCCESSFUL);
         reset();

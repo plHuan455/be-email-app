@@ -201,7 +201,6 @@ const EmailStatusBar = (props: Props) => {
   const renderEmailTab = (
     title: string,
     notiNumber: number,
-    emailData: EmailList[],
     status: StatusOptions,
     key: number,
   ) => {
@@ -240,13 +239,13 @@ const EmailStatusBar = (props: Props) => {
             </Typography>
           )}
         </ButtonBase>
-        <ModalEmailList
+        {/* <ModalEmailList
           title={title}
           status={status}
-          emailData={emailData}
+          emailData={email}
           isActive={modalStatus}
           handleChangeModalStatus={setModalStatus}
-        />
+        /> */}
       </Box>
     );
   };
@@ -276,11 +275,10 @@ const EmailStatusBar = (props: Props) => {
         <Box sx={{ borderBottom: '1px solid #e5e7eb' }}>
           {emailTabs &&
             emailTabs.map((item, index) => {
-              if (item.title && item.notiNumber != undefined && item.emailData) {
+              if (item.title && item.notiNumber != undefined) {
                 return renderEmailTab(
                   item.title,
                   item.notiNumber,
-                  item.emailData,
                   item.status,
                   index,
                 );
