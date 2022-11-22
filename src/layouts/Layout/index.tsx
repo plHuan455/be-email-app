@@ -39,13 +39,19 @@ const Main: React.FC<
             marginBottom: theme.spacing(4),
           })}>
           {headTitle && (
-            <Typography variant="h4" sx={{ fontWeight: 700 }}>
+            <Typography
+              className="text-[#B2B0EE]"
+              variant="h4"
+              sx={{ fontWeight: 700 }}>
               {headTitle}
             </Typography>
           )}
           {onClickAdd && (
-            <IconButton size="small" onClick={onClickAdd}>
-              <Icon icon={'plus'} color={'white'} />
+            <IconButton
+              className="bg-transparent hover:bg-transparent"
+              size="small"
+              onClick={onClickAdd}>
+              <Icon icon={'plus'} rawColor={'#827CFF'} width={16} height={16} />
             </IconButton>
           )}
         </Box>
@@ -59,9 +65,9 @@ const Main: React.FC<
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      refetchOnWindowFocus: false
-    }
-  }
+      refetchOnWindowFocus: false,
+    },
+  },
 });
 
 const MainQueryClient: React.FC<

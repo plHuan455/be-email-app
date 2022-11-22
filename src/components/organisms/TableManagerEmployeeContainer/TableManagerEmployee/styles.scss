@@ -1,0 +1,13 @@
+.managerTable {
+  & .MuiTableCell-root {
+    border-color: transparent;
+  }
+  & .managerRow.blocked {
+    .managerAvatar {
+      opacity: 0.4;
+    }
+    .managerName {
+      color: #778397;
+    }
+  }
+}

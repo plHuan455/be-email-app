@@ -9,8 +9,7 @@ const Calendar: React.FC<SVGIconProps> = ({ width, height, color }) => {
       width={width || 12}
       height={height || 12}
       viewBox="0 0 610.398 610.398"
-      fill={color || '#5541D7'}
-	>
+      fill={color || '#5541D7'}>
       <g>
         <g>
           <path

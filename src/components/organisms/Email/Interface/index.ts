@@ -11,12 +11,14 @@ export class UserInfo {
 
   getAbbreviations() {
     const cloneName = this.name;
-    const nameLength = cloneName.length;
+
+    const splitName = cloneName.split(' ');
+    const nameLength = splitName.length;
 
     if (nameLength >= 2) {
-      return cloneName.slice(0, 2).toUpperCase();
+      return splitName[0][0].toUpperCase() + splitName[1][0].toUpperCase();
     }
-    return cloneName.slice(0, 1).toUpperCase();
+    return splitName[0][0].toUpperCase();
   }
 }
 

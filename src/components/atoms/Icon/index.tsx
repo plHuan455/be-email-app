@@ -7,6 +7,8 @@ import UploadCloud from '@assets/icon/UploadCloud';
 import Dot from '@assets/icon/Dot';
 
 // Icon
+const Crown = React.lazy(() => import('@assets/icon/Crown'));
+const Import = React.lazy(() => import('@assets/icon/Import'));
 const Chat = React.lazy(() => import('@assets/icon/Chat'));
 const Dialpad = React.lazy(() => import('@assets/icon/Dialpad'));
 const Donut = React.lazy(() => import('@assets/icon/Donut'));
@@ -66,6 +68,8 @@ export interface SVGProps {
 }
 
 export const ICON = {
+  crown: Crown,
+  import: Import,
   chat: Chat,
   dialpad: Dialpad,
   donut: Donut,

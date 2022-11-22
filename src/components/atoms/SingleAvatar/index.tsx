@@ -1,11 +1,6 @@
 import { Avatar, Box } from '@mui/material';
 import React from 'react';
-
-interface AvatarProps {
-  src: string | undefined;
-  abbreviations: string;
-  className?: string;
-}
+import Icon from '../Icon';
 
 function stringToColor(string) {
   let hash = 0;
@@ -36,22 +31,46 @@ function stringAvatar(name) {
   };
 }
 
-const SingleAvatar: React.FC<AvatarProps> = ({ src, abbreviations, className }) => {
+interface AvatarProps {
+  src: string | undefined;
+  abbreviations: string;
+  className?: string;
+  isAdminRole?: boolean;
+}
+
+const SingleAvatar: React.FC<AvatarProps> = ({
+  src,
+  abbreviations,
+  className,
+  isAdminRole = false,
+}) => {
   const checkAvatar = !!src;
 
   if (!checkAvatar)
     return (
-      <Box>
+      <Box className="relative">
         <Avatar
           {...stringAvatar(abbreviations)}
           className={`${className} text-[14px]`}
         />
+        {isAdminRole && (
+          <Icon
+            className="absolute bottom-0 right-0 p-1 rounded-full translate-x-1/2 translate-y-1/4 bg-[#303541]"
+            icon={'crown'}
+            rawColor={'#FED654'}
+            width={16}
+            height={16}
+          />
+        )}
       </Box>
     );
 
   return (
     <Box>
       <Avatar alt={abbreviations} src={src} className={className} />
+      {isAdminRole && (
+        <Icon icon={'crown'} rawColor={'#827CFF'} width={16} height={16} />
+      )}
     </Box>
   );
 };

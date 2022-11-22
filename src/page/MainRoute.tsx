@@ -17,6 +17,8 @@ import ErrorBoundary from './ErrorBoudary';
 import ErrorPage from './ErrorPage';
 import EmailHashTag from './Email/EmailHashTag';
 import Email from './Email';
+import ManagerEmployee from './Manager/ManagerEmployee';
+import ManagerSettings from './Manager/ManagerSettings';
 export const sideBarRouter: RouteObject[] = [
   {
     path: '/emails',
@@ -53,6 +55,13 @@ export const declareRouter: RouteObject[] = [
         element: <Navigate to={'/emails'} replace={true} />,
       },
       { path: '/about', element: <AboutPage /> },
+      {
+        path: '/manager',
+        children: [
+          { path: '/manager/employee', element: <ManagerEmployee /> },
+          { path: '/manager/setting', element: <ManagerSettings /> },
+        ],
+      },
       ...sideBarRouter,
     ],
     errorElement: <ErrorBoundary />,
