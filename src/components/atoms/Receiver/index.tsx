@@ -30,7 +30,7 @@ const Receiver: React.FC<ReceiverProps> = ({
         <SingleAvatar
           src={avatar}
           abbreviations={data.getAbbreviations()}
-          className="w-6 h-6 absolute inset-y-2/4 left-0 -translate-y-1/2"
+          className="w-6 h-6 absolute inset-y-2/4 left-0 -translate-y-1/2 -translate-x-[110%]"
         />
         <p className="flex-1 text-[14px] text-ellipsis overflow-hidden">{mail}</p>
         {haveCloseIcon && (

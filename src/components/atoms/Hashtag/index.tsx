@@ -8,11 +8,11 @@ import React, { useState } from 'react';
 interface Props {
   title: string;
   status: StatusOptions;
-  emailData: EmailList[];
+  // emailData: EmailList[];
   index: number;
 }
 
-const Hashtag: React.FC<Props> = ({ title, status, emailData, index }) => {
+const Hashtag: React.FC<Props> = ({ title, status, index }) => {
   const [modalStatus, setModalStatus] = useState(false);
 
   return (
@@ -33,7 +33,7 @@ const Hashtag: React.FC<Props> = ({ title, status, emailData, index }) => {
       <ModalEmailList
         title={title}
         status={status}
-        emailData={emailData}
+        // emailData={emailData}
         isActive={modalStatus}
         handleChangeModalStatus={setModalStatus}
       />

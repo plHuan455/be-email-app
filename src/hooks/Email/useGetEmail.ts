@@ -5,7 +5,7 @@ import {
 } from './../../api/email/index';
 import React, { useEffect, useState } from 'react';
 
-export const useGetEmail = (filterField: string, fieldData: string) => {
+export const useGetEmail = (fieldData: string) => {
   console.log(
     '🚀 ~ file: useGetEmail.ts ~ line 14 ~ useGetEmail ~ fieldData',
     fieldData,
@@ -13,7 +13,7 @@ export const useGetEmail = (filterField: string, fieldData: string) => {
   const CURRENT_USER_EMAIL = localStorage.getItem('current_email')
     ? localStorage.getItem('current_email')
     : '';
-  const [response, setResponse] = useState<EmailResponse>();
+  const [response, setResponse] = useState<any>();
 
   useEffect(() => {
     const useGetEmail = async () => {
@@ -22,11 +22,14 @@ export const useGetEmail = (filterField: string, fieldData: string) => {
         email: CURRENT_USER_EMAIL,
         hashtag: undefined,
       });
-      console.log('🚀 ~ file: useGetEmail.ts ~ line 25 ~ useGetEmail ~ res', res);
+      setResponse({
+        data: res.data,
+        total: res.total,
+      });
     };
 
     useGetEmail();
-  }, [filterField]);
+  }, [fieldData]);
 
   return { response };
 };

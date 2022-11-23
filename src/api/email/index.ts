@@ -27,6 +27,7 @@ export interface EmailResponse {
   content: string;
   cc: string[];
   status: string;
+  writer_name: string;
   writer_id: number;
 }
 

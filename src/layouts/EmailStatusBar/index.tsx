@@ -205,8 +205,7 @@ const EmailStatusBar = (props: Props) => {
     key: number,
   ) => {
     const [modalStatus, setModalStatus] = useState(false);
-    const email = useGetEmail('status', status);
-    console.log('🚀 ~ file: index.tsx ~ line 183 ~ EmailStatusBar ~ email', email);
+
     return (
       <Box key={key}>
         <ButtonBase
@@ -239,13 +238,13 @@ const EmailStatusBar = (props: Props) => {
             </Typography>
           )}
         </ButtonBase>
-        {/* <ModalEmailList
+        <ModalEmailList
           title={title}
           status={status}
-          emailData={email}
+          // emailData={email}
           isActive={modalStatus}
           handleChangeModalStatus={setModalStatus}
-        /> */}
+        />
       </Box>
     );
   };
@@ -291,7 +290,7 @@ const EmailStatusBar = (props: Props) => {
               <Hashtag
                 title={item.title}
                 status={item.status}
-                emailData={item.emailData}
+                // emailData={item.emailData}
                 index={index}
               />
             );

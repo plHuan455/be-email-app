@@ -10,6 +10,7 @@ import { ButtonBase } from '@mui/material';
 import ArrowLeft from '@assets/icon/ArrowLeft';
 import EmailItem from '@components/atoms/Emailitem';
 import { EmailResponse } from '@api/email';
+import { useGetEmail } from '@hooks/Email/useGetEmail';
 
 export interface EmailList {
   userId: number;
@@ -55,16 +56,19 @@ export type StatusOptions = 'pending' | 'approved' | 'cancel' | 'hashtag';
 type Props = {
   title: string;
   status: StatusOptions;
-  emailData: EmailList[];
+  // emailData?: EmailList[];
   isActive: boolean;
   handleChangeModalStatus: (status: boolean) => void;
 };
 
 const ModalEmailList = (props: Props) => {
-  console.log(
-    '🚀 ~ file: index.tsx ~ line 66 ~ ModalEmailList ~ props',
-    props.emailData,
-  );
+  const email = useGetEmail(props.status).response;
+  console.log('🚀 ~ file: index.tsx ~ line 183 ~ EmailStatusBar ~ email', email);
+
+  // console.log(
+  //   '🚀 ~ file: index.tsx ~ line 66 ~ ModalEmailList ~ props',
+  //   props.emailData,
+  // );
   const [value, setValue] = React.useState(0);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -109,12 +113,9 @@ const ModalEmailList = (props: Props) => {
             <Tab className="tab" label="Me" {...a11yProps(1)} />
           </Tabs>
         </Box>
-        {/* <TabPanel value={value} index={0}>
-          {props.emailData &&
-            props.emailData.map((item) => {
-              return <EmailItem emailData={item} />;
-            })}
-        </TabPanel> */}
+        <TabPanel value={value} index={0}>
+          {email && <EmailItem emailData={email} />}
+        </TabPanel>
         <TabPanel value={value} index={1}>
           Item Two
         </TabPanel>

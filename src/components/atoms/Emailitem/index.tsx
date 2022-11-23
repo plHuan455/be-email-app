@@ -4,12 +4,18 @@ import avt from '../../../assets/images/avatars/avatar-1.jpg';
 import React from 'react';
 import { EmailList } from '@components/molecules/ModalEmailList';
 import './index.scss';
+import { EmailResponse } from '@api/email';
 
 type Props = {
-  emailData: EmailList;
+  emailData: {
+    data: EmailResponse[];
+    total: number;
+  };
 };
 
 const EmailItem = ({ emailData }: Props) => {
+  const { data, total } = emailData;
+
   return (
     <Box
       className="email__item"
@@ -46,8 +52,8 @@ const EmailItem = ({ emailData }: Props) => {
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
               }}>
-              <span className="font-bold">{emailData.userName}</span> |{' '}
-              {emailData.userEmail}
+              <span className="font-bold">{data[0].writer_name}</span> |{' '}
+              {data[0].from}
             </Typography>
             <Typography
               component={'p'}
@@ -61,12 +67,12 @@ const EmailItem = ({ emailData }: Props) => {
                 overflow: 'hidden',
                 fontWeight: 'bold',
               }}>
-              {emailData.title}
+              {data[0].content}
             </Typography>
           </Box>
         </Box>
       </Box>
-      {emailData.totalEmail && emailData.totalEmail > 0 ? (
+      {total > 0 ? (
         <Typography
           component={'p'}
           sx={{
@@ -80,7 +86,7 @@ const EmailItem = ({ emailData }: Props) => {
             padding: '0 5px',
             color: '#495057',
           }}>
-          {emailData.totalEmail > 9 ? '9+' : emailData.totalEmail}
+          {total > 9 ? '9+' : total}
         </Typography>
       ) : (
         ''

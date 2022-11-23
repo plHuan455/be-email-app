@@ -16,7 +16,7 @@ import { Role } from '@page/Manager/interface';
 
 import './styles.scss';
 import { Radio } from '@mui/material';
-import CustomInputRadio from '@components/atoms/CustomInputRadio';
+import CustomInputRadio from '@components/atoms/CustomInputCheckbox';
 import CustomButton from '@components/atoms/CustomButton';
 import Icon from '@components/atoms/Icon';
 
@@ -61,7 +61,7 @@ function Row(props: {
             isCheck={selectedValue === 'grant'}
             onChange={handleChangeCheckValue}
             value="grant"
-            name={`roleInputRadio-${row.name}`}
+            name={`roleInputRadio-${row.name}${index}`}
           />
         </TableCell>
         <TableCell align="center">
@@ -69,7 +69,7 @@ function Row(props: {
             isCheck={selectedValue === 'deny'}
             onChange={handleChangeCheckValue}
             value="deny"
-            name={`roleInputRadio-${row.name}`}
+            name={`roleInputRadio-${row.name}${index}`}
             checkColor="#E13D3D"
           />
         </TableCell>

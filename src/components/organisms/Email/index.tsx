@@ -1,9 +1,10 @@
 import { Box } from '@mui/material';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import avatarImg from '@assets/images/avatars/avatar-2.jpg';
 import { Email, UserInfo } from './Interface';
 import EmailMess from '../EmailMess';
+import { getAllEmail } from '@api/email';
 
 const Email = () => {
   const [showHistory, setShowHistory] = useState<string | null>(null);
@@ -113,6 +114,13 @@ const Email = () => {
       date: '2018-02-21 12:01:00',
     },
   ]);
+
+  useEffect(() => {
+    (async () => {
+      const res = await getAllEmail();
+      console.log('Test res in line ~ 121 ~ file Email.tsx', res.data);
+    })();
+  }, []);
 
   const checkIsReceiveEmail = useCallback(
     (id) => {

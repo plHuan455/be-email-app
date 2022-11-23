@@ -196,6 +196,7 @@ function EmailCompose() {
         reset();
         return;
       } else {
+        reset();
         return toast.error(MESSAGE_SEND_EMAIL_FAILED);
       }
     }
