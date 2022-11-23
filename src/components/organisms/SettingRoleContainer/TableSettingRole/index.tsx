@@ -20,11 +20,29 @@ import CustomInputRadio from '@components/atoms/CustomInputRadio';
 import CustomButton from '@components/atoms/CustomButton';
 import Icon from '@components/atoms/Icon';
 
-function Row(props: { row: Role; className: string }) {
-  const { row, className } = props;
+function Row(props: {
+  row: Role;
+  className: string;
+  index: number;
+  onChangeRow: Function;
+}) {
+  const { row, className, onChangeRow, index } = props;
   const [selectedValue, setSelectedValue] = React.useState(() =>
     row.isGrant ? 'grant' : 'deny',
   );
+
+  React.useEffect(() => {
+    onChangeRow(
+      index,
+      new Role(
+        row.name,
+        selectedValue === 'grant',
+        selectedValue === 'deny',
+        row.grant,
+        row.department,
+      ),
+    );
+  }, [selectedValue]);
 
   const handleChangeCheckValue = React.useCallback((e) => {
     setSelectedValue(e.target.value);
@@ -62,9 +80,14 @@ function Row(props: { row: Role; className: string }) {
 
 interface Props {
   data: Role[];
+  onChangeRow: Function;
 }
 
-const TableSettingRole: React.FC<Props> = ({ data }) => {
+const TableSettingRole: React.FC<Props> = ({ data, onChangeRow }) => {
+  const handleClickSetRole = (e) => {
+    console.log(data);
+  };
+
   return (
     <Box className="flex-1">
       <TableContainer className="tableSettingRole" component={Paper}>
@@ -83,14 +106,21 @@ const TableSettingRole: React.FC<Props> = ({ data }) => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((row) => (
-              <Row className="managerSettingRoleRow" key={row.name} row={row} />
+            {data.map((row, index) => (
+              <Row
+                className="managerSettingRoleRow"
+                key={row.name}
+                row={row}
+                index={index}
+                onChangeRow={onChangeRow}
+              />
             ))}
           </TableBody>
         </Table>
       </TableContainer>
       <Box className="flex justify-end items-end my-6">
         <CustomButton
+          onClick={handleClickSetRole}
           className="py-3 px-6"
           bgButtonColor="#554CFF"
           color="#ffffff"
