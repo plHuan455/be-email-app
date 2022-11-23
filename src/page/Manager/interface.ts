@@ -42,3 +42,28 @@ export class Department {
     public description: string | '',
   ) {}
 }
+
+interface RoleFunction {
+  activeIsGrant: () => void;
+  activeIsDeny: () => void;
+}
+
+export class Role implements RoleFunction {
+  constructor(
+    public name: string,
+    public isGrant: boolean,
+    public isDeny: boolean,
+    public grant?: string,
+    public department?: string,
+  ) {}
+
+  activeIsGrant() {
+    this.isDeny = false;
+    this.isGrant = true;
+  }
+
+  activeIsDeny() {
+    this.isGrant = false;
+    this.isDeny = true;
+  }
+}

@@ -1,0 +1,11 @@
+.tableSettingRole {
+  & .MuiTableCell-root {
+    border-color: #445577;
+  }
+
+  & .MuiTableHead-root {
+    & .MuiTableRow-root {
+      opacity: 0.6;
+    }
+  }
+}

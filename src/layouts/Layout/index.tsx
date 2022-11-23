@@ -30,7 +30,7 @@ const Main: React.FC<
 > = ({ children, onClickAdd, headTitle }) => {
   return (
     <Grid item flex={1}>
-      <Paper>
+      <Paper className="h-full pt-22.5 px-4 pl-8">
         <Box
           sx={(theme) => ({
             display: 'flex',

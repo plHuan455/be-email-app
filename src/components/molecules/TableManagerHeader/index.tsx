@@ -23,14 +23,15 @@ const TableHeader: React.FC<Props> = ({ isHaveActions = true }) => {
   const handleChange = (e, newValue) => setValue(newValue);
 
   return (
-    <div className="flex justify-between mt-3">
+    <div className="flex justify-between my-3">
       <Tabs
         className="tableManagerTabs"
         value={value}
         onChange={handleChange}
         aria-label="disabled tabs example">
+        <Tab label="Manager" />
+        <Tab label="Manager 2" />
         <Tab label="Employee" />
-        <Tab label="Departments" />
       </Tabs>
       {isHaveActions && (
         <Box className="flex gap-3 items-start">
