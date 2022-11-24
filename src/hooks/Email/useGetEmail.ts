@@ -15,6 +15,25 @@ export const useGetEmail = (fieldData: string) => {
     : '';
   const [response, setResponse] = useState<any>();
 
+  const filterResData = (resData: EmailResponse[]) => {
+    const cloneResData = [...resData];
+
+    const newSetResData = new Set(cloneResData.map((val) => val.from));
+
+    const filterResult = Array.from(newSetResData).map((val) => {
+      const filter = cloneResData.filter((item) => item.from === val);
+
+      const res = {
+        total: filter.length,
+        data: filter,
+      };
+
+      return res;
+    });
+
+    return filterResult;
+  };
+
   useEffect(() => {
     const useGetEmail = async () => {
       const res = await getEmailWithQueryParam({
@@ -22,10 +41,10 @@ export const useGetEmail = (fieldData: string) => {
         email: CURRENT_USER_EMAIL,
         hashtag: undefined,
       });
-      setResponse({
-        data: res.data,
-        total: res.total,
-      });
+
+      const filterRes = filterResData(res.data);
+
+      setResponse({ data: filterRes, total: res.total });
     };
 
     useGetEmail();

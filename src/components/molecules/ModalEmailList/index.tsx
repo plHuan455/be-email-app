@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
@@ -59,11 +59,23 @@ type Props = {
   // emailData?: EmailList[];
   isActive: boolean;
   handleChangeModalStatus: (status: boolean) => void;
+  index?: number;
+  handleChangeEmailTabNotiNumber?: (index: number, number: number) => void;
 };
 
 const ModalEmailList = (props: Props) => {
-  const email = useGetEmail(props.status).response;
-  console.log('🚀 ~ file: index.tsx ~ line 183 ~ EmailStatusBar ~ email', email);
+  const emailsData = useGetEmail(props.status).response;
+  console.log(
+    '🚀 ~ file: index.tsx ~ line 183 ~ EmailStatusBar ~ email',
+    emailsData,
+  );
+  useEffect(() => {
+    props.handleChangeEmailTabNotiNumber &&
+      props.handleChangeEmailTabNotiNumber(
+        props.index || 0,
+        emailsData ? emailsData.data.length : 0,
+      );
+  }, [emailsData]);
 
   // console.log(
   //   '🚀 ~ file: index.tsx ~ line 66 ~ ModalEmailList ~ props',
@@ -114,7 +126,10 @@ const ModalEmailList = (props: Props) => {
           </Tabs>
         </Box>
         <TabPanel value={value} index={0}>
-          {email && <EmailItem emailData={email} />}
+          {emailsData &&
+            emailsData.data.map((email, index) => (
+              <EmailItem emailData={email} key={index} />
+            ))}
         </TabPanel>
         <TabPanel value={value} index={1}>
           Item Two

@@ -7,7 +7,7 @@ import { TabItem } from '@layouts/IconTabs';
 import { Avatar, Box, ButtonBase, Tab, Tabs, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import avt from '../../../src/assets/images/avatars/avatar-1.jpg';
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import {
   TitleOfInformationBlock,
   UserName,
@@ -79,27 +79,6 @@ export const emailData: EmailList[] = [
   },
 ];
 
-export const emailTabs: EmailTabs[] = [
-  {
-    status: 'pending',
-    title: '#pending',
-    notiNumber: 5,
-    emailData: emailData,
-  },
-  {
-    status: 'approved',
-    title: '#approved',
-    notiNumber: 2,
-    emailData: emailData,
-  },
-  {
-    status: 'cancel',
-    title: '#cancel',
-    notiNumber: 0,
-    emailData: emailData,
-  },
-];
-
 // const hashtagTabs:
 
 const EmailStatusBar = (props: Props) => {
@@ -131,6 +110,40 @@ const EmailStatusBar = (props: Props) => {
       emailData: emailData,
     },
   ]);
+
+  const [emailTabs, setEmailTabs] = useState<EmailTabs[]>([
+    {
+      status: 'pending',
+      title: '#pending',
+      notiNumber: 0,
+      emailData: emailData,
+    },
+    {
+      status: 'approved',
+      title: '#approved',
+      notiNumber: 0,
+      emailData: emailData,
+    },
+    {
+      status: 'cancel',
+      title: '#cancel',
+      notiNumber: 0,
+      emailData: emailData,
+    },
+  ]);
+
+  const handleChangeEmailTabsNotiNumber = useCallback(
+    (index, number) => {
+      setEmailTabs((prevState) => {
+        const cloneState = [...prevState];
+
+        cloneState[index].notiNumber = number;
+
+        return cloneState;
+      });
+    },
+    [emailTabs],
+  );
 
   const handleClickCreateHashTag = (e) => {
     setIsCreateHashTag(true);
@@ -239,11 +252,13 @@ const EmailStatusBar = (props: Props) => {
           )}
         </ButtonBase>
         <ModalEmailList
+          index={key}
           title={title}
           status={status}
           // emailData={email}
           isActive={modalStatus}
           handleChangeModalStatus={setModalStatus}
+          handleChangeEmailTabNotiNumber={handleChangeEmailTabsNotiNumber}
         />
       </Box>
     );

@@ -36,7 +36,7 @@ export const getEmailWithQueryParam = async (params?: {
   status?: string;
   email?: string | null;
   hashtag?: string;
-}): Promise<AxiosResponse<EmailResponse>> => {
+}): Promise<AxiosResponse<EmailResponse[]>> => {
   const url = `${EMAIL_API_URL}`;
   const res = await ApiClient.get(
     url,
