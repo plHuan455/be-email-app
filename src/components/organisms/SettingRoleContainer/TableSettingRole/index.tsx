@@ -12,80 +12,46 @@ import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import { Role } from '@page/Manager/interface';
 
 import './styles.scss';
 import { Radio } from '@mui/material';
 import CustomInputRadio from '@components/atoms/CustomInputCheckbox';
 import CustomButton from '@components/atoms/CustomButton';
 import Icon from '@components/atoms/Icon';
-
-function Row(props: {
-  row: Role;
-  className: string;
-  index: number;
-  onChangeRow: Function;
-}) {
-  const { row, className, onChangeRow, index } = props;
-  const [selectedValue, setSelectedValue] = React.useState(() =>
-    row.isGrant ? 'grant' : 'deny',
-  );
-
-  React.useEffect(() => {
-    onChangeRow(
-      index,
-      new Role(
-        row.name,
-        selectedValue === 'grant',
-        selectedValue === 'deny',
-        row.grant,
-        row.department,
-      ),
-    );
-  }, [selectedValue]);
-
-  const handleChangeCheckValue = React.useCallback((e) => {
-    setSelectedValue(e.target.value);
-  }, []);
-
-  return (
-    <React.Fragment>
-      <TableRow className={className} sx={{ '& > *': { borderBottom: 'unset' } }}>
-        <TableCell component="th" scope="row">
-          {row.name}
-        </TableCell>
-        <TableCell align="left">{row.grant}</TableCell>
-        <TableCell align="left">{row.department}</TableCell>
-        <TableCell align="center">
-          <CustomInputRadio
-            isCheck={selectedValue === 'grant'}
-            onChange={handleChangeCheckValue}
-            value="grant"
-            name={`roleInputRadio-${row.name}${index}`}
-          />
-        </TableCell>
-        <TableCell align="center">
-          <CustomInputRadio
-            isCheck={selectedValue === 'deny'}
-            onChange={handleChangeCheckValue}
-            value="deny"
-            name={`roleInputRadio-${row.name}${index}`}
-            checkColor="#E13D3D"
-          />
-        </TableCell>
-      </TableRow>
-    </React.Fragment>
-  );
-}
+import { PermissionResponse } from '@api/permission/interface';
+import ModalBase from '@components/atoms/ModalBase';
+import Row from './Row';
 
 interface Props {
-  data: Role[];
+  data: PermissionResponse[];
   onChangeRow: Function;
+  updatePermission: Function;
 }
 
-const TableSettingRole: React.FC<Props> = ({ data, onChangeRow }) => {
+const TableSettingRole: React.FC<Props> = ({
+  data,
+  onChangeRow,
+  updatePermission,
+}) => {
+  console.log(
+    '🚀 ~ file: TableSettingRole/index.ts ~ line 87 ~ TableSettingRole',
+    data,
+  );
+
   const handleClickSetRole = (e) => {
-    console.log(data);
+    const filterData = data
+      .filter((value) => value.status === 'Active')
+      .map((value) => ({
+        id: value.id,
+      }));
+    console.log(
+      '🚀 ~ file: TableSettingRole/index.ts ~ line 83 ~ filterData',
+      filterData,
+    );
+
+    updatePermission({
+      permissions: filterData,
+    });
   };
 
   return (
@@ -124,9 +90,7 @@ const TableSettingRole: React.FC<Props> = ({ data, onChangeRow }) => {
           className="py-3 px-6"
           bgButtonColor="#554CFF"
           color="#ffffff"
-          label="Set Role"
-          isBeforeIcon={true}
-          beforeIcon={<Icon icon="plus" rawColor="#ffffff" />}
+          label="Save"
         />
       </Box>
     </Box>

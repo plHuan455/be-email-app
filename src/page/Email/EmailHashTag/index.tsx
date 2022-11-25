@@ -25,7 +25,7 @@ const EmailHashTag = () => {
         title="Information"
         isBorderBottom={true}
         sender={1}
-        receiver={receiverData}
+        // receiver={receiverData}
       />
     </div>
   );

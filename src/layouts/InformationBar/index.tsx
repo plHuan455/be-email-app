@@ -6,6 +6,8 @@ import { Box, Typography } from '@mui/material';
 import avt from '../../../src/assets/images/avatars/avatar-2.jpg';
 import React from 'react';
 import { AttachFile, UserRead } from '@components/organisms/EmailMess';
+import { useSelector } from 'react-redux';
+import { RootState } from '@redux/configureStore';
 
 const userReadList: UserRead[] = [
   {
@@ -74,10 +76,39 @@ type Props = {
   title: string;
   isBorderBottom: boolean;
   sender: number;
-  receiver: Receiver[];
 };
 
 const InformationBar = (props: Props) => {
+  const { focusEmail, EmailsList } = useSelector((state: RootState) => state.email);
+
+  const currEmail = EmailsList[focusEmail];
+
+  const mapSendTo: ReceiverData[] =
+    currEmail.sendTo &&
+    currEmail.sendTo.map((item) => ({
+      name: item.name,
+      avatar: item.avatar,
+      position: 'Marketing Department',
+    }));
+  const mapCc: ReceiverData[] =
+    currEmail.cc &&
+    currEmail.cc.map((item) => ({
+      name: item.name,
+      avatar: item.avatar,
+      email: item.mail,
+      isCC: true,
+    }));
+  const mapBcc: ReceiverData[] =
+    currEmail.bcc &&
+    currEmail.bcc.map((item) => ({
+      name: item.name,
+      avatar: item.avatar,
+      position: 'Metanode X Lab',
+      isBCC: true,
+    }));
+
+  const receiveData: ReceiverData[] = [...mapSendTo, ...mapCc, ...mapBcc];
+
   return (
     <Box
       sx={{
@@ -97,11 +128,21 @@ const InformationBar = (props: Props) => {
         }}>
         {props.title}
       </Typography>
-      <InformationDetailBlock title="Sender" isBorderBottom={true} userId={1} />
+      <InformationDetailBlock
+        title="Manager"
+        isBorderBottom={true}
+        data={currEmail}
+      />
+      <InformationDetailBlock
+        title="Sender"
+        isBorderBottom={true}
+        data={currEmail}
+      />
       <InformationDetailBlock
         title="Receiver"
         isBorderBottom={true}
-        receiverData={receiverData}
+        receiverData={receiveData}
+        data={currEmail}
       />
       <InformationDetailBlock
         title="Activity"
@@ -111,7 +152,7 @@ const InformationBar = (props: Props) => {
       <InformationDetailBlock
         title="Files"
         isBorderBottom={false}
-        filesData={files}
+        filesData={currEmail.attachFiles}
       />
     </Box>
   );

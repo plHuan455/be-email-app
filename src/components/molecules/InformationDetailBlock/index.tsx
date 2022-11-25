@@ -4,6 +4,9 @@ import React, { useMemo } from 'react';
 // import { AttachFile, UserRead } from '@components/email';
 import AttachFiles from '@components/atoms/AttachFiles';
 import { AttachFile, UserRead } from '@components/organisms/EmailMess';
+import AnimationTimeline from '@components/atoms/AnimationTimeline';
+import { isEmpty } from 'lodash';
+import { Email } from '@components/organisms/Email/Interface';
 
 export interface ReceiverData {
   name: string;
@@ -23,12 +26,14 @@ export interface ActivityData {
 
 type Props = {
   title: string;
+  isEmpty?: boolean;
   userId?: number;
   isBorderBottom: boolean;
   receiverData?: ReceiverData[];
   activityData?: ActivityData[];
   filesData?: AttachFile[];
   userRead?: UserRead[];
+  data?: Email;
 };
 
 export const TitleOfInformationBlock = (title: string, isUppercase?: boolean) => {
@@ -61,8 +66,23 @@ export const UserName = (title: string) => {
   );
 };
 
+interface PropsAvatarEmpty {
+  className?: string;
+}
+
+const AvatarIfEmpty: React.FC<PropsAvatarEmpty> = ({ className }) => (
+  <Box className={className} sx={{ display: 'flex', alignItems: 'center' }}>
+    <Avatar src="" alt="sender avt" sx={{ width: '35px', height: '35px' }} />
+    <Box className="flex-1 overflow-hidden" sx={{ padding: '0 10px' }}>
+      <AnimationTimeline className="rounded-md " />
+    </Box>
+  </Box>
+);
+
 const InformationDetailBlock = (props: Props) => {
   const SenderBlock = useMemo(() => {
+    const sender = props.data?.sender;
+
     return (
       <Box
         sx={{
@@ -70,19 +90,25 @@ const InformationDetailBlock = (props: Props) => {
           borderBottom: `${props.isBorderBottom ? '1px solid #DEDEDE' : 'none'}`,
         }}>
         {TitleOfInformationBlock(props.title)}
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Avatar
-            src={avt}
-            alt="sender avt"
-            sx={{ width: '35px', height: '35px' }}
-          />
-          <Box sx={{ padding: '0 10px' }}>
-            {UserName('Elon Musk')}
-            <Typography component={'p'} sx={{ fontSize: '10px', color: '#999DA0' }}>
-              elon.musk@tesla.com
-            </Typography>
+        {props.isEmpty ? (
+          <AvatarIfEmpty />
+        ) : (
+          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Avatar
+              src={sender?.avatar}
+              alt="sender avt"
+              sx={{ width: '35px', height: '35px' }}
+            />
+            <Box sx={{ padding: '0 10px' }}>
+              {UserName(sender?.name || '')}
+              <Typography
+                component={'p'}
+                sx={{ fontSize: '10px', color: '#999DA0' }}>
+                {sender?.mail}
+              </Typography>
+            </Box>
           </Box>
-        </Box>
+        )}
       </Box>
     );
   }, [props]);
@@ -113,26 +139,30 @@ const InformationDetailBlock = (props: Props) => {
                     BCC
                   </Typography>
                 )}
-                <Box
-                  sx={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    marginBottom: '10px',
-                  }}>
-                  <Avatar
-                    src={item.avatar}
-                    alt={`${item.name} avatar`}
-                    sx={{ width: '35px', height: '35px' }}
-                  />
-                  <Box sx={{ padding: '0 10px' }}>
-                    {UserName(item.name)}
-                    <Typography
-                      component={'p'}
-                      sx={{ fontSize: '10px', color: '#999DA0' }}>
-                      {item.position ? item.position : item.email}
-                    </Typography>
+                {props.isEmpty ? (
+                  <AvatarIfEmpty className="my-2" />
+                ) : (
+                  <Box
+                    sx={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      marginBottom: '10px',
+                    }}>
+                    <Avatar
+                      src={item.avatar}
+                      alt={`${item.name} avatar`}
+                      sx={{ width: '35px', height: '35px' }}
+                    />
+                    <Box sx={{ padding: '0 10px' }}>
+                      {UserName(item.name)}
+                      <Typography
+                        component={'p'}
+                        sx={{ fontSize: '10px', color: '#999DA0' }}>
+                        {item.position ? item.position : item.email}
+                      </Typography>
+                    </Box>
                   </Box>
-                </Box>
+                )}
               </Box>
             );
           })}
@@ -148,7 +178,7 @@ const InformationDetailBlock = (props: Props) => {
           borderBottom: `${props.isBorderBottom ? '1px solid #DEDEDE' : 'none'}`,
         }}>
         {TitleOfInformationBlock(props.title)}
-        {props.activityData &&
+        {props.activityData ? (
           props.activityData.map((item, index) => {
             return (
               <Box key={index} sx={{ marginBottom: '10px' }}>
@@ -188,7 +218,12 @@ const InformationDetailBlock = (props: Props) => {
                 </Box>
               </Box>
             );
-          })}
+          })
+        ) : (
+          <Box className="h-[100px]">
+            <AnimationTimeline className="rounded-md" />
+          </Box>
+        )}
       </Box>
     );
   }, [props]);
@@ -196,7 +231,13 @@ const InformationDetailBlock = (props: Props) => {
   const FilesBlock = useMemo(() => {
     return (
       <Box sx={{ paddingTop: '20px' }}>
-        {props.filesData && <AttachFiles data={props.filesData} />}
+        {props.filesData ? (
+          <AttachFiles data={props.filesData} />
+        ) : (
+          <Box className="h-[80px]">
+            <AnimationTimeline className="rounded-md" />
+          </Box>
+        )}
       </Box>
     );
   }, [props]);

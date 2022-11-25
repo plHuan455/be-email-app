@@ -4,13 +4,14 @@ import { UserInfo } from '@components/organisms/Email/Interface';
 
 interface Props {
   data: UserInfo;
+  optionDate: string;
+  size?: number;
   className?: string;
   isShowAvatar?: boolean;
   isShowContent?: boolean;
   isShowName?: boolean;
   isShowDate?: boolean;
   isShowMail?: boolean;
-  optionDate: string;
 }
 
 const OptionalAvatar: React.FC<Props> = ({
@@ -22,6 +23,7 @@ const OptionalAvatar: React.FC<Props> = ({
   isShowDate = true,
   isShowMail = true,
   optionDate,
+  size = 26,
 }) => {
   const date = new Date(optionDate);
   const month = date.toLocaleString('default', {
@@ -35,7 +37,13 @@ const OptionalAvatar: React.FC<Props> = ({
 
   return (
     <Box className={`flex items-center pb-3 ${className && className}`}>
-      {isShowAvatar && <Avatar alt={data.name} src={data.avatar} />}
+      {isShowAvatar && (
+        <Avatar
+          alt={data.name}
+          src={data.avatar}
+          sx={{ width: size, height: size }}
+        />
+      )}
       {isShowContent && (
         <>
           {isShowName && (

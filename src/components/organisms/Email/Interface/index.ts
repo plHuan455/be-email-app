@@ -1,3 +1,5 @@
+import { AttachFile } from '@components/organisms/EmailMess';
+
 export class UserInfo {
   avatar: string;
   name: string;
@@ -32,9 +34,11 @@ export interface Email {
   id: string;
   title: string;
   sender: UserInfo;
+  cc: UserInfo[];
+  bcc: UserInfo[];
   sendTo: Array<UserInfo>;
   mailContent: string;
-  attachFiles: Array<File>;
+  attachFiles: Array<AttachFile>;
   status: string;
   type: string;
   date: string;

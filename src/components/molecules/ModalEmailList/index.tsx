@@ -51,7 +51,14 @@ function a11yProps(index: number) {
   };
 }
 
-export type StatusOptions = 'pending' | 'approved' | 'cancel' | 'hashtag';
+export type StatusOptions =
+  | 'pending'
+  | 'approved'
+  | 'cancel'
+  | 'hashtag'
+  | 'draft'
+  | 'trash'
+  | 'blacklist';
 
 type Props = {
   title: string;

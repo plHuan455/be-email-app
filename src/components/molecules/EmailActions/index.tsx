@@ -1,6 +1,7 @@
 import Icon, { ICON, SVGIconProps } from '@components/atoms/Icon';
 import { Box } from '@mui/material';
 import React from 'react';
+import { number } from 'yup/lib/locale';
 
 interface EmailActionIcon {
   item: SVGIconProps['icon'];
@@ -64,7 +65,17 @@ const EmailActionsList = {
   },
 };
 
-const EmailActions = ({ emailIndex, handleChangeStatus }) => {
+interface Props {
+  isActiveClick: boolean;
+  emailIndex?: number;
+  handleChangeStatus?: (status, index) => void;
+}
+
+const EmailActions: React.FC<Props> = ({
+  emailIndex = 0,
+  handleChangeStatus = (a, b) => {},
+  isActiveClick = true,
+}) => {
   return (
     <Box className="flex mb-4">
       {Object.keys(EmailActionsList).map((key, index) => {
@@ -73,7 +84,9 @@ const EmailActions = ({ emailIndex, handleChangeStatus }) => {
           <Box
             className={`py-1.5 px-3 text-[14px] font-medium flex items-center hover:bg-slate-200 hover:cursor-pointer rounded p-2`}
             key={index}
-            onClick={() => handleChangeStatus(currVal.icon, emailIndex)}>
+            onClick={() =>
+              isActiveClick && handleChangeStatus(currVal.icon, emailIndex)
+            }>
             <RenderButtonIcon item={currVal.icon} color={currVal.color} />
             <span className="inline-block pl-2">{`${currVal.label}`}</span>
           </Box>

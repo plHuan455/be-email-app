@@ -93,28 +93,30 @@ function EmailMess({
         className={`w-full flex flex-wrap ${styles.emailHeader} ${
           isShowHeader && styles.showEmailHeader
         } ${type === 'send' && styles.flexRowReverse}`}>
-        {isShowActions && (
-          <Box className="w-full flex">
-            <Box className="w-[5%]"></Box>
-            <Box className="flex-1">
-              <EmailActions emailIndex={index} handleChangeStatus={onChangeStatus} />
-            </Box>
-          </Box>
-        )}
-        <Box className="w-[10%]"></Box>
         <Box className={`flex-1`}>
           <OptionalAvatar
             className={` ${type === 'send' && styles.flexRowReverse}`}
             data={userInfo}
-            isShowAvatar={false}
+            isShowAvatar={true}
             optionDate={emailData.date}
           />
         </Box>
+        {isShowActions && (
+          <Box className="w-full flex">
+            <Box className="flex-1">
+              <EmailActions
+                isActiveClick={true}
+                emailIndex={index}
+                handleChangeStatus={onChangeStatus}
+              />
+            </Box>
+          </Box>
+        )}
       </Box>
 
-      <Box className="w-[10%] flex justify-center">
+      {/* <Box className="w-[10%] flex justify-center">
         <Avatar alt={userInfo.name} src={userInfo.avatar} />
-      </Box>
+      </Box> */}
       <Box
         sx={{ boxShadow: '0px 10px 23px -15px rgba(159,159,159,0.54)' }}
         className={`flex-1 bg-white ${

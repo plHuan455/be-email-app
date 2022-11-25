@@ -132,6 +132,27 @@ const EmailStatusBar = (props: Props) => {
     },
   ]);
 
+  const [emailSecTabs, setEmailSecTab] = useState<EmailTabs[]>([
+    {
+      status: 'draft',
+      title: '#draft',
+      notiNumber: 0,
+      emailData: emailData,
+    },
+    {
+      status: 'trash',
+      title: '#trash',
+      notiNumber: 0,
+      emailData: emailData,
+    },
+    {
+      status: 'blacklist',
+      title: '#blacklist',
+      notiNumber: 0,
+      emailData: emailData,
+    },
+  ]);
+
   const handleChangeEmailTabsNotiNumber = useCallback(
     (index, number) => {
       setEmailTabs((prevState) => {
@@ -289,6 +310,19 @@ const EmailStatusBar = (props: Props) => {
         <Box sx={{ borderBottom: '1px solid #e5e7eb' }}>
           {emailTabs &&
             emailTabs.map((item, index) => {
+              if (item.title && item.notiNumber != undefined) {
+                return renderEmailTab(
+                  item.title,
+                  item.notiNumber,
+                  item.status,
+                  index,
+                );
+              }
+            })}
+        </Box>
+        <Box sx={{ borderBottom: '1px solid #e5e7eb' }}>
+          {emailSecTabs &&
+            emailSecTabs.map((item, index) => {
               if (item.title && item.notiNumber != undefined) {
                 return renderEmailTab(
                   item.title,

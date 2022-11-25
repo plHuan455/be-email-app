@@ -43,27 +43,26 @@ export class Department {
   ) {}
 }
 
-interface RoleFunction {
-  activeIsGrant: () => void;
-  activeIsDeny: () => void;
-}
+// interface RoleFunction {
+//   activeIsGrant: () => void;
+//   activeIsDeny: () => void;
+// }
 
-export class Role implements RoleFunction {
+export class Role {
   constructor(
     public name: string,
-    public isGrant: boolean,
-    public isDeny: boolean,
+    public status: string,
     public grant?: string,
     public department?: string,
   ) {}
 
-  activeIsGrant() {
-    this.isDeny = false;
-    this.isGrant = true;
-  }
+  // activeIsGrant() {
+  //   this.isDeny = false;
+  //   this.isGrant = true;
+  // }
 
-  activeIsDeny() {
-    this.isGrant = false;
-    this.isDeny = true;
-  }
+  // activeIsDeny() {
+  //   this.isGrant = false;
+  //   this.isDeny = true;
+  // }
 }

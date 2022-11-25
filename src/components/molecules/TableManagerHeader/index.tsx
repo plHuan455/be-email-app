@@ -1,18 +1,16 @@
 import CustomButton from '@components/atoms/CustomButton';
 import { SVGIconProps } from '@components/atoms/Icon';
 import { Box, Tab, Tabs } from '@mui/material';
-import React, { useState } from 'react';
+import React, { PropsWithChildren, useState } from 'react';
 import { RenderButtonIcon } from '../EmailActions';
 
 import './styles.scss';
 
-interface Props {
+interface Props extends PropsWithChildren {
   isHaveActions?: boolean;
 }
 
-const TableHeader: React.FC<Props> = ({ isHaveActions = true }) => {
-  const [value, setValue] = useState(0);
-
+const TableHeader: React.FC<Props> = ({ isHaveActions = true, ...props }) => {
   const actionsList: {
     [key: string]: SVGIconProps['icon'];
   } = {
@@ -20,19 +18,9 @@ const TableHeader: React.FC<Props> = ({ isHaveActions = true }) => {
     plus: 'plus',
   };
 
-  const handleChange = (e, newValue) => setValue(newValue);
-
   return (
     <div className="flex justify-between my-3">
-      <Tabs
-        className="tableManagerTabs"
-        value={value}
-        onChange={handleChange}
-        aria-label="disabled tabs example">
-        <Tab label="Manager" />
-        <Tab label="Manager 2" />
-        <Tab label="Employee" />
-      </Tabs>
+      {props.children}
       {isHaveActions && (
         <Box className="flex gap-3 items-start">
           <CustomButton
