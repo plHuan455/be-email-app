@@ -56,14 +56,20 @@ const ModalBase: React.FC<ModalBaseProps> = ({
               X
             </div>
           </div>
-          <div className="modal-content">
+          <div
+            className="modal-content"
+            style={{
+              paddingBottom: Boolean(submitLabel) ? '50px' : 0,
+            }}>
             <div className="modal-content-scroll">{children}</div>
           </div>
-          {Boolean(submitLabel) && <div className="modal-button-bottom">
-            <Button className="button-create-mui" onClick={onSubmit}>
-              {submitLabel}
-            </Button>
-          </div>}
+          {Boolean(submitLabel) && (
+            <div className="modal-button-bottom">
+              <Button className="button-create-mui" onClick={onSubmit}>
+                {submitLabel}
+              </Button>
+            </div>
+          )}
         </div>
       </Box>
     </Modal>

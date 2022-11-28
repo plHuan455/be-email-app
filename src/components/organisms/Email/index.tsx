@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import React, { ReactNode, useCallback, useEffect, useState } from 'react';
 
 import avatarImg from '@assets/images/avatars/avatar-2.jpg';
@@ -295,8 +295,28 @@ const Email = () => {
         onClose={handleCloseModal}
         onSubmit={modal.onSubmit}
         isOpen={isOpenModal}
-        title={modal.title}>
-        {modal.content}
+        title={modal.title}
+        submitLabel="">
+        <div className="">
+          <div>{modal.content}</div>
+          <div className="flex gap-2 my-2">
+            <Button className="flex-1 button-create-mui" onClick={modal.onSubmit}>
+              OK
+            </Button>
+            <Button
+              className="flex-1 button-create-mui"
+              onClick={modal.onClose}
+              sx={{
+                color: '#7D7E80',
+                backgroundColor: '#E0E0EA',
+                '&:hover': {
+                  backgroundColor: '#E0E0EA',
+                },
+              }}>
+              Cancel
+            </Button>
+          </div>
+        </div>
       </ModalBase>
     </Box>
   );

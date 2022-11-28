@@ -165,6 +165,18 @@ const EmailStatusBar = (props: Props) => {
     },
     [emailTabs],
   );
+  const handleChangeEmailSecTabsNotiNumber = useCallback(
+    (index, number) => {
+      setEmailSecTab((prevState) => {
+        const cloneState = [...prevState];
+
+        cloneState[index].notiNumber = number;
+
+        return cloneState;
+      });
+    },
+    [emailSecTabs],
+  );
 
   const handleClickCreateHashTag = (e) => {
     setIsCreateHashTag(true);
@@ -237,6 +249,7 @@ const EmailStatusBar = (props: Props) => {
     notiNumber: number,
     status: StatusOptions,
     key: number,
+    type: string,
   ) => {
     const [modalStatus, setModalStatus] = useState(false);
 
@@ -279,7 +292,11 @@ const EmailStatusBar = (props: Props) => {
           // emailData={email}
           isActive={modalStatus}
           handleChangeModalStatus={setModalStatus}
-          handleChangeEmailTabNotiNumber={handleChangeEmailTabsNotiNumber}
+          handleChangeEmailTabNotiNumber={
+            type === 'emailTabs'
+              ? handleChangeEmailTabsNotiNumber
+              : handleChangeEmailSecTabsNotiNumber
+          }
         />
       </Box>
     );
@@ -316,6 +333,7 @@ const EmailStatusBar = (props: Props) => {
                   item.notiNumber,
                   item.status,
                   index,
+                  'emailTabs',
                 );
               }
             })}
@@ -329,6 +347,7 @@ const EmailStatusBar = (props: Props) => {
                   item.notiNumber,
                   item.status,
                   index,
+                  'emailTabsSec',
                 );
               }
             })}
