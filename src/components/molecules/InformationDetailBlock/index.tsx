@@ -6,7 +6,8 @@ import AttachFiles from '@components/atoms/AttachFiles';
 import { AttachFile, UserRead } from '@components/organisms/EmailMess';
 import AnimationTimeline from '@components/atoms/AnimationTimeline';
 import { isEmpty } from 'lodash';
-import { Email } from '@components/organisms/Email/Interface';
+import { Email, UserInfo } from '@components/organisms/Email/Interface';
+import Icon from '@components/atoms/Icon';
 
 export interface ReceiverData {
   name: string;
@@ -29,18 +30,28 @@ type Props = {
   isEmpty?: boolean;
   userId?: number;
   isBorderBottom: boolean;
-  receiverData?: ReceiverData[];
+  receiverData?: UserInfo[];
+  ccData?: UserInfo[];
+  bccData?: UserInfo[];
   activityData?: ActivityData[];
   filesData?: AttachFile[];
   userRead?: UserRead[];
   data?: Email;
+  isShowMore?: boolean;
+  onShowMore?: Function;
 };
 
-export const TitleOfInformationBlock = (title: string, isUppercase?: boolean) => {
+export const TitleOfInformationBlock = (
+  title: string,
+  isUppercase?: boolean,
+  isShowMore?: boolean,
+  onShowMore?: Function,
+) => {
   return (
     <Typography
       component={'p'}
       sx={{
+        position: 'relative',
         fontSize: '15px',
         fontWeight: 'bold',
         color: '#495057',
@@ -48,6 +59,12 @@ export const TitleOfInformationBlock = (title: string, isUppercase?: boolean) =>
         textTransform: `${isUppercase ? 'uppercase' : 'none'}`,
       }}>
       {title}
+      {isShowMore && (
+        <ShowMore
+          className="top-1/2 -translate-y-1/2 font-normal"
+          handleShowMore={onShowMore ? onShowMore : () => {}}
+        />
+      )}
     </Typography>
   );
 };
@@ -73,13 +90,45 @@ interface PropsAvatarEmpty {
 const AvatarIfEmpty: React.FC<PropsAvatarEmpty> = ({ className }) => (
   <Box className={className} sx={{ display: 'flex', alignItems: 'center' }}>
     <Avatar src="" alt="sender avt" sx={{ width: '35px', height: '35px' }} />
-    <Box className="flex-1 overflow-hidden" sx={{ padding: '0 10px' }}>
-      <AnimationTimeline className="rounded-md " />
-    </Box>
+    <AnimationTimeline className="mx-2 rounded-md " />
   </Box>
 );
 
+const ShowMore: React.FC<{
+  handleShowMore: Function;
+  className?: string;
+}> = ({ handleShowMore, className }) => (
+  <p
+    className={`flex text-[10px] text-[#0F6AF1] absolute top-0 right-0 px-2 hover:cursor-pointer ${className}`}
+    onClick={() => handleShowMore(true)}>
+    Show More
+    <Icon className="px-1" icon="more" width={10} height={10} rawColor="#0F6AF1" />
+  </p>
+);
+
 const InformationDetailBlock = (props: Props) => {
+  const renderReceiver = (item: UserInfo, index: number) => (
+    <Box
+      key={index}
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        marginBottom: '10px',
+      }}>
+      <Avatar
+        src={item.avatar}
+        alt={`${item.name} avatar`}
+        sx={{ width: '35px', height: '35px' }}
+      />
+      <Box sx={{ padding: '0 10px' }}>
+        {UserName(item.name)}
+        <Typography component={'p'} sx={{ fontSize: '10px', color: '#999DA0' }}>
+          {item.mail}
+        </Typography>
+      </Box>
+    </Box>
+  );
+
   const SenderBlock = useMemo(() => {
     const sender = props.data?.sender;
 
@@ -116,12 +165,48 @@ const InformationDetailBlock = (props: Props) => {
   const ReceiverBlock = useMemo(() => {
     return (
       <Box
+        className="relative"
         sx={{
           padding: '10px 0',
           borderBottom: `${props.isBorderBottom ? '1px solid #DEDEDE' : 'none'}`,
         }}>
-        {TitleOfInformationBlock(props.title)}
-        {props.receiverData &&
+        {TitleOfInformationBlock(
+          props.title,
+          false,
+          props.isShowMore,
+          props.onShowMore,
+        )}
+        <Box>
+          {props.receiverData &&
+            props.receiverData.map((item, index) => {
+              return props.isEmpty ? (
+                <AvatarIfEmpty className="my-2" />
+              ) : (
+                renderReceiver(item, index)
+              );
+            })}
+          {!isEmpty(props.ccData) && (
+            <>
+              <Typography
+                component={'p'}
+                sx={{ fontSize: '12px', fontWeight: 'bold' }}>
+                CC
+              </Typography>
+              {props.ccData?.map((item, index) => renderReceiver(item, index))}
+            </>
+          )}
+          {!isEmpty(props.bccData) && (
+            <>
+              <Typography
+                component={'p'}
+                sx={{ fontSize: '12px', fontWeight: 'bold' }}>
+                BCC
+              </Typography>
+              {props.bccData?.map((item, index) => renderReceiver(item, index))}
+            </>
+          )}
+        </Box>
+        {/* {props.receiverData &&
           props.receiverData.map((item, index) => {
             return (
               <Box key={index}>
@@ -165,7 +250,7 @@ const InformationDetailBlock = (props: Props) => {
                 )}
               </Box>
             );
-          })}
+          })} */}
       </Box>
     );
   }, [props]);
@@ -220,9 +305,7 @@ const InformationDetailBlock = (props: Props) => {
             );
           })
         ) : (
-          <Box className="h-[100px]">
-            <AnimationTimeline className="rounded-md" />
-          </Box>
+          <AnimationTimeline className="rounded-md h-[80px]" />
         )}
       </Box>
     );
@@ -230,13 +313,16 @@ const InformationDetailBlock = (props: Props) => {
 
   const FilesBlock = useMemo(() => {
     return (
-      <Box sx={{ paddingTop: '20px' }}>
+      <Box className="relative" sx={{ marginTop: '20px' }}>
         {props.filesData ? (
           <AttachFiles data={props.filesData} />
         ) : (
-          <Box className="h-[80px]">
-            <AnimationTimeline className="rounded-md" />
-          </Box>
+          <AnimationTimeline className="rounded-md h-[120px]" />
+        )}
+        {props.isShowMore && (
+          <ShowMore
+            handleShowMore={props.onShowMore ? props.onShowMore : () => {}}
+          />
         )}
       </Box>
     );

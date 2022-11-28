@@ -8,8 +8,9 @@ import { getAllEmail } from '@api/email';
 
 import { isEmpty } from 'lodash';
 import EmailMessEmpty from '../EmailMessEmpty';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@redux/configureStore';
+import { setEmailsList } from '@redux/Email/reducer';
 
 const saveEmailList = [
   {
@@ -120,35 +121,47 @@ const saveEmailList = [
 
 const Email = () => {
   const [showHistory, setShowHistory] = useState<string | null>(null);
-  const [newEmailList, setNewEmailList] = useState<Email[]>([]);
+  // const [newEmailList, setNewEmailList] = useState<Email[]>([]);
 
   const { EmailsList } = useSelector((state: RootState) => state.email);
+  const dispatch = useDispatch();
+
+  // useEffect(() => {
+  //   // (async () => {
+  //   //   const res = await getAllEmail();
+  //   //   console.log('Test res in line ~ 121 ~ file Email.tsx', res.data);
+  //   // }
+  //   // )();
+  //   setNewEmailList(EmailsList);
+  // }, []);
 
   useEffect(() => {
-    // (async () => {
-    //   const res = await getAllEmail();
-    //   console.log('Test res in line ~ 121 ~ file Email.tsx', res.data);
-    // }
-    // )();
-    setNewEmailList(EmailsList);
-  }, []);
-
-  useEffect(() => {
-    if (!isEmpty(newEmailList) && !showHistory) setShowHistory(newEmailList[0].id);
-  }, [newEmailList]);
+    if (!isEmpty(EmailsList) && !showHistory) setShowHistory(EmailsList[0].id);
+  }, [EmailsList]);
 
   const checkIsReceiveEmail = useCallback(
     (id) => {
-      return newEmailList.find((mail) => mail.id === id)?.type === 'receive';
+      return EmailsList.find((mail) => mail.id === id)?.type === 'receive';
     },
-    [newEmailList],
+    [EmailsList],
   );
 
   const changeEmailStatus = useCallback((status, index) => {
-    setNewEmailList((preState) => {
-      preState[index].status = status;
-      return [...preState];
-    });
+    const cloneEmailsList = [...EmailsList];
+
+    const reqData = { ...cloneEmailsList[index], status: status };
+
+    cloneEmailsList.splice(index, 1, reqData);
+
+    console.log('line 154', cloneEmailsList);
+
+    dispatch(setEmailsList(cloneEmailsList));
+    // cloneEmailsList[index].status = 'status';
+    // dispatch(setEmailsList(cloneEmailsList));
+    // setNewEmailList((preState) => {
+    //   preState[index].status = status;
+    //   return [...preState];
+    // });
   }, []);
 
   const handleShowHistory = useCallback(
@@ -159,12 +172,14 @@ const Email = () => {
     [showHistory],
   );
 
+  // console.log(`line 162`, newEmailList);
+
   return (
     <Box className="flex flex-wrap flex-col">
-      {isEmpty(newEmailList) ? (
+      {isEmpty(EmailsList) ? (
         <EmailMessEmpty />
       ) : (
-        newEmailList.map((email, index) => (
+        EmailsList.map((email, index) => (
           <EmailMess
             key={email.id}
             status={email.status}

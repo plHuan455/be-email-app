@@ -1,14 +1,17 @@
+import { Box } from '@mui/material';
 import React from 'react';
 
 import styles from './styles.module.scss';
 
 type Props = {
-  className?: string,
+  className?: string;
 };
 
-const AnimationTimeline = (props: Props) => {
+const AnimationTimeline: React.FC<Props> = ({ className }) => {
   return (
-    <span className={styles.timelineWrapper + ' ' + props.className}>time line</span>
+    <Box className={`w-full h-full ${styles.timelineWrapper} ${className}`}>
+      time line
+    </Box>
   );
 };
 

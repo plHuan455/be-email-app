@@ -50,25 +50,17 @@ function EmailMessEmpty() {
         {/* Header */}
         <Box
           className={`cursor-pointer pb-6 bg-violet-200 py-4 rounded-bl-[36px] rounded-tr-[36px] relative`}>
-          <h1 className="text-stone-700 font-bold text-base mb-2 h-[38px] rounded-lg overflow-hidden">
-            <AnimationTimeline />
-          </h1>
+          <AnimationTimeline className="rounded-md my-2 h-[28px]" />
           {/* Email Send To */}
-          <Box className="w-[80%] h-[28px] rounded-lg overflow-hidden">
-            <AnimationTimeline />
-          </Box>
+          <AnimationTimeline className="rounded-md my-2 h-[28px]" />
           {/* <EmailStatus emailStatus={'pending'} /> */}
         </Box>
         {/* Email Content */}
         <Box className="py-9">
-          <Box className="w-full h-[160px] rounded-xl overflow-hidden">
-            <AnimationTimeline />
-          </Box>
+          <AnimationTimeline className="rounded-md h-[200px]" />
           <Box>
             <h3 className="my-4 font-semibold">Files</h3>
-            <Box className="w-full h-[120px] rounded-xl overflow-hidden">
-              <AnimationTimeline />
-            </Box>
+            <AnimationTimeline className="rounded-md h-[120px]" />
           </Box>
         </Box>
       </Box>

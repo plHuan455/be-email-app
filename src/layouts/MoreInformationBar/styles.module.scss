@@ -1,0 +1,9 @@
+.moreInfomationBar {
+  transition: 0.4s;
+  background-color: #fff;
+  &.show {
+    transform: translateX(0);
+    opacity: 1;
+    visibility: visible;
+  }
+}

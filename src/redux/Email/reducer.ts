@@ -27,101 +27,204 @@ const files: AttachFile[] = [
   },
 ];
 
+const emailsList: Email[] = [
+  {
+    id: '1',
+    attachFiles: files,
+    date: new Date() + '',
+    mailContent: '<p>asdasd</p>',
+    sender: new UserInfo('', 'User', 'user@bemail.com'),
+    sendTo: [
+      new UserInfo('', 'ReceiverUser', 'receiver@bemail.com'),
+      new UserInfo('', 'ReceiverUser', 'receiver@bemail.com'),
+      new UserInfo('', 'ReceiverUser', 'receiver@bemail.com'),
+      new UserInfo('', 'ReceiverUser', 'receiver@bemail.com'),
+    ],
+    status: 'pending',
+    title: 'Email',
+    type: 'receive',
+    cc: [
+      new UserInfo('', 'ccUser', 'cc@bemail.com'),
+      new UserInfo('', 'ccUser', 'cc@bemail.com'),
+      new UserInfo('', 'ccUser', 'cc@bemail.com'),
+      new UserInfo('', 'ccUser', 'cc@bemail.com'),
+      new UserInfo('', 'ccUser', 'cc@bemail.com'),
+    ],
+    bcc: [
+      new UserInfo('', 'bccUser', 'bcc@bemail.com'),
+      new UserInfo('', 'bccUser', 'bcc@bemail.com'),
+      new UserInfo('', 'bccUser', 'bcc@bemail.com'),
+      new UserInfo('', 'bccUser', 'bcc@bemail.com'),
+    ],
+  },
+  {
+    id: '2',
+    attachFiles: files,
+    date: new Date() + '',
+    mailContent: '<p>asdasd</p>',
+    sender: new UserInfo('', 'User', 'user@bemail.com'),
+    sendTo: [
+      new UserInfo('', 'ReceiverUser', 'receiver@bemail.com'),
+      new UserInfo('', 'ReceiverUser', 'receiver@bemail.com'),
+      new UserInfo('', 'ReceiverUser', 'receiver@bemail.com'),
+      new UserInfo('', 'ReceiverUser', 'receiver@bemail.com'),
+    ],
+    status: 'pending',
+    title: 'Email',
+    type: 'send',
+    cc: [
+      new UserInfo('', 'ccUser', 'cc@bemail.com'),
+      new UserInfo('', 'ccUser', 'cc@bemail.com'),
+      new UserInfo('', 'ccUser', 'cc@bemail.com'),
+      new UserInfo('', 'ccUser', 'cc@bemail.com'),
+      new UserInfo('', 'ccUser', 'cc@bemail.com'),
+    ],
+    bcc: [
+      new UserInfo('', 'bccUser', 'bcc@bemail.com'),
+      new UserInfo('', 'bccUser', 'bcc@bemail.com'),
+      new UserInfo('', 'bccUser', 'bcc@bemail.com'),
+      new UserInfo('', 'bccUser', 'bcc@bemail.com'),
+    ],
+  },
+  {
+    id: '3',
+    attachFiles: files,
+    date: new Date() + '',
+    mailContent: '<p>asdasd</p>',
+    sender: new UserInfo('', 'User', 'user@bemail.com'),
+    sendTo: [
+      new UserInfo('', 'ReceiverUser', 'receiver@bemail.com'),
+      new UserInfo('', 'ReceiverUser', 'receiver@bemail.com'),
+      new UserInfo('', 'ReceiverUser', 'receiver@bemail.com'),
+      new UserInfo('', 'ReceiverUser', 'receiver@bemail.com'),
+    ],
+    status: 'pending',
+    title: 'Email',
+    type: 'receive',
+    cc: [
+      new UserInfo('', 'ccUser', 'cc@bemail.com'),
+      new UserInfo('', 'ccUser', 'cc@bemail.com'),
+      new UserInfo('', 'ccUser', 'cc@bemail.com'),
+      new UserInfo('', 'ccUser', 'cc@bemail.com'),
+      new UserInfo('', 'ccUser', 'cc@bemail.com'),
+    ],
+    bcc: [
+      new UserInfo('', 'bccUser', 'bcc@bemail.com'),
+      new UserInfo('', 'bccUser', 'bcc@bemail.com'),
+      new UserInfo('', 'bccUser', 'bcc@bemail.com'),
+      new UserInfo('', 'bccUser', 'bcc@bemail.com'),
+    ],
+  },
+  {
+    id: '4',
+    attachFiles: files,
+    date: new Date() + '',
+    mailContent: '<p>asdasd</p>',
+    sender: new UserInfo('', 'User', 'user@bemail.com'),
+    sendTo: [
+      new UserInfo('', 'ReceiverUser', 'receiver@bemail.com'),
+      new UserInfo('', 'ReceiverUser', 'receiver@bemail.com'),
+      new UserInfo('', 'ReceiverUser', 'receiver@bemail.com'),
+      new UserInfo('', 'ReceiverUser', 'receiver@bemail.com'),
+    ],
+    status: 'pending',
+    title: 'Email',
+    type: 'send',
+    cc: [
+      new UserInfo('', 'ccUser', 'cc@bemail.com'),
+      new UserInfo('', 'ccUser', 'cc@bemail.com'),
+      new UserInfo('', 'ccUser', 'cc@bemail.com'),
+      new UserInfo('', 'ccUser', 'cc@bemail.com'),
+      new UserInfo('', 'ccUser', 'cc@bemail.com'),
+    ],
+    bcc: [
+      new UserInfo('', 'bccUser', 'bcc@bemail.com'),
+      new UserInfo('', 'bccUser', 'bcc@bemail.com'),
+      new UserInfo('', 'bccUser', 'bcc@bemail.com'),
+      new UserInfo('', 'bccUser', 'bcc@bemail.com'),
+    ],
+  },
+  {
+    id: '5',
+    attachFiles: files,
+    date: new Date() + '',
+    mailContent: '<p>asdasd</p>',
+    sender: new UserInfo('', 'User', 'user@bemail.com'),
+    sendTo: [
+      new UserInfo('', 'ReceiverUser', 'receiver@bemail.com'),
+      new UserInfo('', 'ReceiverUser', 'receiver@bemail.com'),
+      new UserInfo('', 'ReceiverUser', 'receiver@bemail.com'),
+      new UserInfo('', 'ReceiverUser', 'receiver@bemail.com'),
+    ],
+    status: 'pending',
+    title: 'Email',
+    type: 'receive',
+    cc: [
+      new UserInfo('', 'ccUser', 'cc@bemail.com'),
+      new UserInfo('', 'ccUser', 'cc@bemail.com'),
+      new UserInfo('', 'ccUser', 'cc@bemail.com'),
+      new UserInfo('', 'ccUser', 'cc@bemail.com'),
+      new UserInfo('', 'ccUser', 'cc@bemail.com'),
+    ],
+    bcc: [
+      new UserInfo('', 'bccUser', 'bcc@bemail.com'),
+      new UserInfo('', 'bccUser', 'bcc@bemail.com'),
+      new UserInfo('', 'bccUser', 'bcc@bemail.com'),
+      new UserInfo('', 'bccUser', 'bcc@bemail.com'),
+    ],
+  },
+  {
+    id: '6',
+    attachFiles: files,
+    date: new Date() + '',
+    mailContent: '<p>asdasd</p>',
+    sender: new UserInfo('', 'User', 'user@bemail.com'),
+    sendTo: [
+      new UserInfo('', 'ReceiverUser', 'receiver@bemail.com'),
+      new UserInfo('', 'ReceiverUser', 'receiver@bemail.com'),
+      new UserInfo('', 'ReceiverUser', 'receiver@bemail.com'),
+      new UserInfo('', 'ReceiverUser', 'receiver@bemail.com'),
+    ],
+    status: 'pending',
+    title: 'Email',
+    type: 'send',
+    cc: [
+      new UserInfo('', 'ccUser', 'cc@bemail.com'),
+      new UserInfo('', 'ccUser', 'cc@bemail.com'),
+      new UserInfo('', 'ccUser', 'cc@bemail.com'),
+      new UserInfo('', 'ccUser', 'cc@bemail.com'),
+      new UserInfo('', 'ccUser', 'cc@bemail.com'),
+    ],
+    bcc: [
+      new UserInfo('', 'bccUser', 'bcc@bemail.com'),
+      new UserInfo('', 'bccUser', 'bcc@bemail.com'),
+      new UserInfo('', 'bccUser', 'bcc@bemail.com'),
+      new UserInfo('', 'bccUser', 'bcc@bemail.com'),
+    ],
+  },
+];
+
 export interface EmailState {
   EmailsList: Email[];
-  focusEmail: number;
 }
 
 const initialState: EmailState = {
-  EmailsList: [
-    {
-      id: '1',
-      attachFiles: files,
-      date: new Date() + '',
-      mailContent: '<p>asdasd</p>',
-      sender: new UserInfo('', 'User', 'user@bemail.com'),
-      sendTo: [new UserInfo('', 'ReceiverUser', 'receiver@bemail.com')],
-      status: 'pending',
-      title: 'Email',
-      type: 'receive',
-      cc: [new UserInfo('', 'ccUser', 'cc@bemail.com')],
-      bcc: [new UserInfo('', 'bccUser', 'bcc@bemail.com')],
-    },
-    {
-      id: '2',
-      attachFiles: files,
-      date: new Date() + '',
-      mailContent: '<p>asdasd</p>',
-      sender: new UserInfo('', 'User', 'user@bemail.com'),
-      sendTo: [new UserInfo('', 'ReceiverUser', 'receiver@bemail.com')],
-      status: 'pending',
-      title: 'Email',
-      type: 'send',
-      cc: [],
-      bcc: [],
-    },
-    {
-      id: '3',
-      attachFiles: files,
-      date: new Date() + '',
-      mailContent: '<p>asdasd</p>',
-      sender: new UserInfo('', 'User', 'user@bemail.com'),
-      sendTo: [new UserInfo('', 'ReceiverUser', 'receiver@bemail.com')],
-      status: 'pending',
-      title: 'Email',
-      type: 'receive',
-      cc: [],
-      bcc: [],
-    },
-    {
-      id: '4',
-      attachFiles: files,
-      date: new Date() + '',
-      mailContent: '<p>asdasd</p>',
-      sender: new UserInfo('', 'User', 'user@bemail.com'),
-      sendTo: [new UserInfo('', 'ReceiverUser', 'receiver@bemail.com')],
-      status: 'pending',
-      title: 'Email',
-      type: 'send',
-      cc: [],
-      bcc: [],
-    },
-    {
-      id: '5',
-      attachFiles: files,
-      date: new Date() + '',
-      mailContent: '<p>asdasd</p>',
-      sender: new UserInfo('', 'User', 'user@bemail.com'),
-      sendTo: [new UserInfo('', 'ReceiverUser', 'receiver@bemail.com')],
-      status: 'pending',
-      title: 'Email',
-      type: 'receive',
-      cc: [],
-      bcc: [],
-    },
-    {
-      id: '6',
-      attachFiles: files,
-      date: new Date() + '',
-      mailContent: '<p>asdasd</p>',
-      sender: new UserInfo('', 'User', 'user@bemail.com'),
-      sendTo: [new UserInfo('', 'ReceiverUser', 'receiver@bemail.com')],
-      status: 'pending',
-      title: 'Email',
-      type: 'send',
-      cc: [],
-      bcc: [],
-    },
-  ],
-  focusEmail: 0,
+  EmailsList: emailsList,
 };
 
 const EmailSlice = createSlice({
   name: 'email ',
   initialState,
   reducers: {
+    setEmailStatus(state, action) {
+      const { index, status } = action.payload;
+
+      state.EmailsList[index].status = status;
+
+      return { ...state, EmailsList: [...state.EmailsList] };
+    },
     setEmailsList(state, action) {
-      return action.payload;
+      return { ...state, EmailsList: action.payload };
     },
     removeEmailsList(state, action) {
       return action.payload;
@@ -129,6 +232,6 @@ const EmailSlice = createSlice({
   },
 });
 
-export const { setEmailsList } = EmailSlice.actions;
+export const { setEmailStatus, setEmailsList } = EmailSlice.actions;
 
 export default EmailSlice.reducer;

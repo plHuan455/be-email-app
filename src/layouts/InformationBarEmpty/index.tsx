@@ -6,25 +6,12 @@ import { Box, Typography } from '@mui/material';
 import avt from '../../../src/assets/images/avatars/avatar-2.jpg';
 import React from 'react';
 import { AttachFile, UserRead } from '@components/organisms/EmailMess';
+import { UserInfo } from '@components/organisms/Email/Interface';
 
-const receiverData: ReceiverData[] = [
-  {
-    name: 'Maria Ohio',
-    avatar: avt,
-    position: 'Marketing Department',
-  },
-  {
-    name: 'Maria Ohio',
-    avatar: avt,
-    email: 'cenawwe@tesla.com',
-    isCC: true,
-  },
-  {
-    name: 'Maria Ohio',
-    avatar: avt,
-    position: 'Metanode X Lab',
-    isBCC: true,
-  },
+const receiverData: UserInfo[] = [
+  new UserInfo(avt, 'asd', 'asd@asd.com'),
+  new UserInfo(avt, 'asd', 'asd@asd.com'),
+  new UserInfo(avt, 'asd', 'asd@asd.com'),
 ];
 
 type Props = {

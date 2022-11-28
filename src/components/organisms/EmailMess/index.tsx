@@ -114,9 +114,9 @@ function EmailMess({
         )}
       </Box>
 
-      {/* <Box className="w-[10%] flex justify-center">
+      <Box className={`w-[10%] flex ${type === 'send' && 'justify-end'}`}>
         <Avatar alt={userInfo.name} src={userInfo.avatar} />
-      </Box> */}
+      </Box>
       <Box
         sx={{ boxShadow: '0px 10px 23px -15px rgba(159,159,159,0.54)' }}
         className={`flex-1 bg-white ${
