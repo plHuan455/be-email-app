@@ -205,6 +205,7 @@ function EmailMess({
       {/* Layer if status === 'Reply || ReplyAll' */}
       {(status === 'reply' || status === 'replyAll' || status === 'forward') && (
         <EmailForward
+          status={status}
           onChangeEmailStatus={() => {
             onChangeStatus(defaultStatus, index);
           }}

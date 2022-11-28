@@ -1211,6 +1211,11 @@
     background-color: rgb(246 243 253 / var(--tw-bg-opacity));
 }
 
+.bg-slate-300 {
+    --tw-bg-opacity: 1;
+    background-color: rgb(203 213 225 / var(--tw-bg-opacity));
+}
+
 .bg-purple-linear {
     background-image: linear-gradient(267.74deg, #6359d9 -4.45%, #b147f8 105.31%);
 }

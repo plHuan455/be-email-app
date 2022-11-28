@@ -12,6 +12,8 @@ export interface ModalBaseProps extends React.PropsWithChildren {
   onSubmit?: () => void;
   style?: any;
   submitLabel?: string;
+  cancelLabel?: string;
+  modalType?: 'submit' | 'submit/cancel';
 }
 
 const modalDefaultStyle = {
@@ -33,12 +35,15 @@ const ModalBase: React.FC<ModalBaseProps> = ({
   onSubmit,
   children,
   submitLabel = 'CREATE',
+  cancelLabel = 'CANCEL',
+  modalType = 'submit/cancel',
 }) => {
   return (
     <Modal
       aria-labelledby="transition-modal-title"
       aria-describedby="transition-modal-description"
       open={isOpen}
+      onClose={onClose}
       closeAfterTransition
       BackdropProps={{
         timeout: 500,
@@ -54,10 +59,28 @@ const ModalBase: React.FC<ModalBaseProps> = ({
           <div className="modal-content">
             <div className="modal-content-scroll">{children}</div>
           </div>
-          <div className="modal-button-bottom">
-            <Button className="button-create-mui" onClick={onSubmit}>
-              {submitLabel}
-            </Button>
+          <div className="modal-button-bottom flex gap-2">
+            {modalType === 'submit' && (
+              <Button className="button-create-mui" onClick={onSubmit}>
+                {submitLabel}
+              </Button>
+            )}
+            {modalType === 'submit/cancel' && (
+              <>
+                <Button className="button-create-mui" onClick={onSubmit}>
+                  {submitLabel}
+                </Button>
+                <Button
+                  className="button-create-mui"
+                  onClick={onClose}
+                  sx={{
+                    backgroundColor: '#E0E0EA !important',
+                    color: '#7D7E80 !important',
+                  }}>
+                  {cancelLabel}
+                </Button>
+              </>
+            )}
           </div>
         </div>
       </Box>

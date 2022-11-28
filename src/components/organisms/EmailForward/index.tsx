@@ -17,6 +17,11 @@ import { Editor } from 'react-draft-wysiwyg';
 import avatarImg from '@assets/images/avatars/avatar-1.jpg';
 import { Email, UserInfo } from '../Email/Interface';
 import EmailComposeFormGroup from '@components/molecules/EmailComposeFormGroup';
+import useEmailCompose from '../../../zustand/useEmailCompose';
+
+import draftToHtml from 'draftjs-to-html';
+import htmlToDraft from 'html-to-draftjs';
+import { toast } from 'react-toastify';
 
 interface Props {
   onChangeEmailStatus: Function;
@@ -24,6 +29,7 @@ interface Props {
   classNameContent?: string;
   sendTo: UserInfo[];
   sendToDefault: UserInfo[];
+  status: string;
   isReadOnlyReceivers?: boolean;
 }
 
@@ -42,6 +48,7 @@ const EmailForward: React.FC<Props> = ({
   sendToDefault,
   onChangeEmailStatus,
   isReadOnlyReceivers = true,
+  status,
 }) => {
   const [attachedFiles, setAttachedFile] = useState<any>([]);
   const [attachFiles, setAttachFile] = useState<any>([]);
@@ -51,6 +58,26 @@ const EmailForward: React.FC<Props> = ({
   const [isShowCcFrom, setIsShowCcFrom] = useState(false);
 
   const refInputAttachFile = useRef<HTMLInputElement>(null);
+
+  const {
+    subject,
+    cc,
+    bcc,
+    receivers,
+    getAll,
+    reset,
+    check,
+    setNewReceivers,
+    setCc,
+    setBcc,
+    setContent,
+    setSubject,
+  } = useEmailCompose();
+
+  useEffect(() => {
+    if (status === 'reply') setNewReceivers(sendToDefault);
+    if (status === 'replyAll') setCc(sendToDefault);
+  }, []);
 
   const handleClickCcFromLabel = useCallback(() => {
     setIsShowCcFrom((preState) => !preState);
@@ -62,14 +89,6 @@ const EmailForward: React.FC<Props> = ({
     if (checkRef) {
       refInputAttachFile.current.click();
     }
-  };
-
-  const onEditorStateChange = (val) => {
-    setEditorState(val);
-    console.log(
-      'state -->',
-      JSON.stringify(convertToRaw(editorState.getCurrentContent())),
-    );
   };
 
   const handleOnAttachedFiles = (e) => {
@@ -135,22 +154,62 @@ const EmailForward: React.FC<Props> = ({
     [attachFiles, attachedFiles],
   );
 
-  return (
-    <Box className={`${classNameLayer} `} onClick={() => onChangeEmailStatus()}>
-      <Box className={`${classNameContent}`} onClick={(e) => e.stopPropagation()}>
-        <Box>
-          <EmailComposeFormGroup label="Re">
-            <SingleOTPInputComponent className="outline-none w-full text-black text-[18px] font-bold h-full" />
-          </EmailComposeFormGroup>
-        </Box>
+  const handleChangeSubject = (e) => {
+    setSubject(e.target.value);
+  };
+
+  const onEditorStateChange = (val) => {
+    setContent(draftToHtml(convertToRaw(editorState.getCurrentContent())));
+    setEditorState(val);
+    console.log(
+      'state --> line 146',
+      JSON.stringify(draftToHtml(convertToRaw(editorState.getCurrentContent()))),
+    );
+  };
+
+  const onChangeReceiversData = useCallback((e, newValue) => {
+    setNewReceivers(newValue);
+  }, []);
+
+  const onChangeCcData = useCallback((e, newValue) => {
+    setCc(newValue);
+  }, []);
+
+  const onChangeBccData = useCallback((e, newValue) => {
+    setBcc(newValue);
+  }, []);
+
+  const handleSubmitEmail = async (e) => {
+    const canSubmit = await check();
+
+    if (canSubmit) {
+      console.log('line 180', getAll());
+      toast.success('Có thể call API!');
+      await reset();
+      onChangeEmailStatus();
+    } else {
+      toast.error('Có lỗi xãy ra, vui lòng kiểm tra lại!');
+    }
+  };
+
+  const renderReceiverList = () => {
+    return (
+      <>
         <Box>
           <Box className="py-3">
-            <AutoCompleteReceive
-              isReadOnly={isReadOnlyReceivers}
-              data={sendTo}
-              defaultValue={sendToDefault}
-              onClickCcFromLabel={handleClickCcFromLabel}
-            />
+            <EmailComposeFormGroup
+              className="py-1"
+              label="To:"
+              isHaveBorderBottom={false}>
+              <AutoCompleteReceive
+                isReadOnly={isReadOnlyReceivers}
+                data={sendTo}
+                defaultValue={sendToDefault}
+                isShowCcFromLabel={status === 'forward'}
+                onClickCcFromLabel={handleClickCcFromLabel}
+                onChange={onChangeReceiversData}
+              />
+            </EmailComposeFormGroup>
           </Box>
         </Box>
         <Box>
@@ -161,13 +220,27 @@ const EmailForward: React.FC<Props> = ({
                 className="py-1"
                 label="Cc:"
                 isHaveBorderBottom={false}>
-                <SingleOTPInputComponent className="outline-none w-full text-[14px] font-medium h-full" />
+                <AutoCompleteReceive
+                  isReadOnly={isReadOnlyReceivers}
+                  data={sendTo}
+                  defaultValue={sendToDefault}
+                  isShowCcFromLabel={false}
+                  onClickCcFromLabel={handleClickCcFromLabel}
+                  onChange={onChangeCcData}
+                />
               </EmailComposeFormGroup>
               <EmailComposeFormGroup
                 className="py-1"
                 label="Bcc:"
                 isHaveBorderBottom={false}>
-                <SingleOTPInputComponent className="outline-none w-full text-[14px] font-medium h-full" />
+                <AutoCompleteReceive
+                  isReadOnly={isReadOnlyReceivers}
+                  data={sendTo}
+                  defaultValue={sendToDefault}
+                  isShowCcFromLabel={false}
+                  onClickCcFromLabel={handleClickCcFromLabel}
+                  onChange={onChangeBccData}
+                />
               </EmailComposeFormGroup>
               <EmailComposeFormGroup
                 className="py-1"
@@ -204,8 +277,26 @@ const EmailForward: React.FC<Props> = ({
             )}
           </Box>
         </Box>
+      </>
+    );
+  };
+
+  return (
+    <Box className={`${classNameLayer} `} onClick={() => onChangeEmailStatus()}>
+      <Box className={`${classNameContent}`} onClick={(e) => e.stopPropagation()}>
+        <Box>
+          <EmailComposeFormGroup label="Re">
+            <SingleOTPInputComponent
+              className="outline-none w-full text-black text-[18px] font-bold h-full"
+              onChange={handleChangeSubject}
+            />
+          </EmailComposeFormGroup>
+        </Box>
+        {renderReceiverList()}
         <Box className="py-2">
-          <Button className="bg-transparent text-[#7D7E80] hover:text-[#5724C5] hover:bg-transparent">
+          <Button
+            className="bg-transparent text-[#7D7E80] hover:text-[#5724C5] hover:bg-transparent"
+            onClick={handleSubmitEmail}>
             <SendOutlinedIcon fontSize="large" />
           </Button>
           <Button

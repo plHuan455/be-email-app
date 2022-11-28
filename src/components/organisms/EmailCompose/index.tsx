@@ -25,8 +25,8 @@ import { toast } from 'react-toastify';
 import { useTranslation } from '@@packages/localization/src';
 import useEmailCompose from '../../../zustand/useEmailCompose';
 import draftToHtml from 'draftjs-to-html';
-import { UserInfo } from '../Email/Interface';
 import htmlToDraft from 'html-to-draftjs';
+import { UserInfo } from '../Email/Interface';
 import { CreateEmailParam, sendEmail } from '@api/email';
 import {
   MESSAGE_SEND_EMAIL_FAILED,
