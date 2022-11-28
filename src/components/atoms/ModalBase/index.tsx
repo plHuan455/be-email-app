@@ -54,11 +54,11 @@ const ModalBase: React.FC<ModalBaseProps> = ({
           <div className="modal-content">
             <div className="modal-content-scroll">{children}</div>
           </div>
-          <div className="modal-button-bottom">
+          {Boolean(submitLabel) && <div className="modal-button-bottom">
             <Button className="button-create-mui" onClick={onSubmit}>
               {submitLabel}
             </Button>
-          </div>
+          </div>}
         </div>
       </Box>
     </Modal>
