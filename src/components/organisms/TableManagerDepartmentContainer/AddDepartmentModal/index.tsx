@@ -2,21 +2,21 @@ import ValidateInput from "@components/atoms/Input/ValidateInput";
 import ModalBase from "@components/atoms/ModalBase"
 import { Button, Grid } from "@mui/material";
 import { Controller, FormProvider, UseFormReturn } from "react-hook-form";
-export interface AddEmployeeField {
-  fullName: string;
-  email: string;
-  position: string;
-  role: string;
+export interface AddDepartmentField {
+  name: string;
+  description: string;
+  number: number;
+  address: string;
 }
-interface AddEmployeeModalProps {
-  method: UseFormReturn<AddEmployeeField>
+interface AddDepartmentModalProps {
+  method: UseFormReturn<AddDepartmentField>
   isOpen: boolean;
   title: string;
-  onSubmit: (values: AddEmployeeField) => void;
+  onSubmit: (values: AddDepartmentField) => void;
   onClose: () => void;
 }
 
-function AddEmployeeModal ({method, isOpen, title, onClose, onSubmit}: AddEmployeeModalProps) {
+function AddDepartmentModal ({method, isOpen, title, onClose, onSubmit}: AddDepartmentModalProps) {
   return (
   <ModalBase 
     isOpen={isOpen}
@@ -30,15 +30,15 @@ function AddEmployeeModal ({method, isOpen, title, onClose, onSubmit}: AddEmploy
         <Grid container spacing={4}>
           <Grid item xs={12}>
             <Controller 
-              name="fullName"
+              name="name"
               render={({field: {value, onChange}, fieldState}) => (
                 <ValidateInput
-                  label="Full Name"
                   className="text-sm"
+                  label="Name" 
                   type="text"
                   fullWidth
                   value={value}
-                  placeHolder="Full Name"
+                  placeHolder="name"
                   errors={fieldState.error?.message}
                   onChange={onChange}
                 />
@@ -47,14 +47,14 @@ function AddEmployeeModal ({method, isOpen, title, onClose, onSubmit}: AddEmploy
           </Grid>
           <Grid item xs={12}>
             <Controller 
-              name="email"
+              name="description"
               render={({field: {value, onChange}, fieldState}) => (
                 <ValidateInput 
-                  label="Email"
+                  label="Description"
                   type="text"
                   fullWidth
                   value={value}
-                  placeHolder="Email"
+                  placeHolder="description"
                   errors={fieldState.error?.message}
                   onChange={onChange}
                 />
@@ -63,14 +63,14 @@ function AddEmployeeModal ({method, isOpen, title, onClose, onSubmit}: AddEmploy
           </Grid>
           <Grid item xs={6}>
             <Controller 
-              name="position"
+              name="number"
               render={({field: {value, onChange}, fieldState}) => (
-                <ValidateInput
-                  label="Position"
+                <ValidateInput 
                   fullWidth
+                  label="Number"
                   type="text"
                   value={value}
-                  placeHolder="position"
+                  placeHolder="number"
                   errors={fieldState.error?.message}
                   onChange={onChange}
                 />
@@ -79,15 +79,15 @@ function AddEmployeeModal ({method, isOpen, title, onClose, onSubmit}: AddEmploy
           </Grid>
           <Grid item xs={6}>
             <Controller 
-              name="role"
+              name="address"
               render={({field: {value, onChange}, fieldState}) => (
                 <ValidateInput 
+                  label="Address"
                   fullWidth
-                  label="Role"
                   type="text"
                   variant="select"
                   value={value}
-                  placeHolder="role"
+                  placeHolder="address"
                   errors={fieldState.error?.message}
                   onChange={onChange}
                 />
@@ -95,7 +95,7 @@ function AddEmployeeModal ({method, isOpen, title, onClose, onSubmit}: AddEmploy
             />
           </Grid>
           <Grid item xs={12}>
-            <Button className="button-create-mui" fullWidth type="submit">Create employee</Button>
+            <Button className="button-create-mui" fullWidth   type="submit">Create department</Button>
           </Grid>
         </Grid>
       </form>
@@ -103,4 +103,4 @@ function AddEmployeeModal ({method, isOpen, title, onClose, onSubmit}: AddEmploy
   </ModalBase>
 )}
 
-export default AddEmployeeModal
+export default AddDepartmentModal
