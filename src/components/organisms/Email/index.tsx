@@ -1,5 +1,5 @@
 import { Box } from '@mui/material';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { ReactNode, useCallback, useEffect, useState } from 'react';
 
 import avatarImg from '@assets/images/avatars/avatar-2.jpg';
 import { Email, UserInfo } from './Interface';
@@ -10,7 +10,21 @@ import { isEmpty } from 'lodash';
 import EmailMessEmpty from '../EmailMessEmpty';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@redux/configureStore';
-import { setEmailsList } from '@redux/Email/reducer';
+import {
+  addDeletedEmail,
+  addSpamEmail,
+  addUnreadEmail,
+  setDeletedEmails,
+  setEmailsList,
+} from '@redux/Email/reducer';
+import ModalBase from '@components/atoms/ModalBase';
+
+interface ModalForm {
+  title: string;
+  content?: ReactNode;
+  onSubmit?: () => void;
+  onClose?: () => void;
+}
 
 const saveEmailList = [
   {
@@ -121,9 +135,20 @@ const saveEmailList = [
 
 const Email = () => {
   const [showHistory, setShowHistory] = useState<string | null>(null);
+  const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
+  const [modal, setModal] = useState<ModalForm>({
+    title: 'Modal',
+    content: <p>Modal Content</p>,
+    onSubmit() {},
+    onClose() {
+      handleCloseModal();
+    },
+  });
   // const [newEmailList, setNewEmailList] = useState<Email[]>([]);
 
-  const { EmailsList } = useSelector((state: RootState) => state.email);
+  const { EmailsList, deletedEmailsList } = useSelector(
+    (state: RootState) => state.email,
+  );
   const dispatch = useDispatch();
 
   // useEffect(() => {
@@ -146,22 +171,94 @@ const Email = () => {
     [EmailsList],
   );
 
-  const changeEmailStatus = useCallback((status, index) => {
-    const cloneEmailsList = [...EmailsList];
+  const changeEmailStatus = useCallback(
+    (status, index) => {
+      if (status === 'delete' || status === 'spam' || status === 'unread') {
+        if (status === 'delete') {
+          setModal((prevState) => ({
+            ...prevState,
+            title: 'Bạn có chắc muốn xóa Email này chứ?',
+            content: (
+              <p>Nếu bấm có, Email này sẽ bị xóa khỏi danh sách email của bạn.</p>
+            ),
+            onSubmit() {
+              const cloneEmailsList = [...EmailsList];
 
-    const reqData = { ...cloneEmailsList[index], status: status };
+              const deletedEmail = cloneEmailsList.splice(index, 1);
 
-    cloneEmailsList.splice(index, 1, reqData);
+              dispatch(addDeletedEmail(deletedEmail));
+              dispatch(setEmailsList(cloneEmailsList));
 
-    console.log('line 154', cloneEmailsList);
+              handleCloseModal();
+            },
+          }));
+          setIsOpenModal(true);
+        }
+        if (status === 'spam') {
+          setModal((prevState) => ({
+            ...prevState,
+            title: 'Bạn có chắc báo cáo người dùng này với hành vi làm phiền?',
+            content: (
+              <p>Nếu bấm có, Bạn sẽ thêm người dùng này vào danh sách chặn.</p>
+            ),
+            onSubmit() {
+              const cloneEmailsList = [...EmailsList];
 
-    dispatch(setEmailsList(cloneEmailsList));
-    // cloneEmailsList[index].status = 'status';
-    // dispatch(setEmailsList(cloneEmailsList));
-    // setNewEmailList((preState) => {
-    //   preState[index].status = status;
-    //   return [...preState];
-    // });
+              const spamEmail = cloneEmailsList.splice(index, 1);
+
+              dispatch(addSpamEmail(spamEmail));
+              dispatch(setEmailsList(cloneEmailsList));
+
+              handleCloseModal();
+            },
+          }));
+          setIsOpenModal(true);
+        }
+        if (status === 'unread') {
+          setModal((prevState) => ({
+            ...prevState,
+            title: 'Bạn có chắc muốn bỏ qua Email này chứ?',
+            content: (
+              <p>Nếu bấm có, Email này sẽ được thêm vào danh sách xem sau.</p>
+            ),
+            onSubmit() {
+              const cloneEmailsList = [...EmailsList];
+
+              const unreadEmail = cloneEmailsList.splice(index, 1);
+
+              dispatch(addUnreadEmail(unreadEmail));
+              dispatch(setEmailsList(cloneEmailsList));
+
+              handleCloseModal();
+            },
+          }));
+          setIsOpenModal(true);
+        }
+      } else {
+        const cloneEmailsList = [...EmailsList];
+
+        const reqData = { ...cloneEmailsList[index], status: status };
+
+        cloneEmailsList.splice(index, 1, reqData);
+
+        console.log('line 154', cloneEmailsList);
+
+        dispatch(setEmailsList(cloneEmailsList));
+      }
+      // cloneEmailsList[index].status = 'status';
+      // dispatch(setEmailsList(cloneEmailsList));
+      // setNewEmailList((preState) => {
+      //   preState[index].status = status;
+      //   return [...preState];
+      // });
+    },
+    [EmailsList],
+  );
+
+  console.log(`line 221`, EmailsList);
+
+  const handleCloseModal = useCallback(() => {
+    setIsOpenModal(false);
   }, []);
 
   const handleShowHistory = useCallback(
@@ -194,6 +291,13 @@ const Email = () => {
           />
         ))
       )}
+      <ModalBase
+        onClose={handleCloseModal}
+        onSubmit={modal.onSubmit}
+        isOpen={isOpenModal}
+        title={modal.title}>
+        {modal.content}
+      </ModalBase>
     </Box>
   );
 };

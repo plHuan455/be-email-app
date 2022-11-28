@@ -206,16 +206,55 @@ const emailsList: Email[] = [
 
 export interface EmailState {
   EmailsList: Email[];
+  deletedEmailsList: Email[];
+  spamEmailsList: Email[];
+  unreadEmailsList: Email[];
 }
 
 const initialState: EmailState = {
   EmailsList: emailsList,
+  deletedEmailsList: [],
+  spamEmailsList: [],
+  unreadEmailsList: [],
 };
 
 const EmailSlice = createSlice({
   name: 'email ',
   initialState,
   reducers: {
+    addUnreadEmail(state, action) {
+      const cloneUnreadEmailsList = [...state.unreadEmailsList];
+
+      cloneUnreadEmailsList.push(...action.payload);
+
+      return {
+        ...state,
+        unreadEmailsList: cloneUnreadEmailsList,
+      };
+    },
+    addSpamEmail(state, action) {
+      const cloneSpamEmailsList = [...state.spamEmailsList];
+
+      cloneSpamEmailsList.push(...action.payload);
+
+      return {
+        ...state,
+        spamEmailsList: cloneSpamEmailsList,
+      };
+    },
+    addDeletedEmail(state, action) {
+      const cloneDeletedEmailsList = [...state.deletedEmailsList];
+
+      cloneDeletedEmailsList.push(...action.payload);
+
+      return {
+        ...state,
+        deletedEmailsList: cloneDeletedEmailsList,
+      };
+    },
+    setDeletedEmails(state, action) {
+      return { ...state, deletedEmailsList: action.payload };
+    },
     setEmailStatus(state, action) {
       const { index, status } = action.payload;
 
@@ -232,6 +271,13 @@ const EmailSlice = createSlice({
   },
 });
 
-export const { setEmailStatus, setEmailsList } = EmailSlice.actions;
+export const {
+  setEmailStatus,
+  setEmailsList,
+  setDeletedEmails,
+  addSpamEmail,
+  addUnreadEmail,
+  addDeletedEmail,
+} = EmailSlice.actions;
 
 export default EmailSlice.reducer;
