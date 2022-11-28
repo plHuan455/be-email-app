@@ -59,29 +59,11 @@ const ModalBase: React.FC<ModalBaseProps> = ({
           <div className="modal-content">
             <div className="modal-content-scroll">{children}</div>
           </div>
-          <div className="modal-button-bottom flex gap-2">
-            {modalType === 'submit' && (
-              <Button className="button-create-mui" onClick={onSubmit}>
-                {submitLabel}
-              </Button>
-            )}
-            {modalType === 'submit/cancel' && (
-              <>
-                <Button className="button-create-mui" onClick={onSubmit}>
-                  {submitLabel}
-                </Button>
-                <Button
-                  className="button-create-mui"
-                  onClick={onClose}
-                  sx={{
-                    backgroundColor: '#E0E0EA !important',
-                    color: '#7D7E80 !important',
-                  }}>
-                  {cancelLabel}
-                </Button>
-              </>
-            )}
-          </div>
+          {Boolean(submitLabel) && <div className="modal-button-bottom">
+            <Button className="button-create-mui" onClick={onSubmit}>
+              {submitLabel}
+            </Button>
+          </div>}
         </div>
       </Box>
     </Modal>

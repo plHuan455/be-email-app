@@ -3,18 +3,21 @@ import SearchStartWithIcon from '@components/molecules/Search';
 import PageCrudData from '@components/organisms/PageCrudData';
 import TableManagerDepartmentContainer from '@components/organisms/TableManagerDepartmentContainer';
 import Layout from '@layouts/Layout';
-import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
 
 const ManagerDepartment = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
+  const [isShowAddDepartmentModal, setIsAddDepartmentModal] = useState<boolean>(false);
+
   return (
     <Layout.Content>
       <Layout.MainQueryClient
-        headTitle={t('Employee')}
-        onClickAdd={() => navigate('add')}>
-        <TableManagerDepartmentContainer />
+        headTitle={t('Department')}
+        onClickAdd={() => { setIsAddDepartmentModal(true); }}>
+        <TableManagerDepartmentContainer 
+          isShowAddDepartmentModal={isShowAddDepartmentModal} 
+          onCloseAddDepartmentModal={() => setIsAddDepartmentModal(false)}
+        />
       </Layout.MainQueryClient>
     </Layout.Content>
   );

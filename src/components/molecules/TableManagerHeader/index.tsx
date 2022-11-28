@@ -8,9 +8,10 @@ import './styles.scss';
 
 interface Props extends PropsWithChildren {
   isHaveActions?: boolean;
+  onAddEmployeeClick?: () => void;
 }
 
-const TableHeader: React.FC<Props> = ({ isHaveActions = true, ...props }) => {
+const TableHeader: React.FC<Props> = ({ isHaveActions = true, onAddEmployeeClick, ...props }) => {
   const actionsList: {
     [key: string]: SVGIconProps['icon'];
   } = {
@@ -46,6 +47,7 @@ const TableHeader: React.FC<Props> = ({ isHaveActions = true, ...props }) => {
             color="#ffffff"
             label="Add employee"
             isBeforeIcon={true}
+            onClick={onAddEmployeeClick}
             beforeIcon={
               <RenderButtonIcon
                 width={14}
