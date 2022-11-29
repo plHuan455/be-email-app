@@ -57,7 +57,7 @@ const EMAILSTATUS = {
     content: '',
     bgColor: '#554CFF',
   },
-  replyAll: {
+  replyall: {
     item: 'approved',
     content: '',
     bgColor: '#554CFF',
