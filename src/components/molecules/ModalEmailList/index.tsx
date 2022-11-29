@@ -73,10 +73,11 @@ type Props = {
 const ModalEmailList = (props: Props) => {
   const emailsData = useGetEmail(props.status).response;
   console.log(
-    '🚀 ~ file: index.tsx ~ line 183 ~ EmailStatusBar ~ email',
+    '🚀 ~ file: index.tsx ~ line 183 ~ EmailStatusBar ~ email ' + props.status,
     emailsData,
   );
   useEffect(() => {
+    console.log(`line 80 test changed ${props.status}`);
     props.handleChangeEmailTabNotiNumber &&
       props.handleChangeEmailTabNotiNumber(
         props.index || 0,
@@ -294,9 +295,9 @@ const ModalEmailList = (props: Props) => {
       case 'pending':
         return ModalEmailPending;
       case 'approved':
-        return ModalEmailApproved;
+        return ModalEmailPending;
       case 'cancel':
-        return ModalEmailCancel;
+        return ModalEmailPending;
       case 'hashtag':
         return ModalHashtag;
 

@@ -56,7 +56,7 @@ const InformationBarEmpty = (props: Props) => {
         title="Receiver"
         isBorderBottom={true}
         isEmpty={true}
-        receiverData={receiverData}
+        receiverData={receiverData.map((item) => item.mail)}
       />
       <InformationDetailBlock
         title="Activity"

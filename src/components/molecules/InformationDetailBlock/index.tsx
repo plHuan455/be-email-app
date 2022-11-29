@@ -8,6 +8,7 @@ import AnimationTimeline from '@components/atoms/AnimationTimeline';
 import { isEmpty } from 'lodash';
 import { Email, UserInfo } from '@components/organisms/Email/Interface';
 import Icon from '@components/atoms/Icon';
+import { EmailResponse } from '@api/email';
 
 export interface ReceiverData {
   name: string;
@@ -30,13 +31,13 @@ type Props = {
   isEmpty?: boolean;
   userId?: number;
   isBorderBottom: boolean;
-  receiverData?: UserInfo[];
-  ccData?: UserInfo[];
-  bccData?: UserInfo[];
+  receiverData?: string[];
+  ccData?: string[];
+  bccData?: string[];
   activityData?: ActivityData[];
   filesData?: AttachFile[];
   userRead?: UserRead[];
-  data?: Email;
+  data?: EmailResponse;
   isShowMore?: boolean;
   onShowMore?: Function;
 };
@@ -130,7 +131,11 @@ const InformationDetailBlock = (props: Props) => {
   );
 
   const SenderBlock = useMemo(() => {
-    const sender = props.data?.sender;
+    const sender = new UserInfo(
+      '',
+      props.data?.writer_name || '',
+      props.data?.from || '',
+    );
 
     return (
       <Box
@@ -182,7 +187,7 @@ const InformationDetailBlock = (props: Props) => {
               return props.isEmpty ? (
                 <AvatarIfEmpty className="my-2" />
               ) : (
-                renderReceiver(item, index)
+                renderReceiver(new UserInfo('', item, item), index)
               );
             })}
           {!isEmpty(props.ccData) && (
@@ -192,7 +197,9 @@ const InformationDetailBlock = (props: Props) => {
                 sx={{ fontSize: '12px', fontWeight: 'bold' }}>
                 CC
               </Typography>
-              {props.ccData?.map((item, index) => renderReceiver(item, index))}
+              {props.ccData?.map((item, index) =>
+                renderReceiver(new UserInfo('', item, item), index),
+              )}
             </>
           )}
           {!isEmpty(props.bccData) && (
@@ -202,7 +209,9 @@ const InformationDetailBlock = (props: Props) => {
                 sx={{ fontSize: '12px', fontWeight: 'bold' }}>
                 BCC
               </Typography>
-              {props.bccData?.map((item, index) => renderReceiver(item, index))}
+              {props.bccData?.map((item, index) =>
+                renderReceiver(new UserInfo('', item, item), index),
+              )}
             </>
           )}
         </Box>

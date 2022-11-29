@@ -8,6 +8,8 @@ import OptionalAvatar from '@components/atoms/OptionalAvatar';
 import EmailActions from '@components/molecules/EmailActions';
 import { useMemo } from 'react';
 import EmailForward from '../EmailForward';
+import { EmailResponse } from '@api/email';
+import { UserInfo } from '../Email/Interface';
 export interface UserRead {
   name: string;
   time: string;
@@ -23,7 +25,19 @@ function createMarkup(htmlString) {
   return { __html: htmlString };
 }
 
-function EmailMess({
+interface Props {
+  emailData: EmailResponse;
+  userInfo: UserInfo;
+  onChangeStatus: (status: any, index: any) => void;
+  onShowHistory: Function;
+  status: string;
+  type?: string;
+  isShowHeader?: boolean;
+  isShowActions?: boolean;
+  index?: number;
+}
+
+const EmailMess: React.FC<Props> = ({
   status,
   type,
   userInfo,
@@ -33,9 +47,7 @@ function EmailMess({
   isShowActions = false,
   index,
   onChangeStatus,
-}) {
-  const { title, sendTo, mailContent, attachFiles } = emailData;
-
+}) => {
   const defaultStatus = useMemo(() => status, []);
 
   // const [editor, setEditor] = useState(() => EditorState.createEmpty());
@@ -45,7 +57,7 @@ function EmailMess({
   //   setEditor(EditorState.createWithContent(contentState));
   // }, []);
 
-  const cloneSendTo = [...sendTo];
+  const cloneSendTo = [...emailData.to];
 
   const renderSendTo = () => {
     const sendToLength = cloneSendTo.length;
@@ -58,7 +70,7 @@ function EmailMess({
       return (
         <Box className="text-sm text-stone-600 first-letter:capitalize">
           <span>{`${splice2FirstItems
-            .map((item) => item.mail)
+            .map((item) => item)
             .join(', ')} and ${restLength} more`}</span>
           <span
             className={`${styles.moreSendTo} pl-1 hover:cursor-pointer relative`}>
@@ -67,7 +79,7 @@ function EmailMess({
               {cloneSendTo.map((value, index) => (
                 <li key={index}>
                   <p className="hover:bg-slate-200 py-0.5  px-2 text-[11px]">
-                    {value.mail}
+                    {value}
                   </p>
                 </li>
               ))}
@@ -79,7 +91,7 @@ function EmailMess({
 
     return (
       <p className="text-sm text-stone-600 first-letter:capitalize">
-        <span>{`${cloneSendTo.map((item) => item.mail).join(', ')}`}</span>
+        <span>{`${cloneSendTo.map((item) => item).join(', ')}`}</span>
       </p>
     );
   };
@@ -98,7 +110,7 @@ function EmailMess({
             className={` ${type === 'send' && styles.flexRowReverse}`}
             data={userInfo}
             isShowAvatar={true}
-            optionDate={emailData.date}
+            optionDate={emailData.created_at}
           />
         </Box>
         {isShowActions && (
@@ -132,27 +144,20 @@ function EmailMess({
               : 'rounded-bl-[36px] rounded-tr-[36px]'
           }  relative`}
           onClick={() => onShowHistory(emailData, emailData.id)}>
-          <h1 className="text-stone-700 font-bold text-base mb-2">{title}</h1>
+          <h1 className="text-stone-700 font-bold text-base mb-2">
+            {emailData.subject}
+          </h1>
           {renderSendTo()}
           <EmailStatus emailStatus={status} />
         </Box>
         {/* Email Content */}
         <Box className="py-9">
           <Box>
-            {/* <Editor
-              editorState={editor}
-              toolbarHidden
-              wrapperClassName="wrapper-class"
-              editorClassName="editor-class border"
-              toolbarClassName="toolbar-class"
-              // onContentStateChange={onContentStateChange}
-            /> */}
-            <p dangerouslySetInnerHTML={createMarkup(mailContent)} />
+            <p dangerouslySetInnerHTML={createMarkup(emailData.content)} />
           </Box>
-          {/* <Box></Box> */}
         </Box>
         {/* Files List If have */}
-        {attachFiles.length !== 0 && <AttachFiles data={attachFiles} />}
+        {emailData.attachFiles && <AttachFiles data={emailData.attachFiles} />}
         {/* Actions */}
         {(status === 'pending' || status === 'sending') && (
           <Box className="flex flex-wrap actions justify-end py-4">
@@ -214,22 +219,22 @@ function EmailMess({
           classNameContent="shadow-lg p-4 absolute z-10 top-1/2 right-[40px] w-[90%] -translate-y-1/2 bg-white rounded-[11px] border border-[#E3E3E3] "
           sendTo={
             status === 'reply'
-              ? [emailData.sender]
+              ? [emailData.from]
               : status === 'replyAll'
-              ? emailData.sendTo
-              : emailData.sendTo
+              ? emailData.to
+              : emailData.to
           }
           sendToDefault={
             status === 'reply'
-              ? [emailData.sender]
+              ? [emailData.from]
               : status === 'replyAll'
-              ? emailData.sendTo
+              ? emailData.to
               : []
           }
         />
       )}
     </Box>
   );
-}
+};
 
 export default EmailMess;

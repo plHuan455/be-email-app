@@ -134,7 +134,7 @@ const saveEmailList = [
 ];
 
 const Email = () => {
-  const [showHistory, setShowHistory] = useState<string | null>(null);
+  const [showHistory, setShowHistory] = useState<number | null>(null);
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [modal, setModal] = useState<ModalForm>({
     title: 'Modal',
@@ -166,7 +166,10 @@ const Email = () => {
 
   const checkIsReceiveEmail = useCallback(
     (id) => {
-      return EmailsList.find((mail) => mail.id === id)?.type === 'receive';
+      return (
+        EmailsList.find((mail) => mail.id === id)?.from !==
+        localStorage.getItem('current_email')
+      );
     },
     [EmailsList],
   );
@@ -280,8 +283,8 @@ const Email = () => {
           <EmailMess
             key={email.id}
             status={email.status}
-            type={email.type}
-            userInfo={email.sender}
+            type={checkIsReceiveEmail(email.id) ? 'receive' : 'send'}
+            userInfo={new UserInfo('', email.writer_name, email.from)}
             emailData={email}
             onShowHistory={handleShowHistory}
             isShowHeader={showHistory === email.id}

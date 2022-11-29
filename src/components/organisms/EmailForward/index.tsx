@@ -27,8 +27,8 @@ interface Props {
   onChangeEmailStatus: Function;
   classNameLayer?: string;
   classNameContent?: string;
-  sendTo: UserInfo[];
-  sendToDefault: UserInfo[];
+  sendTo: string[];
+  sendToDefault: string[];
   status: string;
   isReadOnlyReceivers?: boolean;
 }
@@ -74,9 +74,12 @@ const EmailForward: React.FC<Props> = ({
     setSubject,
   } = useEmailCompose();
 
+  const newSendTo = sendTo.map((item) => new UserInfo('', item, item));
+  const newSendToDefault = sendToDefault.map((item) => new UserInfo('', item, item));
+
   useEffect(() => {
-    if (status === 'reply') setNewReceivers(sendToDefault);
-    if (status === 'replyAll') setCc(sendToDefault);
+    if (status === 'reply') setNewReceivers(newSendToDefault);
+    if (status === 'replyAll') setCc(newSendToDefault);
   }, []);
 
   const handleClickCcFromLabel = useCallback(() => {
@@ -203,8 +206,8 @@ const EmailForward: React.FC<Props> = ({
               isHaveBorderBottom={false}>
               <AutoCompleteReceive
                 isReadOnly={isReadOnlyReceivers}
-                data={sendTo}
-                defaultValue={sendToDefault}
+                data={newSendTo}
+                defaultValue={newSendToDefault}
                 isShowCcFromLabel={status === 'forward'}
                 onClickCcFromLabel={handleClickCcFromLabel}
                 onChange={onChangeReceiversData}
@@ -222,8 +225,8 @@ const EmailForward: React.FC<Props> = ({
                 isHaveBorderBottom={false}>
                 <AutoCompleteReceive
                   isReadOnly={isReadOnlyReceivers}
-                  data={sendTo}
-                  defaultValue={sendToDefault}
+                  data={newSendTo}
+                  defaultValue={newSendToDefault}
                   isShowCcFromLabel={false}
                   onClickCcFromLabel={handleClickCcFromLabel}
                   onChange={onChangeCcData}
@@ -235,8 +238,8 @@ const EmailForward: React.FC<Props> = ({
                 isHaveBorderBottom={false}>
                 <AutoCompleteReceive
                   isReadOnly={isReadOnlyReceivers}
-                  data={sendTo}
-                  defaultValue={sendToDefault}
+                  data={newSendTo}
+                  defaultValue={newSendToDefault}
                   isShowCcFromLabel={false}
                   onClickCcFromLabel={handleClickCcFromLabel}
                   onChange={onChangeBccData}

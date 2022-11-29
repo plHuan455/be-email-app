@@ -2,6 +2,7 @@ import { EMAIL_API_URL } from './../../constants/EmailAPI/index';
 import { Receiver } from '@layouts/InformationBar';
 import ApiClient, { ApiResponse } from '@api/ApiClient';
 import { AxiosResponse } from 'axios';
+import { AttachFile } from '@components/organisms/EmailMess';
 
 // export interface Receiver {}
 
@@ -23,24 +24,28 @@ export interface CreateEmailParam {
 export interface EmailResponse {
   id: number;
   to: string[];
+  subject: string;
   from: string;
   content: string;
   cc: string[];
+  bcc: string[];
   status: string;
   writer_name: string;
   writer_id: number;
+  attachFiles?: AttachFile[];
+  created_at: string;
 }
 
 //GET EMAIL WITH STATUS
 export const getEmailWithQueryParam = async (params?: {
   status?: string;
-  email?: string | null;
+  mail?: string | null;
   hashtag?: string;
 }): Promise<AxiosResponse<EmailResponse[]>> => {
   const url = `${EMAIL_API_URL}`;
   const res = await ApiClient.get(
     url,
-    { status: params?.status, email: params?.email, hashtag: params?.hashtag },
+    { status: params?.status, mail: params?.mail, hashtag: params?.hashtag },
     {},
   );
   console.log('🚀 ~ file: index.ts ~ line 45 ~ res', res.data);

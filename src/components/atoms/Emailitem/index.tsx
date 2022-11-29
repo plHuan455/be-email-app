@@ -4,8 +4,11 @@ import avt from '../../../assets/images/avatars/avatar-1.jpg';
 import React from 'react';
 import { EmailList } from '@components/molecules/ModalEmailList';
 import './index.scss';
-import { EmailResponse } from '@api/email';
+import { EmailResponse, getEmailWithQueryParam } from '@api/email';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { useGetEmail } from '@hooks/Email/useGetEmail';
+import { setEmailsList } from '@redux/Email/reducer';
 
 type Props = {
   emailData: {
@@ -18,6 +21,18 @@ const EmailItem = ({ emailData }: Props) => {
   const { data, total } = emailData;
 
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const handleClickEmailItem = async (e) => {
+    const emailData = await getEmailWithQueryParam({
+      status: data[0].status,
+      mail: data[0].from,
+    });
+
+    console.log(`line 28`, emailData);
+
+    dispatch(setEmailsList(emailData.data));
+  };
 
   return (
     <Box
@@ -32,7 +47,7 @@ const EmailItem = ({ emailData }: Props) => {
         margin: '5px 0',
         padding: '0 5px',
       }}
-      onClick={() => navigate(`./${data[0].id}`)}>
+      onClick={handleClickEmailItem}>
       <Box
         sx={{
           width: '90%',

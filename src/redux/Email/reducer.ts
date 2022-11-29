@@ -1,3 +1,4 @@
+import { EmailResponse } from '@api/email';
 import { Email, UserInfo } from '@components/organisms/Email/Interface';
 import { AttachFile, UserRead } from '@components/organisms/EmailMess';
 import { createSlice } from '@reduxjs/toolkit';
@@ -205,10 +206,10 @@ const emailsList: Email[] = [
 ];
 
 export interface EmailState {
-  EmailsList: Email[];
-  deletedEmailsList: Email[];
-  spamEmailsList: Email[];
-  unreadEmailsList: Email[];
+  EmailsList: EmailResponse[];
+  deletedEmailsList: EmailResponse[];
+  spamEmailsList: EmailResponse[];
+  unreadEmailsList: EmailResponse[];
 }
 
 const initialState: EmailState = {

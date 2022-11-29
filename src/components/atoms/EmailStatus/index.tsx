@@ -67,6 +67,11 @@ const EMAILSTATUS = {
     content: '',
     bgColor: '#554CFF',
   },
+  draft: {
+    item: 'trash',
+    content: 'Draft',
+    bgColor: '#554CFF',
+  },
 };
 
 interface EmailStatusProps {
@@ -75,7 +80,7 @@ interface EmailStatusProps {
 }
 
 const EmailStatus: React.FC<EmailStatusProps> = ({ emailStatus, time }) => {
-  const mainEmailStatus = EMAILSTATUS[emailStatus];
+  const mainEmailStatus = EMAILSTATUS[emailStatus.toLowerCase()];
 
   if (emailStatus === 'reply' || emailStatus === 'replyAll')
     return (
@@ -96,7 +101,7 @@ const EmailStatus: React.FC<EmailStatusProps> = ({ emailStatus, time }) => {
         sx={{
           backgroundColor: mainEmailStatus.bgColor,
         }}>
-        <RenderButtonIcon item={mainEmailStatus.item} />
+        <RenderButtonIcon item={mainEmailStatus.item} color={'#ffffff'} />
         <span className="inline-block pl-2">{mainEmailStatus.content}</span>
       </Box>
     );

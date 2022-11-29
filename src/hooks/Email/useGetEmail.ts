@@ -5,11 +5,8 @@ import {
 } from './../../api/email/index';
 import React, { useEffect, useState } from 'react';
 
-export const useGetEmail = (fieldData: string) => {
-  console.log(
-    '🚀 ~ file: useGetEmail.ts ~ line 14 ~ useGetEmail ~ fieldData',
-    fieldData,
-  );
+export const useGetEmail = (status: string, mail?: string) => {
+  console.log('🚀 ~ file: useGetEmail.ts ~ line 14 ~ useGetEmail ~ status', status);
   const CURRENT_USER_EMAIL = localStorage.getItem('current_email')
     ? localStorage.getItem('current_email')
     : '';
@@ -37,8 +34,8 @@ export const useGetEmail = (fieldData: string) => {
   useEffect(() => {
     const useGetEmail = async () => {
       const res = await getEmailWithQueryParam({
-        status: fieldData,
-        email: CURRENT_USER_EMAIL,
+        status: status,
+        mail: mail || '', //CURRENT_USER_EMAIL
         hashtag: undefined,
       });
 
@@ -49,7 +46,7 @@ export const useGetEmail = (fieldData: string) => {
     };
 
     useGetEmail();
-  }, [fieldData]);
+  }, [status]);
 
   return { response };
 };

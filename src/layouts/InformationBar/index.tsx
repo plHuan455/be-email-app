@@ -8,7 +8,7 @@ import React, { useCallback, useState } from 'react';
 import { AttachFile, UserRead } from '@components/organisms/EmailMess';
 import { useSelector } from 'react-redux';
 import { RootState } from '@redux/configureStore';
-import { File } from '@components/organisms/Email/Interface';
+import { File, UserInfo } from '@components/organisms/Email/Interface';
 import MoreInfomationBar from '@layouts/MoreInformationBar';
 
 const userReadList: UserRead[] = [
@@ -100,40 +100,41 @@ const InformationBar = (props: Props) => {
     setIsShowMoreInformation(false);
   }, []);
 
-  const getReceiverData: () => ReceiverData[] = () => {
-    const mapSendTo: ReceiverData[] =
-      currEmail.sendTo &&
-      currEmail.sendTo.map((item) => ({
-        name: item.name,
-        avatar: item.avatar,
-        position: 'Marketing Department',
-      }));
-    const mapCc: ReceiverData[] =
-      currEmail.cc &&
-      currEmail.cc.map((item) => ({
-        name: item.name,
-        avatar: item.avatar,
-        email: item.mail,
-        isCC: true,
-      }));
-    const mapBcc: ReceiverData[] =
-      currEmail.bcc &&
-      currEmail.bcc.map((item) => ({
-        name: item.name,
-        avatar: item.avatar,
-        position: 'Metanode X Lab',
-        isBCC: true,
-      }));
+  // const getReceiverData: () => ReceiverData[] = () => {
+  //   const mapSendTo: ReceiverData[] =
+  //     currEmail.to &&
+  //     currEmail.to.map((item) => ({
+  //       name: item,
+  //       avatar: '',
+  //       position: 'Marketing Department',
+  //     }));
+  //   const mapCc: ReceiverData[] =
+  //     currEmail.cc &&
+  //     currEmail.cc.map((item) => ({
+  //       name: item,
+  //       avatar: '',
+  //       email: item,
+  //       isCC: true,
+  //     }));
+  //   const mapBcc: ReceiverData[] =
+  //     currEmail.bcc &&
+  //     currEmail.bcc.map((item) => ({
+  //       name: item,
+  //       avatar: '',
+  //       position: 'Metanode X Lab',
+  //       isBCC: true,
+  //     }));
 
-    return [...mapSendTo, ...mapCc, ...mapBcc];
-  };
+  //   console.log(`line 128`, mapSendTo, mapCc, mapBcc);
+
+  //   return [...mapSendTo, ...mapCc, ...mapBcc];
+  // };
 
   const getAllAttachFiles: () => AttachFile[] = () => {
-    // const testMap = EmailsList.map((item)=> ...item.attachFiles)
-
     const attachFiles: AttachFile[] = EmailsList.reduce(
       (cur: AttachFile[], next) => {
-        return [...cur, ...next.attachFiles];
+        if (next.attachFiles) return [...cur, ...next.attachFiles];
+        return cur;
       },
       [],
     );
@@ -141,11 +142,9 @@ const InformationBar = (props: Props) => {
     return attachFiles;
   };
   const checkIsShowMoreReceivers: () => boolean = () =>
-    currEmail.sendTo.length > 1 ||
-    currEmail.cc.length > 1 ||
-    currEmail.bcc.length > 1;
+    !!currEmail.to || !!currEmail.cc || !!currEmail.bcc;
 
-  const receiveData: ReceiverData[] = getReceiverData();
+  // const receiveData: ReceiverData[] = getReceiverData();
   const allAttachFiles: AttachFile[] = getAllAttachFiles();
   const attachFilesShowMail: AttachFile[] =
     allAttachFiles.length > 2 ? [...allAttachFiles].splice(0, 2) : allAttachFiles;
@@ -166,7 +165,7 @@ const InformationBar = (props: Props) => {
           <InformationDetailBlock
             title="Receiver"
             isBorderBottom={true}
-            receiverData={currEmail.sendTo}
+            receiverData={currEmail.to}
             ccData={currEmail.cc}
             bccData={currEmail.bcc}
             // data={currEmail}
@@ -218,17 +217,9 @@ const InformationBar = (props: Props) => {
       <InformationDetailBlock
         title="Receiver"
         isBorderBottom={true}
-        receiverData={
-          currEmail.sendTo.length > 1
-            ? [...currEmail.sendTo].splice(0, 1)
-            : currEmail.sendTo
-        }
-        ccData={
-          currEmail.cc.length > 1 ? [...currEmail.cc].splice(0, 1) : currEmail.cc
-        }
-        bccData={
-          currEmail.bcc.length > 1 ? [...currEmail.bcc].splice(0, 1) : currEmail.bcc
-        }
+        receiverData={currEmail.to && [currEmail.to[0]]}
+        ccData={currEmail.cc && [currEmail.cc[0]]}
+        bccData={currEmail.bcc && [currEmail.bcc[0]]}
         // data={currEmail}
         isShowMore={checkIsShowMoreReceivers()}
         onShowMore={handleClickShowMore('receiver')}

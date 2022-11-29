@@ -100,6 +100,7 @@ const SettingRolesContainer = () => {
         console.log('🚀 ~ file: SettingRoleContainer/index.ts ~ line 37 ~ res', res);
 
         if (res.data.permissions) setPermissionsData(res.data.permissions);
+        else setPermissionsData([]);
       })();
   }, [value]);
 
