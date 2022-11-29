@@ -7,6 +7,17 @@ import {
   RoleResponse,
 } from './interface';
 
+export const createRole = async (query: {
+  name: string;
+}): Promise<AxiosResponse<RoleResponse>> => {
+  const url = `${ROLE_API_URL}`;
+  const res = await ApiClient.post(url, undefined, query);
+
+  console.log('🚀 ~ file: role/index.ts ~ line 16 ~ res', res.data);
+
+  return res.data;
+};
+
 export const getRole = async (): Promise<AxiosResponse<RoleResponse>> => {
   const url = `${ROLE_API_URL}`;
   const res = await ApiClient.get(url, undefined, undefined);
