@@ -2,6 +2,8 @@ import ValidateInput from "@components/atoms/Input/ValidateInput";
 import ModalBase from "@components/atoms/ModalBase"
 import { Button, Grid } from "@mui/material";
 import { Controller, FormProvider, UseFormReturn } from "react-hook-form";
+import styled from "styled-components";
+
 export interface AddDepartmentField {
   name: string;
   description: string;
@@ -16,6 +18,12 @@ interface AddDepartmentModalProps {
   onClose: () => void;
 }
 
+const InputWrapper = styled.div`
+  .input {
+    font-size: 16px;
+  }
+`;
+
 function AddDepartmentModal ({method, isOpen, title, onClose, onSubmit}: AddDepartmentModalProps) {
   return (
   <ModalBase 
@@ -26,22 +34,23 @@ function AddDepartmentModal ({method, isOpen, title, onClose, onSubmit}: AddDepa
     submitLabel=""
   >
     <FormProvider {...method}>
-      <form onSubmit={method.handleSubmit(onSubmit)}>
+      <form onSubmit={method.handleSubmit(onSubmit)} className="o-tableManagerDepartment_form">
         <Grid container spacing={4}>
           <Grid item xs={12}>
             <Controller 
               name="name"
               render={({field: {value, onChange}, fieldState}) => (
-                <ValidateInput
-                  className="text-sm"
-                  label="Name" 
-                  type="text"
-                  fullWidth
-                  value={value}
-                  placeHolder="name"
-                  errors={fieldState.error?.message}
-                  onChange={onChange}
-                />
+                <InputWrapper>
+                  <ValidateInput
+                    label="Name" 
+                    type="text"
+                    fullWidth
+                    value={value}
+                    placeHolder="name"
+                    errors={fieldState.error?.message}
+                    onChange={onChange}
+                  />
+                </InputWrapper>
               )}
             />
           </Grid>
@@ -49,48 +58,36 @@ function AddDepartmentModal ({method, isOpen, title, onClose, onSubmit}: AddDepa
             <Controller 
               name="description"
               render={({field: {value, onChange}, fieldState}) => (
-                <ValidateInput 
-                  label="Description"
-                  type="text"
-                  fullWidth
-                  value={value}
-                  placeHolder="description"
-                  errors={fieldState.error?.message}
-                  onChange={onChange}
-                />
+                <InputWrapper>
+                  <ValidateInput 
+                    label="Description"
+                    type="text"
+                    fullWidth
+                    value={value}
+                    placeHolder="description"
+                    errors={fieldState.error?.message}
+                    onChange={onChange}
+                  />
+                </InputWrapper>
               )}
             />
           </Grid>
-          <Grid item xs={6}>
-            <Controller 
-              name="number"
-              render={({field: {value, onChange}, fieldState}) => (
-                <ValidateInput 
-                  fullWidth
-                  label="Number"
-                  type="text"
-                  value={value}
-                  placeHolder="number"
-                  errors={fieldState.error?.message}
-                  onChange={onChange}
-                />
-              )}
-            />
-          </Grid>
-          <Grid item xs={6}>
+          <Grid item xs={12}>
             <Controller 
               name="address"
               render={({field: {value, onChange}, fieldState}) => (
-                <ValidateInput 
-                  label="Address"
-                  fullWidth
-                  type="text"
-                  variant="select"
-                  value={value}
-                  placeHolder="address"
-                  errors={fieldState.error?.message}
-                  onChange={onChange}
-                />
+                <InputWrapper>
+                  <ValidateInput 
+                    label="Address"
+                    fullWidth
+                    type="text"
+                    variant="select"
+                    value={value}
+                    placeHolder="address"
+                    errors={fieldState.error?.message}
+                    onChange={onChange}
+                  />
+                </InputWrapper>
               )}
             />
           </Grid>

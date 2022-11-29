@@ -14,7 +14,6 @@ interface TableManagerDepartmentContainerProps {
 const createDepartmentSchema = yup.object({
   name: yup.string().required(),
   description: yup.string().required(),
-  number: yup.number().required(),
   address: yup.string().required(),
 }).required();
 
@@ -25,7 +24,6 @@ const TableManagerDepartmentContainer: React.FC<TableManagerDepartmentContainerP
     defaultValues: {
       name: '',
       description: '',
-      number: 0,
       address: ''
     },
     resolver: yupResolver(createDepartmentSchema)
