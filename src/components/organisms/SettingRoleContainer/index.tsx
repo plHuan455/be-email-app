@@ -13,6 +13,8 @@ import { isEmpty } from 'lodash';
 import { Tab, Tabs } from '@mui/material';
 import { PermissionResponse } from '@api/permission/interface';
 import { PermissionQuery } from '@api/role/interface';
+import SettingRoleCreateFormModal, { CreateRoleFields } from './SettingRoleCreateFormModal';
+import { useForm } from 'react-hook-form';
 
 const responsePermissionsData: PermissionResponse[] = [
   {
@@ -38,6 +40,12 @@ const responsePermissionsData: PermissionResponse[] = [
 const SettingRolesContainer = () => {
   const [headerTabs, setHeaderTabs] = useState<any>([]);
   const [value, setValue] = useState(0);
+  const [isShowCreateForm, setIsShowCreateForm] = useState<boolean>(false);
+  const method = useForm<CreateRoleFields>({
+    defaultValues: {
+      name: '',
+    }
+  })
   const [permissionsData, setPermissionsData] = useState<PermissionResponse[]>([
     {
       id: 1,
@@ -138,7 +146,7 @@ const SettingRolesContainer = () => {
 
   return (
     <div>
-      <TableHeader isHaveActions={false}>
+      <TableHeader plusButtonTitle="Add setting role" onPlusClick={() => setIsShowCreateForm(true)}>
         <Tabs
           className="tableManagerTabs"
           value={value}
@@ -158,6 +166,13 @@ const SettingRolesContainer = () => {
           onChangeRow={handleChangeRow}
         />
       </div>
+      <SettingRoleCreateFormModal 
+        isOpen={isShowCreateForm}
+        onClose={() => setIsShowCreateForm(false)}
+        method={method}
+        title="Create setting role"
+        onSubmit={(values) => {console.log(values)}}
+      />
     </div>
   );
 };

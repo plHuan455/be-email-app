@@ -84,7 +84,7 @@ const TableSettingRole: React.FC<Props> = ({
           </TableBody>
         </Table>
       </TableContainer>
-      <Box className="flex justify-end items-end my-6">
+      {data.length > 0 && <Box className="flex justify-end items-end my-6">
         <CustomButton
           onClick={handleClickSetRole}
           className="py-3 px-6"
@@ -92,7 +92,7 @@ const TableSettingRole: React.FC<Props> = ({
           color="#ffffff"
           label="Save"
         />
-      </Box>
+      </Box>}
     </Box>
   );
 };

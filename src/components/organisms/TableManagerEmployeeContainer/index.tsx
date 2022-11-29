@@ -102,7 +102,7 @@ const TableManagerEmployeeContainer = () => {
   });
   return (
     <div>
-      <TableHeader onAddEmployeeClick={() => setIsShowEmployee(true)}/>
+      <TableHeader plusButtonTitle='Add employee' onPlusClick={() => setIsShowEmployee(true)}/>
       <TableManagerEmployee data={rows} />
       <AddEmployeeModal
         method={method}
