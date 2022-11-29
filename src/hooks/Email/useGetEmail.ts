@@ -42,10 +42,10 @@ export const useGetEmail = (fieldData: string) => {
         hashtag: undefined,
       });
 
-      // const filterRes = filterResData(res.data);
+      const filterRes = filterResData(res.data);
 
-      // setResponse({ data: filterRes, total: res.total });
-      setResponse(res);
+      setResponse({ data: filterRes, total: res.total });
+      // setResponse(res);
     };
 
     useGetEmail();

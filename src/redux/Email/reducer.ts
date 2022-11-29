@@ -212,7 +212,7 @@ export interface EmailState {
 }
 
 const initialState: EmailState = {
-  EmailsList: emailsList,
+  EmailsList: [],
   deletedEmailsList: [],
   spamEmailsList: [],
   unreadEmailsList: [],

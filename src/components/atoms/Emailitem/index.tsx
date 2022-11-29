@@ -5,15 +5,19 @@ import React from 'react';
 import { EmailList } from '@components/molecules/ModalEmailList';
 import './index.scss';
 import { EmailResponse } from '@api/email';
+import { useNavigate } from 'react-router-dom';
 
 type Props = {
-  emailData: EmailResponse;
+  emailData: {
+    data: EmailResponse[];
+    total: number;
+  };
 };
 
 const EmailItem = ({ emailData }: Props) => {
-  // const { data, total } = emailData;
+  const { data, total } = emailData;
 
-  console.log(`line 19`, emailData);
+  const navigate = useNavigate();
 
   return (
     <Box
@@ -27,7 +31,8 @@ const EmailItem = ({ emailData }: Props) => {
         borderRadius: '8px',
         margin: '5px 0',
         padding: '0 5px',
-      }}>
+      }}
+      onClick={() => navigate(`./${data[0].id}`)}>
       <Box
         sx={{
           width: '90%',
@@ -51,8 +56,8 @@ const EmailItem = ({ emailData }: Props) => {
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
               }}>
-              <span className="font-bold">{emailData.writer_name}</span> |{' '}
-              {emailData.from}
+              <span className="font-bold">{data[0].writer_name}</span> |{' '}
+              {data[0].from}
             </Typography>
             <Typography
               component={'p'}
@@ -66,31 +71,30 @@ const EmailItem = ({ emailData }: Props) => {
                 overflow: 'hidden',
                 fontWeight: 'bold',
               }}>
-              {emailData.content}
+              {data[0].content}
             </Typography>
           </Box>
         </Box>
       </Box>
-      {/* {total > 0 ? ( */}
-      <Typography
-        component={'p'}
-        sx={{
-          backgroundColor: '#DADCDD',
-          height: '18px',
-          fontSize: '10px',
-          borderRadius: '3px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
-          padding: '0 5px',
-          color: '#495057',
-        }}>
-        {/* {total > 9 ? '9+' : total} */}
-        9+
-      </Typography>
-      {/* ) : (
+      {total > 0 ? (
+        <Typography
+          component={'p'}
+          sx={{
+            backgroundColor: '#DADCDD',
+            height: '18px',
+            fontSize: '10px',
+            borderRadius: '3px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '0 5px',
+            color: '#495057',
+          }}>
+          {total > 9 ? '9+' : total}
+        </Typography>
+      ) : (
         ''
-      )} */}
+      )}
     </Box>
   );
 };
