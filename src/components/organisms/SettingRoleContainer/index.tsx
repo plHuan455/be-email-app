@@ -14,6 +14,27 @@ import { Tab, Tabs } from '@mui/material';
 import { PermissionResponse } from '@api/permission/interface';
 import { PermissionQuery } from '@api/role/interface';
 
+const responsePermissionsData: PermissionResponse[] = [
+  {
+    id: 4,
+    name: 'Permission4',
+    status: 'Active',
+    role_permissions: null,
+  },
+  {
+    id: 5,
+    name: 'Permission5',
+    status: 'Active',
+    role_permissions: null,
+  },
+  {
+    id: 6,
+    name: 'Permission6',
+    status: 'Active',
+    role_permissions: null,
+  },
+];
+
 const SettingRolesContainer = () => {
   const [headerTabs, setHeaderTabs] = useState<any>([]);
   const [value, setValue] = useState(0);
@@ -58,18 +79,18 @@ const SettingRolesContainer = () => {
 
   const handleChange = (e, newValue) => setValue(newValue);
 
-  // useEffect(() => {
-  //   (async () => {
-  //     const res = await getRole();
+  useEffect(() => {
+    (async () => {
+      const res = await getRole();
 
-  //     console.log('🚀 ~ file: SettingRoleContainer/index.ts ~ line 14 ~ res', res);
+      console.log('🚀 ~ file: SettingRoleContainer/index.ts ~ line 14 ~ res', res);
 
-  //     if (!isEmpty(res.data)) {
-  //       setHeaderTabs(res.data);
-  //       setValue(res.data[0].id);
-  //     }
-  //   })();
-  // }, []);
+      if (!isEmpty(res.data)) {
+        setHeaderTabs(res.data);
+        setValue(res.data[0].id);
+      }
+    })();
+  }, []);
 
   useEffect(() => {
     if (value !== 0)
@@ -100,34 +121,15 @@ const SettingRolesContainer = () => {
   const cbSetPermissionData = useCallback(
     (query: PermissionQuery) => {
       (async () => {
-        // const res = await setRolePermissionWithQueryById(`${value}`, query);
+        const res = await setRolePermissionWithQueryById(`${value}`, query);
 
-        // console.log(
-        //   '🚀 ~ file: SettingRoleContainer/index.ts ~ line 58 ~ res',
-        //   res.data,
-        // );
+        console.log(
+          '🚀 ~ file: SettingRoleContainer/index.ts ~ line 58 ~ res',
+          res.data,
+        );
 
-        // if (res.data.permissions) setPermissionsData(res.data.permissions);
-        setPermissionsData([
-          {
-            id: 4,
-            name: 'Permission4',
-            status: 'Active',
-            role_permissions: null,
-          },
-          {
-            id: 5,
-            name: 'Permission5',
-            status: 'Active',
-            role_permissions: null,
-          },
-          {
-            id: 6,
-            name: 'Permission6',
-            status: 'Active',
-            role_permissions: null,
-          },
-        ]);
+        if (res.data.permissions) setPermissionsData(res.data.permissions);
+        // setPermissionsData(responsePermissionsData);
       })();
     },
     [value],
