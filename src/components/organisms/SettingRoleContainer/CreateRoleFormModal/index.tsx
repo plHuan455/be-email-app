@@ -7,7 +7,7 @@ import styled from "styled-components";
 export interface CreateRoleFields {
   name: string;
 }
-interface SettingRoleCreateFormModalProps {
+interface CreateRoleFormModalProps {
   method: UseFormReturn<CreateRoleFields>
   isOpen: boolean;
   title: string;
@@ -22,7 +22,7 @@ const InputWrapper = styled.div`
   }
 `;
 
-const SettingRoleCreateFormModal: React.FC<SettingRoleCreateFormModalProps> = ({ method, isOpen, title, onClose, onSubmit }) => {
+const CreateRoleFormModal: React.FC<CreateRoleFormModalProps> = ({ method, isOpen, title, onClose, onSubmit }) => {
   return (
     <ModalBase
       isOpen={isOpen}
@@ -54,7 +54,7 @@ const SettingRoleCreateFormModal: React.FC<SettingRoleCreateFormModalProps> = ({
               />
             </Grid>
             <Grid item xs={12}>
-              <Button className="button-create-mui" fullWidth type="submit">Create setting role</Button>
+              <Button className="button-create-mui" fullWidth type="submit">Create role</Button>
             </Grid>
           </Grid>
         </form>
@@ -63,4 +63,4 @@ const SettingRoleCreateFormModal: React.FC<SettingRoleCreateFormModalProps> = ({
   )
 }
 
-export default SettingRoleCreateFormModal
+export default CreateRoleFormModal

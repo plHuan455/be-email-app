@@ -13,8 +13,10 @@ import { isEmpty } from 'lodash';
 import { Tab, Tabs } from '@mui/material';
 import { PermissionResponse } from '@api/permission/interface';
 import { PermissionQuery } from '@api/role/interface';
-import SettingRoleCreateFormModal, { CreateRoleFields } from './SettingRoleCreateFormModal';
 import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import CreatePermissionFormModal, { CreatePermissionFields } from './CreatePermissionFormModal';
 
 const responsePermissionsData: PermissionResponse[] = [
   {
@@ -37,14 +39,19 @@ const responsePermissionsData: PermissionResponse[] = [
   },
 ];
 
+const createPermissionSchema   = yup.object({
+  name: yup.string().required(),
+}).required();
+
 const SettingRolesContainer = () => {
   const [headerTabs, setHeaderTabs] = useState<any>([]);
   const [value, setValue] = useState(0);
   const [isShowCreateForm, setIsShowCreateForm] = useState<boolean>(false);
-  const method = useForm<CreateRoleFields>({
+  const method = useForm<CreatePermissionFields>({
     defaultValues: {
       name: '',
-    }
+    },
+    resolver: yupResolver(createPermissionSchema  ),
   })
   const [permissionsData, setPermissionsData] = useState<PermissionResponse[]>([
     {
@@ -144,9 +151,14 @@ const SettingRolesContainer = () => {
     [value],
   );
 
+  const handleCloseModal = () => {
+    setIsShowCreateForm(false);
+    method.reset();
+  }
+
   return (
     <div>
-      <TableHeader plusButtonTitle="Add setting role" onPlusClick={() => setIsShowCreateForm(true)}>
+      <TableHeader plusButtonTitle="Add permission" onPlusClick={() => setIsShowCreateForm(true)}>
         <Tabs
           className="tableManagerTabs"
           value={value}
@@ -166,11 +178,11 @@ const SettingRolesContainer = () => {
           onChangeRow={handleChangeRow}
         />
       </div>
-      <SettingRoleCreateFormModal 
+      <CreatePermissionFormModal 
         isOpen={isShowCreateForm}
-        onClose={() => setIsShowCreateForm(false)}
+        onClose={handleCloseModal}
         method={method}
-        title="Create setting role"
+        title="Create permission"
         onSubmit={(values) => {console.log(values)}}
       />
     </div>
