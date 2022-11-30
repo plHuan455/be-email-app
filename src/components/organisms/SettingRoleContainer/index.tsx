@@ -19,6 +19,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { getPermissions } from '@api/permission';
 import { toast } from 'react-toastify';
+import CreatePermissionFormModal, { CreatePermissionFields } from './CreatePermissionFormModal';
 
 const responsePermissionsData: PermissionResponse[] = [
   {
@@ -41,9 +42,9 @@ const responsePermissionsData: PermissionResponse[] = [
   },
 ];
 
-// const createPermissionSchema = yup.object({
-//   name: yup.string().required(),
-// }).required();
+const createPermissionSchema   = yup.object({
+  name: yup.string().required(),
+}).required();
 
 const SettingRolesContainer = () => {
   const [value, setValue] = useState(0);
