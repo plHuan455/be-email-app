@@ -3,6 +3,7 @@ import { Receiver } from '@layouts/InformationBar';
 import ApiClient from '@api/ApiClient';
 import { AxiosResponse } from 'axios';
 import { GET__USER__API, USER__API } from '@constants/UserAPI';
+import { CreateEmployeeParams } from './interface';
 
 // export interface Receiver {}
 
@@ -36,5 +37,22 @@ export const getUserWithEmail = async (
 export const getAllUser = async (): Promise<AxiosResponse<UserResponse>> => {
   const url = USER__API;
   const res = await ApiClient.get(url, undefined, {});
+  return res.data;
+};
+
+// CREATE EMPLOYEE
+export const createEmployee = async (query: CreateEmployeeParams) => {
+  const url = USER__API;
+  const dataTemp = new FormData();
+  dataTemp.append('avatar', query.avatar);
+  dataTemp.append('user_name', query.username);
+  dataTemp.append('email', query.email);
+  dataTemp.append('password', query.password);
+  dataTemp.append('phone_number', query.phone);
+  dataTemp.append('position', query.position);
+  dataTemp.append('role_id', query.role);
+  dataTemp.append('department_id', query.department);
+
+  const res = await ApiClient.postFormData(url, dataTemp )
   return res.data;
 };

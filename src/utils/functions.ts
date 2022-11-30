@@ -3,3 +3,7 @@ export const convertPathImage = (image?: string) => {
     return `${process.env.REACT_APP_API_BASE_URL}image/${image}`;
   return '';
 };
+
+export const rem = (pixel: number) => {
+  return `${pixel / 16}rem`;
+}
