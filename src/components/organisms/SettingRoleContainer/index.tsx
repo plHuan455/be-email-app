@@ -13,6 +13,13 @@ import { isEmpty } from 'lodash';
 import { Tab, Tabs } from '@mui/material';
 import { PermissionResponse } from '@api/permission/interface';
 import { PermissionQuery } from '@api/role/interface';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { getPermissions } from '@api/permission';
+import { toast } from 'react-toastify';
+import CreatePermissionFormModal, { CreatePermissionFields } from './CreatePermissionFormModal';
 
 const responsePermissionsData: PermissionResponse[] = [
   {
@@ -35,10 +42,15 @@ const responsePermissionsData: PermissionResponse[] = [
   },
 ];
 
+const createPermissionSchema   = yup.object({
+  name: yup.string().required(),
+}).required();
+
 const SettingRolesContainer = () => {
-  const [headerTabs, setHeaderTabs] = useState<any>([]);
   const [value, setValue] = useState(0);
-  const [permissionsData, setPermissionsData] = useState<PermissionResponse[]>([
+  const [isAddPermission, setIsAddPermission] = useState<boolean>(false);
+
+  const [permissionsState, setPermissionsState] = useState<PermissionResponse[]>([
     {
       id: 1,
       name: 'Permission1',
@@ -77,75 +89,108 @@ const SettingRolesContainer = () => {
     },
   ]);
 
-  const handleChange = (e, newValue) => setValue(newValue);
+  // const {mutate: createPermissionMutate} = useMutation({
+  //   mutationKey: ['setting-role-create-permission'],
+  //   mutationFn: (query: { name: string }) => createPermissions(query),
+  //   onSuccess: (data) => {
+  //     toast.success('Permission was created');
+  //   }
+  // })
 
-  useEffect(() => {
-    (async () => {
-      const res = await getRole();
-
-      console.log('🚀 ~ file: SettingRoleContainer/index.ts ~ line 14 ~ res', res);
-
+  const {data: headerTabData} = useQuery({
+    queryKey: ['setting-role-get-header-tabs'],
+    queryFn: getRole,
+    onSuccess: (res) => {
       if (!isEmpty(res.data)) {
-        setHeaderTabs(res.data);
         setValue(res.data[0].id);
       }
-    })();
-  }, []);
+    },
+  })
+
+  const {data: rolePermissionData} = useQuery({
+    queryKey: ['setting-role-get-permission', value],
+    queryFn: () => getRoleHavePermissionsById(`${value}`),
+    onSuccess: (res) => {
+      if (res.data.permissions) setPermissionsState(res.data.permissions);
+      else setPermissionsState([]);
+    },
+    enabled: value !== 0
+  });
+
+  const {data: permissionListData} = useQuery({
+    queryKey: ['setting-role-get-permission-list', isAddPermission],
+    queryFn: getPermissions,
+    onSuccess: (res) => {
+      if(!res?.data) return;
+      const newPermissionState: PermissionResponse[] = res.data.map(value => {
+        // A permission status is Active
+        if(rolePermissionData?.data?.permissions?.some(permissionState => permissionState.id === value.id)){
+          return value;
+        }
+        return {...value, status: 'deny'};
+      })
+      setPermissionsState(newPermissionState.sort((a, b) => a.status === 'Active' ? -1 : 1));
+    },
+    enabled: isAddPermission && value !== 0,
+  })
+
+  const {mutate: updatePermissionMutate} = useMutation({
+    mutationKey: ['setting-role-update-permission', value],
+    mutationFn: (query: PermissionQuery) => setRolePermissionWithQueryById(`${value}`, query),
+    onSuccess: (res) => {
+      console.log(
+        '🚀 ~ file: SettingRoleContainer/index.ts ~ line 58 ~ res',
+        res.data,
+      );
+      toast.success('Update Permission Success');
+      setPermissionsState(res?.data?.permissions ?? []);
+    },
+    onError: (err: any) => {
+      toast.error('Permission Updating is failed')
+    }
+  })
 
   useEffect(() => {
-    if (value !== 0)
-      (async () => {
-        const res = await getRoleHavePermissionsById(`${value}`);
-
-        console.log('🚀 ~ file: SettingRoleContainer/index.ts ~ line 37 ~ res', res);
-
-        if (res.data.permissions) setPermissionsData(res.data.permissions);
-        else setPermissionsData([]);
-      })();
-  }, [value]);
+    setIsAddPermission(false);
+  }, [value])
+ 
+  const handleChange = (e, newValue) => setValue(newValue);
 
   const handleChangeRow = useCallback(
     (index: number, permission: PermissionResponse) => {
-      setPermissionsData((prevState) => {
+      setPermissionsState((prevState) => {
         prevState[index] = permission;
         return [...prevState];
       });
     },
-    [permissionsData],
+    [permissionsState],
   );
 
   console.log(
     '🚀 ~ file: SettingRoleContainer/index.ts ~ line 106 ~ res',
-    permissionsData,
+    permissionsState,
   );
 
-  const cbSetPermissionData = useCallback(
-    (query: PermissionQuery) => {
-      (async () => {
-        const res = await setRolePermissionWithQueryById(`${value}`, query);
+  const handleClickAddPermission = () => {
+    if(!isAddPermission){
+      setIsAddPermission(true);
+      return;
+    }
 
-        console.log(
-          '🚀 ~ file: SettingRoleContainer/index.ts ~ line 58 ~ res',
-          res.data,
-        );
-
-        if (res.data.permissions) setPermissionsData(res.data.permissions);
-        // setPermissionsData(responsePermissionsData);
-      })();
-    },
-    [value],
-  );
+    setIsAddPermission(false);
+    setPermissionsState(rolePermissionData?.data?.permissions ?? []);
+  }
 
   return (
     <div>
-      <TableHeader isHaveActions={false}>
+      <TableHeader plusButtonTitle="Add permission" onPlusClick={handleClickAddPermission}>
         <Tabs
           className="tableManagerTabs"
           value={value}
           onChange={handleChange}
           aria-label="disabled tabs example">
-          {!isEmpty(headerTabs) &&
-            headerTabs.map((item) => (
+          {!isEmpty(headerTabData?.data) &&
+            headerTabData?.data.map((item) => (
               <Tab value={item.id} key={item.id} label={item.name} />
             ))}
         </Tabs>
@@ -153,9 +198,10 @@ const SettingRolesContainer = () => {
       <div className="flex">
         <SettingTabs />
         <TableSettingRole
-          updatePermission={cbSetPermissionData}
-          data={permissionsData}
+          updatePermission={updatePermissionMutate}
+          data={permissionsState}
           onChangeRow={handleChangeRow}
+          buttonLabel={isAddPermission ? "Update" : "Save"}
         />
       </div>
     </div>
