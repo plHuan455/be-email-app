@@ -30,7 +30,7 @@ interface Props {
 }
 
 const TableSettingRole: React.FC<Props> = ({
-  buttonLabel = "",
+  buttonLabel = '',
   data,
   onChangeRow,
   updatePermission,
@@ -45,6 +45,7 @@ const TableSettingRole: React.FC<Props> = ({
       .filter((value) => value.status === 'Active')
       .map((value) => ({
         id: value.id,
+        name: value.name,
       }));
     console.log(
       '🚀 ~ file: TableSettingRole/index.ts ~ line 83 ~ filterData',
@@ -86,15 +87,17 @@ const TableSettingRole: React.FC<Props> = ({
           </TableBody>
         </Table>
       </TableContainer>
-      {data.length > 0 && <Box className="flex justify-end items-end my-6">
-        <CustomButton
-          onClick={handleClickSetRole}
-          className="py-3 px-6"
-          bgButtonColor="#554CFF"
-          color="#ffffff"
-          label={buttonLabel}
-        />
-      </Box>}
+      {data.length > 0 && (
+        <Box className="flex justify-end items-end my-6">
+          <CustomButton
+            onClick={handleClickSetRole}
+            className="py-3 px-6"
+            bgButtonColor="#554CFF"
+            color="#ffffff"
+            label={buttonLabel}
+          />
+        </Box>
+      )}
     </Box>
   );
 };

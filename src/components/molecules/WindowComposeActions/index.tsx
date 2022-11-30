@@ -1,19 +1,22 @@
 import { Box } from '@mui/material';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import useEmailCompose from '../../../zustand/useEmailCompose';
 import { RenderButtonIcon } from '../EmailActions';
 
 function WindowComposeActions({ className }: any) {
-  const { isZoom, reset, negativeIsCompose, negativeIsZoom } = useEmailCompose();
+  const { isZoom, reset, negativeIsZoom } = useEmailCompose();
+
+  const navigate = useNavigate();
 
   const handleClose = () => {
     reset();
-    negativeIsCompose();
+    navigate(-1);
   };
 
   const handleMinimize = () => {
-    negativeIsCompose();
+    navigate(-1);
   };
 
   const handleZoom = () => {

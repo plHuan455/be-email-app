@@ -16,14 +16,32 @@ import { genCRUD } from '@utils/routerHelper';
 import ErrorBoundary from './ErrorBoudary';
 import ErrorPage from './ErrorPage';
 import EmailHashTag from './Email/EmailHashTag';
-import Email from './Email';
+import EmailWrap from './Email';
+import Email from '@components/organisms/Email';
+
 import ManagerEmployee from './Manager/ManagerEmployee';
 import ManagerDepartment from './Manager/ManagerDepartment';
 import SettingRoles from './Settings/SettingsRoles';
+import EmailMessEmpty from '@components/organisms/EmailMessEmpty';
+import EmailCompose from '@components/organisms/EmailCompose';
 export const sideBarRouter: RouteObject[] = [
   {
     path: '/emails',
-    element: <Email />,
+    element: <EmailWrap />,
+    children: [
+      {
+        path: '/emails',
+        element: <EmailMessEmpty />,
+      },
+      {
+        path: '/emails/compose',
+        element: <EmailCompose />,
+      },
+      {
+        path: '/emails/:status/:email',
+        element: <Email />,
+      },
+    ],
   },
   {
     path: '/chats',

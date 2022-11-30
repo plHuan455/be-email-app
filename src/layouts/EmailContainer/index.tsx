@@ -2,6 +2,7 @@ import Email from '@components/organisms/Email';
 import EmailCompose from '@components/organisms/EmailCompose';
 import { Box } from '@mui/material';
 import React from 'react';
+import { Outlet } from 'react-router-dom';
 import useEmailCompose from '../../zustand/useEmailCompose';
 
 const EmailContainer = () => {
@@ -17,7 +18,8 @@ const EmailContainer = () => {
         borderTopLeftRadius: '65px',
         overflow: 'scroll',
       }}>
-      {isCompose ? <EmailCompose /> : <Email />}
+      <Outlet />
+      {/* {isCompose ? <EmailCompose /> : <Email />} */}
     </Box>
   );
 };

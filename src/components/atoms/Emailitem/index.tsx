@@ -24,14 +24,13 @@ const EmailItem = ({ emailData }: Props) => {
   const dispatch = useDispatch();
 
   const handleClickEmailItem = async (e) => {
-    const emailData = await getEmailWithQueryParam({
-      status: data[0].status,
-      mail: data[0].from,
-    });
-
-    console.log(`line 28`, emailData);
-
-    dispatch(setEmailsList(emailData.data));
+    navigate(`/emails/${data[0].status}/${data[0].from}`);
+    // const emailData = await getEmailWithQueryParam({
+    //   status: data[0].status,
+    //   mail: data[0].from,
+    // });
+    // console.log(`line 28`, emailData);
+    // dispatch(setEmailsList(emailData.data));
   };
 
   return (

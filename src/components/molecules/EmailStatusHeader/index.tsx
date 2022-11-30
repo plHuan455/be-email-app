@@ -4,6 +4,7 @@ import CustomButton from '@components/atoms/CustomButton';
 import Input from '@components/atoms/Input';
 import { Box, ButtonBase, colors, Grid, Typography } from '@mui/material';
 import React, { useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import useEmailCompose from '../../../zustand/useEmailCompose';
 
 type Props = {
@@ -21,10 +22,10 @@ const EmailStatusHeader = ({
   color,
   bgButtonColor,
 }: Props) => {
-  const negativeIsCompose = useEmailCompose((state) => state.negativeIsCompose);
+  const navigate = useNavigate();
 
   const handleComposeEmail = useCallback(() => {
-    negativeIsCompose();
+    navigate('/emails/compose');
   }, []);
 
   return (

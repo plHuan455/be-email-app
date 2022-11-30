@@ -4,7 +4,7 @@ import React, { ReactNode, useCallback, useEffect, useState } from 'react';
 import avatarImg from '@assets/images/avatars/avatar-2.jpg';
 import { Email, UserInfo } from './Interface';
 import EmailMess from '../EmailMess';
-import { getAllEmail } from '@api/email';
+import { getAllEmail, getEmailWithQueryParam } from '@api/email';
 
 import { isEmpty } from 'lodash';
 import EmailMessEmpty from '../EmailMessEmpty';
@@ -18,6 +18,8 @@ import {
   setEmailsList,
 } from '@redux/Email/reducer';
 import ModalBase from '@components/atoms/ModalBase';
+import { useParams } from 'react-router-dom';
+import { useMutation, useQuery } from '@tanstack/react-query';
 
 interface ModalForm {
   title: string;
@@ -145,6 +147,27 @@ const Email = () => {
     },
   });
   // const [newEmailList, setNewEmailList] = useState<Email[]>([]);
+
+  const params = useParams();
+
+  const email: any = params.email;
+
+  console.log(`line 152`, params);
+
+  // const dataQuery = useQuery({
+  //   queryKey: ['emailsData', status, email],
+  //   queryFn: getEmailWithQueryParam(params),
+  // });
+
+  // const dataQuery = useQuery({
+  //   queryFn: getEmailWithQueryParam(params),
+  // });
+
+  // useEffect(() => {
+  //   const emailData = getEmailWithQueryParam(params);
+  //   console.log(`line 28`, emailData);
+  //   // dispatch(setEmailsList(emailData.data));
+  // }, []);
 
   const { EmailsList, deletedEmailsList } = useSelector(
     (state: RootState) => state.email,
