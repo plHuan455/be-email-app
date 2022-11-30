@@ -1,17 +1,20 @@
+import { createRole } from "@api/role";
 import ValidateInput from "@components/atoms/Input/ValidateInput";
 import ModalBase from "@components/atoms/ModalBase"
+import { yupResolver } from "@hookform/resolvers/yup";
 import { Button, Grid } from "@mui/material";
-import { Controller, FormProvider, UseFormReturn } from "react-hook-form";
+import { useMutation } from "@tanstack/react-query";
+import { Controller, FormProvider, useForm, UseFormReturn } from "react-hook-form";
+import { toast } from "react-toastify";
 import styled from "styled-components";
+import * as yup from 'yup';
 
 export interface CreateRoleFields {
   name: string;
 }
-interface CreateRoleFormModalProps {
-  method: UseFormReturn<CreateRoleFields>
+interface CreateRoleFormModalContainerProps {
   isOpen: boolean;
   title: string;
-  onSubmit: (values: CreateRoleFields) => void;
   onClose: () => void;
 }
 
@@ -22,7 +25,34 @@ const InputWrapper = styled.div`
   }
 `;
 
-const CreateRoleFormModal: React.FC<CreateRoleFormModalProps> = ({ method, isOpen, title, onClose, onSubmit }) => {
+
+const createSettingSchema = yup.object({
+  name: yup.string().required(),
+}).required();
+
+const CreateRoleFormModalContainer: React.FC<CreateRoleFormModalContainerProps> = ({ isOpen, title, onClose }) => {
+  const method = useForm<CreateRoleFields>({
+    defaultValues: {
+      name: '',
+    },
+    resolver: yupResolver(createSettingSchema)
+  })
+  
+  const {mutate: createRoleMutate} = useMutation({
+    mutationKey: ['setting-role-create-role'],
+    mutationFn: (query: { name: string }) => createRole(query),
+    onSuccess: (data) => {
+      toast.success('Role is created');
+    },
+    onError: (err: any) => {
+      toast.error('role creation is failed')
+    }
+  });
+
+  const handleSubmit = (values) => {
+    createRoleMutate(values);
+  }
+  
   return (
     <ModalBase
       isOpen={isOpen}
@@ -32,7 +62,7 @@ const CreateRoleFormModal: React.FC<CreateRoleFormModalProps> = ({ method, isOpe
       submitLabel=""
     >
       <FormProvider {...method}>
-        <form className="o-tableManagerEmployee_form" onSubmit={method.handleSubmit(onSubmit)}>
+        <form className="o-tableManagerEmployee_form" onSubmit={method.handleSubmit(handleSubmit)}>
           <Grid container spacing={4}>
             <Grid item xs={12}>
               <Controller
@@ -63,4 +93,4 @@ const CreateRoleFormModal: React.FC<CreateRoleFormModalProps> = ({ method, isOpe
   )
 }
 
-export default CreateRoleFormModal
+export default CreateRoleFormModalContainer

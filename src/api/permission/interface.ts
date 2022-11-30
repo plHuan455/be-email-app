@@ -1,6 +1,6 @@
 export interface PermissionResponse {
   id: number;
   name: string;
-  status: string;
+  status: 'Active' | 'deny';
   role_permissions: null;
 }

@@ -24,11 +24,13 @@ import Row from './Row';
 
 interface Props {
   data: PermissionResponse[];
+  buttonLabel?: string;
   onChangeRow: Function;
   updatePermission: Function;
 }
 
 const TableSettingRole: React.FC<Props> = ({
+  buttonLabel = "",
   data,
   onChangeRow,
   updatePermission,
@@ -90,7 +92,7 @@ const TableSettingRole: React.FC<Props> = ({
           className="py-3 px-6"
           bgButtonColor="#554CFF"
           color="#ffffff"
-          label="Save"
+          label={buttonLabel}
         />
       </Box>}
     </Box>

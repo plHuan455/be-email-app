@@ -18,7 +18,7 @@ export const createRole = async (query: {
   return res.data;
 };
 
-export const getRole = async (): Promise<AxiosResponse<RoleResponse>> => {
+export const getRole = async (): Promise<AxiosResponse<RoleResponse[]>> => {
   const url = `${ROLE_API_URL}`;
   const res = await ApiClient.get(url, undefined, undefined);
 
