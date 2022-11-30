@@ -161,7 +161,7 @@ const Email = () => {
   // }, []);
 
   useEffect(() => {
-    if (!isEmpty(EmailsList) && !showHistory) setShowHistory(EmailsList[0].id);
+    if (!isEmpty(EmailsList)) setShowHistory(EmailsList[0].id);
   }, [EmailsList]);
 
   const checkIsReceiveEmail = useCallback(

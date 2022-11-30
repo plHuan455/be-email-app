@@ -64,7 +64,7 @@ function LoginContainer() {
             localStorage.setItem('current_user_name', currentUser.data.user_name);
             localStorage.setItem('current_user_avt', currentUser.data.avatar);
             // set current_email to 'email
-            localStorage.setItem('current_email', 'quanhn@gmail.com');
+            localStorage.setItem('current_email', email);
             toast.success('Đăng nhập thành công!');
             navigate('/');
           }
@@ -133,7 +133,7 @@ function LoginContainer() {
               </WrapTitle>
             ) : (
               <WrapTitle>
-                <h3>Login screen</h3>
+                <h3>Login</h3>
                 <p>Enter your email and password to login!</p>
               </WrapTitle>
             )}
@@ -202,22 +202,24 @@ function LoginContainer() {
                   {t('Unlock')}
                 </Button>
               </WrapActions>
-              <WrapTextLink>
-                {/* Not you? return <Link to="/#/login">Login</Link> */}
-                Not you? return{' '}
-                <ButtonBase
-                  sx={{
-                    verticalAlign: 'initial',
-                    color: '#827CFF',
-                    fontWeight: 'bold',
-                  }}
-                  onClick={handleReLoginWithEmail}>
-                  Login
-                </ButtonBase>
-              </WrapTextLink>
+              {isLogined && currentUserName && currentUserAvt && (
+                <WrapTextLink>
+                  {/* Not you? return <Link to="/#/login">Login</Link> */}
+                  Not you? return{' '}
+                  <ButtonBase
+                    sx={{
+                      verticalAlign: 'initial',
+                      color: '#827CFF',
+                      fontWeight: 'bold',
+                    }}
+                    onClick={handleReLoginWithEmail}>
+                    Login
+                  </ButtonBase>
+                </WrapTextLink>
+              )}
             </form>
           </Content>
-          <p>2022 Metanode</p>
+          <p>2022 Metanode, Inc</p>
         </WrapContent>
       </WrapContainer>
     </Root>
