@@ -100,36 +100,6 @@ const InformationBar = (props: Props) => {
     setIsShowMoreInformation(false);
   }, []);
 
-  // const getReceiverData: () => ReceiverData[] = () => {
-  //   const mapSendTo: ReceiverData[] =
-  //     currEmail.to &&
-  //     currEmail.to.map((item) => ({
-  //       name: item,
-  //       avatar: '',
-  //       position: 'Marketing Department',
-  //     }));
-  //   const mapCc: ReceiverData[] =
-  //     currEmail.cc &&
-  //     currEmail.cc.map((item) => ({
-  //       name: item,
-  //       avatar: '',
-  //       email: item,
-  //       isCC: true,
-  //     }));
-  //   const mapBcc: ReceiverData[] =
-  //     currEmail.bcc &&
-  //     currEmail.bcc.map((item) => ({
-  //       name: item,
-  //       avatar: '',
-  //       position: 'Metanode X Lab',
-  //       isBCC: true,
-  //     }));
-
-  //   console.log(`line 128`, mapSendTo, mapCc, mapBcc);
-
-  //   return [...mapSendTo, ...mapCc, ...mapBcc];
-  // };
-
   const getAllAttachFiles: () => AttachFile[] = () => {
     const attachFiles: AttachFile[] = EmailsList.reduce(
       (cur: AttachFile[], next) => {

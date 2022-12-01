@@ -8,6 +8,19 @@ String.prototype.capitalize = function () {
   return this.charAt(0).toUpperCase() + this.slice(1);
 };
 
+Notification.requestPermission();
+// .then((permission) => {
+//   if (permission === 'granted') {
+//     console.log('line 28 Notification permission granted.');
+//   }
+//   if (permission === 'default') {
+//     console.log('line 28 Notification permission default.');
+//   }
+//   if (permission === 'denied') {
+//     console.log('line 28 Notification permission denied.');
+//   }
+// });
+
 const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
 root.render(<App />);
 

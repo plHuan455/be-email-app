@@ -18,6 +18,7 @@ type Props = {
   title: string;
   isBorderBottom: boolean;
   sender: number;
+  isLoading?: boolean;
 };
 
 const InformationBarEmpty = (props: Props) => {
@@ -41,29 +42,37 @@ const InformationBarEmpty = (props: Props) => {
         {props.title}
       </Typography>
       <InformationDetailBlock
+        isLoading={props.isLoading}
         title="Manager"
         isBorderBottom={true}
         userId={1}
         isEmpty={true}
       />
       <InformationDetailBlock
+        isLoading={props.isLoading}
         title="Sender"
         isBorderBottom={true}
         userId={1}
         isEmpty={true}
       />
       <InformationDetailBlock
+        isLoading={props.isLoading}
         title="Receiver"
         isBorderBottom={true}
         isEmpty={true}
         receiverData={receiverData.map((item) => item.mail)}
       />
       <InformationDetailBlock
+        isLoading={props.isLoading}
         title="Activity"
         isBorderBottom={true}
         isEmpty={true}
       />
-      <InformationDetailBlock title="Files" isBorderBottom={false} />
+      <InformationDetailBlock
+        isLoading={props.isLoading}
+        title="Files"
+        isBorderBottom={false}
+      />
     </Box>
   );
 };

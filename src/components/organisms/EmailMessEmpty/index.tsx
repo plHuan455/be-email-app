@@ -21,7 +21,11 @@ export interface AttachFile {
   userRead?: UserRead[];
 }
 
-function EmailMessEmpty() {
+interface Props {
+  isLoading?: boolean;
+}
+
+const EmailMessEmpty: React.FC<Props> = ({ isLoading = false }) => {
   return (
     <Box className={`w-full relative flex flex-wrap`}>
       <Box className={`w-full flex flex-wrap`}>
@@ -50,22 +54,34 @@ function EmailMessEmpty() {
         {/* Header */}
         <Box
           className={`cursor-pointer pb-6 bg-violet-200 py-4 rounded-bl-[36px] rounded-tr-[36px] relative`}>
-          <AnimationTimeline className="rounded-md my-2 h-[28px]" />
+          <AnimationTimeline
+            isActiveAnimation={isLoading}
+            className="rounded-md my-2 h-[28px]"
+          />
           {/* Email Send To */}
-          <AnimationTimeline className="rounded-md my-2 h-[28px]" />
+          <AnimationTimeline
+            isActiveAnimation={isLoading}
+            className="rounded-md my-2 h-[28px]"
+          />
           {/* <EmailStatus emailStatus={'pending'} /> */}
         </Box>
         {/* Email Content */}
         <Box className="py-9">
-          <AnimationTimeline className="rounded-md h-[200px]" />
+          <AnimationTimeline
+            isActiveAnimation={isLoading}
+            className="rounded-md h-[200px]"
+          />
           <Box>
             <h3 className="my-4 font-semibold">Files</h3>
-            <AnimationTimeline className="rounded-md h-[120px]" />
+            <AnimationTimeline
+              isActiveAnimation={isLoading}
+              className="rounded-md h-[120px]"
+            />
           </Box>
         </Box>
       </Box>
     </Box>
   );
-}
+};
 
 export default EmailMessEmpty;

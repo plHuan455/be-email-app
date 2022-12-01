@@ -27,10 +27,6 @@ export default class ApiClient {
     query?: object,
   ): Promise<AxiosResponse> {
     let requestUrl = query ? `${url}?${stringify(query)}` : url;
-    console.log(
-      '🚀 ~ file: ApiClient.ts ~ line 30 ~ ApiClient ~ requestUrl:',
-      requestUrl,
-    );
     const response = await axiosInstance.get(requestUrl, {
       params,
       headers: await this.getHeaders(),

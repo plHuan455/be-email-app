@@ -6,7 +6,6 @@ import {
 import React, { useEffect, useState } from 'react';
 
 export const useGetEmail = (status: string, mail?: string) => {
-  console.log('🚀 ~ file: useGetEmail.ts ~ line 14 ~ useGetEmail ~ status', status);
   const CURRENT_USER_EMAIL = localStorage.getItem('current_email')
     ? localStorage.getItem('current_email')
     : '';

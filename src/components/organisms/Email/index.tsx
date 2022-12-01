@@ -19,7 +19,6 @@ import {
 } from '@redux/Email/reducer';
 import ModalBase from '@components/atoms/ModalBase';
 import { useParams } from 'react-router-dom';
-import { useMutation, useQuery } from '@tanstack/react-query';
 
 interface ModalForm {
   title: string;
@@ -135,7 +134,9 @@ const saveEmailList = [
   },
 ];
 
-const Email = () => {
+interface Props {}
+
+const Email: React.FC<Props> = () => {
   const [showHistory, setShowHistory] = useState<number | null>(null);
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [modal, setModal] = useState<ModalForm>({
@@ -146,42 +147,9 @@ const Email = () => {
       handleCloseModal();
     },
   });
-  // const [newEmailList, setNewEmailList] = useState<Email[]>([]);
 
-  const params = useParams();
-
-  const email: any = params.email;
-
-  console.log(`line 152`, params);
-
-  // const dataQuery = useQuery({
-  //   queryKey: ['emailsData', status, email],
-  //   queryFn: getEmailWithQueryParam(params),
-  // });
-
-  // const dataQuery = useQuery({
-  //   queryFn: getEmailWithQueryParam(params),
-  // });
-
-  // useEffect(() => {
-  //   const emailData = getEmailWithQueryParam(params);
-  //   console.log(`line 28`, emailData);
-  //   // dispatch(setEmailsList(emailData.data));
-  // }, []);
-
-  const { EmailsList, deletedEmailsList } = useSelector(
-    (state: RootState) => state.email,
-  );
+  const { EmailsList, isLoading } = useSelector((state: RootState) => state.email);
   const dispatch = useDispatch();
-
-  // useEffect(() => {
-  //   // (async () => {
-  //   //   const res = await getAllEmail();
-  //   //   console.log('Test res in line ~ 121 ~ file Email.tsx', res.data);
-  //   // }
-  //   // )();
-  //   setNewEmailList(EmailsList);
-  // }, []);
 
   useEffect(() => {
     if (!isEmpty(EmailsList)) setShowHistory(EmailsList[0].id);
@@ -271,17 +239,9 @@ const Email = () => {
 
         dispatch(setEmailsList(cloneEmailsList));
       }
-      // cloneEmailsList[index].status = 'status';
-      // dispatch(setEmailsList(cloneEmailsList));
-      // setNewEmailList((preState) => {
-      //   preState[index].status = status;
-      //   return [...preState];
-      // });
     },
     [EmailsList],
   );
-
-  console.log(`line 221`, EmailsList);
 
   const handleCloseModal = useCallback(() => {
     setIsOpenModal(false);
@@ -295,12 +255,10 @@ const Email = () => {
     [showHistory],
   );
 
-  // console.log(`line 162`, newEmailList);
-
   return (
     <Box className="flex flex-wrap flex-col">
-      {isEmpty(EmailsList) ? (
-        <EmailMessEmpty />
+      {isLoading ? (
+        <EmailMessEmpty isLoading={isLoading} />
       ) : (
         EmailsList.map((email, index) => (
           <EmailMess

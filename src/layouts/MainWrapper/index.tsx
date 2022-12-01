@@ -95,6 +95,20 @@ function MainWrapper() {
     },
   ];
 
+  // const [titleChange, setTitleChange] = useState<string>('Test Change Title');
+
+  // useEffect(() => {
+  //   setInterval(() => {
+  //     const currTitle = document.title;
+
+  //     document.title = titleChange;
+
+  //     setTitleChange(currTitle);
+  //   }, 2000);
+  // }, [titleChange]);
+
+  // console.log(`line 119`, titleChange);
+
   // const dispatch = useAppDispatch();
 
   useEffect(() => {

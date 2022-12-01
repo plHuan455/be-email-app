@@ -32,6 +32,7 @@ import {
   MESSAGE_SEND_EMAIL_FAILED,
   MESSAGE_SEND_EMAIL_SUCCESSFUL,
 } from '@constants/EmailAPI';
+import { useNavigate } from 'react-router-dom';
 
 const fromData: UserInfo[] = [new UserInfo(avatarImg, 'sender', 'sender@gmail.com')];
 
@@ -84,6 +85,8 @@ function EmailCompose() {
       setEditorState(EditorState.createWithContent(contentState));
     }
   }, []);
+
+  const navigate = useNavigate();
 
   const handleClickCcFromLabel = useCallback(() => {
     setIsShowCcFrom((preState) => !preState);
@@ -194,6 +197,7 @@ function EmailCompose() {
       if (res.statusText == 'OK') {
         toast.success(MESSAGE_SEND_EMAIL_SUCCESSFUL);
         reset();
+        navigate(-1);
         return;
       } else {
         reset();

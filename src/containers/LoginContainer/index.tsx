@@ -55,21 +55,17 @@ function LoginContainer() {
     try {
       const res = await login({ email, password });
       // Change 'asdasd to res.data
-      auth.signin(
-        {},
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X2lkIjoxLCJlbWFpbCI6InF1YW5obkBnbWFpbC5jb20iLCJleHAiOjU5ODk2MDUwMTN9.BwgSPHjenqOuIzO26Aeb-mS0iOWTryyEw84OU_SwSiA',
-        async () => {
-          if (res.message === 'Login successful') {
-            const currentUser = await getUserWithEmail(email);
-            localStorage.setItem('current_user_name', currentUser.data.user_name);
-            localStorage.setItem('current_user_avt', currentUser.data.avatar);
-            // set current_email to 'email
-            localStorage.setItem('current_email', email);
-            toast.success('Đăng nhập thành công!');
-            navigate('/');
-          }
-        },
-      );
+      auth.signin({}, res.data, async () => {
+        if (res.message === 'Login successful') {
+          const currentUser = await getUserWithEmail(email);
+          localStorage.setItem('current_user_name', currentUser.data.user_name);
+          localStorage.setItem('current_user_avt', currentUser.data.avatar);
+          // set current_email to 'email
+          localStorage.setItem('current_email', email);
+          toast.success('Đăng nhập thành công!');
+          navigate('/');
+        }
+      });
     } catch (error: any) {
       toast.error(t('Tài khoản chưa tồn tại hoặc sai thông tin đăng nhập'));
     }

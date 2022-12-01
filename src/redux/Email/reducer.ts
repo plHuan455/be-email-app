@@ -210,6 +210,7 @@ export interface EmailState {
   deletedEmailsList: EmailResponse[];
   spamEmailsList: EmailResponse[];
   unreadEmailsList: EmailResponse[];
+  isLoading: boolean;
 }
 
 const initialState: EmailState = {
@@ -217,12 +218,16 @@ const initialState: EmailState = {
   deletedEmailsList: [],
   spamEmailsList: [],
   unreadEmailsList: [],
+  isLoading: false,
 };
 
 const EmailSlice = createSlice({
   name: 'email ',
   initialState,
   reducers: {
+    setEmailIsLoading(state, action) {
+      return { ...state, isLoading: action.payload };
+    },
     addUnreadEmail(state, action) {
       const cloneUnreadEmailsList = [...state.unreadEmailsList];
 
@@ -279,6 +284,7 @@ export const {
   addSpamEmail,
   addUnreadEmail,
   addDeletedEmail,
+  setEmailIsLoading,
 } = EmailSlice.actions;
 
 export default EmailSlice.reducer;

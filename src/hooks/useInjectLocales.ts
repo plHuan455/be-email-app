@@ -33,7 +33,6 @@ const useInjectLocales = () => {
         const currLanguage = code2Lang[language.toLowerCase()];
 
         if (currLanguage) {
-          console.log({ currLanguage });
           setLanguage(currLanguage);
         }
         setInjected(true);

@@ -48,7 +48,6 @@ export const getEmailWithQueryParam = async (params?: {
     { status: params?.status, mail: params?.mail, hashtag: params?.hashtag },
     {},
   );
-  console.log('🚀 ~ file: index.ts ~ line 45 ~ res', res.data);
   return res.data;
 };
 

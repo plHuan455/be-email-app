@@ -22,6 +22,7 @@ import useEmailCompose from '../../../zustand/useEmailCompose';
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
 import { toast } from 'react-toastify';
+import { sendEmail } from '@api/email';
 
 interface Props {
   onChangeEmailStatus: Function;
@@ -73,6 +74,10 @@ const EmailForward: React.FC<Props> = ({
     setContent,
     setSubject,
   } = useEmailCompose();
+
+  const currentUserEmail = localStorage.getItem('current_email')
+    ? localStorage.getItem('current_email')
+    : '';
 
   const newSendTo = sendTo.map((item) => new UserInfo('', item, item));
   const newSendToDefault = sendToDefault.map((item) => new UserInfo('', item, item));
@@ -184,10 +189,19 @@ const EmailForward: React.FC<Props> = ({
 
   const handleSubmitEmail = async (e) => {
     const canSubmit = await check();
-
+    const emailData = getAll();
     if (canSubmit) {
-      console.log('line 180', getAll());
-      toast.success('Có thể call API!');
+      const res = await sendEmail({
+        subject: emailData.subject,
+        to: emailData.receivers.map((item) => item.mail),
+        content: emailData.content,
+        html_string: emailData.content,
+        from: currentUserEmail ? currentUserEmail : '',
+        cc: emailData.cc.map((item) => item.mail),
+        bcc: emailData.bcc.map((item) => item.mail),
+        file: emailData.file,
+      });
+      toast.success(`Thành công!`);
       await reset();
       onChangeEmailStatus();
     } else {

@@ -40,6 +40,7 @@ type Props = {
   data?: EmailResponse;
   isShowMore?: boolean;
   onShowMore?: Function;
+  isLoading?: boolean;
 };
 
 export const TitleOfInformationBlock = (
@@ -86,12 +87,16 @@ export const UserName = (title: string) => {
 
 interface PropsAvatarEmpty {
   className?: string;
+  isLoading?: boolean;
 }
 
-const AvatarIfEmpty: React.FC<PropsAvatarEmpty> = ({ className }) => (
+const AvatarIfEmpty: React.FC<PropsAvatarEmpty> = ({
+  className,
+  isLoading = true,
+}) => (
   <Box className={className} sx={{ display: 'flex', alignItems: 'center' }}>
     <Avatar src="" alt="sender avt" sx={{ width: '35px', height: '35px' }} />
-    <AnimationTimeline className="mx-2 rounded-md " />
+    <AnimationTimeline isActiveAnimation={isLoading} className="mx-2 rounded-md " />
   </Box>
 );
 
@@ -145,7 +150,7 @@ const InformationDetailBlock = (props: Props) => {
         }}>
         {TitleOfInformationBlock(props.title)}
         {props.isEmpty ? (
-          <AvatarIfEmpty />
+          <AvatarIfEmpty isLoading={props.isLoading} />
         ) : (
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
             <Avatar
@@ -185,7 +190,7 @@ const InformationDetailBlock = (props: Props) => {
           {props.receiverData &&
             props.receiverData.map((item, index) => {
               return props.isEmpty ? (
-                <AvatarIfEmpty className="my-2" />
+                <AvatarIfEmpty isLoading={props.isLoading} className="my-2" />
               ) : (
                 renderReceiver(new UserInfo('', item, item), index)
               );
@@ -314,7 +319,10 @@ const InformationDetailBlock = (props: Props) => {
             );
           })
         ) : (
-          <AnimationTimeline className="rounded-md h-[80px]" />
+          <AnimationTimeline
+            isActiveAnimation={props.isLoading}
+            className="rounded-md h-[80px]"
+          />
         )}
       </Box>
     );
@@ -326,7 +334,10 @@ const InformationDetailBlock = (props: Props) => {
         {props.filesData ? (
           <AttachFiles data={props.filesData} />
         ) : (
-          <AnimationTimeline className="rounded-md h-[120px]" />
+          <AnimationTimeline
+            isActiveAnimation={props.isLoading}
+            className="rounded-md h-[120px]"
+          />
         )}
         {props.isShowMore && (
           <ShowMore
