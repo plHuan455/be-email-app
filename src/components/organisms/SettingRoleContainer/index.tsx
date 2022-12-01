@@ -143,6 +143,7 @@ const SettingRolesContainer = () => {
         res.data,
       );
       toast.success('Update Permission Success');
+      setIsAddPermission(false);
       setPermissionsState(res?.data?.permissions ?? []);
     },
     onError: (err: any) => {
@@ -201,7 +202,7 @@ const SettingRolesContainer = () => {
           updatePermission={updatePermissionMutate}
           data={permissionsState}
           onChangeRow={handleChangeRow}
-          buttonLabel={isAddPermission ? "Update" : "Save"}
+          buttonLabel={isAddPermission ? "Add" : "Update"}
         />
       </div>
     </div>
