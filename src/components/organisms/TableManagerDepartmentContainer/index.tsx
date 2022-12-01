@@ -5,6 +5,9 @@ import TableManagerDepartment from './TableManagerDepartment';
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useMutation } from '@tanstack/react-query';
+import { createDepartment } from '@api/deparment';
+import { toast } from 'react-toastify';
 
 interface TableManagerDepartmentContainerProps {
   isShowAddDepartmentModal?: boolean;
@@ -13,8 +16,8 @@ interface TableManagerDepartmentContainerProps {
 
 const createDepartmentSchema = yup.object({
   name: yup.string().required(),
-  description: yup.string().required(),
-  address: yup.string().required(),
+  description: yup.string(),
+  address: yup.string(),
 }).required();
 
 const TableManagerDepartmentContainer: React.FC<TableManagerDepartmentContainerProps> = ({
@@ -29,6 +32,21 @@ const TableManagerDepartmentContainer: React.FC<TableManagerDepartmentContainerP
     resolver: yupResolver(createDepartmentSchema)
   });
 
+  const { mutate: createDepartmentMutate, isLoading: isCreateDepartmentSubmitting } = useMutation({
+    mutationKey: ['table-manager-department-create-department'],
+    mutationFn: createDepartment,
+    onSuccess: (res) => {
+      toast.success('Department is created');
+    },
+    onError: () => {
+      toast.error('Create department failed');
+    }
+  });
+
+  const handleSubmit = (values: AddDepartmentField) => {
+    createDepartmentMutate(values);
+  }
+
   return (
     <div>
       <TableHeader isHaveActions={false} />
@@ -36,8 +54,9 @@ const TableManagerDepartmentContainer: React.FC<TableManagerDepartmentContainerP
       <AddDepartmentModal 
         method={method}
         isOpen={Boolean(isShowAddDepartmentModal)} 
+        isFormLoading={isCreateDepartmentSubmitting}
         title="Create department"
-        onSubmit={(values) => {console.log(values);}}
+        onSubmit={handleSubmit}
         onClose={() => {
           if(onCloseAddDepartmentModal) onCloseAddDepartmentModal();
           method.reset();
