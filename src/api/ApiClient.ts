@@ -114,6 +114,20 @@ export default class ApiClient {
     return response;
   }
 
+  static async postFormData(
+    url: string,
+    formData: FormData,
+    query?: object,
+  ): Promise<AxiosResponse> {
+    const requestUrl = `${url}?${stringify(query)}`;
+
+    const config: AxiosRequestConfig = {
+      headers: await this.getHeaders('multipart/form-data'),
+    };
+    const response = await axiosInstance.post(requestUrl, formData, config);
+    return response;
+  }
+
   private static async getHeaders(contentType: string = 'application/json') {
     return {
       'Content-Type': contentType,
