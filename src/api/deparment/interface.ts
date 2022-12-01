@@ -4,3 +4,9 @@ export interface DepartmentResponse {
   description: string;
   address: string;
 }
+
+export interface DepartmentParams {
+  name: string;
+  description?: string;
+  address?: string;
+}
