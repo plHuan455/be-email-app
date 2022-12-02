@@ -8,7 +8,7 @@ import { styled } from '@mui/material/styles';
 // import DialpadIcon from '@mui/icons-material/Dialpad';
 // import DonutSmallIcon from '@mui/icons-material/DonutSmall';
 import logo from '../../assets/images/logo_without_text.png';
-import { Box } from '@mui/material';
+import { Box, Tooltip } from '@mui/material';
 import { SVGIconProps } from '@components/atoms/Icon';
 import { sideBarRouter } from '@page/MainRoute';
 import { RenderButtonIcon } from '@components/molecules/EmailActions';
@@ -113,13 +113,19 @@ export default function IconTabs() {
 
     return sideBarRouter.map((val, index) => {
       return (
-        <Tab
-          key={index}
-          icon={
-            <RenderButtonIcon item={val.path ? iconsList[val.path] : 'approved'} />
-          }
-          aria-label={val.path ? String(val.path.split('/').pop()).capitalize() : ''}
-        />
+        <Tooltip
+          placement="right"
+          title={val.path ? String(val.path.split('/').pop()).capitalize() : ''}>
+          <Tab
+            key={index}
+            icon={
+              <RenderButtonIcon item={val.path ? iconsList[val.path] : 'approved'} />
+            }
+            aria-label={
+              val.path ? String(val.path.split('/').pop()).capitalize() : ''
+            }
+          />
+        </Tooltip>
       );
     });
   };

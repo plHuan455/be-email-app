@@ -100,7 +100,7 @@ function MainWrapper() {
       id: 3,
       label: 'Change Password',
       path: '/change-password',
-      handleClick: handleLogout,
+      handleClick: handleChangePage('/change-password'),
     },
     {
       id: 4,
