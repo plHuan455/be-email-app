@@ -18,40 +18,44 @@ import TableManagerEmployee from '@components/organisms/TableManagerEmployeeCont
 import './styles.scss';
 import Icon from '@components/atoms/Icon';
 
-const rows = [
-  new Department(
-    'cs',
-    3,
-    'cs@',
-    [
-      new Manager('', 'Bùi Thùy Thị Minh', 'minhthuy.bui@test.com', 'CS', 'Manager'),
-      new Manager(
-        '',
-        'Bùi Phạn Hương Giang',
-        'huonggiang.bui@test.com',
-        'CS',
-        'Blocked',
-      ),
-    ],
-    '',
-  ),
-  new Department(
-    'IT Support',
-    3,
-    'it-support@',
-    [
-      new Manager(
-        '',
-        'Anh Nguyen The',
-        'theanh.nguyen@theanh.com',
-        'Front End',
-        'Admin',
-      ),
-      new Manager('', 'Anh Tran', 'anh.tran@test.com', 'Back End', 'Employee'),
-    ],
-    '',
-  ),
-];
+interface TableManagerDepartmentProps {
+  departmentList: Department[];
+}
+
+// const rows = [
+//   new Department(
+//     'cs',
+//     3,
+//     'cs@',
+//     [
+//       new Manager('', 'Bùi Thùy Thị Minh', 'minhthuy.bui@test.com', 'CS', 'Manager'),
+//       new Manager(
+//         '',
+//         'Bùi Phạn Hương Giang',
+//         'huonggiang.bui@test.com',
+//         'CS',
+//         'Blocked',
+//       ),
+//     ],
+//     '',
+//   ),
+//   new Department(
+//     'IT Support',
+//     3,
+//     'it-support@',
+//     [
+//       new Manager(
+//         '',
+//         'Anh Nguyen The',
+//         'theanh.nguyen@theanh.com',
+//         'Front End',
+//         'Admin',
+//       ),
+//       new Manager('', 'Anh Tran', 'anh.tran@test.com', 'Back End', 'Employee'),
+//     ],
+//     '',
+//   ),
+// ];
 
 function Row(props: { row: Department; className: string }) {
   const { row, className } = props;
@@ -94,7 +98,7 @@ function Row(props: { row: Department; className: string }) {
   );
 }
 
-export default function TableManagerDepartment() {
+export default function TableManagerDepartment({ departmentList }: TableManagerDepartmentProps) {
   return (
     <TableContainer className="tableDepartment" component={Paper}>
       <Table aria-label="collapsible table">
@@ -113,7 +117,7 @@ export default function TableManagerDepartment() {
             </TableCell>
             <TableCell align="left">all@</TableCell>
           </TableRow>
-          {rows.map((row) => (
+          {departmentList.map((row) => (
             <Row className="managerDepartmentRow" key={row.name} row={row} />
           ))}
         </TableBody>
