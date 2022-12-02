@@ -6,7 +6,7 @@ import { Box, Container, Drawer } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import React, { useEffect, useState } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import { makeStyles } from 'tss-react/mui';
 import { toast } from 'react-toastify';
 import { useAppDispatch } from '@redux/configureStore';
@@ -16,6 +16,7 @@ import IconTabs from '@layouts/IconTabs';
 import EmailStatusBar from '@layouts/EmailStatusBar';
 import AvatarWithPopup from '@components/atoms/AvatarWithPopup';
 import { useAuth } from '@context/AppContext';
+import IconTabsManager from '@layouts/IconTabsManager';
 
 const sideBarWidth = 75;
 const emailStatusWidth = 290;
@@ -50,6 +51,10 @@ interface Setting {
 }
 
 function MainWrapper() {
+  const location = useLocation();
+
+  const isInManagerPage = location.pathname.startsWith('/manager');
+
   // Hooks
   const { classes, cx } = useStyles();
   const { breadcrumbs } = useBreadcrumbs();
@@ -68,58 +73,42 @@ function MainWrapper() {
     });
   };
 
+  const handleChangePage = (url: string) => () => {
+    navigate(url);
+  };
+
   const settings: Setting[] = [
     {
       id: 0,
+      label: 'Manager',
+      path: '/manager',
+      handleClick: handleChangePage('/manager'),
+    },
+    {
+      id: 1,
       label: 'Profile',
       path: '/profile',
       handleClick: handleLogout,
     },
     {
-      id: 1,
+      id: 2,
       label: 'Setting',
       path: '/setting',
       handleClick: handleLogout,
     },
     {
-      id: 2,
+      id: 3,
       label: 'Change Password',
       path: '/change-password',
       handleClick: handleLogout,
     },
     {
-      id: 3,
+      id: 4,
       label: 'Log out',
       path: '/log-out',
       handleClick: handleLogout,
     },
   ];
-
-  // const [titleChange, setTitleChange] = useState<string>('Test Change Title');
-
-  // useEffect(() => {
-  //   setInterval(() => {
-  //     const currTitle = document.title;
-
-  //     document.title = titleChange;
-
-  //     setTitleChange(currTitle);
-  //   }, 2000);
-  // }, [titleChange]);
-
-  // console.log(`line 119`, titleChange);
-
-  // const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    // getCity()
-    //   .then((response) => {
-    //     dispatch(setLocation(response.data));
-    //   })
-    //   .catch((err) =>
-    //     toast.error('Đã có lỗi xảy ra, vui lòng thử lại sau ít phút!'),
-    //   );
-  }, []);
 
   return (
     <React.Fragment>
@@ -129,7 +118,7 @@ function MainWrapper() {
       /> */}
       <Box className={cx(classes.body)}>
         <Box className={`${cx(classes.sideBar)} flex flex-col justify-between`}>
-          <IconTabs />
+          {isInManagerPage ? <IconTabsManager /> : <IconTabs />}
           <AvatarWithPopup
             popupStyles={{
               '& > .MuiPaper-root': {
@@ -138,6 +127,10 @@ function MainWrapper() {
                 borderRadius: '8px',
                 '& > .MuiList-root': {
                   paddingBlock: 1,
+                  '& .MuiButtonBase-root': {
+                    justifyContent: 'space-between',
+                    flex: 1,
+                  },
                 },
               },
             }}

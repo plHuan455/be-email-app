@@ -1,11 +1,7 @@
 {
   "compilerOptions": {
     "target": "es5",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -23,26 +19,12 @@
     "noImplicitAny": false,
     "sourceMap": true,
     "paths": {
-      "@*": [
-        "src/*"
-      ],
-      "@@*": [
-        "./*"
-      ],
-      "@@packages/hooks": [
-        "packages/hooks/src/index.ts"
-      ],
-      "@@packages/localization": [
-        "packages/localization/src/index.tsx"
-      ],
-      "@@packages/utils": [
-        "packages/utils"
-      ]
+      "@*": ["src/*"],
+      "@@*": ["./*"],
+      "@@packages/hooks": ["packages/hooks/src/index.ts"],
+      "@@packages/localization": ["packages/localization/src/index.tsx"],
+      "@@packages/utils": ["packages/utils"]
     }
   },
-  "include": [
-    "src/**/*",
-    "config/**/*",
-    "webpack"
-  ]
+  "include": ["src/**/*", "config/**/*", "webpack"]
 }

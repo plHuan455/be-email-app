@@ -16,6 +16,7 @@ import { RenderButtonIcon } from '@components/molecules/EmailActions';
 const iconsList: {
   [key: string]: SVGIconProps['icon'];
 } = {
+  '/manager': 'managerAcccount',
   '/profile': 'accountCircle',
   '/setting': 'settings',
   '/change-password': 'password',

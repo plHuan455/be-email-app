@@ -20,6 +20,9 @@ import Toastify from '@components/molecules/Toastify';
 import { LanguageProvider } from '@@packages/localization';
 import MuiThemeCustomization from '@themes';
 
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+
 // const options = {
 //   // you can also just use 'bottom center'
 //   position: positions.BOTTOM_CENTER,
@@ -42,7 +45,9 @@ export default class App extends React.Component {
             {/* {this.state.isReady ? <MainRoute /> : <WrapLoading>{SVG}</WrapLoading>} */}
             <LanguageProvider>
               <ProSidebarProvider>
-                <MainRoute />
+                <LocalizationProvider dateAdapter={AdapterDayjs}>
+                  <MainRoute />
+                </LocalizationProvider>
               </ProSidebarProvider>
             </LanguageProvider>
             <Toastify />

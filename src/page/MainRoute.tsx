@@ -24,6 +24,27 @@ import ManagerDepartment from './Manager/ManagerDepartment';
 import SettingRoles from './Settings/SettingsRoles';
 import EmailMessEmpty from '@components/organisms/EmailMessEmpty';
 import EmailCompose from '@components/organisms/EmailCompose';
+import Manager from './Manager';
+
+export const managerRouter: RouteObject[] = [
+  {
+    path: '/manager',
+    element: <Manager />,
+    children: [
+      { path: '/manager', element: <ManagerEmployee /> },
+      { path: '/manager/setting', element: <SettingRoles /> },
+      {
+        path: '/manager/department',
+        children: [
+          { path: '/manager/department', element: <ManagerDepartment /> },
+          { path: '/manager/department/employee', element: <ManagerEmployee /> },
+          { path: '/manager/department/department', element: <ManagerDepartment /> },
+        ],
+      },
+    ],
+  },
+];
+
 export const sideBarRouter: RouteObject[] = [
   {
     path: '/emails',
@@ -74,15 +95,8 @@ export const declareRouter: RouteObject[] = [
         element: <Navigate to={'/emails'} replace={true} />,
       },
       { path: '/about', element: <AboutPage /> },
-      {
-        path: '/manager',
-        children: [
-          { path: '/manager/employee', element: <ManagerEmployee /> },
-          { path: '/manager/department', element: <ManagerDepartment /> },
-          { path: '/manager/setting', element: <SettingRoles /> },
-        ],
-      },
       ...sideBarRouter,
+      ...managerRouter,
     ],
     errorElement: <ErrorBoundary />,
   },

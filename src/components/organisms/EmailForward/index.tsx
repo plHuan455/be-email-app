@@ -192,14 +192,16 @@ const EmailForward: React.FC<Props> = ({
     const emailData = getAll();
     if (canSubmit) {
       const res = await sendEmail({
-        subject: emailData.subject,
-        to: emailData.receivers.map((item) => item.mail),
-        content: emailData.content,
-        html_string: emailData.content,
-        from: currentUserEmail ? currentUserEmail : '',
-        cc: emailData.cc.map((item) => item.mail),
-        bcc: emailData.bcc.map((item) => item.mail),
-        file: emailData.file,
+        email: {
+          subject: emailData.subject,
+          to: emailData.receivers.map((item) => item.mail),
+          content: emailData.content,
+          html_string: emailData.content,
+          from: currentUserEmail ? currentUserEmail : '',
+          cc: emailData.cc.map((item) => item.mail),
+          bcc: emailData.bcc.map((item) => item.mail),
+          file: emailData.file,
+        },
       });
       toast.success(`Thành công!`);
       await reset();

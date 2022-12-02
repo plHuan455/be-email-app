@@ -11,14 +11,17 @@ import { AttachFile } from '@components/organisms/EmailMess';
 // }
 
 export interface CreateEmailParam {
-  subject: string;
-  to: string[];
-  from: string;
-  content: string;
-  html_string: string;
-  cc: string[];
-  bcc: string[];
-  file: any[];
+  email: {
+    subject: string;
+    to: string[];
+    from: string;
+    content: string;
+    html_string: string;
+    cc: string[];
+    bcc: string[];
+    file: any[];
+  };
+  send_at?: string | null;
 }
 
 export interface EmailResponse {
@@ -34,6 +37,12 @@ export interface EmailResponse {
   writer_id: number;
   attachFiles?: AttachFile[];
   created_at: string;
+}
+
+export interface EmailDeleteResponse {
+  code?: string;
+  data?: null;
+  message?: string;
 }
 
 //GET EMAIL WITH STATUS
@@ -89,8 +98,8 @@ export const sendEmail = async (
 //DELETE EMAIL
 export const deleteEmail = async (
   id: string,
-): Promise<AxiosResponse<EmailResponse>> => {
+): Promise<AxiosResponse<EmailDeleteResponse>> => {
   const url = EMAIL_API_URL;
   const res = await ApiClient.delete(`${url}/${id}`, undefined);
-  return res;
+  return res.data;
 };

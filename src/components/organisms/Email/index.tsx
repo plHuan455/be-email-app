@@ -4,7 +4,7 @@ import React, { ReactNode, useCallback, useEffect, useState } from 'react';
 import avatarImg from '@assets/images/avatars/avatar-2.jpg';
 import { Email, UserInfo } from './Interface';
 import EmailMess from '../EmailMess';
-import { getAllEmail, getEmailWithQueryParam } from '@api/email';
+import { deleteEmail, getAllEmail, getEmailWithQueryParam } from '@api/email';
 
 import { isEmpty } from 'lodash';
 import EmailMessEmpty from '../EmailMessEmpty';
@@ -19,6 +19,7 @@ import {
 } from '@redux/Email/reducer';
 import ModalBase from '@components/atoms/ModalBase';
 import { useParams } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 interface ModalForm {
   title: string;
@@ -175,15 +176,25 @@ const Email: React.FC<Props> = () => {
             content: (
               <p>Nếu bấm có, Email này sẽ bị xóa khỏi danh sách email của bạn.</p>
             ),
-            onSubmit() {
+            onSubmit: async () => {
               const cloneEmailsList = [...EmailsList];
 
-              const deletedEmail = cloneEmailsList.splice(index, 1);
+              const emailId = `${cloneEmailsList[index].id}`;
 
-              dispatch(addDeletedEmail(deletedEmail));
-              dispatch(setEmailsList(cloneEmailsList));
+              const res = await deleteEmail(emailId);
 
-              handleCloseModal();
+              if (res.message === 'success') {
+                const deletedEmail = cloneEmailsList.splice(index, 1);
+
+                dispatch(addDeletedEmail(deletedEmail));
+                dispatch(setEmailsList(cloneEmailsList));
+
+                handleCloseModal();
+
+                toast.success('Xóa thành công!');
+              } else {
+                toast.error('Có lỗi xảy ra');
+              }
             },
           }));
           setIsOpenModal(true);

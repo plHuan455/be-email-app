@@ -1,7 +1,7 @@
 import { SingleOTPInputComponent } from '@components/atoms/Input/PinInput/SingleInput';
 import Receiver from '@components/atoms/Receiver';
 import WindowComposeActions from '@components/molecules/WindowComposeActions';
-import { Box, Button } from '@mui/material';
+import { Box, Button, TextField } from '@mui/material';
 
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 import SendIcon from '@mui/icons-material/Send';
@@ -33,15 +33,18 @@ import {
   MESSAGE_SEND_EMAIL_SUCCESSFUL,
 } from '@constants/EmailAPI';
 import { useNavigate } from 'react-router-dom';
+import dayjs, { Dayjs } from 'dayjs';
+import ModalBase from '@components/atoms/ModalBase';
+import DateTimePicker from '@components/atoms/DateTimePicker';
 
 const fromData: UserInfo[] = [new UserInfo(avatarImg, 'sender', 'sender@gmail.com')];
 
 const receiversList: UserInfo[] = [
-  new UserInfo(avatarImg, 'Giang', 'giangz0009@begmail.com'),
+  new UserInfo(avatarImg, 'Giang', 'giang@begmail.space'),
   new UserInfo(
     'https://vcdn1-vnexpress.vnecdn.net/2022/10/28/-5369-1666951215.jpg?w=0&h=0&q=100&dpr=2&fit=crop&s=RzncK6dCQpia2MrWYaQJ8g',
     'Elon Musk',
-    'elonmusk@bemail.com',
+    'giang1@bemail.space',
   ),
   new UserInfo(avatarImg, 'Ri Đỗ Sa Tị', 'usertest@bemail.com'),
 ];
@@ -51,6 +54,11 @@ function EmailCompose() {
   const [attachFiles, setAttachFiles] = useState<any>([]);
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
   const [isShowCcFrom, setIsShowCcFrom] = useState(false);
+  const [valueCalendar, setValueCalendar] = useState<Dayjs | null>(
+    dayjs(Date.now()),
+  );
+  const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
+
   const refInputAttachFile = useRef<HTMLInputElement>(null);
   const { t } = useTranslation();
   const currentUserEmail = localStorage.getItem('current_email')
@@ -87,6 +95,15 @@ function EmailCompose() {
   }, []);
 
   const navigate = useNavigate();
+
+  const onCloseModal = () => {
+    setIsOpenModal(false);
+  };
+
+  const onChangeCalendar = useCallback(
+    (value) => setValueCalendar(value),
+    [valueCalendar],
+  );
 
   const handleClickCcFromLabel = useCallback(() => {
     setIsShowCcFrom((preState) => !preState);
@@ -175,37 +192,48 @@ function EmailCompose() {
     setBcc(newValue);
   }, []);
 
-  const handleOnClickSubmitCompose = async () => {
-    const checkData = await check();
-    const emailData = getAll();
-    if (checkData) {
-      const params: CreateEmailParam = {
-        subject: emailData.subject,
-        to: emailData.receivers.map((item) => item.mail),
-        content: 'asdasdasdasd',
-        html_string: emailData.content,
-        from: currentUserEmail ? currentUserEmail : '',
-        cc: emailData.cc.map((item) => item.mail),
-        bcc: emailData.bcc.map((item) => item.mail),
-        file: [],
-      };
-      const res = await sendEmail(params);
-      console.log(
-        '🚀 ~ file: index.tsx ~ line 180 ~ handleOnClickSubmitCompose ~ res',
-        res,
-      );
-      if (res.statusText == 'OK') {
-        toast.success(MESSAGE_SEND_EMAIL_SUCCESSFUL);
-        reset();
-        navigate(-1);
-        return;
-      } else {
-        reset();
-        return toast.error(MESSAGE_SEND_EMAIL_FAILED);
+  const handleOnClickSubmitCompose =
+    (typeSend: 'SendNow' | 'SendTimer') => async () => {
+      const checkData = await check();
+      const emailData = getAll();
+
+      if (checkData) {
+        const email = {
+          subject: emailData.subject,
+          to: emailData.receivers.map((item) => item.mail),
+          content: 'asdasdasdasd',
+          html_string: emailData.content,
+          from: currentUserEmail ? currentUserEmail : '',
+          cc: emailData.cc.map((item) => item.mail),
+          bcc: emailData.bcc.map((item) => item.mail),
+          file: [],
+        };
+
+        const params: CreateEmailParam = {
+          email: email,
+          send_at: typeSend === 'SendTimer' ? valueCalendar?.toISOString() : null,
+          // send_at: '2022-11-28 10:12:25',
+          //2022-12-01 16:08:15
+        };
+        const res = await sendEmail(params);
+        console.log(
+          '🚀 ~ file: index.tsx ~ line 180 ~ handleOnClickSubmitCompose ~ res',
+          res,
+        );
+        if (res.statusText == 'OK') {
+          toast.success(MESSAGE_SEND_EMAIL_SUCCESSFUL);
+          reset();
+          setIsOpenModal(false);
+          navigate(-1);
+          return;
+        } else {
+          reset();
+          setIsOpenModal(false);
+          return toast.error(MESSAGE_SEND_EMAIL_FAILED);
+        }
       }
-    }
-    return toast.error('*Vui lòng nhập người nhận!');
-  };
+      return toast.error('*Vui lòng nhập người nhận!');
+    };
 
   const onEditorStateChange = (val) => {
     setContent(draftToHtml(convertToRaw(editorState.getCurrentContent())));
@@ -214,11 +242,6 @@ function EmailCompose() {
       'state -->',
       JSON.stringify(draftToHtml(convertToRaw(editorState.getCurrentContent()))),
     );
-
-    // const test = convertToRaw(editorState.getCurrentContent()).blocks.map(
-    //   (item) => item.text,
-    // );
-    // console.log('state --> test', test);
   };
 
   return (
@@ -324,11 +347,22 @@ function EmailCompose() {
         </Box>
       </Box>
       {/* Footer */}
-      <Box className="p-6 bg-[#F1F1F6]">
+      <Box className="p-6 bg-[#F1F1F6] flex items-center">
         {/* manipulation */}
-        <Box></Box>
+        <Box>
+          <CustomButton
+            padding="8px 10px"
+            label="SEND TIMER"
+            bgButtonColor="#554CFF"
+            color="#fff"
+            textSize={15}
+            isBeforeIcon={true}
+            beforeIcon={<TableViewIcon fontSize="small" />}
+            onClick={(e) => setIsOpenModal(true)}
+          />
+        </Box>
         {/* Actions */}
-        <Box className="flex justify-end items-center">
+        <Box className="flex justify-end items-center flex-1">
           <UseTemplateButton />
           {/* <Tooltip title="Insert link"> */}
           <Button
@@ -357,10 +391,18 @@ function EmailCompose() {
             beforeIcon={<SendIcon fontSize="small" />}
             isAfterIcon={true}
             afterIcon={<TableViewIcon fontSize="small" />}
-            onClick={handleOnClickSubmitCompose}
+            onClick={handleOnClickSubmitCompose('SendNow')}
           />
         </Box>
       </Box>
+      <ModalBase
+        title="Set Time To Send"
+        isOpen={isOpenModal}
+        onClose={onCloseModal}
+        submitLabel="Send"
+        onSubmit={handleOnClickSubmitCompose('SendTimer')}>
+        <DateTimePicker value={valueCalendar} setValueCalendar={onChangeCalendar} />
+      </ModalBase>
     </Box>
   );
 }

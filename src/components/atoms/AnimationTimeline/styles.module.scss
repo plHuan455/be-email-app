@@ -3,13 +3,8 @@
   animation-fill-mode: forwards;
   animation-iteration-count: infinite;
   animation-timing-function: linear;
-  background: #f6f7f8;
-  background: linear-gradient(
-    to right,
-    rgba(0, 0, 0, 0.1) 8%,
-    rgba(255, 255, 255, 0.1) 18%,
-    rgba(0, 0, 0, 0.1) 33%
-  );
+  background: rgba(0, 0, 0, 0.1);
+
   background-size: cover;
   position: relative;
 
@@ -17,6 +12,12 @@
 
   text-indent: -9999999999px;
   &.animationActive {
+    background: linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0.1) 8%,
+      rgba(255, 255, 255, 0.1) 18%,
+      rgba(0, 0, 0, 0.1) 33%
+    );
     animation-name: placeHolderShimmer;
   }
 }

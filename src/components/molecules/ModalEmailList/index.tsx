@@ -129,13 +129,13 @@ const ModalEmailList = (props: Props) => {
           </Tabs>
         </Box>
         <TabPanel value={value} index={0}>
+          Item Tab All
+        </TabPanel>
+        <TabPanel value={value} index={1}>
           {emailsData &&
             emailsData.data.map((email, index) => (
               <EmailItem emailData={email} key={index} />
             ))}
-        </TabPanel>
-        <TabPanel value={value} index={1}>
-          Item Two
         </TabPanel>
       </Box>
     );

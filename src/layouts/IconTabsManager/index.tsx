@@ -10,9 +10,10 @@ import { styled } from '@mui/material/styles';
 import logo from '../../assets/images/logo_without_text.png';
 import { Box } from '@mui/material';
 import { SVGIconProps } from '@components/atoms/Icon';
-import { sideBarRouter } from '@page/MainRoute';
 import { RenderButtonIcon } from '@components/molecules/EmailActions';
 import { RouteObject, useLocation, useNavigate } from 'react-router-dom';
+import ManagerAccount from '@assets/icon/ManagerAccount';
+import Department from '@assets/icon/Department';
 
 export interface TabItem {
   title?: string;
@@ -21,32 +22,22 @@ export interface TabItem {
   icon?: React.ReactElement;
 }
 
-// const TabsData: TabItem[] = [
-//   {
-//     logo: logo,
-//     url: '/',
-//   },
-//   {
-//     title: 'Email',
-//     icon: <EmailIcon />,
-//   },
-//   {
-//     title: 'Chats',
-//     icon: <ChatIcon />,
-//   },
-//   {
-//     title: 'Contact',
-//     icon: <PeopleIcon />,
-//   },
-//   {
-//     title: 'Call',
-//     icon: <DialpadIcon />,
-//   },
-//   {
-//     title: 'Book Mark',
-//     icon: <DonutSmallIcon />,
-//   },
-// ];
+const TabsData: TabItem[] = [
+  {
+    logo: logo,
+    url: '/',
+  },
+  {
+    title: 'Department',
+    icon: <Department />,
+    url: '/manager/department',
+  },
+  {
+    title: 'Settings',
+    icon: <ManagerAccount />,
+    url: '/manager/setting',
+  },
+];
 
 const iconsList: {
   [key: string]: SVGIconProps['icon'];
@@ -68,10 +59,12 @@ const MyTabs = styled(Tabs)`
   & .MuiButtonBase-root {
     padding-block: 24px;
     min-width: 100%;
-    & .MuiSvgIcon-root {
+    & .MuiSvgIcon-root,
+    & svg {
       position: relative;
       z-index: 1;
     }
+
     & .MuiTouchRipple-root {
       opacity: 0;
       visibility: hidden;
@@ -98,29 +91,21 @@ const MyTabs = styled(Tabs)`
   }
 `;
 
-export default function IconTabs() {
+export default function IconTabsManager() {
   const [value, setValue] = React.useState(0);
 
   const navigate = useNavigate();
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
-    navigate(sideBarRouter[newValue - 1].path || '/');
+    navigate(TabsData[newValue - 1].url || '/');
   };
 
   const renderTabsData = () => {
-    if (!sideBarRouter) return [];
+    if (!TabsData) return [];
 
-    return sideBarRouter.map((val, index) => {
-      return (
-        <Tab
-          key={index}
-          icon={
-            <RenderButtonIcon item={val.path ? iconsList[val.path] : 'approved'} />
-          }
-          aria-label={val.path ? String(val.path.split('/').pop()).capitalize() : ''}
-        />
-      );
+    return TabsData.map((val, index) => {
+      return <Tab key={index} icon={val.icon} aria-label={val.title} />;
     });
   };
 
@@ -136,14 +121,9 @@ export default function IconTabs() {
           alignItems: 'center',
           justifyContent: 'center',
           padding: '24px 0',
+          cursor: 'pointer',
         }}>
-        <Box
-          className="cursor-pointer"
-          component={'img'}
-          src={logo}
-          alt="logo"
-          onClick={() => navigate('/')}
-        />
+        <Box component={'img'} src={logo} alt="logo" onClick={() => navigate('/')} />
       </Box>
       {renderTabsData()}
     </MyTabs>
