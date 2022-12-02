@@ -20,6 +20,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { getPermissions } from '@api/permission';
 import { toast } from 'react-toastify';
 import CreatePermissionFormModal, { CreatePermissionFields } from './CreatePermissionFormModal';
+import { rem } from '@utils/functions';
 
 const responsePermissionsData: PermissionResponse[] = [
   {
@@ -188,6 +189,9 @@ const SettingRolesContainer = () => {
         <Tabs
           className="tableManagerTabs"
           value={value}
+          variant="scrollable"
+          scrollButtons="auto"
+          sx={{maxWidth: `calc(100% - ${rem(342)})`, minHeight: 'auto'}}
           onChange={handleChange}
           aria-label="disabled tabs example">
           {!isEmpty(headerTabData?.data) &&
