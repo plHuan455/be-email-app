@@ -17,4 +17,12 @@
   & .MuiTabs-indicator {
     display: none;
   }
+
+  & .MuiTabScrollButton-root {
+    border-radius: 50%;
+  }
+
+  & .MuiTabScrollButton-root.Mui-disabled {
+    opacity: 0.25;
+  }
 }
