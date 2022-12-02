@@ -1,12 +1,12 @@
 import LoadingButton from '@mui/lab/LoadingButton';
-import AvatarInput from "@components/atoms/Input/AvatarInput";
-import SelectInput, { OptionTypes } from "@components/atoms/Input/SelectInput";
-import ValidateInput from "@components/atoms/Input/ValidateInput";
-import ModalBase from "@components/atoms/ModalBase"
-import { Button, Grid } from "@mui/material";
-import { rem } from "@utils/functions";
-import { Controller, FormProvider, UseFormReturn } from "react-hook-form";
-import styled from "styled-components";
+import AvatarInput from '@components/atoms/Input/AvatarInput';
+import SelectInput, { OptionTypes } from '@components/atoms/Input/SelectInput';
+import ValidateInput from '@components/atoms/Input/ValidateInput';
+import ModalBase from '@components/atoms/ModalBase';
+import { Button, Grid } from '@mui/material';
+import { rem } from '@utils/functions';
+import { Controller, FormProvider, UseFormReturn } from 'react-hook-form';
+import styled from 'styled-components';
 
 export interface AddEmployeeField {
   avatar: File;
@@ -19,7 +19,7 @@ export interface AddEmployeeField {
   department: string;
 }
 interface AddEmployeeModalProps {
-  method: UseFormReturn<AddEmployeeField>
+  method: UseFormReturn<AddEmployeeField>;
   isOpen: boolean;
   isFormLoading: boolean;
   title: string;
@@ -45,7 +45,7 @@ const StyleButtonWrapper = styled.div`
 const StyleModalWrapper = styled.div`
   height: calc(100vh - ${rem(110)});
   overflow: auto;
-`
+`;
 
 function AddEmployeeModal({
   method,
@@ -55,7 +55,7 @@ function AddEmployeeModal({
   roleList,
   departmentList,
   onClose,
-  onSubmit
+  onSubmit,
 }: AddEmployeeModalProps) {
   return (
     <ModalBase
@@ -63,22 +63,23 @@ function AddEmployeeModal({
       title={title}
       style={{ width: '90%' }}
       onClose={onClose}
-      submitLabel=""
-    >
+      submitLabel="">
       <FormProvider {...method}>
         <StyleModalWrapper>
-          <form className="o-tableManagerEmployee_form" onSubmit={method.handleSubmit(onSubmit)}>
+          <form
+            className="o-tableManagerEmployee_form"
+            onSubmit={method.handleSubmit(onSubmit)}>
             <Grid container spacing={4}>
               <Grid item xs={12}>
                 <Controller
                   name="avatar"
                   render={({ field: { value, onChange }, fieldState }) => (
-                    <InputWrapper
-                      onChange={onChange}
-                    >
+                    <InputWrapper onChange={onChange}>
                       <AvatarInput
                         id="create-employee-avatar-field"
-                        onChange={(data) => { onChange(data) }}
+                        onChange={(data) => {
+                          onChange(data);
+                        }}
                       />
                     </InputWrapper>
                   )}
@@ -147,7 +148,8 @@ function AddEmployeeModal({
                       value={value}
                       onChange={onChange}
                       label="Role"
-                      options={roleList} />
+                      options={roleList}
+                    />
                   )}
                 />
               </Grid>
@@ -159,7 +161,8 @@ function AddEmployeeModal({
                       value={value}
                       onChange={onChange}
                       label="Department"
-                      options={departmentList} />
+                      options={departmentList}
+                    />
                   )}
                 />
               </Grid>
@@ -212,16 +215,15 @@ function AddEmployeeModal({
                       paddingTop: '0.75rem',
                       paddingBottom: '0.75rem',
                       '&:hover': {
-                        backgroundColor: 'rgb(59, 53, 178)'
+                        backgroundColor: 'rgb(59, 53, 178)',
                       },
-                      '.MuiLoadingButton-loading':{
-                        color: '#ffffff'
-                      }
+                      '.MuiLoadingButton-loading': {
+                        color: '#ffffff',
+                      },
                     }}
                     className="button-create-mui"
                     fullWidth
-                    type="submit"
-                  >
+                    type="submit">
                     Create employee
                   </LoadingButton>
                 </StyleButtonWrapper>
@@ -231,7 +233,7 @@ function AddEmployeeModal({
         </StyleModalWrapper>
       </FormProvider>
     </ModalBase>
-  )
+  );
 }
 
-export default AddEmployeeModal
+export default AddEmployeeModal;

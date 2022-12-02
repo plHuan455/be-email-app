@@ -88,7 +88,7 @@ function MainWrapper() {
       id: 1,
       label: 'Profile',
       path: '/profile',
-      handleClick: handleLogout,
+      handleClick: handleChangePage('/profile'),
     },
     {
       id: 2,

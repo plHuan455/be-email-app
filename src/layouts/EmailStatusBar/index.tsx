@@ -7,7 +7,7 @@ import { TabItem } from '@layouts/IconTabs';
 import { Avatar, Box, ButtonBase, Tab, Tabs, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import avt from '../../../src/assets/images/avatars/avatar-1.jpg';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   TitleOfInformationBlock,
   UserName,
@@ -20,6 +20,7 @@ import { useNavigate } from 'react-router-dom';
 import SingleOTPInput from '@components/atoms/Input/PinInput/SingleInput';
 import Hashtag from '@components/atoms/Hashtag';
 import { toast } from 'react-toastify';
+import { getAllEmailTags } from '@api/email';
 
 type Props = {};
 
@@ -152,6 +153,16 @@ const EmailStatusBar = (props: Props) => {
       emailData: emailData,
     },
   ]);
+
+  useEffect(() => {
+    try {
+      const res = getAllEmailTags().then((res) => {
+        console.log(res);
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }, []);
 
   const handleChangeEmailTabsNotiNumber = useCallback(
     (index, number) => {
