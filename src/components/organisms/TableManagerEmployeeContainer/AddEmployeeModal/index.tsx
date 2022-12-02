@@ -74,12 +74,10 @@ function AddEmployeeModal({
                 <Controller
                   name="avatar"
                   render={({ field: { value, onChange }, fieldState }) => (
-                    <InputWrapper onChange={onChange}>
+                    <InputWrapper>
                       <AvatarInput
                         id="create-employee-avatar-field"
-                        onChange={(data) => {
-                          onChange(data);
-                        }}
+                        onChange={(data) => onChange(data)}
                       />
                     </InputWrapper>
                   )}

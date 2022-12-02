@@ -52,19 +52,18 @@ export const getAllUser = async (): Promise<AxiosResponse<UserResponse[]>> => {
 // UP LOAD FILE
 
 // CREATE EMPLOYEE
-export const createEmployee = async (query: CreateEmployeeParams) => {
+export const createEmployee = async (params: CreateEmployeeParams) => {
   const url = USER__API;
-  const urlUpload = UPLOAD_FILE;
-  const dataTemp = new FormData();
-  dataTemp.append('avatar', query.avatar);
-  dataTemp.append('user_name', query.username);
-  dataTemp.append('email', query.email);
-  dataTemp.append('password', query.password);
-  dataTemp.append('phone_number', query.phone);
-  dataTemp.append('position', query.position);
-  dataTemp.append('role_id', query.role);
-  dataTemp.append('department_id', query.department);
-
-  const res = await ApiClient.postFormData(url, dataTemp);
+  const cloneParams = {
+    avatar: params.avatar,
+    email: params.email,
+    password: params.password,
+    position: params.position,
+    user_name: params.username,
+    department_id: Number(params.department),
+    role_id: Number(params.role),
+    phone_number: params.phone,
+  }
+  const res = await ApiClient.post(url, undefined, cloneParams);
   return res.data;
 };

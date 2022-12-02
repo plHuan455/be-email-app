@@ -10,5 +10,4 @@ export const createEmployeeSchema = yup.object({
   role: yup.string().required(),
   department: yup.string().required(),
   password: yup.string().required(),
-  avatar: yup.mixed()
 }).required();

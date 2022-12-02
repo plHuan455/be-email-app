@@ -79,7 +79,6 @@ const AvatarInput: React.FC<AvatarInputProps> = ({
     }
 
     setPreViewImgSrc('');
-    return undefined;
   };
 
   useEffect(() => {
@@ -106,7 +105,7 @@ const AvatarInput: React.FC<AvatarInputProps> = ({
       hidden
       id={id} 
       onChange={handleChange} 
-      accept=".jpeg, .jpg, .gif, .tiff, .psd, .pdf, .eps"
+      accept="image/*"
     >
     </input>
   </div>

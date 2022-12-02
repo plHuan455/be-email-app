@@ -17,7 +17,7 @@ export const uploadFile = async (file: any) => {
   //     'content-type': 'multipart/form-data',
   //   },
   // };
-  const res = await ApiClient.postFile(`/image`, {}, 'file', file);
+  const res = await ApiClient.postFile(`/api/app/image`, {}, 'file', file);
 
   return res.data;
 };
