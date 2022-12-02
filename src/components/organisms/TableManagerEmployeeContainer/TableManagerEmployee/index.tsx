@@ -120,6 +120,13 @@ const TableManagerEmployee: React.FC<Props> = ({ data }) => {
                 fontSize: 14,
               }}>{`${data.length} employees in total`}</TableCell>
           </TableRow>
+          <TableRow>
+            <TableCell align="left">Avatar</TableCell>
+            <TableCell align="left">Name</TableCell>
+            <TableCell align="left">Email</TableCell>
+            <TableCell align="left">Position</TableCell>
+            <TableCell align="left">Role</TableCell>
+          </TableRow>
         </TableHead>
         <TableBody>
           {(rowsPerPage > 0

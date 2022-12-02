@@ -16,6 +16,8 @@ const StyleLabelWrapper = styled.label`
 
     label {
       position: relative;
+      height: ${rem(100)};
+      height: ${rem(100)};
     }
 
     .MuiAvatar-root {
@@ -30,6 +32,8 @@ const StyleIcon = styled.div`
   justify-content: center;
   align-items: center;
   position: absolute;
+  height: ${rem(100)};
+  width: ${rem(100)};
   top: 0;
   bottom: 0;
   left: 0;
@@ -37,6 +41,7 @@ const StyleIcon = styled.div`
   border-radius: 50%;
   background-color: rgba(0, 0, 0, 0.25);
   transition: background-color .25s linear;
+  cursor: pointer;
 
   &:hover {
     background-color: rgba(0, 0, 0, 0.5);
@@ -87,8 +92,8 @@ const AvatarInput: React.FC<AvatarInputProps> = ({
 
   return <div className="a-avatarInput">
     <StyleLabelWrapper >
-      <label htmlFor={id} className="h-15">
-        <Avatar src={preViewImgSrc} className="h-15" />
+      <label htmlFor={id}>
+        <Avatar src={preViewImgSrc}/>
         <StyleIcon>
           <CameraAltIcon sx={{
             fontSize: '2rem',

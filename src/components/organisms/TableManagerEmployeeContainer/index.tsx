@@ -205,7 +205,7 @@ const TableManagerEmployeeContainer = () => {
   return (
     <div>
       <TableHeader
-        isHaveActions={false}
+        isHaveActions={true}
         plusButtonTitle="Add employee"
         onPlusClick={() => setIsShowEmployee(true)}>
         <Tabs className="tableManagerTabs" value={value} onChange={handleChange}>

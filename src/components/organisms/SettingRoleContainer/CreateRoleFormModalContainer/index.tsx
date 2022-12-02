@@ -2,8 +2,9 @@ import { createRole } from "@api/role";
 import ValidateInput from "@components/atoms/Input/ValidateInput";
 import ModalBase from "@components/atoms/ModalBase"
 import { yupResolver } from "@hookform/resolvers/yup";
+import LoadingButton from "@mui/lab/LoadingButton";
 import { Button, Grid } from "@mui/material";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Controller, FormProvider, useForm, UseFormReturn } from "react-hook-form";
 import { toast } from "react-toastify";
 import styled from "styled-components";
@@ -25,34 +26,43 @@ const InputWrapper = styled.div`
   }
 `;
 
+const StyleButtonWrapper = styled.div`
+  & .MuiLoadingButton-loading {
+    color: #ffffff;
+    opacity: 0.7;
+  }
+`;
 
 const createSettingSchema = yup.object({
   name: yup.string().required(),
 }).required();
 
 const CreateRoleFormModalContainer: React.FC<CreateRoleFormModalContainerProps> = ({ isOpen, title, onClose }) => {
+  const queryClient = useQueryClient();
+
   const method = useForm<CreateRoleFields>({
     defaultValues: {
       name: '',
     },
     resolver: yupResolver(createSettingSchema)
   })
-  
-  const {mutate: createRoleMutate} = useMutation({
+
+  const { mutate: createRoleMutate, isLoading: isCreateRoleLoading } = useMutation({
     mutationKey: ['setting-role-create-role'],
     mutationFn: (query: { name: string }) => createRole(query),
     onSuccess: (data) => {
       toast.success('Role is created');
+      queryClient.invalidateQueries({ queryKey: ['setting-role-get-header-tabs'] });
     },
     onError: (err: any) => {
-      toast.error('role creation is failed')
+      toast.error(err?.response?.data?.message ?? 'role creation is failed')
     }
   });
 
   const handleSubmit = (values) => {
     createRoleMutate(values);
   }
-  
+
   return (
     <ModalBase
       isOpen={isOpen}
@@ -84,7 +94,29 @@ const CreateRoleFormModalContainer: React.FC<CreateRoleFormModalContainerProps> 
               />
             </Grid>
             <Grid item xs={12}>
-              <Button className="button-create-mui" fullWidth type="submit">Create role</Button>
+              <StyleButtonWrapper>
+                <LoadingButton
+                  loading={isCreateRoleLoading}
+                  loadingPosition="end"
+                  sx={{
+                    backgroundColor: '#554CFF',
+                    color: '#ffffff',
+                    paddingTop: '0.75rem',
+                    paddingBottom: '0.75rem',
+                    '&:hover': {
+                      backgroundColor: 'rgb(59, 53, 178)'
+                    },
+                    '.MuiLoadingButton-loading': {
+                      color: '#ffffff'
+                    }
+                  }}
+                  className="button-create-mui"
+                  fullWidth
+                  type="submit"
+                >
+                  Create employee
+                </LoadingButton>
+              </StyleButtonWrapper>
             </Grid>
           </Grid>
         </form>
