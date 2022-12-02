@@ -9,7 +9,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { getRole } from '@api/role';
 import { createEmployeeSchema } from '@utils/schemas';
 import { getDepartments } from '@api/deparment';
-import { createEmployee } from '@api/user';
+import { createEmployee, getAllUser } from '@api/user';
 import { toast } from 'react-toastify';
 
 const rows = [
@@ -114,6 +114,12 @@ const TableManagerEmployeeContainer = () => {
     }
   })
 
+  const {data: employeeData} = useQuery({
+    queryKey: ['table-manager-employee-get-employee'],
+    queryFn: getAllUser,
+  });
+
+  // To fill create form in select input
   const {data: roleData} = useQuery({
     queryKey: ['table-manager-employee-get-role'],
     queryFn: getRole,
@@ -122,9 +128,9 @@ const TableManagerEmployeeContainer = () => {
         method.setValue('role', String(res.data[0].id))
       }
     },
-    enabled: isShowAddEmployee,
   });
 
+  // To fill create form in select input
   const {data: departmentData}  = useQuery({
     queryKey: ['table-manager-employee-get-department'],
     queryFn: getDepartments,
@@ -146,6 +152,23 @@ const TableManagerEmployeeContainer = () => {
     value: String(value.id)
   })), [departmentData]);
 
+  const convertedEmployeeList = useMemo(() => {
+    if(!roleData?.data) return undefined;
+
+    const roleHash: {[key: number]: string} = {};
+    roleData.data.forEach(value => {
+      roleHash[value.id] = value.name;
+    });
+
+    return employeeData?.data.map(value => new Manager(
+      value.avatar,
+      value.user_name,
+      value.email,
+      value.position,
+      roleHash[value.role] ?? '',
+    )).sort((a, b) => (a.name < b.name ? -1 : 1));
+  }, [employeeData, roleData]);
+
   const handleSubmit = (values: AddEmployeeField) => {
     createEmployeeMutate(values);
   }
@@ -153,7 +176,7 @@ const TableManagerEmployeeContainer = () => {
   return (
     <div>
       <TableHeader plusButtonTitle='Add employee' onPlusClick={() => setIsShowEmployee(true)}/>
-      <TableManagerEmployee data={rows} />
+      <TableManagerEmployee data={convertedEmployeeList ?? []} />
       <AddEmployeeModal
         isFormLoading={isCreateEmployeeLoading}
         method={method}

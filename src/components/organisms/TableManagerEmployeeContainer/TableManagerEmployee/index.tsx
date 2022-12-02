@@ -137,7 +137,7 @@ const TableManagerEmployee: React.FC<Props> = ({ data }) => {
                 <SingleAvatar
                   src={row.avatar}
                   abbreviations={row.getAbbreviations()}
-                  isAdminRole={row.role === 'Admin'}
+                  isAdminRole={row.role === 'ADMIN'}
                 />
               </TableCell>
               <TableCell className="managerName" align="left">

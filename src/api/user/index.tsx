@@ -19,9 +19,18 @@ export interface CreateUserParam {
   avatar: string;
 }
 export interface UserResponse {
-  user_name: string;
-  position: string;
   avatar: string;
+  contacts: any;
+  department_id: number;
+  email: string;
+  id: number;
+  mail_storage: string;
+  manager: number;
+  password: string;
+  phone_number: string;
+  position: string;
+  role: number;
+  user_name: string;
 }
 
 //GET EMAIL WITH STATUS
@@ -34,7 +43,7 @@ export const getUserWithEmail = async (
 };
 
 //GET ALL EMAIL
-export const getAllUser = async (): Promise<AxiosResponse<UserResponse>> => {
+export const getAllUser = async (): Promise<AxiosResponse<UserResponse[]>> => {
   const url = USER__API;
   const res = await ApiClient.get(url, undefined, {});
   return res.data;

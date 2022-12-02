@@ -8,7 +8,7 @@ export class Manager implements ManagerFunctions {
     public name: string,
     public mail: string,
     public position: string,
-    public role: 'Admin' | 'Employee' | 'Manager' | 'Manager 02' | 'Blocked',
+    public role: string,
   ) {}
 
   getAbbreviations() {
