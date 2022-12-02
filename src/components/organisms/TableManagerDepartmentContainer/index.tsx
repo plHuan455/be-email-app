@@ -1,13 +1,15 @@
 import TableHeader from '@components/molecules/TableManagerHeader';
-import React from 'react';
+import React, { useMemo } from 'react';
 import AddDepartmentModal, { AddDepartmentField } from './AddDepartmentModal';
 import TableManagerDepartment from './TableManagerDepartment';
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useMutation } from '@tanstack/react-query';
-import { createDepartment } from '@api/deparment';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { createDepartment, getDepartments } from '@api/deparment';
+import { Department, Manager } from '@page/Manager/interface';
 import { toast } from 'react-toastify';
+import { getRole } from '@api/role';
 
 interface TableManagerDepartmentContainerProps {
   isShowAddDepartmentModal?: boolean;
@@ -32,6 +34,41 @@ const TableManagerDepartmentContainer: React.FC<TableManagerDepartmentContainerP
     resolver: yupResolver(createDepartmentSchema)
   });
 
+  const {data: roleData} = useQuery({
+    queryKey: ['table-manager-employee-get-role'],
+    queryFn: getRole,
+  });
+
+  const { data: departmentData } = useQuery({
+    queryKey: ['table-manager-department-get-department'],
+    queryFn: getDepartments,
+  });
+
+  const departmentList = useMemo(() => {
+    if(!roleData?.data) return undefined;
+
+    const roleHash: {[key: number]: string} = {};
+    roleData.data.forEach(value => {
+      roleHash[value.id] = value.name;
+    });
+    
+    return departmentData?.data.map(
+      value => new Department(
+        value.name, 
+        value?.users?.length ?? 0,
+        value.address,
+        value?.users?.map(user => new Manager(
+          user.avatar,
+          user.user_name,
+          user.email,
+          user.position,
+          roleHash[user.role] ?? '',
+        )) ?? [],
+        value.description
+      )
+    )
+  }, [departmentData, roleData]);
+
   const { mutate: createDepartmentMutate, isLoading: isCreateDepartmentSubmitting } = useMutation({
     mutationKey: ['table-manager-department-create-department'],
     mutationFn: createDepartment,
@@ -50,7 +87,7 @@ const TableManagerDepartmentContainer: React.FC<TableManagerDepartmentContainerP
   return (
     <div>
       <TableHeader isHaveActions={false} />
-      <TableManagerDepartment />
+      <TableManagerDepartment departmentList={departmentList ?? []}/>
       <AddDepartmentModal 
         method={method}
         isOpen={Boolean(isShowAddDepartmentModal)} 
