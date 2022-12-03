@@ -16,9 +16,10 @@ import KeyboardArrowRight from '@mui/icons-material/KeyboardArrowRight';
 import LastPageIcon from '@mui/icons-material/LastPage';
 import SingleAvatar from '@components/atoms/SingleAvatar';
 import { Manager } from '@page/Manager/interface';
-import { TableHead } from '@mui/material';
+import { Button, TableHead } from '@mui/material';
 
 import './styles.scss';
+import { rem } from '@utils/functions';
 
 interface TablePaginationActionsProps {
   count: number;
@@ -126,6 +127,7 @@ const TableManagerEmployee: React.FC<Props> = ({ data }) => {
             <TableCell align="left">Email</TableCell>
             <TableCell align="left">Position</TableCell>
             <TableCell align="left">Role</TableCell>
+            <TableCell align="center">Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -158,6 +160,28 @@ const TableManagerEmployee: React.FC<Props> = ({ data }) => {
               </TableCell>
               <TableCell style={{ width: 100 }} align="left">
                 {row.role}
+              </TableCell>
+              <TableCell align="left">
+                <Box>
+                  <Button
+                    variant='text'
+                    sx={{
+                      color: 'red',
+                      fontSize: rem(12),
+                      padding: `${rem(4)} ${rem(12)}`,
+                    }}>
+                    Delete
+                  </Button>
+                  <Button
+                    variant='text'
+                    sx={{
+                      color: 'blue',
+                      fontSize: rem(12),
+                      padding: `${rem(4)} ${rem(12)}`,
+                    }}>
+                    Update
+                  </Button>
+                </Box>
               </TableCell>
             </TableRow>
           ))}
