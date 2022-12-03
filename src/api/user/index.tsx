@@ -2,7 +2,7 @@ import { EMAIL_API_URL } from './../../constants/EmailAPI/index';
 import { Receiver } from '@layouts/InformationBar';
 import ApiClient from '@api/ApiClient';
 import { AxiosResponse } from 'axios';
-import { GET__USER__API, USER__API } from '@constants/UserAPI';
+import { GET__USER__API, UPLOAD_FILE, USER__API } from '@constants/UserAPI';
 import { CreateEmployeeParams } from './interface';
 
 // export interface Receiver {}
@@ -49,9 +49,12 @@ export const getAllUser = async (): Promise<AxiosResponse<UserResponse[]>> => {
   return res.data;
 };
 
+// UP LOAD FILE
+
 // CREATE EMPLOYEE
 export const createEmployee = async (query: CreateEmployeeParams) => {
   const url = USER__API;
+  const urlUpload = UPLOAD_FILE;
   const dataTemp = new FormData();
   dataTemp.append('avatar', query.avatar);
   dataTemp.append('user_name', query.username);
@@ -62,6 +65,6 @@ export const createEmployee = async (query: CreateEmployeeParams) => {
   dataTemp.append('role_id', query.role);
   dataTemp.append('department_id', query.department);
 
-  const res = await ApiClient.postFormData(url, dataTemp )
+  const res = await ApiClient.postFormData(url, dataTemp);
   return res.data;
 };

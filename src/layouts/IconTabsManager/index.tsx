@@ -8,7 +8,7 @@ import { styled } from '@mui/material/styles';
 // import DialpadIcon from '@mui/icons-material/Dialpad';
 // import DonutSmallIcon from '@mui/icons-material/DonutSmall';
 import logo from '../../assets/images/logo_without_text.png';
-import { Box } from '@mui/material';
+import { Box, Tooltip } from '@mui/material';
 import { SVGIconProps } from '@components/atoms/Icon';
 import { RenderButtonIcon } from '@components/molecules/EmailActions';
 import { RouteObject, useLocation, useNavigate } from 'react-router-dom';
@@ -105,7 +105,11 @@ export default function IconTabsManager() {
     if (!TabsData) return [];
 
     return TabsData.map((val, index) => {
-      return <Tab key={index} icon={val.icon} aria-label={val.title} />;
+      return (
+        <Tooltip title={val.title} placement="right">
+          <Tab key={index} icon={val.icon} aria-label={val.title} />
+        </Tooltip>
+      );
     });
   };
 

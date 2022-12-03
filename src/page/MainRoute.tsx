@@ -25,6 +25,8 @@ import SettingRoles from './Settings/SettingsRoles';
 import EmailMessEmpty from '@components/organisms/EmailMessEmpty';
 import EmailCompose from '@components/organisms/EmailCompose';
 import Manager from './Manager';
+import ChangePassword from './ChangePassword';
+import UserProfile from './UserProfile';
 
 export const managerRouter: RouteObject[] = [
   {
@@ -79,6 +81,14 @@ export const sideBarRouter: RouteObject[] = [
   {
     path: '/bookmark',
     element: <HomePage />,
+  },
+  {
+    path: '/change-password',
+    element: <ChangePassword />,
+  },
+  {
+    path: '/profile',
+    element: <UserProfile />,
   },
 ];
 

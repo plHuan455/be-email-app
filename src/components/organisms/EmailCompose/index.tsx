@@ -257,7 +257,7 @@ function EmailCompose() {
           {/* Compose To */}
           <EmailComposeFormGroup label={'To:'}>
             <AutoCompleteReceive
-              data={receiversList}
+              data={[]}
               defaultValue={receivers}
               onClickCcFromLabel={handleClickCcFromLabel}
               onChange={handleChangeReceivers}
@@ -280,7 +280,7 @@ function EmailCompose() {
                 isHaveBorderBottom={false}>
                 <AutoCompleteReceive
                   isShowCcFromLabel={false}
-                  data={receiversList}
+                  data={[]}
                   defaultValue={cc}
                   onClickCcFromLabel={handleClickCcFromLabel}
                   onChange={handleChangeCc}
@@ -292,7 +292,7 @@ function EmailCompose() {
                 isHaveBorderBottom={false}>
                 <AutoCompleteReceive
                   isShowCcFromLabel={false}
-                  data={receiversList}
+                  data={[]}
                   defaultValue={bcc}
                   onClickCcFromLabel={handleClickCcFromLabel}
                   onChange={handleChangeBcc}

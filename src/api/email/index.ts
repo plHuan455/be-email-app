@@ -1,4 +1,7 @@
-import { EMAIL_API_URL } from './../../constants/EmailAPI/index';
+import {
+  EMAIL_API_URL,
+  EMAIL_MANAGER_API_URL,
+} from './../../constants/EmailAPI/index';
 import { Receiver } from '@layouts/InformationBar';
 import ApiClient, { ApiResponse } from '@api/ApiClient';
 import { AxiosResponse } from 'axios';
@@ -39,11 +42,26 @@ export interface EmailResponse {
   created_at: string;
 }
 
+export interface EmailTagsResponse {
+  tag: string;
+  count: number;
+}
+
 export interface EmailDeleteResponse {
   code?: string;
   data?: null;
   message?: string;
 }
+
+// GET ALL CUR EMAIL TAGS
+export const getAllEmailTags = async (): Promise<
+  AxiosResponse<EmailTagsResponse>
+> => {
+  const url = `${EMAIL_MANAGER_API_URL}/all`;
+  const res = await ApiClient.get(url);
+
+  return res.data;
+};
 
 //GET EMAIL WITH STATUS
 export const getEmailWithQueryParam = async (params?: {

@@ -88,7 +88,7 @@ function MainWrapper() {
       id: 1,
       label: 'Profile',
       path: '/profile',
-      handleClick: handleLogout,
+      handleClick: handleChangePage('/profile'),
     },
     {
       id: 2,
@@ -100,7 +100,7 @@ function MainWrapper() {
       id: 3,
       label: 'Change Password',
       path: '/change-password',
-      handleClick: handleLogout,
+      handleClick: handleChangePage('/change-password'),
     },
     {
       id: 4,
