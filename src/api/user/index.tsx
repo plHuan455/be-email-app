@@ -49,8 +49,6 @@ export const getAllUser = async (): Promise<AxiosResponse<UserResponse[]>> => {
   return res.data;
 };
 
-// UP LOAD FILE
-
 // CREATE EMPLOYEE
 export const createEmployee = async (query: CreateEmployeeParams) => {
   const url = USER__API;

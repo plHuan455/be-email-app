@@ -26,7 +26,8 @@ import EmailMessEmpty from '@components/organisms/EmailMessEmpty';
 import EmailCompose from '@components/organisms/EmailCompose';
 import Manager from './Manager';
 import ChangePassword from './ChangePassword';
-import UserProfile from './UserProfile';
+import UserProfile from '../layouts/UserProfile';
+import UserProfileContainer from './UserProfileContainer';
 
 export const managerRouter: RouteObject[] = [
   {
@@ -68,19 +69,19 @@ export const sideBarRouter: RouteObject[] = [
   },
   {
     path: '/chats',
-    element: <HomePage />,
+    element: <Navigate to={'/emails'} replace={true} />,
   },
   {
     path: '/contact',
-    element: <HomePage />,
+    element: <Navigate to={'/emails'} replace={true} />,
   },
   {
     path: '/call',
-    element: <HomePage />,
+    element: <Navigate to={'/emails'} replace={true} />,
   },
   {
     path: '/bookmark',
-    element: <HomePage />,
+    element: <Navigate to={'/emails'} replace={true} />,
   },
   {
     path: '/change-password',
@@ -88,7 +89,7 @@ export const sideBarRouter: RouteObject[] = [
   },
   {
     path: '/profile',
-    element: <UserProfile />,
+    element: <UserProfileContainer />,
   },
 ];
 

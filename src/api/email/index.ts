@@ -72,8 +72,8 @@ export const getEmailWithQueryParam = async (params?: {
   const url = `${EMAIL_API_URL}`;
   const res = await ApiClient.get(
     url,
-    { status: params?.status, mail: params?.mail, hashtag: params?.hashtag },
     {},
+    { status: params?.status, mail: params?.mail, hashtag: params?.hashtag },
   );
   return res.data;
 };

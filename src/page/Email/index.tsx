@@ -6,14 +6,6 @@ import { fetchToken, messaging, onMessageListener } from '@utils/NotifyRealtime'
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 
 const Email = () => {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        refetchOnWindowFocus: false,
-      },
-    },
-  });
-
   const [show, setShow] = useState<boolean>(false);
   const [notification, setNotification] = useState<{ title: string; body: string }>({
     title: '',
@@ -22,27 +14,25 @@ const Email = () => {
   const [isTokenFound, setTokenFound] = useState<boolean>(false);
   const [getFcmToken, setFcmToken] = useState<string>('');
 
-  fetchToken(setTokenFound, setFcmToken);
+  // fetchToken(setTokenFound, setFcmToken);
 
-  onMessageListener()
-    .then((payload: any) => {
-      console.log(`line 27`, payload);
+  // onMessageListener()
+  //   .then((payload: any) => {
+  //     console.log(`line 27`, payload);
 
-      setNotification({
-        title: payload.notification.title,
-        body: payload.notification.body,
-      });
-      setShow(true);
-    })
-    .catch((err) => console.log('failed', err));
+  //     setNotification({
+  //       title: payload.notification.title,
+  //       body: payload.notification.body,
+  //     });
+  //     setShow(true);
+  //   })
+  //   .catch((err) => console.log('failed', err));
 
   return (
     <div className="w-full flex items-center content-around">
-      <QueryClientProvider client={queryClient}>
-        <EmailStatusBar />
+      <EmailStatusBar />
 
-        <EmailMainWrapper />
-      </QueryClientProvider>
+      <EmailMainWrapper />
     </div>
   );
 };
