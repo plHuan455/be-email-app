@@ -17,7 +17,14 @@ export const uploadFile = async (file: any) => {
   //     'content-type': 'multipart/form-data',
   //   },
   // };
-  const res = await ApiClient.postFile(`/image`, {}, 'file', file);
+  const res = await ApiClient.postFile(`/api/file`, {}, 'file', file);
 
   return res.data;
 };
+
+// GET IMAGE LINK
+export const getImageUrl = async (fileName : string) => {
+  const url = '/api/file';
+  const res = await ApiClient.get(`${url}/${fileName}`);
+  return res.data;
+}

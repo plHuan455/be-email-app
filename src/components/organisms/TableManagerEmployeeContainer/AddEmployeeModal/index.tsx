@@ -9,7 +9,7 @@ import { Controller, FormProvider, UseFormReturn } from 'react-hook-form';
 import styled from 'styled-components';
 
 export interface AddEmployeeField {
-  avatar: File;
+  avatar?: File;
   username: string;
   email: string;
   password: string;
@@ -74,12 +74,10 @@ function AddEmployeeModal({
                 <Controller
                   name="avatar"
                   render={({ field: { value, onChange }, fieldState }) => (
-                    <InputWrapper onChange={onChange}>
+                    <InputWrapper>
                       <AvatarInput
                         id="create-employee-avatar-field"
-                        onChange={(data) => {
-                          onChange(data);
-                        }}
+                        onChange={(data) => onChange(data)}
                       />
                     </InputWrapper>
                   )}
