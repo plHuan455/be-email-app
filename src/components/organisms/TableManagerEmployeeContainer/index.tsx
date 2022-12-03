@@ -13,7 +13,7 @@ import { createEmployee, getAllUser } from '@api/user';
 import { toast } from 'react-toastify';
 import { Tab, Tabs } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { uploadFile } from '@api/uploadFile';
+import { getImageUrl, uploadFile } from '@api/uploadFile';
 
 
 const headerTabData = [
@@ -37,9 +37,9 @@ const TableManagerEmployeeContainer = () => {
       avatar: undefined,
       username: '',
       password: '',
-      phone: '',
+      phone: '0123456789',
       department: '',
-      email: '',
+      email: 'testemail@gmail.com',
       position: 'a',
       role: '',
     },
@@ -63,18 +63,26 @@ const TableManagerEmployeeContainer = () => {
     },
   });
 
+  // const {mutate: getImageUrlMutate} = useMutation({
+  //   mutationKey: ['table-manager-get-image-url'],
+  //   mutationFn: (data: AddEmployeeField & { avatarName: string }) => getImageUrl(data.avatarName),
+  //   onSuccess: (res, params) => {
+  //     return createEmployeeMutate({...params, avatar: res?.data})
+  //   }
+  // })
+
   const {mutate: uploadAvatarFileMutate, isLoading: isUploadingFile} = useMutation({
     mutationKey: ['table-manager-upload-file'],
     mutationFn: (data: AddEmployeeField) => {
       return uploadFile(data.avatar)
     },
     onSuccess: (res, params: AddEmployeeField) => {
-      createEmployeeMutate({...params, avatar: res?.data});
+      createEmployeeMutate({...params, avatar: res?.data ?? ''});
     },
     onError: () => {
       toast.error('Can\'t upload file');
     }
-  })
+  });
 
   const { data: roleData } = useQuery({
     queryKey: ['table-manager-employee-get-role'],
@@ -159,7 +167,6 @@ const TableManagerEmployeeContainer = () => {
         </Tabs>
       </TableHeader>
       <TableManagerEmployee data={convertedEmployeeList ?? []} />
-
       <AddEmployeeModal
         isFormLoading={isCreateEmployeeLoading || isUploadingFile}
         method={method}

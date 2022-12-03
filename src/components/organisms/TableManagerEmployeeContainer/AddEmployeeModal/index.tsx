@@ -9,7 +9,7 @@ import { Controller, FormProvider, UseFormReturn } from 'react-hook-form';
 import styled from 'styled-components';
 
 export interface AddEmployeeField {
-  avatar: File;
+  avatar?: File;
   username: string;
   email: string;
   password: string;
