@@ -22,6 +22,7 @@ import MuiThemeCustomization from '@themes';
 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 // const options = {
 //   // you can also just use 'bottom center'
@@ -36,6 +37,14 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 //   },
 // };
 
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false,
+    },
+  },
+});
+
 export default class App extends React.Component {
   render() {
     return (
@@ -46,7 +55,9 @@ export default class App extends React.Component {
             <LanguageProvider>
               <ProSidebarProvider>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
-                  <MainRoute />
+                  <QueryClientProvider client={queryClient}>
+                    <MainRoute />
+                  </QueryClientProvider>
                 </LocalizationProvider>
               </ProSidebarProvider>
             </LanguageProvider>

@@ -13,81 +13,8 @@ import { createEmployee, getAllUser } from '@api/user';
 import { toast } from 'react-toastify';
 import { Tab, Tabs } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
+import { getImageUrl, uploadFile } from '@api/uploadFile';
 
-const rows = [
-  new Manager('', 'adep adep', 'adep@adep.com', 'Marketing', 'Manager 02'),
-  new Manager(
-    '',
-    'Anh Nguyen The',
-    'theanh.nguyen@theanh.com',
-    'Front End',
-    'Admin',
-  ),
-  new Manager('', 'Anh Tran', 'anh.tran@test.com', 'Back End', 'Employee'),
-  new Manager('', 'Bùi Thùy Thị Minh', 'minhthuy.bui@test.com', 'CS', 'Manager'),
-  new Manager(
-    '',
-    'Bùi Phạn Hương Giang',
-    'huonggiang.bui@test.com',
-    'CS',
-    'Blocked',
-  ),
-  new Manager('', 'CSKH iBe', 'cskh', 'Front End', 'Employee'),
-  new Manager('', 'adep adep', 'adep@adep.com', 'Marketing', 'Manager 02'),
-  new Manager(
-    '',
-    'Anh Nguyen The',
-    'theanh.nguyen@theanh.com',
-    'Front End',
-    'Admin',
-  ),
-  new Manager('', 'Anh Tran', 'anh.tran@test.com', 'Back End', 'Employee'),
-  new Manager('', 'Bùi Thùy Thị Minh', 'minhthuy.bui@test.com', 'CS', 'Manager'),
-  new Manager(
-    '',
-    'Bùi Phạn Hương Giang',
-    'huonggiang.bui@test.com',
-    'CS',
-    'Blocked',
-  ),
-  new Manager('', 'CSKH iBe', 'cskh', 'Front End', 'Employee'),
-  new Manager('', 'adep adep', 'adep@adep.com', 'Marketing', 'Manager 02'),
-  new Manager(
-    '',
-    'Anh Nguyen The',
-    'theanh.nguyen@theanh.com',
-    'Front End',
-    'Admin',
-  ),
-  new Manager('', 'Anh Tran', 'anh.tran@test.com', 'Back End', 'Employee'),
-  new Manager('', 'Bùi Thùy Thị Minh', 'minhthuy.bui@test.com', 'CS', 'Manager'),
-  new Manager(
-    '',
-    'Bùi Phạn Hương Giang',
-    'huonggiang.bui@test.com',
-    'CS',
-    'Blocked',
-  ),
-  new Manager('', 'CSKH iBe', 'cskh', 'Front End', 'Employee'),
-  new Manager('', 'adep adep', 'adep@adep.com', 'Marketing', 'Manager 02'),
-  new Manager(
-    '',
-    'Anh Nguyen The',
-    'theanh.nguyen@theanh.com',
-    'Front End',
-    'Admin',
-  ),
-  new Manager('', 'Anh Tran', 'anh.tran@test.com', 'Back End', 'Employee'),
-  new Manager('', 'Bùi Thùy Thị Minh', 'minhthuy.bui@test.com', 'CS', 'Manager'),
-  new Manager(
-    '',
-    'Bùi Phạn Hương Giang',
-    'huonggiang.bui@test.com',
-    'CS',
-    'Blocked',
-  ),
-  new Manager('', 'CSKH iBe', 'cskh', 'Front End', 'Employee'),
-].sort((a, b) => (a.name < b.name ? -1 : 1));
 
 const headerTabData = [
   { id: 0, name: 'Department', url: '/manager/department/department' },
@@ -110,9 +37,9 @@ const TableManagerEmployeeContainer = () => {
       avatar: undefined,
       username: '',
       password: '',
-      phone: '',
-      department: 'Blocked',
-      email: '',
+      phone: '0123456789',
+      department: '',
+      email: 'testemail@gmail.com',
       position: 'a',
       role: '',
     },
@@ -125,17 +52,37 @@ const TableManagerEmployeeContainer = () => {
   });
 
   // To fill create form in select input
-  const { mutate: createEmployeeMutate, isLoading: isCreateEmployeeLoading } =
-    useMutation({
-      mutationKey: ['table-manager-create-employee'],
-      mutationFn: createEmployee,
-      onSuccess: () => {
-        toast.success('Employee is created');
-      },
-      onError: () => {
-        toast.error('Create employee failed');
-      },
-    });
+  const { mutate: createEmployeeMutate, isLoading: isCreateEmployeeLoading } = useMutation({
+    mutationKey: ['table-manager-create-employee'],
+    mutationFn: createEmployee,
+    onSuccess: () => {
+      toast.success('Employee is created');
+    },
+    onError: () => {
+      toast.error('Create employee failed');
+    },
+  });
+
+  // const {mutate: getImageUrlMutate} = useMutation({
+  //   mutationKey: ['table-manager-get-image-url'],
+  //   mutationFn: (data: AddEmployeeField & { avatarName: string }) => getImageUrl(data.avatarName),
+  //   onSuccess: (res, params) => {
+  //     return createEmployeeMutate({...params, avatar: res?.data})
+  //   }
+  // })
+
+  const {mutate: uploadAvatarFileMutate, isLoading: isUploadingFile} = useMutation({
+    mutationKey: ['table-manager-upload-file'],
+    mutationFn: (data: AddEmployeeField) => {
+      return uploadFile(data.avatar)
+    },
+    onSuccess: (res, params: AddEmployeeField) => {
+      createEmployeeMutate({...params, avatar: res?.data ?? ''});
+    },
+    onError: () => {
+      toast.error('Can\'t upload file');
+    }
+  });
 
   const { data: roleData } = useQuery({
     queryKey: ['table-manager-employee-get-role'],
@@ -199,7 +146,7 @@ const TableManagerEmployeeContainer = () => {
   }, [employeeData, roleData]);
 
   const handleSubmit = (values: AddEmployeeField) => {
-    createEmployeeMutate(values);
+    uploadAvatarFileMutate(values);
   };
 
   return (
@@ -220,9 +167,8 @@ const TableManagerEmployeeContainer = () => {
         </Tabs>
       </TableHeader>
       <TableManagerEmployee data={convertedEmployeeList ?? []} />
-
       <AddEmployeeModal
-        isFormLoading={isCreateEmployeeLoading}
+        isFormLoading={isCreateEmployeeLoading || isUploadingFile}
         method={method}
         isOpen={isShowAddEmployee}
         roleList={convertedRoleList ?? []}

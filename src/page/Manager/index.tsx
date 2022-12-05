@@ -24,19 +24,19 @@ const Manager = () => {
   const [isTokenFound, setTokenFound] = useState<boolean>(false);
   const [getFcmToken, setFcmToken] = useState<string>('');
 
-  fetchToken(setTokenFound, setFcmToken);
+  // fetchToken(setTokenFound, setFcmToken);
 
-  onMessageListener()
-    .then((payload: any) => {
-      console.log(`line 27`, payload);
+  // onMessageListener()
+  //   .then((payload: any) => {
+  //     console.log(`line 27`, payload);
 
-      setNotification({
-        title: payload.notification.title,
-        body: payload.notification.body,
-      });
-      setShow(true);
-    })
-    .catch((err) => console.log('failed', err));
+  //     setNotification({
+  //       title: payload.notification.title,
+  //       body: payload.notification.body,
+  //     });
+  //     setShow(true);
+  //   })
+  //   .catch((err) => console.log('failed', err));
 
   return (
     <div className="w-full flex items-center content-around">

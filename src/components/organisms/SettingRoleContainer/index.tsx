@@ -16,7 +16,7 @@ import { PermissionQuery } from '@api/role/interface';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getPermissions } from '@api/permission';
 import { toast } from 'react-toastify';
 import CreatePermissionFormModal, { CreatePermissionFields } from './CreatePermissionFormModal';
@@ -48,6 +48,8 @@ const createPermissionSchema   = yup.object({
 }).required();
 
 const SettingRolesContainer = () => {
+  const queryClient = useQueryClient();
+
   const [value, setValue] = useState(0);
   const [isAddPermission, setIsAddPermission] = useState<boolean>(false);
 
@@ -145,7 +147,8 @@ const SettingRolesContainer = () => {
       );
       toast.success('Update Permission Success');
       setIsAddPermission(false);
-      setPermissionsState(res?.data?.permissions ?? []);
+      queryClient.invalidateQueries({queryKey: ['setting-role-get-permission']});
+      // setPermissionsState(res?.data?.permissions.map(value => ({...value, status: 'Active'})) ?? []);
     },
     onError: (err: any) => {
       toast.error('Permission Updating is failed')
