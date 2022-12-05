@@ -8,3 +8,11 @@ export interface CreateEmployeeParams {
   role: string;
   department: string;
 }
+
+export type UpdateEmployeeParams = Partial<CreateEmployeeParams>;
+
+export interface DeleteUserResponse {
+  code?: string;
+  data?: string;
+  message?: string;
+}

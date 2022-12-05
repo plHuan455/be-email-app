@@ -89,7 +89,7 @@ function Row(props: { row: Department; className: string }) {
               <Typography variant="h6" gutterBottom component="div">
                 Employees
               </Typography>
-              <TableManagerEmployee data={row.employees} />
+              <TableManagerEmployee data={row.employees} onDelete={() => {}}/>
             </Box>
           </Collapse>
         </TableCell>

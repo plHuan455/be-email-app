@@ -70,11 +70,12 @@ const TableManagerDepartmentContainer: React.FC<
           value?.users?.map(
             (user) =>
               new Manager(
+                user.id,
                 user.avatar,
                 user.user_name,
                 user.email,
                 user.position,
-                roleHash[user.role] ?? '',
+                roleHash[user.role_id] ?? '',
               ),
           ) ?? [],
           value.description,

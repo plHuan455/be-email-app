@@ -3,7 +3,7 @@ import { Receiver } from '@layouts/InformationBar';
 import ApiClient from '@api/ApiClient';
 import { AxiosResponse } from 'axios';
 import { GET__USER__API, UPLOAD_FILE, USER__API } from '@constants/UserAPI';
-import { CreateEmployeeParams } from './interface';
+import { CreateEmployeeParams, DeleteUserResponse, UpdateEmployeeParams } from './interface';
 
 // export interface Receiver {}
 
@@ -29,7 +29,7 @@ export interface UserResponse {
   password: string;
   phone_number: string;
   position: string;
-  role: number;
+  role_id: number;
   user_name: string;
 }
 
@@ -65,3 +65,25 @@ export const createEmployee = async (params: CreateEmployeeParams) => {
   const res = await ApiClient.post(url, undefined, cloneParams);
   return res.data;
 };
+
+export const updateEmployee = async (id: number, params: UpdateEmployeeParams) => {
+  const url = USER__API;
+  const cloneParams = {
+    avatar: params.avatar,
+    email: params.email,
+    password: params.password,
+    position: params.position,
+    user_name: params.username,
+    department_id: Number(params.department),
+    role_id: Number(params.role),
+    phone_number: params.phone,
+  }
+  const res = await ApiClient.put(`${url}/${id}`, undefined, cloneParams)
+  return res.data;
+}
+
+export const deleteUser = async (id: number): Promise<AxiosResponse<DeleteUserResponse>> => {
+  const url = USER__API;
+  const res = await ApiClient.delete(`${url}/${id}`, undefined);
+  return res.data
+}

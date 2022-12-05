@@ -4,11 +4,13 @@ interface ManagerFunctions {
 
 export class Manager implements ManagerFunctions {
   constructor(
+    public id: number,
     public avatar: string,
     public name: string,
     public mail: string,
     public position: string,
     public role: string,
+    public department?: string,
   ) {}
 
   getAbbreviations() {

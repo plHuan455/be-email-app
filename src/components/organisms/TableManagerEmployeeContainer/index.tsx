@@ -5,16 +5,19 @@ import { useForm } from 'react-hook-form';
 import AddEmployeeModal, { AddEmployeeField } from './AddEmployeeModal';
 import TableManagerEmployee from './TableManagerEmployee';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getRole } from '@api/role';
 import { createEmployeeSchema } from '@utils/schemas';
 import { getDepartments } from '@api/deparment';
-import { createEmployee, getAllUser } from '@api/user';
+import { createEmployee, deleteUser, getAllUser, updateEmployee } from '@api/user';
 import { toast } from 'react-toastify';
 import { Tab, Tabs } from '@mui/material';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { getImageUrl, uploadFile } from '@api/uploadFile';
+import { uploadFile } from '@api/uploadFile';
 
+import AlertDialog, { useAlertDialog } from '@components/molecules/AlertDialog';
+import { CreateEmployeeParams, UpdateEmployeeParams } from '@api/user/interface';
+import UpdateEmployeeModal, { UpdateEmployeeFields } from './UpdateEmployeeModal';
 
 const headerTabData = [
   { id: 0, name: 'Department', url: '/manager/department/department' },
@@ -24,42 +27,76 @@ const headerTabData = [
 const TableManagerEmployeeContainer = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
+
+  const {
+    isOpen,
+    isLoading: isAlertDialogLoading,
+    title: alertTitle,
+    description: alertDescription,
+    callback: alertCallback, 
+    setAlertData,
+    onClose: onCloseAlertDialog,
+    setIsLoading: setIsAlertDialogLoading,
+  } = useAlertDialog();
 
   const [value, setValue] = useState(() =>
     location.pathname === '/manager/department/employee' ? 1 : 0,
   );
 
-  const handleChange = (e, newValue) => setValue(newValue);
+  const [isShowAddEmployee, setIsShowAddEmployee] = useState<boolean>(false);
+  const [isShowUpdateEmployee, setIsShowUpdateEmployee] = useState<boolean>(false);
 
-  const [isShowAddEmployee, setIsShowEmployee] = useState<boolean>(false);
-  const method = useForm<AddEmployeeField>({
+  const createEmployeeMethod = useForm<AddEmployeeField>({
     defaultValues: {
       avatar: undefined,
       username: '',
       password: '',
-      phone: '0123456789',
+      phone: '',
       department: '',
-      email: 'testemail@gmail.com',
+      email: '',
+      position: 'A',
+      role: '',
+    },
+    resolver: yupResolver(createEmployeeSchema),
+  });
+
+  const updateEmployeeMethod = useForm<UpdateEmployeeFields>({
+    defaultValues: {
+      id: -1,
+      avatar: undefined,
+      username: '',
+      password: '',
+      phone: '',
+      department: '',
+      email: '',
       position: 'a',
       role: '',
     },
     resolver: yupResolver(createEmployeeSchema),
   });
 
-  const { data: employeeData } = useQuery({
-    queryKey: ['table-manager-employee-get-employee'],
-    queryFn: getAllUser,
-  });
-
-  // To fill create form in select input
   const { mutate: createEmployeeMutate, isLoading: isCreateEmployeeLoading } = useMutation({
     mutationKey: ['table-manager-create-employee'],
     mutationFn: createEmployee,
     onSuccess: () => {
       toast.success('Employee is created');
+      queryClient.invalidateQueries({ queryKey: ['table-manager-employee-get-employees'] });
     },
     onError: () => {
       toast.error('Create employee failed');
+    },
+  });
+
+  const { mutate: updateEmployeeMutate, isLoading: isUpdateEmployeeLoading } = useMutation({
+    mutationKey: ['table-manager-update-employee'],
+    mutationFn: ({ id, params }: { id: number, params: UpdateEmployeeParams }) => updateEmployee(id, params),
+    onSuccess: () => {
+      toast.success('Employee is updated');
+      queryClient.invalidateQueries({ queryKey: ['table-manager-employee-get-employees'] });
+    },
+    onError: () => {
+      toast.error('Update employee failed');
     },
   });
 
@@ -71,17 +108,22 @@ const TableManagerEmployeeContainer = () => {
   //   }
   // })
 
-  const {mutate: uploadAvatarFileMutate, isLoading: isUploadingFile} = useMutation({
+  const { mutate: uploadAvatarFileMutate, isLoading: isUploadingFile } = useMutation({
     mutationKey: ['table-manager-upload-file'],
-    mutationFn: (data: AddEmployeeField) => {
-      return uploadFile(data.avatar)
+    mutationFn: ({ avatar, callback }: { avatar: File, callback: (avatarSrc: string) => void }) => {
+      return uploadFile(avatar)
     },
-    onSuccess: (res, params: AddEmployeeField) => {
-      createEmployeeMutate({...params, avatar: res?.data ?? ''});
+    onSuccess: (res, params) => {
+      params.callback(res?.data ?? '');
     },
     onError: () => {
       toast.error('Can\'t upload file');
     }
+  });
+
+  const { data: employeeData } = useQuery({
+    queryKey: ['table-manager-employee-get-employees'],
+    queryFn: getAllUser,
   });
 
   const { data: roleData } = useQuery({
@@ -89,7 +131,7 @@ const TableManagerEmployeeContainer = () => {
     queryFn: getRole,
     onSuccess: (res) => {
       if (res?.data?.length) {
-        method.setValue('role', String(res.data[0].id));
+        createEmployeeMethod.setValue('role', String(res.data[0].id));
       }
     },
   });
@@ -99,11 +141,24 @@ const TableManagerEmployeeContainer = () => {
     queryFn: getDepartments,
     onSuccess: (res) => {
       if (res?.data?.length) {
-        method.setValue('department', String(res.data[0].id));
+        createEmployeeMethod.setValue('department', String(res.data[0].id));
       }
     },
-    enabled: isShowAddEmployee,
+    enabled: isShowAddEmployee || isShowUpdateEmployee,
   });
+
+  const { mutate: deleteEmployeeMutate } = useMutation({
+    mutationKey: ['table-manager-employee-update-employee'],
+    mutationFn: deleteUser,
+    onSuccess: () => {
+      toast.success('User is deleted');
+      queryClient.invalidateQueries({ queryKey: ['table-manager-employee-get-employees'] });
+      onCloseAlertDialog();
+    },
+    onError: () => {
+      toast.error('Delete is failed')
+    }
+  })
 
   const convertedRoleList = useMemo(
     () =>
@@ -133,29 +188,76 @@ const TableManagerEmployeeContainer = () => {
 
     return employeeData?.data
       .map(
-        (value) =>
-          new Manager(
+        (value) => {
+          return new Manager(
+            value.id,
             value.avatar,
             value.user_name,
             value.email,
             value.position,
-            roleHash[value.role] ?? '',
-          ),
+            roleHash[value.role_id] ?? '',
+          )
+        }
       )
       .sort((a, b) => (a.name < b.name ? -1 : 1));
   }, [employeeData, roleData]);
 
-  const handleSubmit = (values: AddEmployeeField) => {
-    uploadAvatarFileMutate(values);
+  const handleChangeTab = (e, newValue) => setValue(newValue);
+
+  const handleCreateSubmit = (values: AddEmployeeField) => {
+    if(values.avatar){
+      uploadAvatarFileMutate({
+        avatar: values.avatar as File,
+        callback: (avatar) => createEmployeeMutate({ ...values, avatar })
+      });
+      return;
+    }
+
+    createEmployeeMutate({...values, avatar: undefined});
   };
+
+  const handleUpdateSubmit = (values: UpdateEmployeeFields) => {
+    if (values.avatar instanceof File) {
+      uploadAvatarFileMutate({
+        avatar: values.avatar as File,
+        callback: (avatar) => updateEmployeeMutate({ id: values.id, params: { ...values, avatar } })
+      });
+    }
+    else {
+      updateEmployeeMutate({ id: values.id, params: { ...values, avatar: undefined } })
+    }
+  }
+
+  const handleDelete = (employeeId: number) => {
+    setAlertData('Delete employee', 'Deleted employee will not restored', () => {
+      setIsAlertDialogLoading(true);
+      deleteEmployeeMutate(employeeId);
+    });
+  }
+
+  const handleUpdateClick = (id: number) => {
+    const updateEmployee = employeeData?.data.find(value => value.id === id);
+    if (updateEmployee) {
+      updateEmployeeMethod.setValue('id', updateEmployee.id);
+      updateEmployeeMethod.setValue('avatar', updateEmployee.avatar);
+      updateEmployeeMethod.setValue('username', updateEmployee.user_name);
+      updateEmployeeMethod.setValue('department', String(updateEmployee.department_id));
+      updateEmployeeMethod.setValue('role', String(updateEmployee.role_id));
+      updateEmployeeMethod.setValue('email', updateEmployee.email);
+      updateEmployeeMethod.setValue('phone', updateEmployee.phone_number);
+      updateEmployeeMethod.setValue('password', updateEmployee.password);
+      updateEmployeeMethod.setValue('position', updateEmployee.position);
+    }
+    setIsShowUpdateEmployee(true);
+  }
 
   return (
     <div>
       <TableHeader
         isHaveActions={true}
         plusButtonTitle="Add employee"
-        onPlusClick={() => setIsShowEmployee(true)}>
-        <Tabs className="tableManagerTabs" value={value} onChange={handleChange}>
+        onPlusClick={() => setIsShowAddEmployee(true)}>
+        <Tabs className="tableManagerTabs" value={value} onChange={handleChangeTab}>
           {headerTabData.map((item) => (
             <Tab
               value={item.id}
@@ -166,19 +268,48 @@ const TableManagerEmployeeContainer = () => {
           ))}
         </Tabs>
       </TableHeader>
-      <TableManagerEmployee data={convertedEmployeeList ?? []} />
+      <TableManagerEmployee
+        data={convertedEmployeeList ?? []}
+        onDelete={handleDelete}
+        onUpdate={handleUpdateClick}
+      />
       <AddEmployeeModal
+        submitLabel={'Create Employee'}
         isFormLoading={isCreateEmployeeLoading || isUploadingFile}
-        method={method}
+        method={createEmployeeMethod}
         isOpen={isShowAddEmployee}
         roleList={convertedRoleList ?? []}
         departmentList={convertedDepartmentList ?? []}
-        title="Add employee"
-        onSubmit={handleSubmit}
+        title={'Create Employee'}
+        onSubmit={handleCreateSubmit}
         onClose={() => {
-          setIsShowEmployee(false);
-          method.reset();
+          setIsShowAddEmployee(false);
+          createEmployeeMethod.reset();
         }}
+      />
+
+      <UpdateEmployeeModal
+        submitLabel={'Update employee'}
+        isFormLoading={isUpdateEmployeeLoading || isUploadingFile}
+        method={updateEmployeeMethod}
+        isOpen={isShowUpdateEmployee}
+        roleList={convertedRoleList ?? []}
+        departmentList={convertedDepartmentList ?? []}
+        title={'Update employee'}
+        onSubmit={handleUpdateSubmit}
+        onClose={() => {
+          setIsShowUpdateEmployee(false);
+          updateEmployeeMethod.reset();
+        }}
+      />
+      <AlertDialog
+        isLoading={isAlertDialogLoading}
+        titleLabel={alertTitle}
+        descriptionLabel={alertDescription}
+        isOpen={isOpen}
+        onClose={onCloseAlertDialog}
+        onAgree={() => alertCallback()}
+        onDisagree={onCloseAlertDialog}
       />
     </div>
   );
