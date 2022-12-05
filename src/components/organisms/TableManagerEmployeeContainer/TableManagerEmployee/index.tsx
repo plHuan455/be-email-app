@@ -174,7 +174,7 @@ const TableManagerEmployee: React.FC<Props> = ({ data, onDelete, onUpdate }) => 
                 <TableCell style={{ width: 100 }} align="left">
                   {row.role}
                 </TableCell>
-                <TableCell align="left">
+                <TableCell align="center">
                   <Box>
                     <Button
                       variant='text'

@@ -1,5 +1,5 @@
 export interface CreateEmployeeParams {
-  avatar: string;
+  avatar?: string;
   username: string;
   email: string;
   password: string;

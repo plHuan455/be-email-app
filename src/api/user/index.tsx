@@ -2,7 +2,7 @@ import { EMAIL_API_URL } from './../../constants/EmailAPI/index';
 import { Receiver } from '@layouts/InformationBar';
 import ApiClient from '@api/ApiClient';
 import { AxiosResponse } from 'axios';
-import { GET__USER__API, UPLOAD_FILE, USER__API } from '@constants/UserAPI';
+import { GET__USER__API, UPLOAD_FILE, USER__API, USER__API__GET } from '@constants/UserAPI';
 import { CreateEmployeeParams, DeleteUserResponse, UpdateEmployeeParams } from './interface';
 
 // export interface Receiver {}
@@ -49,6 +49,12 @@ export const getAllUser = async (): Promise<AxiosResponse<UserResponse[]>> => {
   return res.data;
 };
 
+// GET USER BY ID
+export const getUser = async (id: number): Promise<AxiosResponse<UserResponse>> => {
+  const url = USER__API__GET;
+  const res = await ApiClient.get(url, {value: id});
+  return res.data;
+}
 // CREATE EMPLOYEE
 export const createEmployee = async (params: CreateEmployeeParams) => {
   const url = USER__API;
