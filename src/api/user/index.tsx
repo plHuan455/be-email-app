@@ -44,9 +44,9 @@ export const getUserWithEmail = async (
 };
 
 //GET ALL EMAIL
-export const getAllUser = async (): Promise<AxiosResponse<UserResponse[]>> => {
+export const getAllUser = async (query?: {page: number, limit: number}): Promise<AxiosResponse<UserResponse[]>> => {
   const url = USER__API;
-  const res = await ApiClient.get(url, undefined, {});
+  const res = await ApiClient.get(url, undefined, query);
   return res.data;
 };
 
