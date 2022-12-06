@@ -1,4 +1,6 @@
 import * as React from 'react';
+import DeleteIcon from '@mui/icons-material/Delete';
+import UpdateIcon from '@mui/icons-material/Update';
 import Box from '@mui/material/Box';
 import Collapse from '@mui/material/Collapse';
 import IconButton from '@mui/material/IconButton';
@@ -12,65 +14,38 @@ import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import { Department, Manager } from '@page/Manager/interface';
-import TableManagerEmployee from '@components/organisms/TableManagerEmployeeContainer/TableManagerEmployee';
+import { Department } from '@page/Manager/interface';
 
 import './styles.scss';
 import Icon from '@components/atoms/Icon';
+import { rem } from '@utils/functions';
+import TableActionsMenu from '@components/molecules/TableActionsMenu';
+import TableManagerEmployeeContainer from '@containers/TableManagerEmployeeContainer';
 
 interface TableManagerDepartmentProps {
   departmentList: Department[];
-  onEmployeeDelete: (id: number) => void;
-  onEmployeeUpdate: (id: number) => void;
+  onEmployeeDeleteClick: (id: number) => void;
+  onEmployeeUpdateClick: (id: number) => void;
+  onDepartmentDeleteClick: (id: number) => void;
+  onDepartmentUpdateClick: (id: number) => void;
 }
-
-// const rows = [
-//   new Department(
-//     'cs',
-//     3,
-//     'cs@',
-//     [
-//       new Manager('', 'Bùi Thùy Thị Minh', 'minhthuy.bui@test.com', 'CS', 'Manager'),
-//       new Manager(
-//         '',
-//         'Bùi Phạn Hương Giang',
-//         'huonggiang.bui@test.com',
-//         'CS',
-//         'Blocked',
-//       ),
-//     ],
-//     '',
-//   ),
-//   new Department(
-//     'IT Support',
-//     3,
-//     'it-support@',
-//     [
-//       new Manager(
-//         '',
-//         'Anh Nguyen The',
-//         'theanh.nguyen@theanh.com',
-//         'Front End',
-//         'Admin',
-//       ),
-//       new Manager('', 'Anh Tran', 'anh.tran@test.com', 'Back End', 'Employee'),
-//     ],
-//     '',
-//   ),
-// ];
 
 interface RowProps {
   row: Department;
   className: string;
-  onEmployeeUpdate: (id: number) => void;
-  onEmployeeDelete: (id: number) => void;
+  onEmployeeUpdateClick: (id: number) => void;
+  onEmployeeDeleteClick: (id: number) => void;
+  onDepartmentUpdateClick: (id: number) => void;
+  onDepartmentDeleteClick: (id: number) => void;
 }
 
 function Row({
   row,
   className,
-  onEmployeeUpdate,
-  onEmployeeDelete,
+  onEmployeeUpdateClick,
+  onEmployeeDeleteClick,
+  onDepartmentDeleteClick,
+  onDepartmentUpdateClick,
 }: RowProps) {
   const [open, setOpen] = React.useState(false);
 
@@ -94,6 +69,20 @@ function Row({
           </div>
         </TableCell>
         <TableCell align="left">{row.address}</TableCell>
+        <TableCell align="center">
+          <TableActionsMenu
+            sx={{maxWidth: rem(52), minWidth: rem(52)}}
+            options={[{value: 0, label: 'Update', icon: <UpdateIcon />}, {value: 1, label: 'Delete', icon: <DeleteIcon />}]}
+            onItemClick={(value) => {
+              if(value === 0) {
+                onDepartmentUpdateClick(row.id);
+              }
+              if(value === 1) {
+                onDepartmentDeleteClick(row.id);
+              }
+            }}
+          />
+        </TableCell>
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
@@ -102,7 +91,11 @@ function Row({
               <Typography variant="h6" gutterBottom component="div">
                 Employees
               </Typography>
-              <TableManagerEmployee data={row.employees} onUpdate={onEmployeeUpdate} onDelete={onEmployeeDelete}/>
+              <TableManagerEmployeeContainer
+                data={row.employees}
+                onUpdate={onEmployeeUpdateClick}
+                onDelete={onEmployeeDeleteClick}
+              />
             </Box>
           </Collapse>
         </TableCell>
@@ -111,10 +104,12 @@ function Row({
   );
 }
 
-export default function TableManagerDepartment({ 
-  departmentList, 
-  onEmployeeUpdate, 
-  onEmployeeDelete 
+export default function TableManagerDepartment({
+  departmentList,
+  onEmployeeUpdateClick,
+  onEmployeeDeleteClick,
+  onDepartmentUpdateClick,
+  onDepartmentDeleteClick
 }: TableManagerDepartmentProps) {
   return (
     <TableContainer className="tableDepartment" component={Paper}>
@@ -125,6 +120,7 @@ export default function TableManagerDepartment({
             <TableCell align="left">Description</TableCell>
             <TableCell align="left">Number</TableCell>
             <TableCell align="left">Address</TableCell>
+            <TableCell align="center">Actions</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -135,11 +131,13 @@ export default function TableManagerDepartment({
             <TableCell align="left">all@</TableCell>
           </TableRow>
           {departmentList.map((row) => (
-            <Row 
-              className="managerDepartmentRow" 
-              key={row.name} row={row} 
-              onEmployeeUpdate={onEmployeeUpdate}
-              onEmployeeDelete={onEmployeeDelete}
+            <Row
+              className="managerDepartmentRow"
+              key={row.name} row={row}
+              onEmployeeUpdateClick={onEmployeeUpdateClick}
+              onEmployeeDeleteClick={onEmployeeDeleteClick}
+              onDepartmentUpdateClick={onDepartmentUpdateClick}
+              onDepartmentDeleteClick={onDepartmentDeleteClick}
             />
           ))}
         </TableBody>

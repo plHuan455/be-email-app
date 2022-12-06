@@ -29,6 +29,12 @@ const TableManagerEmployeeContainer = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
+  const [tablePageParams, setTablePageParams] = useState<{page: number; limit: number; total: number}>({
+    page: 0, limit: 5, total: 0
+  });
+
+  console.log(tablePageParams);
+
   const {
     isOpen,
     isLoading: isAlertDialogLoading,
@@ -137,8 +143,14 @@ const TableManagerEmployeeContainer = () => {
   );
 
   const { data: employeeData } = useQuery({
-    queryKey: ['table-manager-employee-get-employees'],
-    queryFn: getAllUser,
+    queryKey: ['table-manager-employee-get-employees', tablePageParams.page, tablePageParams.limit],
+    queryFn: () => getAllUser({...tablePageParams, page: tablePageParams.page + 1}),
+    onSuccess: (res) => {
+        setTablePageParams(preState => {
+          if(res?.total !== undefined) return {...preState, total: res.total};
+          return preState;
+        })
+    }
   });
 
   const { data: roleData } = useQuery({
@@ -290,9 +302,14 @@ const TableManagerEmployeeContainer = () => {
         </Tabs>
       </TableHeader>
       <TableManagerEmployee
+        page={tablePageParams.page}
+        limit={tablePageParams.limit}
+        total={tablePageParams.total}
         data={convertedEmployeeList ?? []}
         onDelete={handleDelete}
         onUpdate={handleUpdateClick}
+        onChangeLimit={(limit) => setTablePageParams(preState => ({...preState, limit}))}
+        onChangePage={(page) => setTablePageParams(preState => ({...preState, page}))}
       />
       <AddEmployeeModal
         submitLabel={'Create Employee'}

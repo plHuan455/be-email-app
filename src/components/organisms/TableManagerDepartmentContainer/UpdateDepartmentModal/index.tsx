@@ -5,17 +5,18 @@ import { Button, Grid } from "@mui/material";
 import { Controller, FormProvider, UseFormReturn } from "react-hook-form";
 import styled from "styled-components";
 
-export interface AddDepartmentField {
-  name: string;
+export interface UpdateDepartmentFields {
+  id: string;
+  name?: string;
   description?: string;
   address?: string;
 }
-interface AddDepartmentModalProps {
-  method: UseFormReturn<AddDepartmentField>
+interface UpdateDepartmentModalProps {
+  method: UseFormReturn<UpdateDepartmentFields>
   isOpen: boolean;
   isFormLoading: boolean;
   title: string;
-  onSubmit: (values: AddDepartmentField) => void;
+  onSubmit: (values: UpdateDepartmentFields) => void;
   onClose: () => void;
 }
 
@@ -32,7 +33,14 @@ const StyleButtonWrapper = styled.div`
   }
 `;
 
-function AddDepartmentModal({ method, isOpen, isFormLoading, title, onClose, onSubmit }: AddDepartmentModalProps) {
+const UpdateDepartmentModal: React.FC<UpdateDepartmentModalProps>  = ({ 
+  method, 
+  isOpen, 
+  isFormLoading, 
+  title, 
+  onClose, 
+  onSubmit 
+}) => {
   return (
     <ModalBase
       isOpen={isOpen}
@@ -120,7 +128,7 @@ function AddDepartmentModal({ method, isOpen, isFormLoading, title, onClose, onS
                   fullWidth
                   type="submit"
                 >
-                  Create department
+                  Update department
                 </LoadingButton>
               </StyleButtonWrapper>
             </Grid>
@@ -131,4 +139,4 @@ function AddDepartmentModal({ method, isOpen, isFormLoading, title, onClose, onS
   )
 }
 
-export default AddDepartmentModal
+export default UpdateDepartmentModal

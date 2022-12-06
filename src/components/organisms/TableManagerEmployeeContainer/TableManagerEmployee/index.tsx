@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { useTheme } from '@mui/material/styles';
+import DeleteIcon from '@mui/icons-material/Delete';
+import UpdateIcon from '@mui/icons-material/Update';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -20,6 +22,7 @@ import { Button, TableHead } from '@mui/material';
 
 import './styles.scss';
 import { rem } from '@utils/functions';
+import TableActionsMenu from '@components/molecules/TableActionsMenu';
 
 interface TablePaginationActionsProps {
   count: number;
@@ -84,41 +87,50 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
 }
 
 interface Props {
+  page: number;
+  limit: number;
+  total: number;
   data: Manager[];
   onDelete?: (id: number) => void;
   onUpdate?: (id: number) => void;
+  onChangePage: (page: number) => void;
+  onChangeLimit: (limit: number) => void;
 }
 
-const TableManagerEmployee: React.FC<Props> = ({ data, onDelete, onUpdate }) => {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
+const TableManagerEmployee: React.FC<Props> = ({ 
+  data, 
+  page,
+  limit,
+  total,
+  onDelete,
+  onUpdate,
+  onChangePage,
+  onChangeLimit 
+}) => {
   // Avoid a layout jump when reaching the last page with empty rows.
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
+  const emptyRows = limit - data.length;
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number,
   ) => {
-    setPage(newPage);
+    onChangePage(newPage);
   };
 
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+    onChangeLimit(parseInt(event.target.value, 10));
   };
 
   const handleDelete = (id: number) => {
-    if(onDelete){
+    if (onDelete) {
       onDelete(id)
     }
   }
 
   const handleUpdate = (id: number) => {
-    if(onUpdate) onUpdate(id);
+    if (onUpdate) onUpdate(id);
   }
 
   return (
@@ -144,10 +156,7 @@ const TableManagerEmployee: React.FC<Props> = ({ data, onDelete, onUpdate }) => 
             </TableRow>
           </TableHead>
           <TableBody>
-            {(rowsPerPage > 0
-              ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              : data
-            ).map((row, index) => (
+            {data.map((row, index) => (
               <TableRow
                 className={`managerRow ${row.role === 'Blocked' && 'blocked'}`}
                 key={index}>
@@ -175,30 +184,18 @@ const TableManagerEmployee: React.FC<Props> = ({ data, onDelete, onUpdate }) => 
                   {row.role}
                 </TableCell>
                 <TableCell align="center">
-                  <Box>
-                    <Button
-                      variant='text'
-                      sx={{
-                        color: 'red',
-                        fontSize: rem(12),
-                        padding: `${rem(4)} ${rem(12)}`,
-                      }}
-                      onClick={() => handleDelete(row.id)}
-                    >
-                      Delete
-                    </Button>
-                    <Button
-                      variant='text'
-                      sx={{
-                        color: 'blue',
-                        fontSize: rem(12),
-                        padding: `${rem(4)} ${rem(12)}`,
-                      }}
-                      onClick={() => handleUpdate(row.id)}
-                    >
-                      Update
-                    </Button>
-                  </Box>
+                  <TableActionsMenu
+                    sx={{ maxWidth: rem(52), minWidth: rem(52) }}
+                    options={[{ value: 0, label: 'Update', icon: <UpdateIcon /> }, { value: 1, label: 'Delete', icon: <DeleteIcon /> }]}
+                    onItemClick={(value) => {
+                      if (value === 0) {
+                        handleUpdate(row.id);
+                      }
+                      if (value === 1) {
+                        handleDelete(row.id);
+                      }
+                    }}
+                  />
                 </TableCell>
               </TableRow>
             ))}
@@ -213,8 +210,8 @@ const TableManagerEmployee: React.FC<Props> = ({ data, onDelete, onUpdate }) => 
               <TablePagination
                 rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
                 colSpan={5}
-                count={data.length}
-                rowsPerPage={rowsPerPage}
+                count={total}
+                rowsPerPage={limit}
                 page={page}
                 SelectProps={{
                   inputProps: {

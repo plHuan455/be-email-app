@@ -37,6 +37,7 @@ export class Manager implements ManagerFunctions {
 
 export class Department {
   constructor(
+    public id: number,
     public name: string,
     public number: number,
     public address: string,

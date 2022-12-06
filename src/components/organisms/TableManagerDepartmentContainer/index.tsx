@@ -6,7 +6,12 @@ import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { createDepartment, getDepartments } from '@api/deparment';
+import {
+  createDepartment,
+  deleteDepartment,
+  getDepartments,
+  updateDepartment,
+} from '@api/deparment';
 import { Department, Manager } from '@page/Manager/interface';
 import { toast } from 'react-toastify';
 import { getRole } from '@api/role';
@@ -21,6 +26,9 @@ import { deleteUser, getUser, updateEmployee } from '@api/user';
 import es from 'date-fns/esm/locale/es/index.js';
 import { UpdateEmployeeParams } from '@api/user/interface';
 import AlertDialog, { useAlertDialog } from '@components/molecules/AlertDialog';
+import UpdateDepartmentModal, {
+  UpdateDepartmentFields,
+} from './UpdateDepartmentModal';
 
 const headerTabData = [
   { id: 0, name: 'Department', url: '/manager/department/department' },
@@ -63,10 +71,22 @@ const TableManagerDepartmentContainer: React.FC<
     location.pathname === '/manager/department/employee' ? 1 : 0,
   );
 
+  const [isShowUpdateDepartment, setIsShowUpdateDepartment] =
+    useState<boolean>(false);
   const [isShowUpdateEmployee, setIsShowUpdateEmployee] = useState<boolean>(false);
 
   const createDepartmentMethod = useForm<AddDepartmentField>({
     defaultValues: {
+      name: '',
+      description: '',
+      address: '',
+    },
+    resolver: yupResolver(createDepartmentSchema),
+  });
+
+  const updateDepartmentMethod = useForm<UpdateDepartmentFields>({
+    defaultValues: {
+      id: '',
       name: '',
       description: '',
       address: '',
@@ -94,10 +114,46 @@ const TableManagerDepartmentContainer: React.FC<
       mutationKey: ['table-manager-department-create-department'],
       mutationFn: createDepartment,
       onSuccess: (res) => {
+        queryClient.invalidateQueries({
+          queryKey: ['table-manager-department-get-departments'],
+        });
         toast.success('Department is created');
       },
       onError: () => {
         toast.error('Create department failed');
+      },
+    });
+
+  const { mutate: updateDepartmentMutate, isLoading: isDepartmentUpdating } =
+    useMutation({
+      mutationKey: ['table-manager-department-update'],
+      mutationFn: ({ id, params }: { id: number; params: UpdateDepartmentFields }) =>
+        updateDepartment(id, params),
+      onSuccess: (res) => {
+        queryClient.invalidateQueries({
+          queryKey: ['table-manager-department-get-departments'],
+        });
+        toast.success('Department is updated');
+      },
+      onError: (err: any) => {
+        toast.error(err?.data?.message ?? 'Update department failed');
+      },
+    });
+
+  const { mutate: deleteDepartmentMutate, isLoading: isDepartmentDeleting } =
+    useMutation({
+      mutationKey: ['table-manager-department-delete-department'],
+      mutationFn: deleteDepartment,
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ['table-manager-department-get-departments'],
+        });
+        toast.success('Department is deleted');
+        onCloseAlertDialog();
+      },
+      onError: (err: any) => {
+        onCloseAlertDialog();
+        toast.error(err?.data?.message ?? 'Delete department is failed');
       },
     });
 
@@ -177,7 +233,7 @@ const TableManagerDepartmentContainer: React.FC<
     queryFn: getRole,
   });
 
-  const { data: departmentData } = useQuery({
+  const { data: departmentData, isLoading: isDepartmentGetting } = useQuery({
     queryKey: ['table-manager-department-get-departments'],
     queryFn: getDepartments,
   });
@@ -193,6 +249,7 @@ const TableManagerDepartmentContainer: React.FC<
     return departmentData?.data.map(
       (value) =>
         new Department(
+          value.id,
           value.name,
           value?.users?.length ?? 0,
           value.address,
@@ -232,8 +289,13 @@ const TableManagerDepartmentContainer: React.FC<
 
   const handleChange = (e, newValue) => setValue(newValue);
 
+  // Create department
   const handleSubmit = (values: AddDepartmentField) => {
     createDepartmentMutate(values);
+  };
+
+  const handleUpdateDepartmentSubmit = (values: UpdateDepartmentFields) => {
+    updateDepartmentMutate({ id: Number(values.id), params: values });
   };
 
   const handleUpdateEmployeeSubmit = (values: UpdateEmployeeFields) => {
@@ -268,6 +330,24 @@ const TableManagerDepartmentContainer: React.FC<
     });
   };
 
+  const handleDepartmentUpdateClick = (id: number) => {
+    const foundDepartment = departmentData?.data?.find((value) => value.id === id);
+    if (foundDepartment) {
+      updateDepartmentMethod.setValue('id', String(foundDepartment.id));
+      updateDepartmentMethod.setValue('name', foundDepartment.name);
+      updateDepartmentMethod.setValue('address', foundDepartment.address);
+      updateDepartmentMethod.setValue('description', foundDepartment.description);
+      setIsShowUpdateDepartment(true);
+    }
+  };
+
+  const handleDepartmentDeleteClick = (id: number) => {
+    setAlertData('Delete department', 'Deleted department will not restored', () => {
+      setIsAlertDialogLoading(true);
+      deleteDepartmentMutate(id);
+    });
+  };
+
   return (
     <div>
       <TableHeader isHaveActions={false}>
@@ -284,8 +364,10 @@ const TableManagerDepartmentContainer: React.FC<
       </TableHeader>
       <TableManagerDepartment
         departmentList={convertedDepartmentList ?? []}
-        onEmployeeUpdate={handleEmployeeUpdateClick}
-        onEmployeeDelete={handleEmployeeDeleteClick}
+        onEmployeeUpdateClick={handleEmployeeUpdateClick}
+        onEmployeeDeleteClick={handleEmployeeDeleteClick}
+        onDepartmentUpdateClick={handleDepartmentUpdateClick}
+        onDepartmentDeleteClick={handleDepartmentDeleteClick}
       />
 
       <AddDepartmentModal
@@ -298,6 +380,15 @@ const TableManagerDepartmentContainer: React.FC<
           if (onCloseAddDepartmentModal) onCloseAddDepartmentModal();
           createDepartmentMethod.reset();
         }}
+      />
+
+      <UpdateDepartmentModal
+        isOpen={isShowUpdateDepartment}
+        onClose={() => setIsShowUpdateDepartment(false)}
+        isFormLoading={isDepartmentUpdating || isDepartmentGetting}
+        method={updateDepartmentMethod}
+        onSubmit={handleUpdateDepartmentSubmit}
+        title="Update department"
       />
 
       <UpdateEmployeeModal
