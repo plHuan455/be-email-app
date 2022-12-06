@@ -58,15 +58,24 @@ Dark :root,
   --gradient-orange-1: linear-gradient(24.94deg, #fc9d00 -1.3%, #fcec7c 100.42%);
   --gradient-green-1: linear-gradient(24.94deg, #66b5f8 -1.3%, #4fd143 100.42%);
   --gradient-1: linear-gradient(267.74deg, #6359d9 -4.45%, #b147f8 105.31%);
-  --gradient-2: radial-gradient(72.53% 113.81% at 88.58% 24.1%, #7388ff 0%, #ca73ff 50.34%, #ff739d 100%);
-  --gradient-3: linear-gradient(154.58deg, rgba(41, 36, 82, 0.5) -31.43%, rgba(99, 89, 217, 0) 109.66%);
+  --gradient-2: radial-gradient(
+    72.53% 113.81% at 88.58% 24.1%,
+    #7388ff 0%,
+    #ca73ff 50.34%,
+    #ff739d 100%
+  );
+  --gradient-3: linear-gradient(
+    154.58deg,
+    rgba(41, 36, 82, 0.5) -31.43%,
+    rgba(99, 89, 217, 0) 109.66%
+  );
   --blue-gradient: linear-gradient(82.36deg, #8279e3 38.7%, #ffcdea 76.51%);
   --purple-gradient: linear-gradient(82.36deg, #0014ff 38.7%, #ff2cdf 76.51%);
   --disabled-btn: #3f3d66;
   --divider: rgba(255, 255, 255, 0.2);
 }
 
-[data-theme=dark] {
+[data-theme='dark'] {
   --bg-app: var(--app);
   --bg-app-2: var(--app-2);
   --bg-button-1: rgba(255, 255, 255, 0.1);
@@ -89,15 +98,18 @@ Dark :root,
 }
 
 @font-face {
-  font-family: "app-women";
+  font-family: 'app-women';
   src: url(@assets/fonts/app-women.eot);
-  src: url(@assets/fonts/app-women.eot?#iefix) format("embedded-opentype"), url(@assets/fonts/app-women.woff) format("woff"), url(@assets/fonts/app-women.ttf) format("truetype"), url(@assets/fonts/app-women.svg#app-women) format("svg");
+  src: url(@assets/fonts/app-women.eot?#iefix) format('embedded-opentype'),
+    url(@assets/fonts/app-women.woff) format('woff'),
+    url(@assets/fonts/app-women.ttf) format('truetype'),
+    url(@assets/fonts/app-women.svg#app-women) format('svg');
   font-weight: normal;
   font-style: normal;
 }
 
 [data-icon]:before {
-  font-family: "app-women" !important;
+  font-family: 'app-women' !important;
   content: attr(data-icon);
   font-style: normal !important;
   font-weight: normal !important;
@@ -109,9 +121,9 @@ Dark :root,
   -moz-osx-font-smoothing: grayscale;
 }
 
-[class^=icon-]:before,
-[class*=" icon-"]:before {
-  font-family: "app-women" !important;
+[class^='icon-']:before,
+[class*=' icon-']:before {
+  font-family: 'app-women' !important;
   font-style: normal !important;
   font-weight: normal !important;
   font-variant: normal !important;
@@ -123,247 +135,268 @@ Dark :root,
 }
 
 .icon-app-store:before {
-  content: "a";
+  content: 'a';
 }
 
 .icon-file-excel:before {
-  content: "b";
+  content: 'b';
 }
 
 .icon-file-word:before {
-  content: "c";
+  content: 'c';
 }
 
 .icon-car:before {
-  content: "d";
+  content: 'd';
 }
 
 .icon-desktop:before {
-  content: "e";
+  content: 'e';
 }
 
 .icon-laptop:before {
-  content: "f";
+  content: 'f';
 }
 
 .icon-mobile:before {
-  content: "g";
+  content: 'g';
 }
 
 .icon-tablet:before {
-  content: "h";
+  content: 'h';
 }
 
 .icon-watch:before {
-  content: "i";
+  content: 'i';
 }
 
 .icon-youtube:before {
-  content: "j";
+  content: 'j';
 }
 
 .icon-twitter:before {
-  content: "k";
+  content: 'k';
 }
 
 .icon-telegram:before {
-  content: "l";
+  content: 'l';
 }
 
 .icon-instagram:before {
-  content: "m";
+  content: 'm';
 }
 
 .icon-facebook:before {
-  content: "n";
+  content: 'n';
 }
 
 .icon-discord:before {
-  content: "o";
+  content: 'o';
 }
 
 .icon-apple:before {
-  content: "p";
+  content: 'p';
 }
 
 .icon-globe:before {
-  content: "q";
+  content: 'q';
 }
 
 .icon-google-play:before {
-  content: "r";
+  content: 'r';
 }
 
 .icon-magazine:before {
-  content: "s";
+  content: 's';
 }
 
 .icon-shopping-cart:before {
-  content: "t";
+  content: 't';
 }
 
 .icon-layer-group:before {
-  content: "u";
+  content: 'u';
 }
 
 .icon-dice-d6:before {
-  content: "v";
+  content: 'v';
 }
 
 .icon-coins:before {
-  content: "w";
+  content: 'w';
 }
 
 .icon-chart-line:before {
-  content: "x";
+  content: 'x';
 }
 
 .icon-award:before {
-  content: "y";
+  content: 'y';
 }
 
 .icon-file-excel-1:before {
-  content: "A";
+  content: 'A';
 }
 
 .icon-radar:before {
-  content: "z";
+  content: 'z';
 }
 
 .icon-award-1:before {
-  content: "B";
+  content: 'B';
 }
 
 .icon-medal:before {
-  content: "C";
+  content: 'C';
 }
 
 .icon-money-3:before {
-  content: "D";
+  content: 'D';
 }
 
 .icon-teacher:before {
-  content: "E";
+  content: 'E';
 }
 
 .icon-calendar-2:before {
-  content: "F";
+  content: 'F';
 }
 
 .icon-card:before {
-  content: "G";
+  content: 'G';
 }
 
 .icon-coin:before {
-  content: "H";
+  content: 'H';
 }
 
 .icon-document-text:before {
-  content: "I";
+  content: 'I';
 }
 
 .icon-element-3:before {
-  content: "J";
+  content: 'J';
 }
 
 .icon-lovely:before {
-  content: "K";
+  content: 'K';
 }
 
 .icon-magic-star:before {
-  content: "L";
+  content: 'L';
 }
 
 .icon-money-4:before {
-  content: "M";
+  content: 'M';
 }
 
 .icon-percentage-square:before {
-  content: "N";
+  content: 'N';
 }
 
 .icon-receipt-2:before {
-  content: "O";
+  content: 'O';
 }
 
 .icon-subtitle:before {
-  content: "P";
+  content: 'P';
 }
 
 .icon-user-square:before {
-  content: "Q";
+  content: 'Q';
 }
 
 .icon-wifi:before {
-  content: "R";
+  content: 'R';
 }
 
 .icon-phone:before {
-  content: "S";
+  content: 'S';
 }
 
 .icon-frame:before {
-  content: "T";
+  content: 'T';
 }
 
 .icon-arrow-line-right:before {
-  content: "U";
+  content: 'U';
 }
 
 .icon-eye-slash:before {
-  content: "V";
+  content: 'V';
 }
 
 .icon-eye:before {
-  content: "W";
+  content: 'W';
 }
 
 @font-face {
-  font-family: "Quicksand";
+  font-family: 'Quicksand';
   src: url(./assets/fonts/Quicksand-Bold.eot);
-  src: url(./assets/fonts/Quicksand-Bold.eot?#iefix) format("embedded-opentype"), url(./assets/fonts/Quicksand-Bold.woff2) format("woff2"), url(./assets/fonts/Quicksand-Bold.woff) format("woff"), url(./assets/fonts/Quicksand-Bold.ttf) format("truetype"), url(./assets/fonts/Quicksand-Bold.svg#Quicksand-Bold) format("svg");
+  src: url(./assets/fonts/Quicksand-Bold.eot?#iefix) format('embedded-opentype'),
+    url(./assets/fonts/Quicksand-Bold.woff2) format('woff2'),
+    url(./assets/fonts/Quicksand-Bold.woff) format('woff'),
+    url(./assets/fonts/Quicksand-Bold.ttf) format('truetype'),
+    url(./assets/fonts/Quicksand-Bold.svg#Quicksand-Bold) format('svg');
   font-weight: bold;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Quicksand";
+  font-family: 'Quicksand';
   src: url(./assets/fonts/Quicksand-Medium.eot);
-  src: url(./assets/fonts/Quicksand-Medium.eot?#iefix) format("embedded-opentype"), url(./assets/fonts/Quicksand-Medium.woff2) format("woff2"), url(./assets/fonts/Quicksand-Medium.woff) format("woff"), url(./assets/fonts/Quicksand-Medium.ttf) format("truetype"), url(./assets/fonts/Quicksand-Medium.svg#Quicksand-Medium) format("svg");
+  src: url(./assets/fonts/Quicksand-Medium.eot?#iefix) format('embedded-opentype'),
+    url(./assets/fonts/Quicksand-Medium.woff2) format('woff2'),
+    url(./assets/fonts/Quicksand-Medium.woff) format('woff'),
+    url(./assets/fonts/Quicksand-Medium.ttf) format('truetype'),
+    url(./assets/fonts/Quicksand-Medium.svg#Quicksand-Medium) format('svg');
   font-weight: 500;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Quicksand";
+  font-family: 'Quicksand';
   src: url(./assets/fonts/Quicksand-SemiBold.eot);
-  src: url(./assets/fonts/Quicksand-SemiBold.eot?#iefix) format("embedded-opentype"), url(./assets/fonts/Quicksand-SemiBold.woff2) format("woff2"), url(./assets/fonts/Quicksand-SemiBold.woff) format("woff"), url(./assets/fonts/Quicksand-SemiBold.ttf) format("truetype"), url(./assets/fonts/Quicksand-SemiBold.svg#Quicksand-SemiBold) format("svg");
+  src: url(./assets/fonts/Quicksand-SemiBold.eot?#iefix) format('embedded-opentype'),
+    url(./assets/fonts/Quicksand-SemiBold.woff2) format('woff2'),
+    url(./assets/fonts/Quicksand-SemiBold.woff) format('woff'),
+    url(./assets/fonts/Quicksand-SemiBold.ttf) format('truetype'),
+    url(./assets/fonts/Quicksand-SemiBold.svg#Quicksand-SemiBold) format('svg');
   font-weight: 600;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Quicksand";
+  font-family: 'Quicksand';
   src: url(./assets/fonts/Quicksand-Regular.eot);
-  src: url(./assets/fonts/Quicksand-Regular.eot?#iefix) format("embedded-opentype"), url(./assets/fonts/Quicksand-Regular.woff2) format("woff2"), url(./assets/fonts/Quicksand-Regular.woff) format("woff"), url(./assets/fonts/Quicksand-Regular.ttf) format("truetype"), url(./assets/fonts/Quicksand-Regular.svg#Quicksand-Regular) format("svg");
+  src: url(./assets/fonts/Quicksand-Regular.eot?#iefix) format('embedded-opentype'),
+    url(./assets/fonts/Quicksand-Regular.woff2) format('woff2'),
+    url(./assets/fonts/Quicksand-Regular.woff) format('woff'),
+    url(./assets/fonts/Quicksand-Regular.ttf) format('truetype'),
+    url(./assets/fonts/Quicksand-Regular.svg#Quicksand-Regular) format('svg');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
 }
 
 @font-face {
-  font-family: "Quicksand";
+  font-family: 'Quicksand';
   src: url(./assets/fonts/Quicksand-Light.eot);
-  src: url(./assets/fonts/Quicksand-Light.eot?#iefix) format("embedded-opentype"), url(./assets/fonts/Quicksand-Light.woff2) format("woff2"), url(./assets/fonts/Quicksand-Light.woff) format("woff"), url(./assets/fonts/Quicksand-Light.ttf) format("truetype"), url(./assets/fonts/Quicksand-Light.svg#Quicksand-Light) format("svg");
+  src: url(./assets/fonts/Quicksand-Light.eot?#iefix) format('embedded-opentype'),
+    url(./assets/fonts/Quicksand-Light.woff2) format('woff2'),
+    url(./assets/fonts/Quicksand-Light.woff) format('woff'),
+    url(./assets/fonts/Quicksand-Light.ttf) format('truetype'),
+    url(./assets/fonts/Quicksand-Light.svg#Quicksand-Light) format('svg');
   font-weight: 300;
   font-style: normal;
   font-display: swap;
 }
 
-.svg_icon-arrowRight, .svg_icon.-arrowRightLong {
+.svg_icon-arrowRight,
+.svg_icon.-arrowRightLong {
   transform: rotate(180deg);
 }
 
@@ -386,7 +419,7 @@ Dark :root,
 }
 
 .select-box-wrapper .react-select-label {
-  font-family: "Quicksand", sans-serif;
+  font-family: 'Quicksand', sans-serif;
   font-weight: 400;
   font-size: 1rem;
   line-height: 1.5;
@@ -504,7 +537,7 @@ Dark :root,
 .input {
   min-height: 3rem;
   padding: 0 1.25rem;
-  font-size: 9px;
+  font-size: 16px;
 }
 
 .input-fullWidth {
@@ -703,7 +736,7 @@ Dark :root,
   font-size: 1rem;
   border: none;
   border-radius: 4px;
-  background-color: #FE2C55;
+  background-color: #fe2c55;
 }
 
 .upload-button:hover {
@@ -762,7 +795,7 @@ Dark :root,
 
 ::before,
 ::after {
-  --tw-content: "";
+  --tw-content: '';
 }
 
 /*
@@ -781,7 +814,9 @@ html {
   -o-tab-size: 4;
   tab-size: 4;
   /* 3 */
-  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+    'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif,
+    'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
   /* 4 */
 }
 
@@ -856,7 +891,8 @@ code,
 kbd,
 samp,
 pre {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    'Liberation Mono', 'Courier New', monospace;
   /* 1 */
   font-size: 1em;
   /* 2 */
@@ -969,7 +1005,7 @@ Correct the cursor style of increment and decrement buttons in Safari.
 1. Correct the odd appearance in Chrome and Safari.
 2. Correct the outline style in Safari.
 */
-[type=search] {
+[type='search'] {
   -webkit-appearance: textfield;
   /* 1 */
   outline-offset: -2px;
@@ -1048,14 +1084,16 @@ textarea {
 1. Reset the default placeholder opacity in Firefox. (https://github.com/tailwindlabs/tailwindcss/issues/3300)
 2. Set the default placeholder color to the user's configured gray 400 color.
 */
-input::-moz-placeholder, textarea::-moz-placeholder {
+input::-moz-placeholder,
+textarea::-moz-placeholder {
   opacity: 1;
   /* 1 */
   color: #9ca3af;
   /* 2 */
 }
 
-input:-ms-input-placeholder, textarea:-ms-input-placeholder {
+input:-ms-input-placeholder,
+textarea:-ms-input-placeholder {
   opacity: 1;
   /* 1 */
   color: #9ca3af;
@@ -1074,7 +1112,7 @@ textarea::placeholder {
 Set the default cursor for buttons.
 */
 button,
-[role=button] {
+[role='button'] {
   cursor: pointer;
 }
 
@@ -1118,7 +1156,7 @@ body {
   padding: 0;
   color: var(--text-color);
   background: #f7f7fc;
-  font-family: "Quicksand", sans-serif;
+  font-family: 'Quicksand', sans-serif;
   overflow-x: hidden;
   padding-left: 0;
   padding-right: 0;
@@ -1157,33 +1195,36 @@ body {
   align-items: center;
 }
 
-.rdw-editor-wrapper>.rdw-editor-toolbar {
+.rdw-editor-wrapper > .rdw-editor-toolbar {
   border-color: transparent;
   justify-content: center;
 }
 
-.rdw-editor-wrapper>.rdw-editor-toolbar>.rdw-inline-wrapper>.rdw-option-wrapper {
+.rdw-editor-wrapper
+  > .rdw-editor-toolbar
+  > .rdw-inline-wrapper
+  > .rdw-option-wrapper {
   border-color: transparent;
   opacity: 0.5;
   margin-inline: 0;
 }
 
-.rdw-editor-wrapper>.rdw-editor-toolbar .rdw-dropdown-wrapper {
+.rdw-editor-wrapper > .rdw-editor-toolbar .rdw-dropdown-wrapper {
   border-color: transparent;
   width: 80px;
   opacity: 0.5;
 }
 
-.rdw-editor-wrapper>.rdw-editor-toolbar .rdw-option-wrapper {
+.rdw-editor-wrapper > .rdw-editor-toolbar .rdw-option-wrapper {
   margin-inline: 0;
   opacity: 0.5;
 }
 
-.rdw-editor-wrapper>.rdw-editor-toolbar>div:not(:last-child) {
+.rdw-editor-wrapper > .rdw-editor-toolbar > div:not(:last-child) {
   border-right: 1px solid #c7c7c7;
 }
 
-.rdw-editor-wrapper>.editor-class {
+.rdw-editor-wrapper > .editor-class {
   border-color: transparent;
 }
 

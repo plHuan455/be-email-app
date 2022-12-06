@@ -23,7 +23,7 @@ export interface UserResponse {
   contacts: any;
   department_id: number;
   email: string;
-  id: number;
+  user_id: number;
   mail_storage: string;
   manager: number;
   password: string;
@@ -67,7 +67,7 @@ export const createEmployee = async (params: CreateEmployeeParams) => {
     department_id: Number(params.department),
     role_id: Number(params.role),
     phone_number: params.phone,
-  }
+  };
   const res = await ApiClient.post(url, undefined, cloneParams);
   return res.data;
 };

@@ -9,8 +9,10 @@ import './index.scss';
 import { ButtonBase } from '@mui/material';
 import ArrowLeft from '@assets/icon/ArrowLeft';
 import EmailItem from '@components/atoms/Emailitem';
-import { EmailResponse } from '@api/email';
+import { EmailResponse, getEmailManagerWithQueryParams } from '@api/email';
 import { useGetEmail } from '@hooks/Email/useGetEmail';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import Loading from '@components/atoms/Loading';
 
 export interface EmailList {
   userId: number;
@@ -71,24 +73,34 @@ type Props = {
 };
 
 const ModalEmailList = (props: Props) => {
-  const emailsData = useGetEmail(props.status).response;
-  useEffect(() => {
-    props.handleChangeEmailTabNotiNumber &&
-      props.handleChangeEmailTabNotiNumber(
-        props.index || 0,
-        emailsData ? emailsData.data.length : 0,
-      );
-  }, [emailsData]);
-
-  // console.log(
-  //   '🚀 ~ file: index.tsx ~ line 66 ~ ModalEmailList ~ props',
-  //   props.emailData,
-  // );
   const [value, setValue] = React.useState(0);
+
+  const { data: dataGetEmailManagerByStatus } = useQuery({
+    queryKey: ['get-email-manager', props.status],
+    queryFn: () => getEmailManagerWithQueryParams({ status: props.status }),
+    enabled: props.isActive,
+  });
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
+
+  const _renderEmtailItems = useMemo(() => {
+    return (dataGetEmailManagerByStatus?.data ?? []).map((item, index) => {
+      console.log(item.email, '------------------------');
+
+      return (
+        <EmailItem
+          firstEmailContent={item.email[0].content}
+          emailStatus={item.email[0].status}
+          data={item.user_tag_info}
+          key={index}
+        />
+      );
+    });
+  }, [dataGetEmailManagerByStatus]);
+
+  console.log(_renderEmtailItems);
 
   const ModalEmailPending = useMemo(() => {
     return (
@@ -129,13 +141,10 @@ const ModalEmailList = (props: Props) => {
           </Tabs>
         </Box>
         <TabPanel value={value} index={0}>
-          Item Tab All
+          {_renderEmtailItems}
         </TabPanel>
         <TabPanel value={value} index={1}>
-          {emailsData &&
-            emailsData.data.map((email, index) => (
-              <EmailItem emailData={email} key={index} />
-            ))}
+          Item Tab All
         </TabPanel>
       </Box>
     );
@@ -301,7 +310,49 @@ const ModalEmailList = (props: Props) => {
     }
   };
 
-  return renderModalEmailList();
+  return (
+    <Box
+      className={props.isActive ? 'modal__active' : 'modal__inactive'}
+      sx={{
+        width: '100%',
+        height: 'calc(100vh - 165px)',
+        position: 'absolute',
+        transition: '.3s ease-in-out',
+        backgroundColor: '#f7f7fc',
+        zIndex: 10,
+      }}>
+      <ButtonBase
+        onClick={() => props.handleChangeModalStatus(false)}
+        sx={{
+          color: '#554CFF',
+          padding: '0 10px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}>
+        <ArrowLeft width={12} height={12} />
+        <Typography component={'p'} sx={{ fontWeight: 'bold', marginLeft: '10px' }}>
+          {props.title}
+        </Typography>
+      </ButtonBase>
+      <Box>
+        <Tabs
+          className="cover__tabs"
+          value={value}
+          onChange={handleChange}
+          aria-label="basic tabs example">
+          <Tab className="tab" label="All" {...a11yProps(0)} />
+          <Tab className="tab" label="Me" {...a11yProps(1)} />
+        </Tabs>
+      </Box>
+      <TabPanel value={value} index={0}>
+        {_renderEmtailItems}
+      </TabPanel>
+      <TabPanel value={value} index={1}>
+        Item Tab All
+      </TabPanel>
+    </Box>
+  );
 };
 
 export default ModalEmailList;
