@@ -20,6 +20,8 @@ import Icon from '@components/atoms/Icon';
 
 interface TableManagerDepartmentProps {
   departmentList: Department[];
+  onEmployeeDelete: (id: number) => void;
+  onEmployeeUpdate: (id: number) => void;
 }
 
 // const rows = [
@@ -57,8 +59,19 @@ interface TableManagerDepartmentProps {
 //   ),
 // ];
 
-function Row(props: { row: Department; className: string }) {
-  const { row, className } = props;
+interface RowProps {
+  row: Department;
+  className: string;
+  onEmployeeUpdate: (id: number) => void;
+  onEmployeeDelete: (id: number) => void;
+}
+
+function Row({
+  row,
+  className,
+  onEmployeeUpdate,
+  onEmployeeDelete,
+}: RowProps) {
   const [open, setOpen] = React.useState(false);
 
   return (
@@ -89,7 +102,7 @@ function Row(props: { row: Department; className: string }) {
               <Typography variant="h6" gutterBottom component="div">
                 Employees
               </Typography>
-              <TableManagerEmployee data={row.employees} />
+              <TableManagerEmployee data={row.employees} onUpdate={onEmployeeUpdate} onDelete={onEmployeeDelete}/>
             </Box>
           </Collapse>
         </TableCell>
@@ -98,7 +111,11 @@ function Row(props: { row: Department; className: string }) {
   );
 }
 
-export default function TableManagerDepartment({ departmentList }: TableManagerDepartmentProps) {
+export default function TableManagerDepartment({ 
+  departmentList, 
+  onEmployeeUpdate, 
+  onEmployeeDelete 
+}: TableManagerDepartmentProps) {
   return (
     <TableContainer className="tableDepartment" component={Paper}>
       <Table aria-label="collapsible table">
@@ -118,7 +135,12 @@ export default function TableManagerDepartment({ departmentList }: TableManagerD
             <TableCell align="left">all@</TableCell>
           </TableRow>
           {departmentList.map((row) => (
-            <Row className="managerDepartmentRow" key={row.name} row={row} />
+            <Row 
+              className="managerDepartmentRow" 
+              key={row.name} row={row} 
+              onEmployeeUpdate={onEmployeeUpdate}
+              onEmployeeDelete={onEmployeeDelete}
+            />
           ))}
         </TableBody>
       </Table>

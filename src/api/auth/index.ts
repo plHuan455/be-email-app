@@ -1,9 +1,10 @@
 import ApiClient, { ApiResponse } from '@api/ApiClient';
-import { AuthResponse } from './interface';
+import { AuthResponse, AuthUpdate } from './interface';
 
 export type Auth = '/auth/login';
 export type AuthChangePassword = '/auth/setting';
 export const GetAuthProfile = '/api/user';
+export const UpdateAuthProfile = '/api/user/profile';
 
 const CURR_EMAIL = localStorage.getItem('current_email') || '';
 
@@ -23,10 +24,21 @@ export const changePassword = async ({
   return res.data;
 };
 
-export const getUserInfo = async (): Promise<ApiResponse<AuthResponse>> => {
-  const url = `${GetAuthProfile}/cond?value=${CURR_EMAIL}`;
+export const getUserInfo = async (): Promise<ApiResponse<AuthUpdate>> => {
+  const url = `${GetAuthProfile}/cond`;
 
-  const res = await ApiClient.get(url);
+  const res = await ApiClient.get(url, undefined, { value: CURR_EMAIL });
+
+  return res.data;
+};
+
+export const updateAuthProfile = async (
+  id: string | null,
+  query: AuthUpdate,
+): Promise<ApiResponse<AuthUpdate>> => {
+  const url = `${UpdateAuthProfile}`;
+
+  const res = await ApiClient.put(url, undefined, query);
 
   return res.data;
 };

@@ -8,25 +8,26 @@ import { rem } from '@utils/functions';
 import { Controller, FormProvider, UseFormReturn } from 'react-hook-form';
 import styled from 'styled-components';
 
-export interface AddEmployeeField {
-  avatar?: File;
-  username: string;
-  email: string;
-  password: string;
-  phone: string;
-  position: string;
-  role: string;
-  department: string;
+export interface UpdateEmployeeFields {
+  id: number;
+  avatar?: File | string;
+  username?: string;
+  email?: string;
+  password?: string;
+  phone?: string;
+  position?: string;
+  role?: string;
+  department?: string;
 }
-interface AddEmployeeModalProps {
+interface UpdateEmployeeModalProps {
   submitLabel: string;
-  method: UseFormReturn<AddEmployeeField>;
+  method: UseFormReturn<UpdateEmployeeFields>;
   isOpen: boolean;
   isFormLoading: boolean;
   title: string;
   roleList: OptionTypes[];
   departmentList: OptionTypes[];
-  onSubmit: (values: AddEmployeeField) => void;
+  onSubmit: (values: UpdateEmployeeFields) => void;
   onClose: () => void;
 }
 
@@ -48,7 +49,7 @@ const StyleModalWrapper = styled.div`
   overflow: auto;
 `;
 
-function AddEmployeeModal({
+function UpdateEmployeeModal({
   submitLabel,
   method,
   isOpen,
@@ -58,7 +59,7 @@ function AddEmployeeModal({
   departmentList,
   onClose,
   onSubmit,
-}: AddEmployeeModalProps) {
+}: UpdateEmployeeModalProps) {
   return (
     <ModalBase
       isOpen={isOpen}
@@ -78,7 +79,7 @@ function AddEmployeeModal({
                   render={({ field: { value, onChange }, fieldState }) => (
                     <InputWrapper>
                       <AvatarInput
-                        id="create-employee-avatar-field"
+                        id="update-employee-avatar-field"
                         placeholderImgSrc={value instanceof File ? undefined : value}
                         onChange={(data) => onChange(data)}
                       />
@@ -92,7 +93,7 @@ function AddEmployeeModal({
                   render={({ field: { value, onChange }, fieldState }) => (
                     <InputWrapper>
                       <ValidateInput
-                        id='create-employee-email'
+                        id='update-employee-email'
                         label="Email"
                         type="text"
                         fullWidth
@@ -112,7 +113,7 @@ function AddEmployeeModal({
                     <InputWrapper>
                       <ValidateInput
                         label="Phone number"
-                        id='create-employee-phone'
+                        id='update-employee-phone'
                         type="text"
                         fullWidth
                         value={value}
@@ -131,8 +132,8 @@ function AddEmployeeModal({
                     <InputWrapper>
                       <ValidateInput
                         label="Position"
+                        id='update-employee-position'
                         fullWidth
-                        id='create-employee-position'
                         type="text"
                         className="text-emerald-400"
                         value={value}
@@ -149,9 +150,9 @@ function AddEmployeeModal({
                   name="role"
                   render={({ field: { value, onChange }, fieldState }) => (
                     <SelectInput
+                      id='update-employee-role'
                       value={value}
                       onChange={onChange}
-                      id='create-employee-role'
                       label="Role"
                       options={roleList}
                     />
@@ -164,7 +165,6 @@ function AddEmployeeModal({
                   render={({ field: { value, onChange }, fieldState }) => (
                     <SelectInput
                       value={value}
-                      id='create-employee-department'
                       onChange={onChange}
                       label="Department"
                       options={departmentList}
@@ -180,7 +180,6 @@ function AddEmployeeModal({
                       <ValidateInput
                         label="Username"
                         className="text-sm"
-                        id='create-employee-username'
                         type="text"
                         fullWidth
                         value={value}
@@ -199,7 +198,7 @@ function AddEmployeeModal({
                     <InputWrapper>
                       <ValidateInput
                         label="Password"
-                        id='create-employee-password'
+                        id='update-employee-password'
                         className="text-sm"
                         type="password"
                         fullWidth
@@ -245,4 +244,4 @@ function AddEmployeeModal({
   );
 }
 
-export default AddEmployeeModal;
+export default UpdateEmployeeModal;

@@ -62,6 +62,7 @@ function LoginContainer() {
           localStorage.setItem('current_user_avt', currentUser.data.avatar);
           // set current_email to 'email
           localStorage.setItem('current_email', email);
+          localStorage.setItem('current_id', `${currentUser.data.user_id}`);
           toast.success('Đăng nhập thành công!');
           navigate('/');
         }

@@ -1,5 +1,5 @@
 export interface CreateEmployeeParams {
-  avatar: string;
+  avatar?: string;
   username: string;
   email: string;
   password: string;
@@ -7,4 +7,12 @@ export interface CreateEmployeeParams {
   position: string;
   role: string;
   department: string;
+}
+
+export type UpdateEmployeeParams = Partial<CreateEmployeeParams>;
+
+export interface DeleteUserResponse {
+  code?: string;
+  data?: string;
+  message?: string;
 }

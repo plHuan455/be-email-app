@@ -4,33 +4,26 @@ import avt from '../../../assets/images/avatars/avatar-1.jpg';
 import React from 'react';
 import { EmailList } from '@components/molecules/ModalEmailList';
 import './index.scss';
-import { EmailResponse, getEmailWithQueryParam } from '@api/email';
+import { EmailResponse, getEmailWithQueryParam, UserTagResponse } from '@api/email';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useGetEmail } from '@hooks/Email/useGetEmail';
 import { setEmailsList } from '@redux/Email/reducer';
 
 type Props = {
-  emailData: {
-    data: EmailResponse[];
-    total: number;
-  };
+  firstEmailContent: string;
+  emailStatus: string;
+  data: UserTagResponse;
 };
 
-const EmailItem = ({ emailData }: Props) => {
-  const { data, total } = emailData;
+const EmailItem: React.FC<Props> = ({ data, emailStatus, firstEmailContent }) => {
+  const { avatar, count, user_email, user_name } = data;
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const handleClickEmailItem = async (e) => {
-    navigate(`/emails/${data[0].status}/${data[0].from}`);
-    // const emailData = await getEmailWithQueryParam({
-    //   status: data[0].status,
-    //   mail: data[0].from,
-    // });
-    // console.log(`line 28`, emailData);
-    // dispatch(setEmailsList(emailData.data));
+    navigate(`/emails/${emailStatus}/${user_email}`);
   };
 
   return (
@@ -70,8 +63,7 @@ const EmailItem = ({ emailData }: Props) => {
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
               }}>
-              <span className="font-bold">{data[0].writer_name}</span> |{' '}
-              {data[0].from}
+              <span className="font-bold">{user_name}</span> | {user_email}
             </Typography>
             <Typography
               component={'p'}
@@ -85,12 +77,12 @@ const EmailItem = ({ emailData }: Props) => {
                 overflow: 'hidden',
                 fontWeight: 'bold',
               }}>
-              {data[0].content}
+              {firstEmailContent}
             </Typography>
           </Box>
         </Box>
       </Box>
-      {total > 0 ? (
+      {count > 0 ? (
         <Typography
           component={'p'}
           sx={{
@@ -104,7 +96,7 @@ const EmailItem = ({ emailData }: Props) => {
             padding: '0 5px',
             color: '#495057',
           }}>
-          {total > 9 ? '9+' : total}
+          {count > 9 ? '9+' : count}
         </Typography>
       ) : (
         ''
