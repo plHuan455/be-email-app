@@ -13,6 +13,7 @@ import { EmailResponse, getEmailManagerWithQueryParams } from '@api/email';
 import { useGetEmail } from '@hooks/Email/useGetEmail';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import Loading from '@components/atoms/Loading';
+import { useLocation } from 'react-router-dom';
 
 export interface EmailList {
   userId: number;
@@ -75,8 +76,11 @@ type Props = {
 const ModalEmailList = (props: Props) => {
   const [value, setValue] = React.useState(0);
 
+  const locate = useLocation();
+  const pathName = locate.pathname;
+
   const { data: dataGetEmailManagerByStatus } = useQuery({
-    queryKey: ['get-email-manager', props.status],
+    queryKey: ['get-email-manager', props.status, pathName],
     queryFn: () => getEmailManagerWithQueryParams({ status: props.status }),
     enabled: props.isActive,
   });
@@ -87,20 +91,17 @@ const ModalEmailList = (props: Props) => {
 
   const _renderEmtailItems = useMemo(() => {
     return (dataGetEmailManagerByStatus?.data ?? []).map((item, index) => {
-      console.log(item.email, '------------------------');
-
       return (
         <EmailItem
-          firstEmailContent={item.email[0].content}
-          emailStatus={item.email[0].status}
+          firstEmailContent={item.emails[0].content}
+          emailStatus={item.emails[0].status}
+          dataEmail={item.emails}
           data={item.user_tag_info}
           key={index}
         />
       );
     });
   }, [dataGetEmailManagerByStatus]);
-
-  console.log(_renderEmtailItems);
 
   const ModalEmailPending = useMemo(() => {
     return (

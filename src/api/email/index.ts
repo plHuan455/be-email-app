@@ -54,7 +54,7 @@ export interface UserTagResponse {
 }
 
 export interface EmailManagerResponse {
-  email: EmailResponse[];
+  emails: EmailResponse[];
   user_tag_info: UserTagResponse;
 }
 
@@ -85,7 +85,7 @@ export const getEmailWithQueryParam = async (params?: {
   mail?: string | null;
   hashtag?: string;
 }): Promise<AxiosResponse<EmailResponse[]>> => {
-  const url = `${EMAIL_API_URL}`;
+  const url = `${EMAIL_API_URL}/manager`;
   const res = await ApiClient.get(
     url,
     {},
@@ -96,7 +96,8 @@ export const getEmailWithQueryParam = async (params?: {
 
 // GET EMAIL MANAGER STATUS
 export const getEmailManagerWithQueryParams = async (params?: {
-  status: string;
+  status?: string;
+  email?: string;
 }): Promise<AxiosResponse<EmailManagerResponse[]>> => {
   const url = `${EMAIL_MANAGER_API_URL}/tag`;
   const res = await ApiClient.get(url, undefined, params);

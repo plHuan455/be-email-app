@@ -14,9 +14,15 @@ type Props = {
   firstEmailContent: string;
   emailStatus: string;
   data: UserTagResponse;
+  dataEmail: EmailResponse[];
 };
 
-const EmailItem: React.FC<Props> = ({ data, emailStatus, firstEmailContent }) => {
+const EmailItem: React.FC<Props> = ({
+  data,
+  emailStatus,
+  firstEmailContent,
+  dataEmail,
+}) => {
   const { avatar, count, user_email, user_name } = data;
 
   const navigate = useNavigate();

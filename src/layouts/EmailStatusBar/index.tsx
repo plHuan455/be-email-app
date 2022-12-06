@@ -289,8 +289,6 @@ const EmailStatusBar = (props: Props) => {
     );
   };
 
-  console.log(emailTabs);
-
   return (
     <Box
       sx={{

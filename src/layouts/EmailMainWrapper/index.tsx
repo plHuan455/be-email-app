@@ -9,7 +9,7 @@ import { useParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import { setEmailIsLoading, setEmailsList } from '@redux/Email/reducer';
 import { useMutation } from '@tanstack/react-query';
-import { getEmailWithQueryParam } from '@api/email';
+import { getEmailManagerWithQueryParams, getEmailWithQueryParam } from '@api/email';
 import { toast } from 'react-toastify';
 
 const receiverData: Receiver[] = [
@@ -35,9 +35,9 @@ const EmailMainWrapper = () => {
 
   const mutationData = useMutation({
     mutationKey: ['get-emails', params],
-    mutationFn: () => getEmailWithQueryParam(params),
+    mutationFn: () => getEmailManagerWithQueryParams(params),
     onSuccess: (res) => {
-      dispatch(setEmailsList(res.data));
+      dispatch(setEmailsList(res.data[0].emails));
       return res.data;
     },
     onError: (res) => {

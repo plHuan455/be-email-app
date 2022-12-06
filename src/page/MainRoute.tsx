@@ -34,7 +34,7 @@ export const managerRouter: RouteObject[] = [
     path: '/manager',
     element: <Manager />,
     children: [
-      { path: '/manager', element: <ManagerEmployee /> },
+      { path: '/manager', element: <ManagerDepartment /> },
       { path: '/manager/setting', element: <SettingRoles /> },
       {
         path: '/manager/department',
@@ -83,14 +83,6 @@ export const sideBarRouter: RouteObject[] = [
     path: '/bookmark',
     element: <Navigate to={'/emails'} replace={true} />,
   },
-  {
-    path: '/change-password',
-    element: <ChangePassword />,
-  },
-  {
-    path: '/profile',
-    element: <UserProfileContainer />,
-  },
 ];
 
 export const declareRouter: RouteObject[] = [
@@ -106,6 +98,14 @@ export const declareRouter: RouteObject[] = [
         element: <Navigate to={'/emails'} replace={true} />,
       },
       { path: '/about', element: <AboutPage /> },
+      {
+        path: '/change-password',
+        element: <ChangePassword />,
+      },
+      {
+        path: '/profile',
+        element: <UserProfileContainer />,
+      },
       ...sideBarRouter,
       ...managerRouter,
     ],

@@ -12,7 +12,9 @@ import { toast } from 'react-toastify';
 import { getRole } from '@api/role';
 import { Tab, Tabs } from '@mui/material';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-import UpdateEmployeeModal, { UpdateEmployeeFields } from '../TableManagerEmployeeContainer/UpdateEmployeeModal';
+import UpdateEmployeeModal, {
+  UpdateEmployeeFields,
+} from '../TableManagerEmployeeContainer/UpdateEmployeeModal';
 import { createEmployeeSchema } from '@utils/schemas';
 import { uploadFile } from '@api/uploadFile';
 import { deleteUser, getUser, updateEmployee } from '@api/user';
@@ -48,9 +50,9 @@ const TableManagerDepartmentContainer: React.FC<
   const {
     isOpen,
     isLoading: isAlertDialogLoading,
-    title: alertTitle, 
-    description: alertDescription, 
-    callback: alertCallback, 
+    title: alertTitle,
+    description: alertDescription,
+    callback: alertCallback,
     setAlertData,
     onClose: onCloseAlertDialog,
     setIsLoading: setIsAlertDialogLoading,
@@ -99,50 +101,65 @@ const TableManagerDepartmentContainer: React.FC<
       },
     });
 
-  const { mutate: deleteEmployeeMutate, isLoading: isEmployeeDeleting } = useMutation({
-    mutationKey: ['table-manager-delete-employee'],
-    mutationFn: deleteUser,
-    onSuccess: () => {
-      queryClient.invalidateQueries({queryKey: ['table-manager-department-get-departments']});
-      toast.success('Employee is deleted');
-      onCloseAlertDialog();
-    }
-  })
+  const { mutate: deleteEmployeeMutate, isLoading: isEmployeeDeleting } =
+    useMutation({
+      mutationKey: ['table-manager-delete-employee'],
+      mutationFn: deleteUser,
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ['table-manager-department-get-departments'],
+        });
+        toast.success('Employee is deleted');
+        onCloseAlertDialog();
+      },
+    });
 
-  const { mutate: updateEmployeeMutate, isLoading: isUpdateEmployeeLoading } = useMutation({
-    mutationKey: ['table-manager-update-employee'],
-    mutationFn: ({id, params}: {id: number, params: UpdateEmployeeParams}) => updateEmployee(id, params),
-    onSuccess: () => {
-      queryClient.invalidateQueries({queryKey: ['table-manager-department-get-departments']});
-      toast.success('Employee is updated');
-      updateEmployeeMethod.reset();
-      setIsShowUpdateEmployee(false);
-    },
-    onError: (err: any) => {
-      toast.error(err?.data?.message ?? 'Update employee failed');
-    },
-  });
+  const { mutate: updateEmployeeMutate, isLoading: isUpdateEmployeeLoading } =
+    useMutation({
+      mutationKey: ['table-manager-update-employee'],
+      mutationFn: ({ id, params }: { id: number; params: UpdateEmployeeParams }) =>
+        updateEmployee(id, params),
+      onSuccess: () => {
+        queryClient.invalidateQueries({
+          queryKey: ['table-manager-department-get-departments'],
+        });
+        toast.success('Employee is updated');
+        updateEmployeeMethod.reset();
+        setIsShowUpdateEmployee(false);
+      },
+      onError: (err: any) => {
+        toast.error(err?.data?.message ?? 'Update employee failed');
+      },
+    });
 
-  const { mutate: uploadAvatarFileMutate, isLoading: isUploadingFile } = useMutation({
-    mutationKey: ['table-manager-upload-file'],
-    mutationFn: ({ avatar, callback }: { avatar: File, callback: (avatarSrc: string) => void }) => {
-      return uploadFile(avatar)
+  const { mutate: uploadAvatarFileMutate, isLoading: isUploadingFile } = useMutation(
+    {
+      mutationKey: ['table-manager-upload-file'],
+      mutationFn: ({
+        avatar,
+        callback,
+      }: {
+        avatar: File;
+        callback: (avatarSrc: string) => void;
+      }) => {
+        return uploadFile(avatar);
+      },
+      onSuccess: (res, params) => {
+        params.callback(res?.dta ?? '');
+      },
+      onError: () => {
+        toast.error("Can't upload file");
+      },
     },
-    onSuccess: (res, params) => {
-      params.callback(res?.dta ?? '');
-    },
-    onError: () => {
-      toast.error('Can\'t upload file');
-    }
-  });
+  );
 
-  const { mutate: getEmployeeMutate, isLoading: isGetEmployeeMutate} = useMutation({
+  const { mutate: getEmployeeMutate, isLoading: isGetEmployeeMutate } = useMutation({
     mutationKey: ['table-manager-get-employee'],
     mutationFn: getUser,
     onSuccess: (res) => {
       const data = res.data;
-      if(data) {
-        updateEmployeeMethod.setValue('id', data.id);
+      if (data) {
+        updateEmployeeMethod.setValue('id', data.user_id);
         updateEmployeeMethod.setValue('avatar', data.avatar);
         updateEmployeeMethod.setValue('username', data.user_name);
         updateEmployeeMethod.setValue('password', data.password);
@@ -152,8 +169,8 @@ const TableManagerDepartmentContainer: React.FC<
         updateEmployeeMethod.setValue('position', String(data.position));
         updateEmployeeMethod.setValue('role', String(data.role_id));
       }
-    }
-  })
+    },
+  });
 
   const { data: roleData } = useQuery({
     queryKey: ['table-manager-employee-get-role'],
@@ -182,7 +199,7 @@ const TableManagerDepartmentContainer: React.FC<
           value?.users?.map(
             (user) =>
               new Manager(
-                user.id,
+                user.user_id,
                 user.avatar,
                 user.user_name,
                 user.email,
@@ -220,38 +237,36 @@ const TableManagerDepartmentContainer: React.FC<
   };
 
   const handleUpdateEmployeeSubmit = (values: UpdateEmployeeFields) => {
-    if(values.avatar instanceof File) {
+    if (values.avatar instanceof File) {
       uploadAvatarFileMutate({
         avatar: values.avatar,
         callback: (avatarSrc) => {
           updateEmployeeMutate({
-          id: values.id, 
-          params: {...values, avatar: avatarSrc}
-        })}
-      })
+            id: values.id,
+            params: { ...values, avatar: avatarSrc },
+          });
+        },
+      });
       return;
     }
 
     updateEmployeeMutate({
       id: values.id,
-      params: {...values, avatar: undefined}
-    })
-  }
+      params: { ...values, avatar: undefined },
+    });
+  };
 
   const handleEmployeeUpdateClick = (id: number) => {
     setIsShowUpdateEmployee(true);
     getEmployeeMutate(id);
-  }
+  };
 
   const handleEmployeeDeleteClick = (id: number) => {
-    setAlertData(
-      'Delete employee', 
-    'Deleted employee will not restored', 
-    () => {
+    setAlertData('Delete employee', 'Deleted employee will not restored', () => {
       setIsAlertDialogLoading(true);
       deleteEmployeeMutate(id);
     });
-  }
+  };
 
   return (
     <div>
@@ -285,18 +300,23 @@ const TableManagerDepartmentContainer: React.FC<
         }}
       />
 
-      <UpdateEmployeeModal 
+      <UpdateEmployeeModal
         title="Update employee"
         isOpen={isShowUpdateEmployee}
         method={updateEmployeeMethod}
         departmentList={convertedDepartmentOptions ?? []}
-        isFormLoading={isGetEmployeeMutate || isUpdateEmployeeLoading || isUploadingFile}
-        onClose={() => {setIsShowUpdateEmployee(false); updateEmployeeMethod.reset()}}
+        isFormLoading={
+          isGetEmployeeMutate || isUpdateEmployeeLoading || isUploadingFile
+        }
+        onClose={() => {
+          setIsShowUpdateEmployee(false);
+          updateEmployeeMethod.reset();
+        }}
         onSubmit={handleUpdateEmployeeSubmit}
         submitLabel="Update employee"
         roleList={convertedRoleOptions ?? []}
       />
-      
+
       <AlertDialog
         isLoading={isAlertDialogLoading}
         titleLabel={alertTitle}

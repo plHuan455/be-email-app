@@ -57,7 +57,7 @@ const EmailMess: React.FC<Props> = ({
   //   setEditor(EditorState.createWithContent(contentState));
   // }, []);
 
-  const cloneSendTo = [...emailData.to];
+  const cloneSendTo = !!emailData.to ? [...emailData.to] : [];
 
   const renderSendTo = () => {
     const sendToLength = cloneSendTo.length;
@@ -95,6 +95,87 @@ const EmailMess: React.FC<Props> = ({
       </p>
     );
   };
+
+  // Render FUNC
+  const _renderActionsPending = useMemo(() => {
+    return (
+      <>
+        <Button className="mx-1 bg-rose-600 py-1.5 px-5 hover:bg-rose-500">
+          DECLINE
+        </Button>
+        <Button className="mx-1 py-1.5 px-5">APPROVE</Button>
+      </>
+    );
+  }, []);
+
+  const _renderActionsSending = useMemo(() => {
+    return (
+      <Box className="flex items-center bg-[#F6F3FD] rounded-[12px] py-1 px-2.5">
+        <Box className="pr-4">
+          <p className="text-[#181818] text-[14px] font-medium">
+            This email will be sent in:{' '}
+            <span className="text-[#554CFF]">13 minutes</span>
+          </p>
+        </Box>
+        <Box>
+          <Button className="bg-transparent text-[#181818] font-bold hover:bg-slate-200">
+            Undo
+          </Button>
+          <Button className="bg-transparent text-[#FFB800] font-bold hover:bg-slate-200">
+            Send
+          </Button>
+        </Box>
+      </Box>
+    );
+  }, []);
+
+  const _renderActionsApproved = useMemo(() => {
+    return (
+      <Box className="flex actions justify-end py-4">
+        <Box className="flex items-center border border-[#9696C6] px-4 py-2 rounded-[16px]">
+          <Box className="pr-7">
+            <p className="text-[#181818] text-[14px] font-normal">
+              Your email will be sent in
+              <span className="text-[#554CFF] inline-block pl-1">8 minutes</span>
+            </p>
+          </Box>
+          <Box>
+            <Button className="bg-transparent hover:bg-slate-200 text-[#554CFF] font-bold">
+              Cancel
+            </Button>
+          </Box>
+        </Box>
+      </Box>
+    );
+  }, []);
+
+  const _renderStatusLayer = useMemo(() => {
+    return (
+      <EmailForward
+        status={status}
+        onChangeEmailStatus={() => {
+          onChangeStatus(defaultStatus, index);
+        }}
+        isReadOnlyReceivers={!(status === 'forward')}
+        classNameLayer="absolute top-0 left-0 w-full h-full"
+        classNameContent="shadow-lg p-4 absolute z-10 top-1/2 right-[40px] w-[90%] -translate-y-1/2 bg-white rounded-[11px] border border-[#E3E3E3] "
+        sendTo={
+          status === 'reply'
+            ? [emailData.from]
+            : status === 'replyAll'
+            ? emailData.to
+            : emailData.to
+        }
+        sendToDefault={
+          status === 'reply'
+            ? [emailData.from]
+            : status === 'replyAll'
+            ? emailData.to
+            : []
+        }
+      />
+    );
+  }, [status]);
 
   return (
     <Box
@@ -148,7 +229,7 @@ const EmailMess: React.FC<Props> = ({
             {emailData.subject}
           </h1>
           {renderSendTo()}
-          <EmailStatus emailStatus={status} />
+          {status.toLowerCase() !== 'null' && <EmailStatus emailStatus={status} />}
         </Box>
         {/* Email Content */}
         <Box className="py-9">
@@ -159,80 +240,17 @@ const EmailMess: React.FC<Props> = ({
         {/* Files List If have */}
         {emailData.attachFiles && <AttachFiles data={emailData.attachFiles} />}
         {/* Actions */}
-        {(status === 'pending' || status === 'sending') && (
+        {(status === 'PENDING' || status === 'SENDING') && (
           <Box className="flex flex-wrap actions justify-end py-4">
             <Box className="w-full h-[1px] bg-[#E0E0E0] mb-5"></Box>
-            {status === 'pending' ? (
-              <>
-                <Button className="mx-1 bg-rose-600 py-1.5 px-5 hover:bg-rose-500">
-                  DECLINE
-                </Button>
-                <Button className="mx-1 py-1.5 px-5">APPROVE</Button>
-              </>
-            ) : (
-              <Box className="flex items-center bg-[#F6F3FD] rounded-[12px] py-1 px-2.5">
-                <Box className="pr-4">
-                  <p className="text-[#181818] text-[14px] font-medium">
-                    This email will be sent in:{' '}
-                    <span className="text-[#554CFF]">13 minutes</span>
-                  </p>
-                </Box>
-                <Box>
-                  <Button className="bg-transparent text-[#181818] font-bold hover:bg-slate-200">
-                    Undo
-                  </Button>
-                  <Button className="bg-transparent text-[#FFB800] font-bold hover:bg-slate-200">
-                    Send
-                  </Button>
-                </Box>
-              </Box>
-            )}
+            {status === 'PENDING' ? _renderActionsPending : _renderActionsSending}
           </Box>
         )}
-        {status === 'approved' && (
-          <Box className="flex actions justify-end py-4">
-            <Box className="flex items-center border border-[#9696C6] px-4 py-2 rounded-[16px]">
-              <Box className="pr-7">
-                <p className="text-[#181818] text-[14px] font-normal">
-                  Your email will be sent in
-                  <span className="text-[#554CFF] inline-block pl-1">8 minutes</span>
-                </p>
-              </Box>
-              <Box>
-                <Button className="bg-transparent hover:bg-slate-200 text-[#554CFF] font-bold">
-                  Cancel
-                </Button>
-              </Box>
-            </Box>
-          </Box>
-        )}
+        {status === 'APPROVED' && _renderActionsApproved}
       </Box>
       {/* Layer if status === 'Reply || ReplyAll' */}
-      {(status === 'reply' || status === 'replyAll' || status === 'forward') && (
-        <EmailForward
-          status={status}
-          onChangeEmailStatus={() => {
-            onChangeStatus(defaultStatus, index);
-          }}
-          isReadOnlyReceivers={!(status === 'forward')}
-          classNameLayer="absolute top-0 left-0 w-full h-full"
-          classNameContent="shadow-lg p-4 absolute z-10 top-1/2 right-[40px] w-[90%] -translate-y-1/2 bg-white rounded-[11px] border border-[#E3E3E3] "
-          sendTo={
-            status === 'reply'
-              ? [emailData.from]
-              : status === 'replyAll'
-              ? emailData.to
-              : emailData.to
-          }
-          sendToDefault={
-            status === 'reply'
-              ? [emailData.from]
-              : status === 'replyAll'
-              ? emailData.to
-              : []
-          }
-        />
-      )}
+      {(status === 'reply' || status === 'replyAll' || status === 'forward') &&
+        _renderStatusLayer}
     </Box>
   );
 };

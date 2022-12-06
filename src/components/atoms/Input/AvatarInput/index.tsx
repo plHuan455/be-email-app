@@ -66,9 +66,10 @@ const AvatarInput: React.FC<AvatarInputProps> = ({
   onChange,
   className,
   alt,
-  src,
 }) => {
-  const [preViewImgSrc, setPreViewImgSrc] = useState<string>(placeholderImgSrc ?? '');
+  const [preViewImgSrc, setPreViewImgSrc] = useState<string>(
+    placeholderImgSrc ?? '',
+  );
   const objectUrlRef = useRef<string>();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

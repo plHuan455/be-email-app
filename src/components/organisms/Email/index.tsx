@@ -193,7 +193,7 @@ const Email: React.FC<Props> = () => {
 
                 toast.success('Xóa thành công!');
               } else {
-                toast.error('Có lỗi xảy ra');
+                toast.error('Hệ thống xảy ra lỗi!');
               }
             },
           }));

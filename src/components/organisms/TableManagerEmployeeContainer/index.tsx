@@ -34,7 +34,7 @@ const TableManagerEmployeeContainer = () => {
     isLoading: isAlertDialogLoading,
     title: alertTitle,
     description: alertDescription,
-    callback: alertCallback, 
+    callback: alertCallback,
     setAlertData,
     onClose: onCloseAlertDialog,
     setIsLoading: setIsAlertDialogLoading,
@@ -76,29 +76,36 @@ const TableManagerEmployeeContainer = () => {
     resolver: yupResolver(createEmployeeSchema),
   });
 
-  const { mutate: createEmployeeMutate, isLoading: isCreateEmployeeLoading } = useMutation({
-    mutationKey: ['table-manager-create-employee'],
-    mutationFn: createEmployee,
-    onSuccess: () => {
-      toast.success('Employee is created');
-      queryClient.invalidateQueries({ queryKey: ['table-manager-employee-get-employees'] });
-    },
-    onError: () => {
-      toast.error('Create employee failed');
-    },
-  });
+  const { mutate: createEmployeeMutate, isLoading: isCreateEmployeeLoading } =
+    useMutation({
+      mutationKey: ['table-manager-create-employee'],
+      mutationFn: createEmployee,
+      onSuccess: () => {
+        toast.success('Employee is created');
+        queryClient.invalidateQueries({
+          queryKey: ['table-manager-employee-get-employees'],
+        });
+      },
+      onError: () => {
+        toast.error('Create employee failed');
+      },
+    });
 
-  const { mutate: updateEmployeeMutate, isLoading: isUpdateEmployeeLoading } = useMutation({
-    mutationKey: ['table-manager-update-employee'],
-    mutationFn: ({ id, params }: { id: number, params: UpdateEmployeeParams }) => updateEmployee(id, params),
-    onSuccess: () => {
-      toast.success('Employee is updated');
-      queryClient.invalidateQueries({ queryKey: ['table-manager-employee-get-employees'] });
-    },
-    onError: () => {
-      toast.error('Update employee failed');
-    },
-  });
+  const { mutate: updateEmployeeMutate, isLoading: isUpdateEmployeeLoading } =
+    useMutation({
+      mutationKey: ['table-manager-update-employee'],
+      mutationFn: ({ id, params }: { id: number; params: UpdateEmployeeParams }) =>
+        updateEmployee(id, params),
+      onSuccess: () => {
+        toast.success('Employee is updated');
+        queryClient.invalidateQueries({
+          queryKey: ['table-manager-employee-get-employees'],
+        });
+      },
+      onError: () => {
+        toast.error('Update employee failed');
+      },
+    });
 
   // const {mutate: getImageUrlMutate} = useMutation({
   //   mutationKey: ['table-manager-get-image-url'],
@@ -108,18 +115,26 @@ const TableManagerEmployeeContainer = () => {
   //   }
   // })
 
-  const { mutate: uploadAvatarFileMutate, isLoading: isUploadingFile } = useMutation({
-    mutationKey: ['table-manager-upload-file'],
-    mutationFn: ({ avatar, callback }: { avatar: File, callback: (avatarSrc: string) => void }) => {
-      return uploadFile(avatar)
+  const { mutate: uploadAvatarFileMutate, isLoading: isUploadingFile } = useMutation(
+    {
+      mutationKey: ['table-manager-upload-file'],
+      mutationFn: ({
+        avatar,
+        callback,
+      }: {
+        avatar: File;
+        callback: (avatarSrc: string) => void;
+      }) => {
+        return uploadFile(avatar);
+      },
+      onSuccess: (res, params) => {
+        params.callback(res?.data ?? '');
+      },
+      onError: () => {
+        toast.error("Can't upload file");
+      },
     },
-    onSuccess: (res, params) => {
-      params.callback(res?.data ?? '');
-    },
-    onError: () => {
-      toast.error('Can\'t upload file');
-    }
-  });
+  );
 
   const { data: employeeData } = useQuery({
     queryKey: ['table-manager-employee-get-employees'],
@@ -152,13 +167,15 @@ const TableManagerEmployeeContainer = () => {
     mutationFn: deleteUser,
     onSuccess: () => {
       toast.success('User is deleted');
-      queryClient.invalidateQueries({ queryKey: ['table-manager-employee-get-employees'] });
+      queryClient.invalidateQueries({
+        queryKey: ['table-manager-employee-get-employees'],
+      });
       onCloseAlertDialog();
     },
     onError: () => {
-      toast.error('Delete is failed')
-    }
-  })
+      toast.error('Delete is failed');
+    },
+  });
 
   const convertedRoleList = useMemo(
     () =>
@@ -187,61 +204,65 @@ const TableManagerEmployeeContainer = () => {
     });
 
     return employeeData?.data
-      .map(
-        (value) => {
-          return new Manager(
-            value.id,
-            value.avatar,
-            value.user_name,
-            value.email,
-            value.position,
-            roleHash[value.role_id] ?? '',
-          )
-        }
-      )
+      .map((value) => {
+        return new Manager(
+          value.user_id,
+          value.avatar,
+          value.user_name,
+          value.email,
+          value.position,
+          roleHash[value.role_id] ?? '',
+        );
+      })
       .sort((a, b) => (a.name < b.name ? -1 : 1));
   }, [employeeData, roleData]);
 
   const handleChangeTab = (e, newValue) => setValue(newValue);
 
   const handleCreateSubmit = (values: AddEmployeeField) => {
-    if(values.avatar){
+    if (values.avatar) {
       uploadAvatarFileMutate({
         avatar: values.avatar as File,
-        callback: (avatar) => createEmployeeMutate({ ...values, avatar })
+        callback: (avatar) => createEmployeeMutate({ ...values, avatar }),
       });
       return;
     }
 
-    createEmployeeMutate({...values, avatar: undefined});
+    createEmployeeMutate({ ...values, avatar: undefined });
   };
 
   const handleUpdateSubmit = (values: UpdateEmployeeFields) => {
     if (values.avatar instanceof File) {
       uploadAvatarFileMutate({
         avatar: values.avatar as File,
-        callback: (avatar) => updateEmployeeMutate({ id: values.id, params: { ...values, avatar } })
+        callback: (avatar) =>
+          updateEmployeeMutate({ id: values.id, params: { ...values, avatar } }),
+      });
+    } else {
+      updateEmployeeMutate({
+        id: values.id,
+        params: { ...values, avatar: undefined },
       });
     }
-    else {
-      updateEmployeeMutate({ id: values.id, params: { ...values, avatar: undefined } })
-    }
-  }
+  };
 
   const handleDelete = (employeeId: number) => {
     setAlertData('Delete employee', 'Deleted employee will not restored', () => {
       setIsAlertDialogLoading(true);
       deleteEmployeeMutate(employeeId);
     });
-  }
+  };
 
   const handleUpdateClick = (id: number) => {
-    const updateEmployee = employeeData?.data.find(value => value.id === id);
+    const updateEmployee = employeeData?.data.find((value) => value.user_id === id);
     if (updateEmployee) {
-      updateEmployeeMethod.setValue('id', updateEmployee.id);
+      updateEmployeeMethod.setValue('id', updateEmployee.user_id);
       updateEmployeeMethod.setValue('avatar', updateEmployee.avatar);
       updateEmployeeMethod.setValue('username', updateEmployee.user_name);
-      updateEmployeeMethod.setValue('department', String(updateEmployee.department_id));
+      updateEmployeeMethod.setValue(
+        'department',
+        String(updateEmployee.department_id),
+      );
       updateEmployeeMethod.setValue('role', String(updateEmployee.role_id));
       updateEmployeeMethod.setValue('email', updateEmployee.email);
       updateEmployeeMethod.setValue('phone', updateEmployee.phone_number);
@@ -249,7 +270,7 @@ const TableManagerEmployeeContainer = () => {
       updateEmployeeMethod.setValue('position', updateEmployee.position);
     }
     setIsShowUpdateEmployee(true);
-  }
+  };
 
   return (
     <div>

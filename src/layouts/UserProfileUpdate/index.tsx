@@ -59,7 +59,9 @@ const UserProfileUpdate: React.FC<Props> = ({
                     <AvatarInput
                       id="create-employee-avatar-field"
                       onChange={(data) => onChange(data)}
-                      src={typeof value === 'string' ? `http://${value}` : undefined}
+                      placeholderImgSrc={
+                        typeof value === 'string' ? `http://${value}` : undefined
+                      }
                     />
                   </div>
                 )}
