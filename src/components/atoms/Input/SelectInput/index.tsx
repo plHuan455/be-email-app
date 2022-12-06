@@ -8,6 +8,7 @@ export interface OptionTypes {
 }
 
 export interface SelectInputProps {
+  id?: string;
   className?: string;
   value: string;
   name?: string;
@@ -16,7 +17,7 @@ export interface SelectInputProps {
   onChange?: (value: string) => void;
 }
 
-function SelectInput ({ className, name, value, label, options, onChange} : SelectInputProps) {
+function SelectInput ({ id, className, name, value, label, options, onChange} : SelectInputProps) {
   const handleChange = (e: SelectChangeEvent) => {
     if(onChange && e.target) {
       onChange(e.target.value);
@@ -24,11 +25,11 @@ function SelectInput ({ className, name, value, label, options, onChange} : Sele
   }
   return (
     <>
-      <label>{label}</label>
+      <label htmlFor={id}>{label}</label>
       <Select
         size="small"
         labelId="demo-simple-select-label"
-        id="demo-simple-select"
+        id={id}
         className={classNames("py-1 mt-1", className)}
         name={name}
         value={value}

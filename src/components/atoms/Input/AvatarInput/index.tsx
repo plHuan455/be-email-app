@@ -6,6 +6,7 @@ import CameraAltIcon from '@mui/icons-material/CameraAlt';
 
 interface AvatarInputProps {
   id?: string;
+  placeholderImgSrc?: string;
   onChange?: (value: File) => void;
   className?: string;
   alt?: string;
@@ -61,12 +62,13 @@ const StyleIcon = styled.div`
 
 const AvatarInput: React.FC<AvatarInputProps> = ({
   id,
+  placeholderImgSrc,
   onChange,
   className,
   alt,
   src,
 }) => {
-  const [preViewImgSrc, setPreViewImgSrc] = useState<string>(() => src || '');
+  const [preViewImgSrc, setPreViewImgSrc] = useState<string>(placeholderImgSrc ?? '');
   const objectUrlRef = useRef<string>();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
