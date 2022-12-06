@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { useTheme } from '@mui/material/styles';
+import DeleteIcon from '@mui/icons-material/Delete';
+import UpdateIcon from '@mui/icons-material/Update';
 import Box from '@mui/material/Box';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -20,6 +22,7 @@ import { Button, TableHead } from '@mui/material';
 
 import './styles.scss';
 import { rem } from '@utils/functions';
+import TableActionsMenu from '@components/molecules/TableActionsMenu';
 
 interface TablePaginationActionsProps {
   count: number;
@@ -112,13 +115,13 @@ const TableManagerEmployee: React.FC<Props> = ({ data, onDelete, onUpdate }) => 
   };
 
   const handleDelete = (id: number) => {
-    if(onDelete){
+    if (onDelete) {
       onDelete(id)
     }
   }
 
   const handleUpdate = (id: number) => {
-    if(onUpdate) onUpdate(id);
+    if (onUpdate) onUpdate(id);
   }
 
   return (
@@ -175,30 +178,18 @@ const TableManagerEmployee: React.FC<Props> = ({ data, onDelete, onUpdate }) => 
                   {row.role}
                 </TableCell>
                 <TableCell align="center">
-                  <Box>
-                    <Button
-                      variant='text'
-                      sx={{
-                        color: 'red',
-                        fontSize: rem(12),
-                        padding: `${rem(4)} ${rem(12)}`,
-                      }}
-                      onClick={() => handleDelete(row.id)}
-                    >
-                      Delete
-                    </Button>
-                    <Button
-                      variant='text'
-                      sx={{
-                        color: 'blue',
-                        fontSize: rem(12),
-                        padding: `${rem(4)} ${rem(12)}`,
-                      }}
-                      onClick={() => handleUpdate(row.id)}
-                    >
-                      Update
-                    </Button>
-                  </Box>
+                  <TableActionsMenu
+                    sx={{ maxWidth: rem(52), minWidth: rem(52) }}
+                    options={[{ value: 0, label: 'Update', icon: <UpdateIcon /> }, { value: 1, label: 'Delete', icon: <DeleteIcon /> }]}
+                    onItemClick={(value) => {
+                      if (value === 0) {
+                        handleUpdate(row.id);
+                      }
+                      if (value === 1) {
+                        handleDelete(row.id);
+                      }
+                    }}
+                  />
                 </TableCell>
               </TableRow>
             ))}
