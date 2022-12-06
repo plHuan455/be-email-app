@@ -7,8 +7,10 @@ export interface DepartmentResponse {
   users?: UserResponse[];
 }
 
-export interface DepartmentParams {
+export interface CreateDepartmentParams {
   name: string;
   description?: string;
   address?: string;
 }
+
+type UpdateDepartmentParams = Partial<CreateDepartmentParams>;
