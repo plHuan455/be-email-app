@@ -14,14 +14,13 @@ import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import { Department, Manager } from '@page/Manager/interface';
-import TableManagerEmployee from '@components/organisms/TableManagerEmployeeContainer/TableManagerEmployee';
+import { Department } from '@page/Manager/interface';
 
 import './styles.scss';
 import Icon from '@components/atoms/Icon';
-import { Button, Divider, Menu, MenuItem } from '@mui/material';
 import { rem } from '@utils/functions';
 import TableActionsMenu from '@components/molecules/TableActionsMenu';
+import TableManagerEmployeeContainer from '@containers/TableManagerEmployeeContainer';
 
 interface TableManagerDepartmentProps {
   departmentList: Department[];
@@ -92,7 +91,11 @@ function Row({
               <Typography variant="h6" gutterBottom component="div">
                 Employees
               </Typography>
-              <TableManagerEmployee data={row.employees} onUpdate={onEmployeeUpdateClick} onDelete={onEmployeeDeleteClick} />
+              <TableManagerEmployeeContainer
+                data={row.employees}
+                onUpdate={onEmployeeUpdateClick}
+                onDelete={onEmployeeDeleteClick}
+              />
             </Box>
           </Collapse>
         </TableCell>

@@ -87,31 +87,40 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
 }
 
 interface Props {
+  page: number;
+  limit: number;
+  total: number;
   data: Manager[];
   onDelete?: (id: number) => void;
   onUpdate?: (id: number) => void;
+  onChangePage: (page: number) => void;
+  onChangeLimit: (limit: number) => void;
 }
 
-const TableManagerEmployee: React.FC<Props> = ({ data, onDelete, onUpdate }) => {
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
-
+const TableManagerEmployee: React.FC<Props> = ({ 
+  data, 
+  page,
+  limit,
+  total,
+  onDelete,
+  onUpdate,
+  onChangePage,
+  onChangeLimit 
+}) => {
   // Avoid a layout jump when reaching the last page with empty rows.
-  const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - data.length) : 0;
+  const emptyRows = limit - data.length;
 
   const handleChangePage = (
     event: React.MouseEvent<HTMLButtonElement> | null,
     newPage: number,
   ) => {
-    setPage(newPage);
+    onChangePage(newPage);
   };
 
   const handleChangeRowsPerPage = (
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
   ) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+    onChangeLimit(parseInt(event.target.value, 10));
   };
 
   const handleDelete = (id: number) => {
@@ -147,10 +156,7 @@ const TableManagerEmployee: React.FC<Props> = ({ data, onDelete, onUpdate }) => 
             </TableRow>
           </TableHead>
           <TableBody>
-            {(rowsPerPage > 0
-              ? data.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              : data
-            ).map((row, index) => (
+            {data.map((row, index) => (
               <TableRow
                 className={`managerRow ${row.role === 'Blocked' && 'blocked'}`}
                 key={index}>
@@ -204,8 +210,8 @@ const TableManagerEmployee: React.FC<Props> = ({ data, onDelete, onUpdate }) => 
               <TablePagination
                 rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
                 colSpan={5}
-                count={data.length}
-                rowsPerPage={rowsPerPage}
+                count={total}
+                rowsPerPage={limit}
                 page={page}
                 SelectProps={{
                   inputProps: {
