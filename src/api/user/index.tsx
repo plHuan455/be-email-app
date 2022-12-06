@@ -19,6 +19,7 @@ export interface CreateUserParam {
   avatar: string;
 }
 export interface UserResponse {
+  id: number;
   avatar: string;
   contacts: any;
   department_id: number;
