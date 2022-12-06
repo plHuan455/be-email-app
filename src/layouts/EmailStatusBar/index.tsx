@@ -20,7 +20,8 @@ import { useNavigate } from 'react-router-dom';
 import SingleOTPInput from '@components/atoms/Input/PinInput/SingleInput';
 import Hashtag from '@components/atoms/Hashtag';
 import { toast } from 'react-toastify';
-import { getAllEmailTags } from '@api/email';
+import { EmailTagsResponse, getAllEmailTags } from '@api/email';
+import EmailTab from '@components/molecules/EmailTab';
 
 type Props = {};
 
@@ -154,10 +155,43 @@ const EmailStatusBar = (props: Props) => {
     },
   ]);
 
+  // useEffect
+
   useEffect(() => {
     try {
-      const res = getAllEmailTags().then((res) => {
-        console.log(res);
+      getAllEmailTags().then((res) => {
+        setEmailTabs((prevState) => {
+          const data: EmailTabs[] = prevState.reduce(
+            (currVal: EmailTabs[], nextVal) => {
+              const foundInRes = res.data.find(
+                (item) => item.tag === nextVal.status,
+              );
+
+              if (foundInRes)
+                return [...currVal, { ...nextVal, notiNumber: foundInRes.count }];
+              return currVal;
+            },
+            [],
+          );
+
+          return data;
+        });
+        setEmailSecTab((prevState) => {
+          const data: EmailTabs[] = prevState.reduce(
+            (currVal: EmailTabs[], nextVal) => {
+              const foundInRes = res.data.find(
+                (item) => item.tag === nextVal.status,
+              );
+
+              if (foundInRes)
+                return [...currVal, { ...nextVal, notiNumber: foundInRes.count }];
+              return currVal;
+            },
+            [],
+          );
+
+          return data;
+        });
       });
     } catch (error) {
       console.log(error);
@@ -255,63 +289,7 @@ const EmailStatusBar = (props: Props) => {
     );
   };
 
-  const renderEmailTab = (
-    title: string,
-    notiNumber: number,
-    status: StatusOptions,
-    key: number,
-    type: string,
-  ) => {
-    const [modalStatus, setModalStatus] = useState(false);
-
-    return (
-      <Box key={key}>
-        <ButtonBase
-          onClick={() => setModalStatus(true)}
-          sx={{
-            width: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '5px 10px',
-          }}>
-          <Typography component={'p'} sx={{ color: '#554CFF', fontWeight: 'bold' }}>
-            {title}
-          </Typography>
-          {notiNumber > 0 && (
-            <Typography
-              component={'p'}
-              sx={{
-                backgroundColor: '#ABA8D4',
-                width: '14px',
-                height: '18px',
-                fontSize: '10px',
-                borderRadius: '3px',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#fff',
-              }}>
-              {notiNumber}
-            </Typography>
-          )}
-        </ButtonBase>
-        <ModalEmailList
-          index={key}
-          title={title}
-          status={status}
-          // emailData={email}
-          isActive={modalStatus}
-          handleChangeModalStatus={setModalStatus}
-          handleChangeEmailTabNotiNumber={
-            type === 'emailTabs'
-              ? handleChangeEmailTabsNotiNumber
-              : handleChangeEmailSecTabsNotiNumber
-          }
-        />
-      </Box>
-    );
-  };
+  console.log(emailTabs);
 
   return (
     <Box
@@ -338,13 +316,17 @@ const EmailStatusBar = (props: Props) => {
         <Box sx={{ borderBottom: '1px solid #e5e7eb' }}>
           {emailTabs &&
             emailTabs.map((item, index) => {
-              if (item.title && item.notiNumber != undefined) {
-                return renderEmailTab(
-                  item.title,
-                  item.notiNumber,
-                  item.status,
-                  index,
-                  'emailTabs',
+              if (item.title && item.notiNumber) {
+                // return <span key={index}>{item.title}</span>;
+                return (
+                  <EmailTab
+                    index={index}
+                    key={index}
+                    notiNumber={item.notiNumber}
+                    status={item.status}
+                    title={item.title}
+                    type="emailTabs"
+                  />
                 );
               }
             })}
@@ -352,13 +334,17 @@ const EmailStatusBar = (props: Props) => {
         <Box sx={{ borderBottom: '1px solid #e5e7eb' }}>
           {emailSecTabs &&
             emailSecTabs.map((item, index) => {
-              if (item.title && item.notiNumber != undefined) {
-                return renderEmailTab(
-                  item.title,
-                  item.notiNumber,
-                  item.status,
-                  index,
-                  'emailTabsSec',
+              if (item.title && item.notiNumber) {
+                // return <span key={index}>{item.title}</span>;
+                return (
+                  <EmailTab
+                    index={index}
+                    key={index}
+                    notiNumber={item.notiNumber}
+                    status={item.status}
+                    title={item.title}
+                    type="emailSecTabs"
+                  />
                 );
               }
             })}

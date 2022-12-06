@@ -40,6 +40,22 @@ export interface EmailResponse {
   writer_id: number;
   attachFiles?: AttachFile[];
   created_at: string;
+  forward: string;
+  html_string: string;
+  send_at: string;
+}
+
+export interface UserTagResponse {
+  avatar: string;
+  count: number;
+  user_email: string;
+  user_id: number;
+  user_name: string;
+}
+
+export interface EmailManagerResponse {
+  email: EmailResponse[];
+  user_tag_info: UserTagResponse;
 }
 
 export interface EmailTagsResponse {
@@ -55,7 +71,7 @@ export interface EmailDeleteResponse {
 
 // GET ALL CUR EMAIL TAGS
 export const getAllEmailTags = async (): Promise<
-  AxiosResponse<EmailTagsResponse>
+  AxiosResponse<EmailTagsResponse[]>
 > => {
   const url = `${EMAIL_MANAGER_API_URL}/all`;
   const res = await ApiClient.get(url);
@@ -75,6 +91,16 @@ export const getEmailWithQueryParam = async (params?: {
     {},
     { status: params?.status, mail: params?.mail, hashtag: params?.hashtag },
   );
+  return res.data;
+};
+
+// GET EMAIL MANAGER STATUS
+export const getEmailManagerWithQueryParams = async (params?: {
+  status: string;
+}): Promise<AxiosResponse<EmailManagerResponse[]>> => {
+  const url = `${EMAIL_MANAGER_API_URL}/tag`;
+  const res = await ApiClient.get(url, undefined, params);
+
   return res.data;
 };
 

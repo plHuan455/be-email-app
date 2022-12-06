@@ -1,5 +1,5 @@
 import { useTranslation } from '@@packages/localization/src';
-import { AuthResponse } from '@api/auth/interface';
+import { AuthResponse, AuthUpdate } from '@api/auth/interface';
 import AvatarInput from '@components/atoms/Input/AvatarInput';
 import SelectInput from '@components/atoms/Input/SelectInput';
 import ValidateInput from '@components/atoms/Input/ValidateInput';
@@ -10,7 +10,7 @@ import { Controller } from 'react-hook-form';
 import Grid from '@mui/material/Unstable_Grid2';
 
 interface Props {
-  userInfoData: AuthResponse;
+  userInfoData: AuthUpdate;
 }
 
 const UserProfile: React.FC<Props> = ({ userInfoData }) => {
@@ -25,9 +25,10 @@ const UserProfile: React.FC<Props> = ({ userInfoData }) => {
       <h3 className="text-center font-bold text-[32px] mb-4">{t('User Info')}</h3>
       <Box className="flex justify-center mb-6">
         <Avatar
-          src={avatar}
-          className="w-[100px] h-[100px] shadow-xl border"
+          id="create-employee-avatar-field"
+          src={typeof avatar === 'string' ? `http://${avatar}` : undefined}
           alt={user_name}
+          sx={{ width: 80, height: 80 }}
         />
       </Box>
       <Grid container spacing={2} rowSpacing={4}>

@@ -4,7 +4,7 @@ import React, { ReactNode, useCallback, useEffect, useState } from 'react';
 import avatarImg from '@assets/images/avatars/avatar-2.jpg';
 import { Email, UserInfo } from './Interface';
 import EmailMess from '../EmailMess';
-import { deleteEmail, getAllEmail, getEmailWithQueryParam } from '@api/email';
+import { deleteEmail } from '@api/email';
 
 import { isEmpty } from 'lodash';
 import EmailMessEmpty from '../EmailMessEmpty';
