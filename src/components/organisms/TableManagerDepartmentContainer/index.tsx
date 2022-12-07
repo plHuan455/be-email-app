@@ -335,6 +335,7 @@ const TableManagerDepartmentContainer: React.FC<
         </Tabs>
       </TableHeader>
       <TableManagerDepartment
+        isLoading={isDepartmentGetting}
         departmentList={convertedDepartmentList ?? []}
         onEmployeeUpdateClick={handleEmployeeUpdateClick}
         onEmployeeDeleteClick={handleEmployeeDeleteClick}

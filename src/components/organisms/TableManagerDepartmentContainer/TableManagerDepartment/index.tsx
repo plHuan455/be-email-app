@@ -21,8 +21,10 @@ import Icon from '@components/atoms/Icon';
 import { rem } from '@utils/functions';
 import TableActionsMenu from '@components/molecules/TableActionsMenu';
 import TableManagerEmployeeContainer from '@containers/TableManagerEmployeeContainer';
+import Loading from '@components/atoms/Loading';
 
 interface TableManagerDepartmentProps {
+  isLoading?: boolean;
   departmentList: Department[];
   onEmployeeDeleteClick: (id: number) => void;
   onEmployeeUpdateClick: (id: number) => void;
@@ -105,6 +107,7 @@ function Row({
 }
 
 export default function TableManagerDepartment({
+  isLoading = false,
   departmentList,
   onEmployeeUpdateClick,
   onEmployeeDeleteClick,
@@ -130,7 +133,21 @@ export default function TableManagerDepartment({
             </TableCell>
             <TableCell align="left">all@</TableCell>
           </TableRow>
-          {departmentList.map((row) => (
+          {isLoading && (
+            <TableRow>
+              <TableCell align='center' colSpan={5}>
+                <Loading isLoading={isLoading} size='xs' />
+              </TableCell>
+            </TableRow>
+          )}
+          {!isLoading && departmentList.length === 0 && (
+            <TableRow>
+              <TableCell colSpan={5} align='center'>
+                There is no department
+              </TableCell>
+          </TableRow>
+          )}
+          {!isLoading && departmentList.map((row) => (
             <Row
               className="managerDepartmentRow"
               key={row.name} row={row}

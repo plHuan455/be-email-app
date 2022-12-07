@@ -23,6 +23,7 @@ import { Button, TableHead } from '@mui/material';
 import './styles.scss';
 import { rem } from '@utils/functions';
 import TableActionsMenu from '@components/molecules/TableActionsMenu';
+import Loading from '@components/atoms/Loading';
 
 interface TablePaginationActionsProps {
   count: number;
@@ -90,6 +91,7 @@ interface Props {
   page: number;
   limit: number;
   total: number;
+  isLoading?: boolean;
   data: Manager[];
   onDelete?: (id: number) => void;
   onUpdate?: (id: number) => void;
@@ -102,6 +104,7 @@ const TableManagerEmployee: React.FC<Props> = ({
   page,
   limit,
   total,
+  isLoading = false,
   onDelete,
   onUpdate,
   onChangePage,
@@ -156,7 +159,22 @@ const TableManagerEmployee: React.FC<Props> = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((row, index) => (
+            {isLoading && (
+              <TableRow>
+                <TableCell align="center" colSpan={6} height={53 * limit}>
+                  <Loading isLoading size='xs'/>
+                </TableCell>
+              </TableRow>
+            )}
+            {
+              data.length === 0 && !isLoading && (
+              <TableRow>
+                <TableCell align="center" colSpan={6} height={53 * limit} sx={{color: 'rgb(148 148 148 / 87%)'}}>
+                  There is no employee
+                </TableCell>
+              </TableRow>
+            )}
+            {!isLoading && data.map((row, index) => (
               <TableRow
                 className={`managerRow ${row.role === 'Blocked' && 'blocked'}`}
                 key={index}>
@@ -199,9 +217,9 @@ const TableManagerEmployee: React.FC<Props> = ({
                 </TableCell>
               </TableRow>
             ))}
-            {emptyRows > 0 && (
+            {!isLoading && data.length !== 0 && emptyRows > 0 && (
               <TableRow style={{ height: 53 * emptyRows }}>
-                <TableCell colSpan={5} />
+                <TableCell colSpan={6} />
               </TableRow>
             )}
           </TableBody>
