@@ -5,34 +5,14 @@ import React, { useEffect } from 'react';
 
 interface Props {
   row: PermissionResponse;
+  isActive: boolean;
   className: string;
   index: number;
-  onChangeRow: Function;
+  onChangeRow: (id: number, name?: string) => void;
 }
 
 const Row: React.FC<Props> = (props) => {
-  const { row, className, onChangeRow, index } = props;
-  const [selectedValue, setSelectedValue] = React.useState(() => row.status);
-
-  React.useEffect(() => {
-    const newPermission: PermissionResponse = {
-      ...row,
-      status: selectedValue,
-    };
-    onChangeRow(index, newPermission);
-  }, [selectedValue]);
-
-  useEffect(() => {
-    setSelectedValue(row.status);
-  }, [row]);
-
-  const handleChangeCheckValue = (e) => {
-    setSelectedValue(e.target.value);
-    console.log(
-      '🚀 ~ file: TableSettingRole/index.ts ~ line 43 ~ TableSettingRole',
-      selectedValue,
-    );
-  };
+  const { row, className, onChangeRow, index, isActive } = props;
 
   return (
     <React.Fragment>
@@ -44,16 +24,16 @@ const Row: React.FC<Props> = (props) => {
         <TableCell align="left"></TableCell>
         <TableCell align="center">
           <CustomInputRadio
-            isCheck={row.status === 'Active'}
-            onChange={handleChangeCheckValue}
+            isCheck={isActive}
+            onChange={() => onChangeRow(row.id, row.name)}
             value="Active"
             name={`roleInputRadio-${row.name}${index}`}
           />
         </TableCell>
         <TableCell align="center">
           <CustomInputRadio
-            isCheck={row.status !== 'Active'}
-            onChange={handleChangeCheckValue}
+            isCheck={!isActive}
+            onChange={() => onChangeRow(row.id, undefined)}
             value="deny"
             name={`roleInputRadio-${row.name}${index}`}
             checkColor="#E13D3D"
