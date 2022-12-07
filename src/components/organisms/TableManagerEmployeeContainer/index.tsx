@@ -127,7 +127,7 @@ const TableManagerEmployeeContainer = () => {
     }
   });
 
-  const { data: employeeData } = useQuery({
+  const { data: employeeData, isLoading: isEmployeeGetting } = useQuery({
     queryKey: ['table-manager-employee-get-employees', tablePageParams.page, tablePageParams.limit],
     queryFn: () => getAllUser({...tablePageParams, page: tablePageParams.page + 1}),
     onSuccess: (res) => {
@@ -284,6 +284,7 @@ const TableManagerEmployeeContainer = () => {
         page={tablePageParams.page}
         limit={tablePageParams.limit}
         total={tablePageParams.total}
+        isLoading={false && isEmployeeGetting}
         data={convertedEmployeeList ?? []}
         onDelete={handleDelete}
         onUpdate={handleUpdateClick}
