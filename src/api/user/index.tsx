@@ -74,7 +74,7 @@ export const createEmployee = async (params: CreateEmployeeParams) => {
 };
 
 export const updateEmployee = async (id: number, params: UpdateEmployeeParams) => {
-  const url = USER__API;
+  const url = `${USER__API}/manager`;
   const cloneParams = {
     avatar: params.avatar,
     email: params.email,
