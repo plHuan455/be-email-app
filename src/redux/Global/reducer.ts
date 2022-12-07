@@ -18,6 +18,12 @@ const globalSlice = createSlice({
   name: 'global',
   initialState,
   reducers: {
+    navigateIsShowEmailInfo(state) {
+      return {
+        ...state,
+        isShowEmailInfo: !state.isShowEmailInfo,
+      };
+    },
     setIsShowEmailInfo(state, action) {
       return { ...state, isShowEmailInfo: action.payload };
     },
@@ -30,5 +36,10 @@ const globalSlice = createSlice({
   },
 });
 
-export const { setThemeMode, setLocation, setIsShowEmailInfo } = globalSlice.actions;
+export const {
+  setThemeMode,
+  setLocation,
+  setIsShowEmailInfo,
+  navigateIsShowEmailInfo,
+} = globalSlice.actions;
 export default globalSlice.reducer;

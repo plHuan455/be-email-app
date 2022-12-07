@@ -52,10 +52,8 @@ const iconsList: {
   [key: string]: SVGIconProps['icon'];
 } = {
   '/emails': 'email',
-  '/chats': 'chat',
-  '/contact': 'people',
-  '/call': 'dialpad',
-  '/bookmark': 'donut',
+  '/department': 'department',
+  '/setting': 'settings',
 };
 
 const MyTabs = styled(Tabs)`

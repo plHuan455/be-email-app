@@ -28,6 +28,8 @@ import Manager from './Manager';
 import ChangePassword from './ChangePassword';
 import UserProfile from '../layouts/UserProfile';
 import UserProfileContainer from './UserProfileContainer';
+import EmailEmptyContainer from '@containers/EmailEmptyContainer';
+import EmailMainWrapper from '@layouts/EmailMainWrapper';
 
 export const managerRouter: RouteObject[] = [
   {
@@ -55,7 +57,7 @@ export const sideBarRouter: RouteObject[] = [
     children: [
       {
         path: '/emails',
-        element: <EmailMessEmpty />,
+        element: <EmailEmptyContainer />,
       },
       {
         path: '/emails/compose',
@@ -63,24 +65,16 @@ export const sideBarRouter: RouteObject[] = [
       },
       {
         path: '/emails/:status/:email',
-        element: <Email />,
+        element: <EmailMainWrapper />,
       },
     ],
   },
   {
-    path: '/chats',
+    path: '/department',
     element: <Navigate to={'/emails'} replace={true} />,
   },
   {
-    path: '/contact',
-    element: <Navigate to={'/emails'} replace={true} />,
-  },
-  {
-    path: '/call',
-    element: <Navigate to={'/emails'} replace={true} />,
-  },
-  {
-    path: '/bookmark',
+    path: '/setting',
     element: <Navigate to={'/emails'} replace={true} />,
   },
 ];

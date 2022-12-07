@@ -51,9 +51,6 @@ const EmailMessEmpty: React.FC<Props> = ({ isLoading = false }) => {
         </Box>
       </Box>
 
-      {/* <Box className="w-[10%] flex justify-center">
-        <Avatar alt={''} src={''} />
-      </Box> */}
       <Box
         sx={{ boxShadow: '0px 10px 23px -15px rgba(159,159,159,0.54)' }}
         className={`flex-1 bg-white rounded-tr-[36px] rounded-bl-[36px] pb-4 ${styles.emailWrap} mb-8`}>

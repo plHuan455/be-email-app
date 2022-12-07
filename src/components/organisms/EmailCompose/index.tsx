@@ -247,7 +247,7 @@ function EmailCompose() {
 
   return (
     <Box
-      className={`flex flex-col w-full mx-auto shadow-xl rounded-3xl overflow-hidden z-5 transition-all ${
+      className={`m-8 flex flex-col mx-auto shadow-xl rounded-3xl overflow-hidden z-5 transition-all ${
         isZoom && 'fixed top-0 left-0 bottom-0'
       }`}>
       {/* Header */}
@@ -392,8 +392,6 @@ function EmailCompose() {
             textSize={15}
             isBeforeIcon={true}
             beforeIcon={<SendIcon fontSize="small" />}
-            isAfterIcon={true}
-            afterIcon={<TableViewIcon fontSize="small" />}
             onClick={handleOnClickSubmitCompose('SendNow')}
           />
         </Box>

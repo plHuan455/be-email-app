@@ -196,7 +196,7 @@ function LoginContainer() {
 
               <WrapActions>
                 <Button size="large" type="submit">
-                  {t('Unlock')}
+                  {t('Login')}
                 </Button>
               </WrapActions>
               {isLogined && currentUserName && currentUserAvt && (

@@ -7,6 +7,9 @@ import avt from '../../../src/assets/images/avatars/avatar-2.jpg';
 import React from 'react';
 import { AttachFile, UserRead } from '@components/organisms/EmailMess';
 import { UserInfo } from '@components/organisms/Email/Interface';
+import styles from './styles.module.scss';
+import { useSelector } from 'react-redux';
+import { RootState } from '@redux/configureStore';
 
 const receiverData: UserInfo[] = [
   new UserInfo(avt, 'asd', 'asd@asd.com'),
@@ -22,13 +25,19 @@ type Props = {
 };
 
 const InformationBarEmpty = (props: Props) => {
+  // useSelector
+  const { isShowEmailInfo } = useSelector((state: RootState) => state.global);
+
   return (
     <Box
+      className={`relative bg-white shadow-lg border-l ${
+        isShowEmailInfo && styles.activeShowMoreInformation
+      }`}
       sx={{
-        minWidth: 222,
-        width: '15%',
+        maxWidth: 0,
+        width: '100%',
         height: '100%',
-        padding: '30px 18px',
+        padding: '30px 0',
         overflow: 'scroll',
       }}>
       <Typography

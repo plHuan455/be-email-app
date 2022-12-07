@@ -29,7 +29,7 @@ const EmailContainer = () => {
           overflow: 'scroll',
           padding: '120px 28px 28px 28px',
         }}>
-        <Outlet />
+        <Email />
       </Box>
       {/* {isCompose ? <EmailCompose /> : <Email />} */}
     </Box>

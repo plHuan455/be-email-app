@@ -4,6 +4,8 @@ import EmailMainWrapper from '@layouts/EmailMainWrapper';
 import { useState } from 'react';
 import { fetchToken, messaging, onMessageListener } from '@utils/NotifyRealtime';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
+import { Outlet } from 'react-router-dom';
+import EmailLayout from '@layouts/EmailLayout';
 
 const Email = () => {
   const [show, setShow] = useState<boolean>(false);
@@ -32,7 +34,10 @@ const Email = () => {
     <div className="w-full flex items-center content-around">
       <EmailStatusBar />
 
-      <EmailMainWrapper />
+      <EmailLayout>
+        <Outlet />
+      </EmailLayout>
+      {/* <EmailMainWrapper /> */}
     </div>
   );
 };

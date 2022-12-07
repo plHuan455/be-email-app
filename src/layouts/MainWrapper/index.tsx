@@ -118,7 +118,8 @@ function MainWrapper() {
       /> */}
       <Box className={cx(classes.body)}>
         <Box className={`${cx(classes.sideBar)} flex flex-col justify-between`}>
-          {isInManagerPage ? <IconTabsManager /> : <IconTabs />}
+          {/* {isInManagerPage ? <IconTabsManager /> : <IconTabs />} */}
+          <IconTabsManager />
           <AvatarWithPopup
             popupStyles={{
               '& > .MuiPaper-root': {

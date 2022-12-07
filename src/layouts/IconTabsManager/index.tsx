@@ -9,7 +9,7 @@ import { styled } from '@mui/material/styles';
 // import DonutSmallIcon from '@mui/icons-material/DonutSmall';
 import logo from '../../assets/images/logo_without_text.png';
 import { Box, Tooltip } from '@mui/material';
-import { SVGIconProps } from '@components/atoms/Icon';
+import Icon, { SVGIconProps } from '@components/atoms/Icon';
 import { RenderButtonIcon } from '@components/molecules/EmailActions';
 import { RouteObject, useLocation, useNavigate } from 'react-router-dom';
 import ManagerAccount from '@assets/icon/ManagerAccount';
@@ -24,8 +24,9 @@ export interface TabItem {
 
 const TabsData: TabItem[] = [
   {
-    logo: logo,
-    url: '/',
+    title: 'Email',
+    icon: <Icon icon="email" />,
+    url: '/emails',
   },
   {
     title: 'Department',
@@ -82,6 +83,10 @@ const MyTabs = styled(Tabs)`
     &.Mui-selected {
       & svg {
         color: #7061e2;
+        fill: #7061e2;
+        & path {
+          fill: #7061e2;
+        }
       }
       & .MuiTouchRipple-root {
         opacity: 1;

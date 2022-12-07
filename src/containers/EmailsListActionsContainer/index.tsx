@@ -10,7 +10,7 @@ interface Props {
 const EmailsListActionsContainer: React.FC<Props> = ({ className }) => {
   return (
     <Box
-      className={`absolute top-0 left-0 w-full rounded-br-xl overflow-hidden z-10 ${className}`}>
+      className={`absolute top-0 left-0 w-full overflow-hidden z-10 ${className}`}>
       <EmailsListActions />
     </Box>
   );

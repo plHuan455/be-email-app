@@ -160,7 +160,9 @@ const InformationBar = (props: Props) => {
 
   return (
     <Box
-      className={`relative ${isShowEmailInfo && styles.activeShowMoreInformation}`}
+      className={`relative bg-white shadow-lg border-l ${
+        isShowEmailInfo && styles.activeShowMoreInformation
+      }`}
       sx={{
         maxWidth: 0,
         width: '100%',

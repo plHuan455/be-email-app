@@ -7,7 +7,7 @@ import { TabItem } from '@layouts/IconTabs';
 import { Avatar, Box, ButtonBase, Tab, Tabs, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import avt from '../../../src/assets/images/avatars/avatar-1.jpg';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   TitleOfInformationBlock,
   UserName,
@@ -281,6 +281,46 @@ const EmailStatusBar = (props: Props) => {
     );
   };
 
+  // render FNC
+  const _renderEmailTags = (emailTagList: EmailTabs[], emailTabType: string) => {
+    return (
+      <Box sx={{ borderBottom: '1px solid #e5e7eb' }}>
+        {emailTagList &&
+          emailTagList.map((item, index) => {
+            if (item.title) {
+              // return <span key={index}>{item.title}</span>;
+              return (
+                <EmailTab
+                  index={index}
+                  key={index}
+                  notiNumber={item.notiNumber ? item.notiNumber : 0}
+                  status={item.status}
+                  title={item.title}
+                  type={emailTabType}
+                />
+              );
+            }
+          })}
+      </Box>
+    );
+  };
+
+  const _renderPrivateHashtag = useMemo(() => {
+    return (
+      hashtagTabs &&
+      hashtagTabs.map((item, index) => {
+        return (
+          <Hashtag
+            title={item.title}
+            status={item.status}
+            // emailData={item.emailData}
+            index={index}
+          />
+        );
+      })
+    );
+  }, [hashtagTabs]);
+
   return (
     <Box
       sx={{
@@ -303,53 +343,9 @@ const EmailStatusBar = (props: Props) => {
           paddingBottom: '10px',
           position: 'relative',
         }}>
-        <Box sx={{ borderBottom: '1px solid #e5e7eb' }}>
-          {emailTabs &&
-            emailTabs.map((item, index) => {
-              if (item.title && item.notiNumber) {
-                // return <span key={index}>{item.title}</span>;
-                return (
-                  <EmailTab
-                    index={index}
-                    key={index}
-                    notiNumber={item.notiNumber}
-                    status={item.status}
-                    title={item.title}
-                    type="emailTabs"
-                  />
-                );
-              }
-            })}
-        </Box>
-        <Box sx={{ borderBottom: '1px solid #e5e7eb' }}>
-          {emailSecTabs &&
-            emailSecTabs.map((item, index) => {
-              if (item.title && item.notiNumber) {
-                // return <span key={index}>{item.title}</span>;
-                return (
-                  <EmailTab
-                    index={index}
-                    key={index}
-                    notiNumber={item.notiNumber}
-                    status={item.status}
-                    title={item.title}
-                    type="emailSecTabs"
-                  />
-                );
-              }
-            })}
-        </Box>
-        {hashtagTabs &&
-          hashtagTabs.map((item, index) => {
-            return (
-              <Hashtag
-                title={item.title}
-                status={item.status}
-                // emailData={item.emailData}
-                index={index}
-              />
-            );
-          })}
+        {_renderEmailTags(emailTabs, 'emailTabs')}
+        {_renderEmailTags(emailSecTabs, 'emailSecTabs')}
+        {_renderPrivateHashtag}
       </Box>
       {!isCreateHashTag ? (
         <CustomButton

@@ -19,14 +19,14 @@ const EmailPrivateHashtagContainer = () => {
   return (
     <div className="flex items-center  py-4">
       <span className="font-semibold">Hashtag:</span>
-      <div className="pl-2 flex gap-2">
+      <div className="pl-2 flex items-center gap-2">
         {privateHashtag && isActive && (
           <EmailPrivateHashtag privateHashtagData={privateHashtag} />
         )}
         <span
           className="flex items-center justify-center p-2 rounded-full border border-[#E0E0E0] cursor-pointer ease-in duration-300 hover:bg-[#F6F3FD]"
           onClick={handleNavigateIsActive}>
-          {isActive ? <Icon icon="close" /> : <Icon icon="plus" />}
+          <Icon icon={isActive ? 'close' : 'plus'} />
         </span>
       </div>
     </div>
