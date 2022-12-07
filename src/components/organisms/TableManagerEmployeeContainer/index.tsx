@@ -132,7 +132,16 @@ const TableManagerEmployeeContainer = () => {
         return uploadFile(avatar);
       },
       onSuccess: (res, params) => {
-        params.callback(res?.data ?? '');
+        if(!res?.data) {
+          params.callback('');
+          return;
+        }
+  
+        if(res.data.match(/^https:\/\/|^http:\/\//g)){
+          params.callback(res.data)
+        }else {
+          params.callback(`http://${res.data}`);
+        }
       },
       onError: () => {
         toast.error("Can't upload file");
