@@ -12,5 +12,5 @@ export interface RoleHavePermissionResponse {
 }
 
 export interface PermissionQuery {
-  permissions: { id: string; name: string }[];
+  permissions: { id: number; name?: string }[];
 }
