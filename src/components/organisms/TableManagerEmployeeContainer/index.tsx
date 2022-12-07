@@ -225,7 +225,7 @@ const TableManagerEmployeeContainer = () => {
     return employeeData?.data
       .map((value) => {
         return new Manager(
-          value.user_id,
+          value.id,
           value.avatar,
           value.user_name,
           value.email,
@@ -273,9 +273,9 @@ const TableManagerEmployeeContainer = () => {
   };
 
   const handleUpdateClick = (id: number) => {
-    const updateEmployee = employeeData?.data.find((value) => value.user_id === id);
+    const updateEmployee = employeeData?.data.find((value) => value.id === id);
     if (updateEmployee) {
-      updateEmployeeMethod.setValue('id', updateEmployee.user_id);
+      updateEmployeeMethod.setValue('id', updateEmployee.id);
       updateEmployeeMethod.setValue('avatar', updateEmployee.avatar);
       updateEmployeeMethod.setValue('username', updateEmployee.user_name);
       updateEmployeeMethod.setValue(
