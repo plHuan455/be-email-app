@@ -9709,7 +9709,7 @@
     "kleur" "^3.0.3"
     "sisteransi" "^1.0.5"
 
-"prop-types@^15.5.10", "prop-types@^15.5.4", "prop-types@^15.6.0", "prop-types@^15.6.2", "prop-types@^15.7.2", "prop-types@^15.8.1":
+"prop-types@^15.5.10", "prop-types@^15.5.4", "prop-types@^15.5.8", "prop-types@^15.6.0", "prop-types@^15.6.2", "prop-types@^15.7.2", "prop-types@^15.8.1":
   "integrity" "sha512-oj87CgZICdulUohogVAR7AjlC0327U4el4L6eAvOqCeudMDVU0NThNaV+b9Df4dXgSP1gXMTnPdhfe/2qDH5cg=="
   "resolved" "https://registry.npmjs.org/prop-types/-/prop-types-15.8.1.tgz"
   "version" "15.8.1"
@@ -9835,7 +9835,7 @@
     "parchment" "^1.1.4"
     "quill-delta" "^3.6.2"
 
-"raf@^3.4.1":
+"raf@^3.3.0", "raf@^3.4.1":
   "integrity" "sha512-Sq4CW4QhwOHE8ucn6J34MqtZCeWFP2aQSmrlroYgqAV1PjStIhJXxYuTgUIfkEk7zTLjmIjLmU5q+fbD1NnOJA=="
   "resolved" "https://registry.npmjs.org/raf/-/raf-3.4.1.tgz"
   "version" "3.4.1"
@@ -10172,6 +10172,14 @@
   "integrity" "sha512-+VoSs1wN6oMhJy7PzCPiHUt6zUi9fvnGQizem8q/NzXhGovbdXFDWNhspk6KEKXQEafInUtpvtDlp/zJ5sES/A=="
   "resolved" "https://registry.npmjs.org/react-spinners/-/react-spinners-0.13.6.tgz"
   "version" "0.13.6"
+
+"react-sticky@^6.0.3":
+  "integrity" "sha512-LNH4UJlRatOqo29/VHxDZOf6fwbgfgcHO4mkEFvrie5FuaZCSTGtug5R8NGqJ0kSnX8gHw8qZN37FcvnFBJpTQ=="
+  "resolved" "https://registry.npmjs.org/react-sticky/-/react-sticky-6.0.3.tgz"
+  "version" "6.0.3"
+  dependencies:
+    "prop-types" "^15.5.8"
+    "raf" "^3.3.0"
 
 "react-swipeable-bottom-sheet@^1.1.2":
   "integrity" "sha512-7nwpVdm1zpS4GCiZqADkHlAtXx/NNjIrWDhLmBNiF6tsMckvuC8P8QvFwOBn2t5+NZ01aSWJQvOkJ4Ie5+zuWQ=="

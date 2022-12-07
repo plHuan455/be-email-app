@@ -79,8 +79,12 @@ const EmailForward: React.FC<Props> = ({
     ? localStorage.getItem('current_email')
     : '';
 
-  const newSendTo = sendTo.map((item) => new UserInfo('', item, item));
-  const newSendToDefault = sendToDefault.map((item) => new UserInfo('', item, item));
+  const newSendTo =
+    sendTo[0] === '' ? [] : sendTo.map((item) => new UserInfo('', item, item));
+  const newSendToDefault =
+    sendToDefault[0] === ''
+      ? []
+      : sendToDefault.map((item) => new UserInfo('', item, item));
 
   useEffect(() => {
     if (status === 'reply') setNewReceivers(newSendToDefault);

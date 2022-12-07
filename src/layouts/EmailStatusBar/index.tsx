@@ -22,6 +22,7 @@ import Hashtag from '@components/atoms/Hashtag';
 import { toast } from 'react-toastify';
 import { EmailTagsResponse, getAllEmailTags } from '@api/email';
 import EmailTab from '@components/molecules/EmailTab';
+import { HashtagTabs } from '@redux/Email/reducer';
 
 type Props = {};
 
@@ -35,12 +36,6 @@ export interface EmailItem {
 interface EmailTabs extends TabItem {
   status: StatusOptions;
   notiNumber?: number;
-  emailData: EmailList[];
-}
-interface HashtagTabs {
-  title: string;
-  value: string;
-  status: StatusOptions;
   emailData: EmailList[];
 }
 
@@ -91,25 +86,21 @@ const EmailStatusBar = (props: Props) => {
       title: '#metanode',
       value: 'metanode',
       status: 'hashtag',
-      emailData: emailData,
     },
     {
       title: '#sales',
       value: 'sales',
       status: 'hashtag',
-      emailData: emailData,
     },
     {
       title: '#tesla',
       value: 'tesla',
       status: 'hashtag',
-      emailData: emailData,
     },
     {
       title: '#yellow paper',
       value: 'yellowpaper',
       status: 'hashtag',
-      emailData: emailData,
     },
   ]);
 
@@ -160,38 +151,40 @@ const EmailStatusBar = (props: Props) => {
   useEffect(() => {
     try {
       getAllEmailTags().then((res) => {
-        setEmailTabs((prevState) => {
-          const data: EmailTabs[] = prevState.reduce(
-            (currVal: EmailTabs[], nextVal) => {
-              const foundInRes = res.data.find(
-                (item) => item.tag === nextVal.status,
-              );
+        if (res.data) {
+          setEmailTabs((prevState) => {
+            const data: EmailTabs[] = prevState.reduce(
+              (currVal: EmailTabs[], nextVal) => {
+                const foundInRes = res.data.find(
+                  (item) => item.tag === nextVal.status,
+                );
 
-              if (foundInRes)
-                return [...currVal, { ...nextVal, notiNumber: foundInRes.count }];
-              return currVal;
-            },
-            [],
-          );
+                if (foundInRes)
+                  return [...currVal, { ...nextVal, notiNumber: foundInRes.count }];
+                return currVal;
+              },
+              [],
+            );
 
-          return data;
-        });
-        setEmailSecTab((prevState) => {
-          const data: EmailTabs[] = prevState.reduce(
-            (currVal: EmailTabs[], nextVal) => {
-              const foundInRes = res.data.find(
-                (item) => item.tag === nextVal.status,
-              );
+            return data;
+          });
+          setEmailSecTab((prevState) => {
+            const data: EmailTabs[] = prevState.reduce(
+              (currVal: EmailTabs[], nextVal) => {
+                const foundInRes = res.data.find(
+                  (item) => item.tag === nextVal.status,
+                );
 
-              if (foundInRes)
-                return [...currVal, { ...nextVal, notiNumber: foundInRes.count }];
-              return currVal;
-            },
-            [],
-          );
+                if (foundInRes)
+                  return [...currVal, { ...nextVal, notiNumber: foundInRes.count }];
+                return currVal;
+              },
+              [],
+            );
 
-          return data;
-        });
+            return data;
+          });
+        }
       });
     } catch (error) {
       console.log(error);
@@ -239,7 +232,6 @@ const EmailStatusBar = (props: Props) => {
         title: '#' + newHashTagValue,
         value: newHashTagValue,
         status: 'hashtag',
-        emailData: emailData,
       };
 
       setHashtagTabs((prevState) => [...prevState, newValue]);

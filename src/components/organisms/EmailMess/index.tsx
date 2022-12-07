@@ -10,6 +10,7 @@ import { useMemo } from 'react';
 import EmailForward from '../EmailForward';
 import { EmailResponse } from '@api/email';
 import { UserInfo } from '../Email/Interface';
+import EmailPrivateHashtagContainer from '@containers/EmailPrivateHashtagContainer';
 export interface UserRead {
   name: string;
   time: string;
@@ -231,6 +232,8 @@ const EmailMess: React.FC<Props> = ({
           {renderSendTo()}
           {status.toLowerCase() !== 'null' && <EmailStatus emailStatus={status} />}
         </Box>
+        {/* Email Private Hashtag */}
+        <EmailPrivateHashtagContainer />
         {/* Email Content */}
         <Box className="py-9">
           <Box>

@@ -1,7 +1,15 @@
 import { EmailResponse } from '@api/email';
+import { EmailList, StatusOptions } from '@components/molecules/ModalEmailList';
 import { Email, UserInfo } from '@components/organisms/Email/Interface';
 import { AttachFile, UserRead } from '@components/organisms/EmailMess';
+import { emailData } from '@layouts/EmailStatusBar';
 import { createSlice } from '@reduxjs/toolkit';
+
+export interface HashtagTabs {
+  title: string;
+  value: string;
+  status: StatusOptions;
+}
 
 const userReadList: UserRead[] = [
   {
@@ -207,6 +215,7 @@ const emailsList: Email[] = [
 
 export interface EmailState {
   EmailsList: EmailResponse[];
+  privateHashtag: HashtagTabs[];
   deletedEmailsList: EmailResponse[];
   spamEmailsList: EmailResponse[];
   unreadEmailsList: EmailResponse[];
@@ -215,6 +224,28 @@ export interface EmailState {
 
 const initialState: EmailState = {
   EmailsList: [],
+  privateHashtag: [
+    {
+      title: '#metanode',
+      value: 'metanode',
+      status: 'hashtag',
+    },
+    {
+      title: '#sales',
+      value: 'sales',
+      status: 'hashtag',
+    },
+    {
+      title: '#tesla',
+      value: 'tesla',
+      status: 'hashtag',
+    },
+    {
+      title: '#yellow paper',
+      value: 'yellowpaper',
+      status: 'hashtag',
+    },
+  ],
   deletedEmailsList: [],
   spamEmailsList: [],
   unreadEmailsList: [],
@@ -225,6 +256,9 @@ const EmailSlice = createSlice({
   name: 'email ',
   initialState,
   reducers: {
+    setPrivateHashtag(state, action) {
+      return { ...state, privateHashtag: action.payload };
+    },
     setEmailIsLoading(state, action) {
       return { ...state, isLoading: action.payload };
     },

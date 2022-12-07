@@ -7,6 +7,7 @@ import UploadCloud from '@assets/icon/UploadCloud';
 import Dot from '@assets/icon/Dot';
 
 // Icon
+const SideBar = React.lazy(() => import('@assets/icon/SideBar'));
 const Department = React.lazy(() => import('@assets/icon/Department'));
 const ManagerAccount = React.lazy(() => import('@assets/icon/ManagerAccount'));
 const More = React.lazy(() => import('@assets/icon/More'));
@@ -71,6 +72,7 @@ export interface SVGProps {
 }
 
 export const ICON = {
+  sidebar: SideBar,
   department: Department,
   managerAcccount: ManagerAccount,
   more: More,

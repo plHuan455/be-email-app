@@ -10,6 +10,7 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@redux/configureStore';
 import { File, UserInfo } from '@components/organisms/Email/Interface';
 import MoreInfomationBar from '@layouts/MoreInformationBar';
+import styles from './styles.module.scss';
 
 const userReadList: UserRead[] = [
   {
@@ -88,6 +89,9 @@ const InformationBar = (props: Props) => {
 
   const currEmail = EmailsList[0];
 
+  // useSelector
+  const { isShowEmailInfo } = useSelector((state: RootState) => state.global);
+
   const handleClickShowMore = useCallback(
     (value) => () => {
       setTypeShowMoreInfomation(value);
@@ -156,12 +160,12 @@ const InformationBar = (props: Props) => {
 
   return (
     <Box
-      className="relative"
+      className={`relative ${isShowEmailInfo && styles.activeShowMoreInformation}`}
       sx={{
-        minWidth: 222,
-        width: '15%',
+        maxWidth: 0,
+        width: '100%',
         height: '100%',
-        padding: '30px 18px',
+        padding: '30px 0',
         overflow: 'scroll',
       }}>
       <Typography

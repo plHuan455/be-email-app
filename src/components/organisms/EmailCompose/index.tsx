@@ -36,6 +36,7 @@ import { useNavigate } from 'react-router-dom';
 import dayjs, { Dayjs } from 'dayjs';
 import ModalBase from '@components/atoms/ModalBase';
 import DateTimePicker from '@components/atoms/DateTimePicker';
+import EmailPrivateHashtagContainer from '@containers/EmailPrivateHashtagContainer';
 
 const fromData: UserInfo[] = [new UserInfo(avatarImg, 'sender', 'sender@gmail.com')];
 
@@ -325,6 +326,8 @@ function EmailCompose() {
               toolbar={toolbarCustom}
             />
             <Box>
+              {/* Private Hashtag */}
+              <EmailPrivateHashtagContainer />
               {/* Files List */}
               <Box>
                 {attachedFiles.length !== 0 && (

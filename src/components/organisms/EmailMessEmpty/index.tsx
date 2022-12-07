@@ -32,7 +32,13 @@ const EmailMessEmpty: React.FC<Props> = ({ isLoading = false }) => {
         {/* <Box className="w-[5%]"></Box> */}
         <Box className={`flex-1`}>
           <OptionalAvatar
-            data={new UserInfo('', 'user', 'user@bemail.com')}
+            data={
+              new UserInfo(
+                '',
+                '.........................................',
+                '.........................................',
+              )
+            }
             isShowAvatar={true}
             optionDate={new Date() + ''}
           />
