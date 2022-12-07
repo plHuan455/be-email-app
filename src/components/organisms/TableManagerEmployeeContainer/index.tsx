@@ -284,7 +284,7 @@ const TableManagerEmployeeContainer = () => {
         page={tablePageParams.page}
         limit={tablePageParams.limit}
         total={tablePageParams.total}
-        isLoading={false && isEmployeeGetting}
+        isLoading={isEmployeeGetting}
         data={convertedEmployeeList ?? []}
         onDelete={handleDelete}
         onUpdate={handleUpdateClick}
