@@ -33,8 +33,6 @@ const TableManagerEmployeeContainer = () => {
     page: 0, limit: 5, total: 0
   });
 
-  console.log(tablePageParams);
-
   const {
     isOpen,
     isLoading: isAlertDialogLoading,
