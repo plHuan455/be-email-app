@@ -5,23 +5,22 @@ import {
 } from '@api/role';
 import SettingTabs from '@components/molecules/SettingTabs';
 import TableHeader from '@components/molecules/TableManagerHeader';
-import { Role } from '@page/Manager/interface';
-import React, { useCallback, useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import TableSettingRole from './TableSettingRole';
 
 import { isEmpty } from 'lodash';
 import { Tab, Tabs } from '@mui/material';
 import { PermissionResponse } from '@api/permission/interface';
 import { PermissionQuery } from '@api/role/interface';
-import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getPermissions } from '@api/permission';
 import { toast } from 'react-toastify';
-import CreatePermissionFormModal, { CreatePermissionFields } from './CreatePermissionFormModal';
 import { rem } from '@utils/functions';
 
+interface ActivePermissionTypes {
+  [key: number]: string;
+}
 const responsePermissionsData: PermissionResponse[] = [
   {
     id: 4,
@@ -50,55 +49,10 @@ const createPermissionSchema   = yup.object({
 const SettingRolesContainer = () => {
   const queryClient = useQueryClient();
 
+  const [activePermissionsHash, setActivePermissionsHash] = useState<ActivePermissionTypes>({});
+
   const [value, setValue] = useState(0);
   const [isAddPermission, setIsAddPermission] = useState<boolean>(false);
-
-  const [permissionsState, setPermissionsState] = useState<PermissionResponse[]>([
-    {
-      id: 1,
-      name: 'Permission1',
-      status: 'Active',
-      role_permissions: null,
-    },
-    {
-      id: 2,
-      name: 'Permission2',
-      status: 'Active',
-      role_permissions: null,
-    },
-    {
-      id: 3,
-      name: 'Permission3',
-      status: 'Active',
-      role_permissions: null,
-    },
-    {
-      id: 4,
-      name: 'Permission4',
-      status: 'Active',
-      role_permissions: null,
-    },
-    {
-      id: 5,
-      name: 'Permission5',
-      status: 'Active',
-      role_permissions: null,
-    },
-    {
-      id: 6,
-      name: 'Permission6',
-      status: 'Active',
-      role_permissions: null,
-    },
-  ]);
-
-  // const {mutate: createPermissionMutate} = useMutation({
-  //   mutationKey: ['setting-role-create-permission'],
-  //   mutationFn: (query: { name: string }) => createPermissions(query),
-  //   onSuccess: (data) => {
-  //     toast.success('Permission was created');
-  //   }
-  // })
 
   const {data: headerTabData} = useQuery({
     queryKey: ['setting-role-get-header-tabs'],
@@ -110,12 +64,15 @@ const SettingRolesContainer = () => {
     },
   })
 
-  const {data: rolePermissionData} = useQuery({
+  const {data: rolePermissionData, isLoading: isRolePermissionGetting} = useQuery({
     queryKey: ['setting-role-get-permission', value],
     queryFn: () => getRoleHavePermissionsById(`${value}`),
     onSuccess: (res) => {
-      if (res.data.permissions) setPermissionsState(res.data.permissions);
-      else setPermissionsState([]);
+        const activePermissionHash: ActivePermissionTypes = {};
+        res?.data?.permissions?.forEach(value => {
+          activePermissionHash[value.id] = value.name;
+        });
+        setActivePermissionsHash(activePermissionHash);
     },
     enabled: value !== 0
   });
@@ -123,21 +80,10 @@ const SettingRolesContainer = () => {
   const {data: permissionListData} = useQuery({
     queryKey: ['setting-role-get-permission-list', isAddPermission],
     queryFn: getPermissions,
-    onSuccess: (res) => {
-      if(!res?.data) return;
-      const newPermissionState: PermissionResponse[] = res.data.map(value => {
-        // A permission status is Active
-        if(rolePermissionData?.data?.permissions?.some(permissionState => permissionState.id === value.id)){
-          return value;
-        }
-        return {...value, status: 'deny'};
-      })
-      setPermissionsState(newPermissionState.sort((a, b) => a.status === 'Active' ? -1 : 1));
-    },
     enabled: isAddPermission && value !== 0,
   })
 
-  const {mutate: updatePermissionMutate} = useMutation({
+  const {mutate: updatePermissionMutate, isLoading: isPermissionUpdating} = useMutation({
     mutationKey: ['setting-role-update-permission', value],
     mutationFn: (query: PermissionQuery) => setRolePermissionWithQueryById(`${value}`, query),
     onSuccess: (res) => {
@@ -148,7 +94,6 @@ const SettingRolesContainer = () => {
       toast.success('Update Permission Success');
       setIsAddPermission(false);
       queryClient.invalidateQueries({queryKey: ['setting-role-get-permission']});
-      // setPermissionsState(res?.data?.permissions.map(value => ({...value, status: 'Active'})) ?? []);
     },
     onError: (err: any) => {
       toast.error('Permission Updating is failed')
@@ -157,34 +102,40 @@ const SettingRolesContainer = () => {
 
   useEffect(() => {
     setIsAddPermission(false);
-  }, [value])
+  }, [value]);
+
+  const convertedPermissionList = useMemo(() => {
+    if(!permissionListData?.data){
+      return undefined;
+    }
+    return [...permissionListData.data].sort((a) => activePermissionsHash.hasOwnProperty(a.id) ? -1 : 1)
+  }, [permissionListData]);
  
-  const handleChange = (e, newValue) => setValue(newValue);
+  const handleChange = (e, newValue) => {
+    setValue(newValue)
+  };
 
-  const handleChangeRow = useCallback(
-    (index: number, permission: PermissionResponse) => {
-      setPermissionsState((prevState) => {
-        prevState[index] = permission;
-        return [...prevState];
-      });
-    },
-    [permissionsState],
-  );
+  const handleUpdatePermission = () => {
+     const convertedPermissionParams = Object.keys(activePermissionsHash).map(key => ({
+      id: Number(key),
+     }))
 
-  console.log(
-    '🚀 ~ file: SettingRoleContainer/index.ts ~ line 106 ~ res',
-    permissionsState,
-  );
+     updatePermissionMutate({permissions: convertedPermissionParams});
+  }
+
+  const handleChangePermissionState = (id: number, name?: string) => {
+    const cloneActivePermissionHash = {...activePermissionsHash};
+    if(name === undefined)
+      delete cloneActivePermissionHash[id];
+    else {
+      cloneActivePermissionHash[id] = name;
+    }
+    setActivePermissionsHash(cloneActivePermissionHash);
+  }
 
   const handleClickAddPermission = () => {
-    if(!isAddPermission){
-      setIsAddPermission(true);
-      return;
-    }
-
-    setIsAddPermission(false);
-    setPermissionsState(rolePermissionData?.data?.permissions ?? []);
-  }
+    setIsAddPermission(preState => !preState);
+  };
 
   return (
     <div>
@@ -206,9 +157,12 @@ const SettingRolesContainer = () => {
       <div className="flex">
         <SettingTabs />
         <TableSettingRole
-          updatePermission={updatePermissionMutate}
-          data={permissionsState}
-          onChangeRow={handleChangeRow}
+          isLoading={isRolePermissionGetting}
+          isButtonLoading={isRolePermissionGetting || isPermissionUpdating}
+          dataStates={activePermissionsHash}
+          updatePermission={handleUpdatePermission}
+          data={isAddPermission ? convertedPermissionList : rolePermissionData?.data?.permissions}
+          onChangeRow={handleChangePermissionState}
           buttonLabel={isAddPermission ? "Add" : "Update"}
         />
       </div>

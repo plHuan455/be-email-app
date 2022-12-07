@@ -1,37 +1,38 @@
 import * as React from 'react';
 import Box from '@mui/material/Box';
-import Collapse from '@mui/material/Collapse';
-import IconButton from '@mui/material/IconButton';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
 import TableCell from '@mui/material/TableCell';
 import TableContainer from '@mui/material/TableContainer';
 import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
-import Typography from '@mui/material/Typography';
 import Paper from '@mui/material/Paper';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import SyncAltIcon from '@mui/icons-material/SyncAlt';
 
 import './styles.scss';
-import { Radio } from '@mui/material';
-import CustomInputRadio from '@components/atoms/CustomInputCheckbox';
 import CustomButton from '@components/atoms/CustomButton';
-import Icon from '@components/atoms/Icon';
 import { PermissionResponse } from '@api/permission/interface';
-import ModalBase from '@components/atoms/ModalBase';
 import Row from './Row';
+import Loading from '@components/atoms/Loading';
+import LoadingButton from '@mui/lab/LoadingButton';
+import { rem } from '@utils/functions';
 
 interface Props {
-  data: PermissionResponse[];
+  isLoading?: boolean;
+  isButtonLoading?: boolean;
+  data?: PermissionResponse[];
+  dataStates: {[key: number]: string};
   buttonLabel?: string;
-  onChangeRow: Function;
+  onChangeRow: (id: number, name?: string) => void;
   updatePermission: Function;
 }
 
 const TableSettingRole: React.FC<Props> = ({
+  isLoading = false,
+  isButtonLoading = false,
   buttonLabel = '',
-  data,
+  data = [],
+  dataStates,
   onChangeRow,
   updatePermission,
 }) => {
@@ -39,23 +40,6 @@ const TableSettingRole: React.FC<Props> = ({
     '🚀 ~ file: TableSettingRole/index.ts ~ line 87 ~ TableSettingRole',
     data,
   );
-
-  const handleClickSetRole = (e) => {
-    const filterData = data
-      .filter((value) => value.status === 'Active')
-      .map((value) => ({
-        id: value.id,
-        name: value.name,
-      }));
-    console.log(
-      '🚀 ~ file: TableSettingRole/index.ts ~ line 83 ~ filterData',
-      filterData,
-    );
-
-    updatePermission({
-      permissions: filterData,
-    });
-  };
 
   return (
     <Box className="flex-1">
@@ -75,8 +59,16 @@ const TableSettingRole: React.FC<Props> = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {data.map((row, index) => (
+            {isLoading && (
+              <TableRow>
+                <TableCell sx={{borderBottom: 0}} align='center' colSpan={5}>
+                  <Loading size='xs' isLoading/>
+                </TableCell>
+              </TableRow>
+            )}
+            {!isLoading && data.map((row, index) => (
               <Row
+                isActive={dataStates.hasOwnProperty(row.id)}
                 className="managerSettingRoleRow"
                 key={row.name}
                 row={row}
@@ -87,17 +79,40 @@ const TableSettingRole: React.FC<Props> = ({
           </TableBody>
         </Table>
       </TableContainer>
-      {data.length > 0 && (
+      {/* {data.length > 0 && (
         <Box className="flex justify-end items-end my-6">
-          <CustomButton
-            onClick={handleClickSetRole}
+          <LoadingButton
+            onClick={() => updatePermission()}
             className="py-3 px-6"
             bgButtonColor="#554CFF"
             color="#ffffff"
             label={buttonLabel}
           />
-        </Box>
-      )}
+        </Box> */}
+        { data.length !== 0 && <Box className="flex justify-end items-end my-6">
+          <LoadingButton
+            variant='outlined'
+            loading={isButtonLoading}
+            loadingPosition='end'
+            endIcon={<SyncAltIcon />}
+            sx={{
+              backgroundColor: '#554CFF',
+              px: rem(12), 
+              py: rem(4), 
+              color: '#ffffff',
+              '&:hover': {
+                color: '#554CFF'
+              },
+              '&.MuiLoadingButton-loading': {
+                backgroundColor: '#7e77f8',
+                color: '#ffffff'
+              }
+            }}
+            onClick={() => updatePermission()}
+          >
+            {buttonLabel}
+          </LoadingButton>
+        </Box>}
     </Box>
   );
 };
