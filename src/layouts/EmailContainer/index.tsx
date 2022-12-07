@@ -14,15 +14,23 @@ const EmailContainer = () => {
       sx={{
         flex: 1,
         height: '100vh',
-        padding: '120px 28px 28px 28px',
         backgroundColor: '#EDEDF3',
         borderTopLeftRadius: '65px',
         overflow: 'scroll',
         position: 'relative',
+        display: 'flex',
+        flexDirection: 'column',
       }}>
       <EmailsListActionsContainer />
 
-      <Outlet />
+      <Box
+        sx={{
+          flex: 1,
+          overflow: 'scroll',
+          padding: '120px 28px 28px 28px',
+        }}>
+        <Outlet />
+      </Box>
       {/* {isCompose ? <EmailCompose /> : <Email />} */}
     </Box>
   );
