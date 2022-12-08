@@ -1,0 +1,5 @@
+.o-minimizeEmail {
+  &_text {
+    @include textOverflow(1);
+  }
+}
