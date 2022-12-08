@@ -1,4 +1,5 @@
 import { SingleOTPInputComponent } from '@components/atoms/Input/PinInput/SingleInput';
+// import { Email } from '@components/organisms/Email/Interface';
 import Receiver from '@components/atoms/Receiver';
 import WindowComposeActions from '@components/molecules/WindowComposeActions';
 import { Box, Button, TextField } from '@mui/material';
@@ -26,17 +27,22 @@ import { useTranslation } from '@@packages/localization/src';
 import useEmailCompose from '../../../zustand/useEmailCompose';
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
-import { UserInfo } from '../Email/Interface';
+import { Email as EmailTypes, UserInfo } from '../Email/Interface';
 import { CreateEmailParam, sendEmail } from '@api/email';
 import {
   MESSAGE_SEND_EMAIL_FAILED,
   MESSAGE_SEND_EMAIL_SUCCESSFUL,
 } from '@constants/EmailAPI';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import dayjs, { Dayjs } from 'dayjs';
 import ModalBase from '@components/atoms/ModalBase';
 import DateTimePicker from '@components/atoms/DateTimePicker';
 import EmailPrivateHashtagContainer from '@containers/EmailPrivateHashtagContainer';
+import { useAppDispatch, useAppSelector } from '@redux/configureStore';
+import { removeMinimizeEmail, setMinimizeList, setShowMinimizeEmail } from '@redux/Email/reducer';
+import Email from '../Email';
+import { useSelector } from 'react-redux';
+import { useMutation } from '@tanstack/react-query';
 
 const fromData: UserInfo[] = [new UserInfo(avatarImg, 'sender', 'sender@gmail.com')];
 
@@ -51,10 +57,15 @@ const receiversList: UserInfo[] = [
 ];
 
 function EmailCompose() {
+  const dispatch = useAppDispatch();
+  const [searchParams] = useSearchParams();
+
+  const showMinimizeEmail = useAppSelector(state => state.email.showMinimizeEmail);
   const [attachedFiles, setAttachedFiles] = useState<any>([]);
   const [attachFiles, setAttachFiles] = useState<any>([]);
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
   const [isShowCcFrom, setIsShowCcFrom] = useState(false);
+  
   const [valueCalendar, setValueCalendar] = useState<Dayjs | null>(
     dayjs(Date.now()),
   );
@@ -84,16 +95,53 @@ function EmailCompose() {
     negativeIsCompose,
   } = useEmailCompose();
 
+  console.log(getAll());
+
+  // const {mutate: sendEmailMutate, isLoading: isEmailSending} = useMutation({
+  //   mutationKey: ['email-compose-send-email'],
+  //   mutationFn: () => {}
+  // });
+  
   useEffect(() => {
     const contentBlock = htmlToDraft(content);
-
+    
     if (contentBlock) {
       const contentState = ContentState.createFromBlockArray(
         contentBlock.contentBlocks,
-      );
-      setEditorState(EditorState.createWithContent(contentState));
+        );
+        setEditorState(EditorState.createWithContent(contentState));
+      }
+    }, []);
+    
+  useEffect(() => {
+    if(!showMinimizeEmail) {
+      reset();
+      setAttachedFiles([]);
+      setAttachFiles([]);
+      setEditorState(EditorState.createEmpty())
+      return;
     }
-  }, []);
+    if(showMinimizeEmail?.title) setSubject(showMinimizeEmail.title)
+    if(showMinimizeEmail?.cc) setCc(showMinimizeEmail.cc);
+    if(showMinimizeEmail?.bcc) setBcc(showMinimizeEmail.bcc);
+    if(showMinimizeEmail?.mailContent) {
+      setContent(showMinimizeEmail.mailContent)
+      setEditorState(() => {
+        const contentBlock = htmlToDraft(showMinimizeEmail.mailContent);
+    
+        if (contentBlock) {
+          const contentState = ContentState.createFromBlockArray(
+            contentBlock.contentBlocks,
+          );
+          return EditorState.createWithContent(contentState)
+        }
+        return EditorState.createEmpty()
+      });
+    };
+    if(showMinimizeEmail?.sendTo) setNewReceivers(showMinimizeEmail.sendTo);
+    if(showMinimizeEmail?.attachFiles) setAttachedFiles(showMinimizeEmail.attachFiles);
+
+  }, [showMinimizeEmail]);
 
   const navigate = useNavigate();
 
@@ -183,15 +231,15 @@ function EmailCompose() {
     setSubject(e.target.value);
   };
 
-  const handleChangeReceivers = useCallback((e, newValue) => {
+  const handleChangeReceivers = (e, newValue) => {
     setNewReceivers(newValue);
-  }, []);
-  const handleChangeCc = useCallback((e, newValue) => {
+  }
+  const handleChangeCc = (e, newValue) => {
     setCc(newValue);
-  }, []);
-  const handleChangeBcc = useCallback((e, newValue) => {
+  }
+  const handleChangeBcc = (e, newValue) => {
     setBcc(newValue);
-  }, []);
+  }
 
   const handleOnClickSubmitCompose =
     (typeSend: 'SendNow' | 'SendTimer') => async () => {
@@ -236,6 +284,22 @@ function EmailCompose() {
       return toast.error('*Vui lòng nhập người nhận!');
     };
 
+  const handleMinimizeCompose = () => {
+    dispatch(setMinimizeList({
+      id: showMinimizeEmail?.id ?? undefined,
+      title: subject,
+      cc,
+      bcc,
+      sendTo: receivers,
+      mailContent: content,
+      attachFiles: attachedFiles,
+      status: 'draft',
+      date: new Date().toDateString(),
+    }));
+
+    navigate('/emails');
+  }
+
   const onEditorStateChange = (val) => {
     setContent(draftToHtml(convertToRaw(editorState.getCurrentContent())));
     setEditorState(val);
@@ -252,7 +316,10 @@ function EmailCompose() {
           isZoom && 'fixed top-0 left-0 bottom-0'
         }`}>
         {/* Window Compose Actions  */}
-        <WindowComposeActions className="pt-3 pr-3 bg-white" />
+        <WindowComposeActions 
+          className="pt-3 pr-3pt-3 pr-3 bg-white" 
+          onMinimize={handleMinimizeCompose}
+        />
         {/* Header */}
         <Box className="bg-white flex-1 flex flex-col overflow-scroll">
           <Box className="px-9 py-10 pt-2 flex-1 flex flex-col">

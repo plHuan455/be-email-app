@@ -3,7 +3,10 @@ import { EmailList, StatusOptions } from '@components/molecules/ModalEmailList';
 import { Email, UserInfo } from '@components/organisms/Email/Interface';
 import { AttachFile, UserRead } from '@components/organisms/EmailMess';
 import { emailData } from '@layouts/EmailStatusBar';
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { toast } from 'react-toastify';
+
+export const LOCAL_STORAGE_MINIMIZE_EMAILS = 'minimize_emails';
 
 export interface HashtagTabs {
   title: string;
@@ -214,6 +217,8 @@ const emailsList: Email[] = [
 ];
 
 export interface EmailState {
+  showMinimizeEmail?: Partial<Email>;
+  minimizeMailList: Partial<Email>[];
   EmailsList: EmailResponse[];
   privateHashtag: HashtagTabs[];
   deletedEmailsList: EmailResponse[];
@@ -223,6 +228,9 @@ export interface EmailState {
 }
 
 const initialState: EmailState = {
+  minimizeMailList: JSON.parse(localStorage.getItem(LOCAL_STORAGE_MINIMIZE_EMAILS) ?? '[]').map(value => ({
+    ...value, sendTo: value?.sendTo?.map(value => new UserInfo(value.avatar, value.name, value.mail))
+  })),
   EmailsList: [],
   privateHashtag: [
     {
@@ -308,6 +316,40 @@ const EmailSlice = createSlice({
     removeEmailsList(state, action) {
       return action.payload;
     },
+    setMinimizeList(state, action: PayloadAction<Partial<Email>>) {
+      const foundMinimizeEmailIndex = state.minimizeMailList.findIndex(value => value.id === action.payload.id);
+      // if (state.minimizeMailList.length >= 2 && foundMinimizeEmailIndex === -1) {
+      //   toast.error('Maximum minimized emails is 2');
+      //   return state;
+      // }
+      if(action.payload.id === state.showMinimizeEmail?.id) {
+        state.showMinimizeEmail = undefined;
+      }
+      if (foundMinimizeEmailIndex === -1) {
+        state.minimizeMailList.push({ ...action.payload, id: action.payload.id ?? String(Date.now()) });
+      } 
+      else {
+        state.minimizeMailList[foundMinimizeEmailIndex] = action.payload;
+      }
+      localStorage.setItem(LOCAL_STORAGE_MINIMIZE_EMAILS, JSON.stringify(state.minimizeMailList));
+      return state;
+    },
+    setShowMinimizeEmail(state, action: PayloadAction<Partial<Email> | undefined>) {
+      const currShowMinimizeEmail = state.showMinimizeEmail;
+      state.showMinimizeEmail = action.payload;
+      state.minimizeMailList = state.minimizeMailList.filter(value => value.id !== action.payload?.id);
+      if(currShowMinimizeEmail && action.payload?.id !== currShowMinimizeEmail.id)
+        state.minimizeMailList.push(currShowMinimizeEmail);
+      localStorage.setItem(LOCAL_STORAGE_MINIMIZE_EMAILS, JSON.stringify(state.minimizeMailList));
+      return state;
+    },
+    removeMinimizeEmail(state, action: PayloadAction<string | undefined>) {
+      if(action.payload){
+        state.minimizeMailList = state.minimizeMailList.filter(value => value.id !== action.payload);
+        localStorage.setItem(LOCAL_STORAGE_MINIMIZE_EMAILS, JSON.stringify(state.minimizeMailList));
+      }
+
+    },
   },
 });
 
@@ -319,6 +361,9 @@ export const {
   addUnreadEmail,
   addDeletedEmail,
   setEmailIsLoading,
+  setMinimizeList,
+  setShowMinimizeEmail,
+  removeMinimizeEmail,
 } = EmailSlice.actions;
 
 export default EmailSlice.reducer;

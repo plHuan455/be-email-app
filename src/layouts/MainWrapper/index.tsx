@@ -5,11 +5,11 @@ import SideBar from '@layouts/SideBar';
 import { Box, Container, Drawer } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
-import React, { useEffect, useState } from 'react';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Outlet, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { makeStyles } from 'tss-react/mui';
 import { toast } from 'react-toastify';
-import { useAppDispatch } from '@redux/configureStore';
+import { useAppDispatch, useAppSelector } from '@redux/configureStore';
 import { getCity } from '@api/location';
 import { setLocation } from '@redux/Global/reducer';
 import IconTabs from '@layouts/IconTabs';
@@ -17,6 +17,9 @@ import EmailStatusBar from '@layouts/EmailStatusBar';
 import AvatarWithPopup from '@components/atoms/AvatarWithPopup';
 import { useAuth } from '@context/AppContext';
 import IconTabsManager from '@layouts/IconTabsManager';
+import MinimizeEmailList from '@components/templates/MinimizeEmailList';
+import { Email } from '@components/organisms/Email/Interface';
+import { removeMinimizeEmail, setMinimizeList, setShowMinimizeEmail } from '@redux/Email/reducer';
 
 const sideBarWidth = 75;
 const emailStatusWidth = 290;
@@ -51,7 +54,12 @@ interface Setting {
 }
 
 function MainWrapper() {
+  const dispatch = useAppDispatch();
   const location = useLocation();
+  const minimizeEmails = useAppSelector(state => state.email.minimizeMailList);
+  const showMinimizeEmail = useAppSelector(state => state.email.showMinimizeEmail);
+
+  const [searchParams] = useSearchParams();;
 
   const isInManagerPage = location.pathname.startsWith('/manager');
 
@@ -76,6 +84,16 @@ function MainWrapper() {
   const handleChangePage = (url: string) => () => {
     navigate(url);
   };
+
+  const handleMaximizeEmailClick = (data: Partial<Email>) => {
+    dispatch(setShowMinimizeEmail(data));
+    navigate('/emails/compose');
+  }
+  const handleCloseEmailClick = (data: Partial<Email>) => {
+    if(data.id !== undefined) {
+      dispatch(removeMinimizeEmail(data.id));
+    }
+  }
 
   const settings: Setting[] = [
     {
@@ -160,6 +178,11 @@ function MainWrapper() {
         />
         <SideBar />
       </Drawer>
+      <MinimizeEmailList 
+        data={minimizeEmails} 
+        onMaximizeClick={handleMaximizeEmailClick}
+        onCloseClick={handleCloseEmailClick}
+      />
     </React.Fragment>
   );
 }
