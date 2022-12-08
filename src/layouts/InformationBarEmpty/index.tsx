@@ -30,7 +30,7 @@ const InformationBarEmpty = (props: Props) => {
 
   return (
     <Box
-      className={`relative bg-white shadow-lg border-l ${
+      className={`ease-in duration-200 relative bg-white shadow-lg border-l ${
         isShowEmailInfo && styles.activeShowMoreInformation
       }`}
       sx={{

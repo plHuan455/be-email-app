@@ -13,7 +13,7 @@ import { EmailResponse, getEmailManagerWithQueryParams } from '@api/email';
 import { useGetEmail } from '@hooks/Email/useGetEmail';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import Loading from '@components/atoms/Loading';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 export interface EmailList {
   userId: number;
@@ -295,6 +295,8 @@ const ModalEmailList = (props: Props) => {
     );
   }, [value, props]);
 
+  const navigate = useNavigate();
+
   const renderModalEmailList = () => {
     switch (props.status) {
       case 'pending':
@@ -323,7 +325,10 @@ const ModalEmailList = (props: Props) => {
         zIndex: 10,
       }}>
       <ButtonBase
-        onClick={() => props.handleChangeModalStatus(false)}
+        onClick={() => {
+          props.handleChangeModalStatus(false);
+          navigate('/');
+        }}
         sx={{
           color: '#554CFF',
           padding: '0 10px',

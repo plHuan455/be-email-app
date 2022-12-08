@@ -264,21 +264,13 @@ function EmailCompose() {
               onChange={handleChangeReceivers}
             />
           </EmailComposeFormGroup>
-          {/* Subject */}
-          <EmailComposeFormGroup label={'Subject:'}>
-            <SingleOTPInputComponent
-              value={subject}
-              onChange={handleChangeSubject}
-              className="outline-none w-full text-black text-[18px] font-bold h-full"
-            />
-          </EmailComposeFormGroup>
           {/* Cc, From */}
           {isShowCcFrom && (
             <Box className="mb-2">
               <EmailComposeFormGroup
                 className="py-1"
                 label="Cc:"
-                isHaveBorderBottom={false}>
+                isHaveBorderBottom={true}>
                 <AutoCompleteReceive
                   isShowCcFromLabel={false}
                   data={[]}
@@ -290,7 +282,7 @@ function EmailCompose() {
               <EmailComposeFormGroup
                 className="py-1"
                 label="Bcc:"
-                isHaveBorderBottom={false}>
+                isHaveBorderBottom={true}>
                 <AutoCompleteReceive
                   isShowCcFromLabel={false}
                   data={[]}
@@ -302,7 +294,7 @@ function EmailCompose() {
               <EmailComposeFormGroup
                 className="py-1"
                 label="From:"
-                isHaveBorderBottom={false}>
+                isHaveBorderBottom={true}>
                 <AutoCompleteReceive
                   data={fromData}
                   defaultValue={fromData}
@@ -312,6 +304,14 @@ function EmailCompose() {
               </EmailComposeFormGroup>
             </Box>
           )}
+          {/* Subject */}
+          <EmailComposeFormGroup label={'Subject:'}>
+            <SingleOTPInputComponent
+              value={subject}
+              onChange={handleChangeSubject}
+              className="outline-none w-full text-black text-[18px] font-bold h-full"
+            />
+          </EmailComposeFormGroup>
 
           {/* Edit Content */}
 
@@ -319,8 +319,8 @@ function EmailCompose() {
             <Editor
               editorState={editorState}
               onEditorStateChange={onEditorStateChange}
-              wrapperClassName="wrapper-class flex-1"
-              editorClassName="editor-class border"
+              wrapperClassName="wrapper-class flex-1 flex flex-col"
+              editorClassName="editor-class border flex-1"
               toolbarClassName="toolbar-class"
               placeholder="Enter content here..."
               toolbar={toolbarCustom}
