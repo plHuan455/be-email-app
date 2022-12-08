@@ -65,6 +65,8 @@ function EmailCompose() {
   const [attachFiles, setAttachFiles] = useState<any>([]);
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
   const [isShowCcFrom, setIsShowCcFrom] = useState(false);
+
+  console.log({attachedFiles, attachFiles});
   
   const [valueCalendar, setValueCalendar] = useState<Dayjs | null>(
     dayjs(Date.now()),
@@ -94,8 +96,6 @@ function EmailCompose() {
     setNewReceivers,
     negativeIsCompose,
   } = useEmailCompose();
-
-  console.log(getAll());
 
   // const {mutate: sendEmailMutate, isLoading: isEmailSending} = useMutation({
   //   mutationKey: ['email-compose-send-email'],
@@ -140,6 +140,7 @@ function EmailCompose() {
     };
     if(showMinimizeEmail?.sendTo) setNewReceivers(showMinimizeEmail.sendTo);
     if(showMinimizeEmail?.attachFiles) setAttachedFiles(showMinimizeEmail.attachFiles);
+    if(showMinimizeEmail?.attachFiles) setAttachFiles(showMinimizeEmail.attachFiles);
 
   }, [showMinimizeEmail]);
 
@@ -292,7 +293,7 @@ function EmailCompose() {
       bcc,
       sendTo: receivers,
       mailContent: content,
-      attachFiles: attachedFiles,
+      attachFiles: attachFiles,
       status: 'draft',
       date: new Date().toDateString(),
     }));
