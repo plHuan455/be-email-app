@@ -65,7 +65,7 @@ function EmailCompose() {
   const [attachFiles, setAttachFiles] = useState<any>([]);
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
   const [isShowCcFrom, setIsShowCcFrom] = useState(false);
-  
+
   const [valueCalendar, setValueCalendar] = useState<Dayjs | null>(
     dayjs(Date.now()),
   );
@@ -94,8 +94,6 @@ function EmailCompose() {
     setNewReceivers,
     negativeIsCompose,
   } = useEmailCompose();
-
-  console.log(getAll());
 
   // const {mutate: sendEmailMutate, isLoading: isEmailSending} = useMutation({
   //   mutationKey: ['email-compose-send-email'],
@@ -140,6 +138,7 @@ function EmailCompose() {
     };
     if(showMinimizeEmail?.sendTo) setNewReceivers(showMinimizeEmail.sendTo);
     if(showMinimizeEmail?.attachFiles) setAttachedFiles(showMinimizeEmail.attachFiles);
+    if(showMinimizeEmail?.attachFiles) setAttachFiles(showMinimizeEmail.attachFiles);
 
   }, [showMinimizeEmail]);
 
@@ -210,22 +209,21 @@ function EmailCompose() {
     setAttachFiles([]);
   }, []);
 
-  const handleDeleteAttachedFile = useCallback(
-    (index) => {
+  const handleDeleteAttachedFile = (index) => {
       const file = attachFiles[index];
 
       URL.revokeObjectURL(file.preview);
       setAttachFiles((prevState) => {
-        prevState.splice(index, 1);
-        return [...prevState];
+        const data = [...prevState]
+        data.splice(index, 1);
+        return data;
       });
       setAttachedFiles((prevState) => {
-        prevState.splice(index, 1);
-        return [...prevState];
+        const data = [...prevState]
+        data.splice(index, 1);
+        return data;
       });
-    },
-    [attachFiles, attachedFiles],
-  );
+    }
 
   const handleChangeSubject = (e) => {
     setSubject(e.target.value);
@@ -292,7 +290,7 @@ function EmailCompose() {
       bcc,
       sendTo: receivers,
       mailContent: content,
-      attachFiles: attachedFiles,
+      attachFiles: attachFiles,
       status: 'draft',
       date: new Date().toDateString(),
     }));
