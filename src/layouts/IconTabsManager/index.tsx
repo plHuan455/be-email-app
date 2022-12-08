@@ -97,7 +97,7 @@ const MyTabs = styled(Tabs)`
 `;
 
 export default function IconTabsManager() {
-  const [value, setValue] = React.useState(0);
+  const [value, setValue] = React.useState(1);
 
   const navigate = useNavigate();
 

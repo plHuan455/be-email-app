@@ -246,164 +246,186 @@ function EmailCompose() {
   };
 
   return (
-    <Box
-      className={`m-8 flex flex-col mx-auto shadow-xl rounded-3xl overflow-hidden z-5 transition-all ${
-        isZoom && 'fixed top-0 left-0 bottom-0'
-      }`}>
-      {/* Header */}
-      <Box className="bg-white flex-1 flex flex-col">
+    <Box className="p-8 flex items-center justify-center w-full h-full">
+      <Box
+        className={`flex flex-col h-full w-full mx-auto shadow-xl rounded-3xl overflow-hidden z-5 transition-all ${
+          isZoom && 'fixed top-0 left-0 bottom-0'
+        }`}>
         {/* Window Compose Actions  */}
-        <WindowComposeActions className="pt-3 pr-3" />
-        <Box className="px-9 py-10 pt-2 flex-1 flex flex-col">
-          {/* Compose To */}
-          <EmailComposeFormGroup label={'To:'}>
-            <AutoCompleteReceive
-              data={[]}
-              defaultValue={receivers}
-              onClickCcFromLabel={handleClickCcFromLabel}
-              onChange={handleChangeReceivers}
-            />
-          </EmailComposeFormGroup>
-          {/* Cc, From */}
-          {isShowCcFrom && (
-            <Box className="mb-2">
-              <EmailComposeFormGroup
-                className="py-1"
-                label="Cc:"
-                isHaveBorderBottom={true}>
-                <AutoCompleteReceive
-                  isShowCcFromLabel={false}
-                  data={[]}
-                  defaultValue={cc}
-                  onClickCcFromLabel={handleClickCcFromLabel}
-                  onChange={handleChangeCc}
-                />
-              </EmailComposeFormGroup>
-              <EmailComposeFormGroup
-                className="py-1"
-                label="Bcc:"
-                isHaveBorderBottom={true}>
-                <AutoCompleteReceive
-                  isShowCcFromLabel={false}
-                  data={[]}
-                  defaultValue={bcc}
-                  onClickCcFromLabel={handleClickCcFromLabel}
-                  onChange={handleChangeBcc}
-                />
-              </EmailComposeFormGroup>
-              <EmailComposeFormGroup
-                className="py-1"
-                label="From:"
-                isHaveBorderBottom={true}>
-                <AutoCompleteReceive
-                  data={fromData}
-                  defaultValue={fromData}
-                  isShowCcFromLabel={false}
-                  isReadOnly={true}
-                />
-              </EmailComposeFormGroup>
-            </Box>
-          )}
-          {/* Subject */}
-          <EmailComposeFormGroup label={'Subject:'}>
-            <SingleOTPInputComponent
-              value={subject}
-              onChange={handleChangeSubject}
-              className="outline-none w-full text-black text-[18px] font-bold h-full"
-            />
-          </EmailComposeFormGroup>
-
-          {/* Edit Content */}
-
-          <Box className="flex flex-col flex-1">
-            <Editor
-              editorState={editorState}
-              onEditorStateChange={onEditorStateChange}
-              wrapperClassName="wrapper-class flex-1 flex flex-col"
-              editorClassName="editor-class border flex-1"
-              toolbarClassName="toolbar-class"
-              placeholder="Enter content here..."
-              toolbar={toolbarCustom}
-            />
-            <Box>
-              {/* Private Hashtag */}
-              <EmailPrivateHashtagContainer />
-              {/* Files List */}
-              <Box>
-                {attachedFiles.length !== 0 && (
-                  <AttachFiles
-                    data={attachedFiles}
-                    isDelete={true}
-                    onDeleteAll={handleDeleteAllAttachedFiles}
-                    onDeleteFile={handleDeleteAttachedFile}
-                  />
-                )}
-              </Box>
-              {/* Greeting */}
-              <EmailGreeting
-                greetingLabel="Thanks and Best regards, ------"
-                isHaveLogo={true}
-                logo={<LogoWithLabel />}
+        <WindowComposeActions className="pt-3 pr-3 bg-white" />
+        {/* Header */}
+        <Box className="bg-white flex-1 flex flex-col overflow-scroll">
+          <Box className="px-9 py-10 pt-2 flex-1 flex flex-col">
+            {/* Compose To */}
+            <EmailComposeFormGroup label={'To:'}>
+              <AutoCompleteReceive
+                data={[]}
+                defaultValue={receivers}
+                onClickCcFromLabel={handleClickCcFromLabel}
+                onChange={handleChangeReceivers}
+                isActiveCcFrom={isShowCcFrom}
               />
+            </EmailComposeFormGroup>
+            {/* Cc, From */}
+            {isShowCcFrom && (
+              <Box className="mb-2">
+                <EmailComposeFormGroup
+                  className="py-1"
+                  label="Cc:"
+                  isHaveBorderBottom={true}>
+                  <AutoCompleteReceive
+                    isShowCcFromLabel={false}
+                    data={[]}
+                    defaultValue={cc}
+                    onClickCcFromLabel={handleClickCcFromLabel}
+                    onChange={handleChangeCc}
+                  />
+                </EmailComposeFormGroup>
+                <EmailComposeFormGroup
+                  className="py-1"
+                  label="Bcc:"
+                  isHaveBorderBottom={true}>
+                  <AutoCompleteReceive
+                    isShowCcFromLabel={false}
+                    data={[]}
+                    defaultValue={bcc}
+                    onClickCcFromLabel={handleClickCcFromLabel}
+                    onChange={handleChangeBcc}
+                  />
+                </EmailComposeFormGroup>
+                <EmailComposeFormGroup
+                  className="py-1"
+                  label="From:"
+                  isHaveBorderBottom={true}>
+                  <AutoCompleteReceive
+                    data={fromData}
+                    defaultValue={fromData}
+                    isShowCcFromLabel={false}
+                    isReadOnly={true}
+                  />
+                </EmailComposeFormGroup>
+              </Box>
+            )}
+            {/* Subject */}
+            <EmailComposeFormGroup label={'Subject:'}>
+              <SingleOTPInputComponent
+                value={subject}
+                onChange={handleChangeSubject}
+                className="outline-none w-full text-black text-[18px] font-bold h-full"
+              />
+            </EmailComposeFormGroup>
+
+            {/* Edit Content */}
+
+            <Box
+              className="flex flex-col flex-1"
+              sx={{
+                '& .public-DraftStyleDefault-block': {
+                  marginBlock: 0,
+                },
+                '& .public-DraftEditorPlaceholder-root': {
+                  height: '100%',
+                  '& .public-DraftEditorPlaceholder-inner': { height: '100%' },
+                },
+                '& .public-DraftEditor-content': {
+                  height: '200px',
+                  overflow: 'scroll',
+                },
+              }}>
+              <Editor
+                editorState={editorState}
+                onEditorStateChange={onEditorStateChange}
+                wrapperClassName="wrapper-class flex-1 flex flex-col relative"
+                editorClassName="editor-class border flex-1 mt-[100px]"
+                toolbarClassName="toolbar-class absolute top-0 left-0 w-full"
+                placeholder="Enter content here..."
+                toolbar={toolbarCustom}
+              />
+              <Box>
+                {/* Private Hashtag
+                <EmailPrivateHashtagContainer /> */}
+                {/* Files List */}
+                <Box>
+                  {attachedFiles.length !== 0 && (
+                    <AttachFiles
+                      data={attachedFiles}
+                      dataFiles={attachFiles}
+                      isUpload={true}
+                      isDelete={true}
+                      onDeleteAll={handleDeleteAllAttachedFiles}
+                      onDeleteFile={handleDeleteAttachedFile}
+                    />
+                  )}
+                </Box>
+                {/* Greeting */}
+                <EmailGreeting
+                  greetingLabel="Thanks and Best regards, ------"
+                  isHaveLogo={true}
+                  logo={<LogoWithLabel />}
+                />
+              </Box>
             </Box>
           </Box>
         </Box>
-      </Box>
-      {/* Footer */}
-      <Box className="p-6 bg-[#F1F1F6] flex items-center">
-        {/* manipulation */}
-        <Box>
-          <CustomButton
-            padding="8px 10px"
-            label="SEND TIMER"
-            bgButtonColor="#554CFF"
-            color="#fff"
-            textSize={15}
-            isBeforeIcon={true}
-            beforeIcon={<TableViewIcon fontSize="small" />}
-            onClick={(e) => setIsOpenModal(true)}
-          />
-        </Box>
-        {/* Actions */}
-        <Box className="flex justify-end items-center flex-1">
-          <UseTemplateButton />
-          {/* <Tooltip title="Insert link"> */}
-          <Button
-            className="bg-transparent p-2 hover:bg-transparent"
-            onClick={handleAttachFile}>
-            <input
-              type="file"
-              name="file"
-              id="file"
-              hidden
-              ref={refInputAttachFile}
-              onChange={handleOnAttachedFiles}
-              multiple
+        {/* Footer */}
+        <Box className="p-6 bg-[#F1F1F6] flex items-center h-[88px]">
+          {/* manipulation */}
+          <Box>
+            <CustomButton
+              padding="8px 10px"
+              label="SEND TIMER"
+              bgButtonColor="#554CFF"
+              color="#fff"
+              textSize={15}
+              isBeforeIcon={true}
+              beforeIcon={<TableViewIcon fontSize="small" />}
+              onClick={(e) => setIsOpenModal(true)}
             />
-            <AttachFileIcon className="text-[#7D7E80]" />
-          </Button>
-          {/* </Tooltip> */}
+          </Box>
+          {/* Actions */}
+          <Box className="flex justify-end items-center flex-1">
+            <UseTemplateButton />
+            {/* <Tooltip title="Insert link"> */}
+            <Button
+              className="bg-transparent p-2 hover:bg-transparent"
+              onClick={handleAttachFile}>
+              <input
+                type="file"
+                name="file"
+                id="file"
+                hidden
+                ref={refInputAttachFile}
+                onChange={handleOnAttachedFiles}
+                multiple
+              />
+              <AttachFileIcon className="text-[#7D7E80]" />
+            </Button>
+            {/* </Tooltip> */}
 
-          <CustomButton
-            padding="8px 10px"
-            label="SEND NOW"
-            bgButtonColor="#554CFF"
-            color="#fff"
-            textSize={15}
-            isBeforeIcon={true}
-            beforeIcon={<SendIcon fontSize="small" />}
-            onClick={handleOnClickSubmitCompose('SendNow')}
-          />
+            <CustomButton
+              padding="8px 10px"
+              label="SEND NOW"
+              bgButtonColor="#554CFF"
+              color="#fff"
+              textSize={15}
+              isBeforeIcon={true}
+              beforeIcon={<SendIcon fontSize="small" />}
+              onClick={handleOnClickSubmitCompose('SendNow')}
+            />
+          </Box>
         </Box>
+        <ModalBase
+          title="Set Time To Send"
+          isOpen={isOpenModal}
+          onClose={onCloseModal}
+          submitLabel="Send"
+          onSubmit={handleOnClickSubmitCompose('SendTimer')}>
+          <DateTimePicker
+            value={valueCalendar}
+            setValueCalendar={onChangeCalendar}
+          />
+        </ModalBase>
       </Box>
-      <ModalBase
-        title="Set Time To Send"
-        isOpen={isOpenModal}
-        onClose={onCloseModal}
-        submitLabel="Send"
-        onSubmit={handleOnClickSubmitCompose('SendTimer')}>
-        <DateTimePicker value={valueCalendar} setValueCalendar={onChangeCalendar} />
-      </ModalBase>
     </Box>
   );
 }

@@ -241,7 +241,9 @@ const EmailMess: React.FC<Props> = ({
           </Box>
         </Box>
         {/* Files List If have */}
-        {emailData.attachFiles && <AttachFiles data={emailData.attachFiles} />}
+        {emailData.attachFiles && (
+          <AttachFiles data={emailData.attachFiles} isUpload={false} />
+        )}
         {/* Actions */}
         {(status === 'PENDING' || status === 'SENDING') && (
           <Box className="flex flex-wrap actions justify-end py-4">

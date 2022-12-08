@@ -161,7 +161,7 @@ const EmailStatusBar = (props: Props) => {
 
                 if (foundInRes)
                   return [...currVal, { ...nextVal, notiNumber: foundInRes.count }];
-                return currVal;
+                return [...currVal, nextVal];
               },
               [],
             );
@@ -177,7 +177,7 @@ const EmailStatusBar = (props: Props) => {
 
                 if (foundInRes)
                   return [...currVal, { ...nextVal, notiNumber: foundInRes.count }];
-                return currVal;
+                return [...currVal, nextVal];
               },
               [],
             );

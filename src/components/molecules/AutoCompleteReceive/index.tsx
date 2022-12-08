@@ -30,6 +30,7 @@ interface Props {
         details?: AutocompleteChangeDetails<UserInfo> | undefined,
       ) => void)
     | undefined;
+  isActiveCcFrom?: boolean;
 }
 
 const AutoCompleteReceive: React.FC<Props> = ({
@@ -39,6 +40,7 @@ const AutoCompleteReceive: React.FC<Props> = ({
   onClickCcFromLabel,
   isReadOnly = false,
   onChange = (e) => {},
+  isActiveCcFrom = false,
 }) => {
   const [tempNewUserInfo, setTempNewUserInfo] = useState<UserInfo[]>([]);
 
@@ -95,7 +97,9 @@ const AutoCompleteReceive: React.FC<Props> = ({
             />
             {isShowCcFromLabel && (
               <span
-                className="text-[#7E7E7E] text-[14px] cursor-pointer"
+                className={`text-[#7E7E7E] text-[14px] border rounded-md p-2 py-1 cursor-pointer ${
+                  isActiveCcFrom && 'font-bold border-2'
+                }`}
                 onClick={onClickCcFromLabel}>
                 Cc,Bcc
               </span>

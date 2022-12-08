@@ -1,0 +1,21 @@
+.file {
+  padding: 4px;
+  border-radius: 4px;
+  .main {
+    p,
+    a {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 1; /* number of lines to show */
+      line-clamp: 1;
+      -webkit-box-orient: vertical;
+    }
+  }
+}
+.file {
+  transition: 0.4s;
+  &:hover {
+    background-color: #f6f6f9;
+  }
+}

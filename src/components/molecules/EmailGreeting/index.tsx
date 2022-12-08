@@ -14,7 +14,7 @@ const EmailGreeting: React.FC<Props> = ({
   logo,
 }) => {
   return (
-    <Box>
+    <Box className="mt-4">
       <Box>
         <p className="text-black text-[16px] font-normal">{greetingLabel}</p>
       </Box>

@@ -327,7 +327,6 @@ const ModalEmailList = (props: Props) => {
       <ButtonBase
         onClick={() => {
           props.handleChangeModalStatus(false);
-          navigate('/');
         }}
         sx={{
           color: '#554CFF',
