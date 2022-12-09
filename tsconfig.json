@@ -26,5 +26,10 @@
       "@@packages/utils": ["packages/utils"]
     }
   },
-  "include": ["src/**/*", "config/**/*", "webpack"]
+  "include": [
+    "src/**/*",
+    "config/**/*",
+    "webpack",
+    "public/firebase-messaging-sw.js"
+  ]
 }

@@ -72,6 +72,10 @@ const UserProfileContainer = () => {
       },
       onSuccess: (res) => {
         toast.success('Update Profile Success!');
+        localStorage.setItem(
+          'current_user_avt',
+          res.data.avatar ? JSON.stringify(res.data.avatar) : '',
+        );
         onBackUserProfile();
       },
       onError: () => {

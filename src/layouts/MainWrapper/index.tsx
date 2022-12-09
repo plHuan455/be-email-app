@@ -3,23 +3,23 @@ import useBreadcrumbs from '@hooks/useBreadCrumbs';
 import Header from '@layouts/Header';
 import SideBar from '@layouts/SideBar';
 import { Box, Container, Drawer } from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import React, { useEffect, useMemo, useState } from 'react';
 import { Outlet, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { makeStyles } from 'tss-react/mui';
 import { toast } from 'react-toastify';
 import { useAppDispatch, useAppSelector } from '@redux/configureStore';
-import { getCity } from '@api/location';
-import { setLocation } from '@redux/Global/reducer';
-import IconTabs from '@layouts/IconTabs';
-import EmailStatusBar from '@layouts/EmailStatusBar';
 import AvatarWithPopup from '@components/atoms/AvatarWithPopup';
 import { useAuth } from '@context/AppContext';
 import IconTabsManager from '@layouts/IconTabsManager';
 import MinimizeEmailList from '@components/templates/MinimizeEmailList';
 import { Email } from '@components/organisms/Email/Interface';
-import { removeMinimizeEmail, setMinimizeList, setShowMinimizeEmail } from '@redux/Email/reducer';
+import {
+  removeMinimizeEmail,
+  setMinimizeList,
+  setShowMinimizeEmail,
+} from '@redux/Email/reducer';
+import { fetchToken, onMessageListener } from '../../messaging_init_in_sw';
 
 const sideBarWidth = 75;
 const emailStatusWidth = 290;
@@ -56,12 +56,42 @@ interface Setting {
 function MainWrapper() {
   const dispatch = useAppDispatch();
   const location = useLocation();
-  const minimizeEmails = useAppSelector(state => state.email.minimizeMailList);
-  const showMinimizeEmail = useAppSelector(state => state.email.showMinimizeEmail);
+  const minimizeEmails = useAppSelector((state) => state.email.minimizeMailList);
+  const showMinimizeEmail = useAppSelector((state) => state.email.showMinimizeEmail);
 
-  const [searchParams] = useSearchParams();;
+  const [searchParams] = useSearchParams();
 
   const isInManagerPage = location.pathname.startsWith('/manager');
+
+  const [show, setShow] = useState(false);
+  const [notification, setNotification] = useState({ title: '', body: '' });
+  const [isTokenFound, setTokenFound] = useState(false);
+  const [getFcmToken, setFcmToken] = useState('');
+
+  console.log(getFcmToken);
+
+  Notification.requestPermission().then((permission) => {
+    if (permission === 'granted') {
+      console.log('line 28 Notification permission granted.');
+      fetchToken(setTokenFound, setFcmToken);
+    }
+    if (permission === 'default') {
+      console.log('line 28 Notification permission default.');
+    }
+    if (permission === 'denied') {
+      console.log('line 28 Notification permission denied.');
+    }
+  });
+
+  onMessageListener()
+    .then((payload) => {
+      setNotification({
+        title: payload.notification.title,
+        body: payload.notification.body,
+      });
+      setShow(true);
+    })
+    .catch((err) => console.log('failed', err));
 
   // Hooks
   const { classes, cx } = useStyles();
@@ -88,40 +118,34 @@ function MainWrapper() {
   const handleMaximizeEmailClick = (data: Partial<Email>) => {
     dispatch(setShowMinimizeEmail(data));
     navigate('/emails/compose');
-  }
+  };
   const handleCloseEmailClick = (data: Partial<Email>) => {
-    if(data.id !== undefined) {
+    if (data.id !== undefined) {
       dispatch(removeMinimizeEmail(data.id));
     }
-  }
+  };
 
   const settings: Setting[] = [
     {
       id: 0,
-      label: 'Manager',
-      path: '/manager',
-      handleClick: handleChangePage('/manager'),
-    },
-    {
-      id: 1,
       label: 'Profile',
       path: '/profile',
       handleClick: handleChangePage('/profile'),
     },
     {
-      id: 2,
+      id: 1,
       label: 'Setting',
       path: '/setting',
-      handleClick: handleLogout,
+      handleClick: handleChangePage('/manager/setting'),
     },
     {
-      id: 3,
+      id: 2,
       label: 'Change Password',
       path: '/change-password',
       handleClick: handleChangePage('/change-password'),
     },
     {
-      id: 4,
+      id: 3,
       label: 'Log out',
       path: '/log-out',
       handleClick: handleLogout,
@@ -178,8 +202,8 @@ function MainWrapper() {
         />
         <SideBar />
       </Drawer>
-      <MinimizeEmailList 
-        data={minimizeEmails} 
+      <MinimizeEmailList
+        data={minimizeEmails}
         onMaximizeClick={handleMaximizeEmailClick}
         onCloseClick={handleCloseEmailClick}
       />

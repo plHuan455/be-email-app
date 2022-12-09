@@ -10,14 +10,15 @@ import { styled } from '@mui/material/styles';
 import logo from '../../assets/images/logo_without_text.png';
 import { Box, Tooltip } from '@mui/material';
 import Icon, { SVGIconProps } from '@components/atoms/Icon';
-import { RenderButtonIcon } from '@components/molecules/EmailActions';
 import { RouteObject, useLocation, useNavigate } from 'react-router-dom';
 import ManagerAccount from '@assets/icon/ManagerAccount';
+import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import Department from '@assets/icon/Department';
+import ArticleIcon from '@mui/icons-material/Article';
 
 export interface TabItem {
   title?: string;
-  url?: string;
+  url: string;
   logo?: string;
   icon?: React.ReactElement;
 }
@@ -34,9 +35,14 @@ const TabsData: TabItem[] = [
     url: '/manager/department',
   },
   {
-    title: 'Settings',
-    icon: <ManagerAccount />,
-    url: '/manager/setting',
+    title: 'Contact',
+    icon: <LocalPhoneIcon />,
+    url: '/emails',
+  },
+  {
+    title: 'Template',
+    icon: <ArticleIcon />,
+    url: '/emails',
   },
 ];
 
@@ -103,7 +109,7 @@ export default function IconTabsManager() {
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
-    navigate(TabsData[newValue - 1].url || '/');
+    // navigate(TabsData[newValue - 1].url || '/');
   };
 
   const renderTabsData = () => {
@@ -112,7 +118,12 @@ export default function IconTabsManager() {
     return TabsData.map((val, index) => {
       return (
         <Tooltip title={val.title} placement="right">
-          <Tab key={index} icon={val.icon} aria-label={val.title} />
+          <Tab
+            key={index}
+            icon={val.icon}
+            aria-label={val.title}
+            onClick={() => navigate(val.url)}
+          />
         </Tooltip>
       );
     });

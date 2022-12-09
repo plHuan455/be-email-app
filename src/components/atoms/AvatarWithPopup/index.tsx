@@ -7,7 +7,7 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
-import React from 'react';
+import React, { useMemo } from 'react';
 import CustomButton from '../CustomButton';
 import { SVGIconProps } from '../Icon';
 import avt from '../../../assets/images/avatars/avatar-2.jpg';
@@ -51,7 +51,9 @@ const AvatarWithPopup: React.FC<Props> = ({
   popupStyles = {},
 }) => {
   const currentUserName = localStorage.getItem('current_user_name')?.toString();
-  const currentUserAvt = localStorage.getItem('current_user_avt')?.toString();
+  const currentUserAvt = useMemo(() => {
+    return localStorage.getItem('current_user_avt')?.toString();
+  }, [localStorage.getItem('current_user_avt')?.toString()]);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
 
   const handleOpenUserMenu = (event) => {

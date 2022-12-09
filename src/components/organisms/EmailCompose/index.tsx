@@ -39,7 +39,11 @@ import ModalBase from '@components/atoms/ModalBase';
 import DateTimePicker from '@components/atoms/DateTimePicker';
 import EmailPrivateHashtagContainer from '@containers/EmailPrivateHashtagContainer';
 import { useAppDispatch, useAppSelector } from '@redux/configureStore';
-import { removeMinimizeEmail, setMinimizeList, setShowMinimizeEmail } from '@redux/Email/reducer';
+import {
+  removeMinimizeEmail,
+  setMinimizeList,
+  setShowMinimizeEmail,
+} from '@redux/Email/reducer';
 import Email from '../Email';
 import { useSelector } from 'react-redux';
 import { useMutation } from '@tanstack/react-query';
@@ -60,14 +64,12 @@ function EmailCompose() {
   const dispatch = useAppDispatch();
   const [searchParams] = useSearchParams();
 
-  const showMinimizeEmail = useAppSelector(state => state.email.showMinimizeEmail);
+  const showMinimizeEmail = useAppSelector((state) => state.email.showMinimizeEmail);
   const [attachedFiles, setAttachedFiles] = useState<any>([]);
   const [attachFiles, setAttachFiles] = useState<any>([]);
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
   const [isShowCcFrom, setIsShowCcFrom] = useState(false);
 
-  console.log({attachedFiles, attachFiles});
-  
   const [valueCalendar, setValueCalendar] = useState<Dayjs | null>(
     dayjs(Date.now()),
   );
@@ -101,47 +103,48 @@ function EmailCompose() {
   //   mutationKey: ['email-compose-send-email'],
   //   mutationFn: () => {}
   // });
-  
+
   useEffect(() => {
     const contentBlock = htmlToDraft(content);
-    
+
     if (contentBlock) {
       const contentState = ContentState.createFromBlockArray(
         contentBlock.contentBlocks,
-        );
-        setEditorState(EditorState.createWithContent(contentState));
-      }
-    }, []);
-    
+      );
+      setEditorState(EditorState.createWithContent(contentState));
+    }
+  }, []);
+
   useEffect(() => {
-    if(!showMinimizeEmail) {
+    if (!showMinimizeEmail) {
       reset();
       setAttachedFiles([]);
       setAttachFiles([]);
-      setEditorState(EditorState.createEmpty())
+      setEditorState(EditorState.createEmpty());
       return;
     }
-    if(showMinimizeEmail?.title) setSubject(showMinimizeEmail.title)
-    if(showMinimizeEmail?.cc) setCc(showMinimizeEmail.cc);
-    if(showMinimizeEmail?.bcc) setBcc(showMinimizeEmail.bcc);
-    if(showMinimizeEmail?.mailContent) {
-      setContent(showMinimizeEmail.mailContent)
+    if (showMinimizeEmail?.title) setSubject(showMinimizeEmail.title);
+    if (showMinimizeEmail?.cc) setCc(showMinimizeEmail.cc);
+    if (showMinimizeEmail?.bcc) setBcc(showMinimizeEmail.bcc);
+    if (showMinimizeEmail?.mailContent) {
+      setContent(showMinimizeEmail.mailContent);
       setEditorState(() => {
         const contentBlock = htmlToDraft(showMinimizeEmail.mailContent);
-    
+
         if (contentBlock) {
           const contentState = ContentState.createFromBlockArray(
             contentBlock.contentBlocks,
           );
-          return EditorState.createWithContent(contentState)
+          return EditorState.createWithContent(contentState);
         }
-        return EditorState.createEmpty()
+        return EditorState.createEmpty();
       });
-    };
-    if(showMinimizeEmail?.sendTo) setNewReceivers(showMinimizeEmail.sendTo);
-    if(showMinimizeEmail?.attachFiles) setAttachedFiles(showMinimizeEmail.attachFiles);
-    if(showMinimizeEmail?.attachFiles) setAttachFiles(showMinimizeEmail.attachFiles);
-
+    }
+    if (showMinimizeEmail?.sendTo) setNewReceivers(showMinimizeEmail.sendTo);
+    if (showMinimizeEmail?.attachFiles)
+      setAttachedFiles(showMinimizeEmail.attachFiles);
+    if (showMinimizeEmail?.attachFiles)
+      setAttachFiles(showMinimizeEmail.attachFiles);
   }, [showMinimizeEmail]);
 
   const navigate = useNavigate();
@@ -211,22 +214,21 @@ function EmailCompose() {
     setAttachFiles([]);
   }, []);
 
-  const handleDeleteAttachedFile = useCallback(
-    (index) => {
-      const file = attachFiles[index];
+  const handleDeleteAttachedFile = (index) => {
+    const file = attachFiles[index];
 
-      URL.revokeObjectURL(file.preview);
-      setAttachFiles((prevState) => {
-        prevState.splice(index, 1);
-        return [...prevState];
-      });
-      setAttachedFiles((prevState) => {
-        prevState.splice(index, 1);
-        return [...prevState];
-      });
-    },
-    [attachFiles, attachedFiles],
-  );
+    URL.revokeObjectURL(file.preview);
+    setAttachFiles((prevState) => {
+      const data = [...prevState];
+      data.splice(index, 1);
+      return data;
+    });
+    setAttachedFiles((prevState) => {
+      const data = [...prevState];
+      data.splice(index, 1);
+      return data;
+    });
+  };
 
   const handleChangeSubject = (e) => {
     setSubject(e.target.value);
@@ -234,13 +236,13 @@ function EmailCompose() {
 
   const handleChangeReceivers = (e, newValue) => {
     setNewReceivers(newValue);
-  }
+  };
   const handleChangeCc = (e, newValue) => {
     setCc(newValue);
-  }
+  };
   const handleChangeBcc = (e, newValue) => {
     setBcc(newValue);
-  }
+  };
 
   const handleOnClickSubmitCompose =
     (typeSend: 'SendNow' | 'SendTimer') => async () => {
@@ -286,20 +288,22 @@ function EmailCompose() {
     };
 
   const handleMinimizeCompose = () => {
-    dispatch(setMinimizeList({
-      id: showMinimizeEmail?.id ?? undefined,
-      title: subject,
-      cc,
-      bcc,
-      sendTo: receivers,
-      mailContent: content,
-      attachFiles: attachFiles,
-      status: 'draft',
-      date: new Date().toDateString(),
-    }));
+    dispatch(
+      setMinimizeList({
+        id: showMinimizeEmail?.id ?? undefined,
+        title: subject,
+        cc,
+        bcc,
+        sendTo: receivers,
+        mailContent: content,
+        attachFiles: attachFiles,
+        status: 'draft',
+        date: new Date().toDateString(),
+      }),
+    );
 
     navigate('/emails');
-  }
+  };
 
   const onEditorStateChange = (val) => {
     setContent(draftToHtml(convertToRaw(editorState.getCurrentContent())));
@@ -317,8 +321,8 @@ function EmailCompose() {
           isZoom && 'fixed top-0 left-0 bottom-0'
         }`}>
         {/* Window Compose Actions  */}
-        <WindowComposeActions 
-          className="pt-3 pr-3pt-3 pr-3 bg-white" 
+        <WindowComposeActions
+          className="pt-3 pr-3pt-3 pr-3 bg-white"
           onMinimize={handleMinimizeCompose}
         />
         {/* Header */}

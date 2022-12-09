@@ -30,7 +30,7 @@ const EmailMessEmpty: React.FC<Props> = ({ isLoading = false }) => {
     <Box className={`w-full relative flex flex-wrap`}>
       <Box className={`w-full flex flex-wrap`}>
         {/* <Box className="w-[5%]"></Box> */}
-        <Box className={`flex-1`}>
+        {/* <Box className={`flex-1`}>
           <OptionalAvatar
             data={
               new UserInfo(
@@ -42,7 +42,7 @@ const EmailMessEmpty: React.FC<Props> = ({ isLoading = false }) => {
             isShowAvatar={true}
             optionDate={new Date() + ''}
           />
-        </Box>
+        </Box> */}
         <Box className="w-full flex">
           {/* <Box className="w-[5%]"></Box> */}
           <Box className="flex-1">
