@@ -42,6 +42,7 @@ interface EmailComposeProps {
   selectedData?: Dayjs | null;
   isShowCalendarModal?: boolean;
   calendarValue: Dayjs | null;
+  tabBarColor?: string;
   onMaximizeClick?: () => void;
   onMinimizeClick?: () => void;
   onCCButtonClick?: () => void;
@@ -60,6 +61,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
   isShowCCForm = false,
   isShowCalendarModal = false,
   calendarValue,
+  tabBarColor,
   onMinimizeClick,
   onMaximizeClick,
   onCCButtonClick,
@@ -108,11 +110,12 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
       <FormProvider {...method}>
         <form className="p-8 flex items-center justify-center w-full h-full" onSubmit={method.handleSubmit(onSubmit)}>
           <Box
-            className={`flex flex-col h-full w-full mx-auto shadow-xl rounded-3xl overflow-hidden z-5 transition-all ${isFullScreen && 'fixed top-0 left-0 bottom-0'
+            className={`flex flex-col h-full w-full mx-auto shadow-xl bg-white rounded-3xl overflow-hidden z-5 transition-all ${isFullScreen && 'fixed top-0 left-0 bottom-0'
               }`}
           >
             <WindowComposeActions
-              className="pt-3 pr-3pt-3 pr-3 bg-white"
+              className="p-3 pr-3pt-3 pr-3"
+              sx={{backgroundColor: tabBarColor || 'white'}}
               onMinimizeClick={onMinimizeClick}
               onMaximizeClick={onMaximizeClick}
             />

@@ -12,6 +12,7 @@ import { addMinimizeAndSetShowMinimizeEmail, addMinimizeEmail, setShowMinimizeEm
 import { getEditorStateFormHtmlString } from "@utils/functions";
 import { UserInfo } from "@components/organisms/Email/Interface";
 import useDebounce from "@hooks/useDebouce";
+import { MinimizeEmailColor } from "@components/organisms/MinimizeEmail/interface";
 
 const currentUserEmail = localStorage.getItem('current_email');
 
@@ -47,6 +48,8 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
 
   const [isShowCalendarModal, setIsShowCalendarModal] = useState<boolean>(false);
 
+  const [tabBarColor, setTabBarColor] = useState<string>();
+
   const {mutate: submitEmailComposeMutate, isLoading: isEmailComposeSubmitting} = useMutation({
     mutationKey: ['email-compose-submit'],
     mutationFn: sendEmail,
@@ -54,8 +57,6 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
       toast.success('Email have been send');
     }
   })
-
-  method.watch((value, { name, type }) => console.log({value, name, type}));
 
   useEffect(()=>{
     if(!showMinimizeEmailId) return;
@@ -68,6 +69,7 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
       if(foundMinimizeEmail.content) method.setValue('content', getEditorStateFormHtmlString(foundMinimizeEmail.content));
       if(foundMinimizeEmail.attachFiles) method.setValue('attachFiles', foundMinimizeEmail.attachFiles);
       if(foundMinimizeEmail.sendAt) method.setValue('sendAt', foundMinimizeEmail.sendAt);
+      setTabBarColor(foundMinimizeEmail?.color);
     }
   }, [showMinimizeEmailId, minimizeEmailList, method])
 
@@ -80,14 +82,16 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
   const handleMinimizeClick = (id?: string) => {
     const values = method.getValues();
     method.reset();
-    dispatch(addMinimizeEmail({
+    dispatch(addMinimizeEmail({ 
       ...values,
       id: id ?? showMinimizeEmailId,
-      content: values.content ? draftToHtml(convertToRaw(values.content.getCurrentContent())) : ''
+      content: values.content ? draftToHtml(convertToRaw(values.content.getCurrentContent())) : '',
+      color: tabBarColor ? tabBarColor : MinimizeEmailColor.getColor(),
     }))
     setIsFullScreen(false);
+    setTabBarColor(undefined);
   }
-
+  
   const handleSubmit = (values: EmailComposeFields) => {
     submitEmailComposeMutate({
       email: {
@@ -111,6 +115,7 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
       isShowCCForm={isShowCCForm}
       isShowCalendarModal={isShowCalendarModal}
       selectedData={selectedDate}
+      tabBarColor={tabBarColor}
       calendarValue={calendarValue}
       onMaximizeClick={() => setIsFullScreen(preState => !preState)}
       onMinimizeClick={handleMinimizeClick}

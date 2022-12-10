@@ -2,6 +2,7 @@ import { EmailResponse } from '@api/email';
 import { EmailList, StatusOptions } from '@components/molecules/ModalEmailList';
 import { Email, UserInfo } from '@components/organisms/Email/Interface';
 import { AttachFile, UserRead } from '@components/organisms/EmailMess';
+import { MinimizeEmailColor } from '@components/organisms/MinimizeEmail/interface';
 import { MinimizeEmailTypes } from '@components/templates/MinimizeEmailList';
 import { emailData } from '@layouts/EmailStatusBar';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
@@ -227,12 +228,14 @@ export interface EmailState {
   unreadEmailsList: EmailResponse[];
   isLoading: boolean;
 }
+
 const initialState: EmailState = {
   minimizeMailList: JSON.parse(localStorage.getItem(LOCAL_STORAGE_MINIMIZE_EMAILS) ?? '[]').map(value => ({
     ...value, 
     to: value?.to?.map(value => new UserInfo(value.avatar, value.name, value.mail)),
     cc: value?.cc?.map(value => new UserInfo(value.avatar, value.name, value.mail)),
     bcc: value?.bcc?.map(value => new UserInfo(value.avatar, value.name, value.mail)),
+    color: MinimizeEmailColor.getColor(),
   })),
   EmailsList: [],
   privateHashtag: [

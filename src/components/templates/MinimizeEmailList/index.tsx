@@ -12,6 +12,7 @@ export interface MinimizeEmailTypes {
   subject?: string;
   content?: string;
   sendAt?: string | null;
+  color?: string;
 }
 
 interface MinimizeEmailListProps {
@@ -27,7 +28,7 @@ const MinimizeEmailList: React.FC<MinimizeEmailListProps> = ({
 }) => {
   return <div className="t-minimizeEmailList">
     {data.map((value, index) => (
-      <Box className="t-minimizeEmailList_item" key={`minimize-email-list-${value.id}`}>
+      <Box className="t-minimizeEmailList_item" sx={{backgroundColor: value.color ?? '#f2f6fc'}} key={`minimize-email-list-${value.id}`}>
         <MinimizeEmail 
           key={`minimize-email-list-${index}`} 
           title={value.subject || 'New Message'}
