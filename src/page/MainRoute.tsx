@@ -30,6 +30,7 @@ import UserProfile from '../layouts/UserProfile';
 import UserProfileContainer from './UserProfileContainer';
 import EmailEmptyContainer from '@containers/EmailEmptyContainer';
 import EmailMainWrapper from '@layouts/EmailMainWrapper';
+import EmailComposePage from './Email/EmailComposePage';
 
 export const managerRouter: RouteObject[] = [
   {
@@ -61,7 +62,7 @@ export const sideBarRouter: RouteObject[] = [
       },
       {
         path: '/emails/compose',
-        element: <EmailCompose />,
+        element: <EmailComposePage />,
       },
       {
         path: '/emails/status/:status/:email',

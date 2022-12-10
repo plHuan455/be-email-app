@@ -32,9 +32,11 @@ const EmailStatusHeader = ({
   color,
   bgButtonColor,
 }: Props) => {
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const handleComposeEmail = useCallback(() => {
+    dispatch(setShowMinimizeEmail(undefined));
     navigate('/emails/compose');
   }, []);
 

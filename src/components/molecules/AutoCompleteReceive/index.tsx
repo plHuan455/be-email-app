@@ -66,9 +66,9 @@ const AutoCompleteReceive: React.FC<Props> = ({
       }
     };
   };
-
   return (
     <Autocomplete
+      value={data}
       onChange={onChange}
       readOnly={isReadOnly}
       className="emailComposeTo"
@@ -87,7 +87,7 @@ const AutoCompleteReceive: React.FC<Props> = ({
       }}
       renderInput={(params) => {
         if (isReadOnly) params.InputProps.endAdornment = undefined;
-
+        
         return (
           <Box className="flex justify-between items-center">
             <TextField

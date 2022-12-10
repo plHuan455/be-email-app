@@ -13,7 +13,7 @@ export interface ModalBaseProps extends React.PropsWithChildren {
   style?: any;
   submitLabel?: string;
   cancelLabel?: string;
-  modalType?: 'submit' | 'submit/cancel';
+  modalType?: 'submit' | 'button';
 }
 
 const modalDefaultStyle = {
@@ -36,7 +36,7 @@ const ModalBase: React.FC<ModalBaseProps> = ({
   children,
   submitLabel = 'CREATE',
   cancelLabel = 'CANCEL',
-  modalType = 'submit/cancel',
+  modalType = 'button',
 }) => {
   return (
     <Modal
@@ -65,7 +65,7 @@ const ModalBase: React.FC<ModalBaseProps> = ({
           </div>
           {Boolean(submitLabel) && (
             <div className="modal-button-bottom">
-              <Button className="button-create-mui" onClick={onSubmit}>
+              <Button className="button-create-mui" onClick={onSubmit} type={modalType}>
                 {submitLabel}
               </Button>
             </div>

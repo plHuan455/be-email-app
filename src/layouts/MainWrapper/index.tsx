@@ -12,13 +12,9 @@ import { useAppDispatch, useAppSelector } from '@redux/configureStore';
 import AvatarWithPopup from '@components/atoms/AvatarWithPopup';
 import { useAuth } from '@context/AppContext';
 import IconTabsManager from '@layouts/IconTabsManager';
-import MinimizeEmailList from '@components/templates/MinimizeEmailList';
+import MinimizeEmailList, { MinimizeEmailTypes } from '@components/templates/MinimizeEmailList';
 import { Email } from '@components/organisms/Email/Interface';
-import {
-  removeMinimizeEmail,
-  setMinimizeList,
-  setShowMinimizeEmail,
-} from '@redux/Email/reducer';
+import { removeMinimizeEmail, setShowMinimizeEmail } from '@redux/Email/reducer';
 import { fetchToken, onMessageListener } from '../../messaging_init_in_sw';
 import { setIsShowEmailInfo } from '@redux/Global/reducer';
 
@@ -57,12 +53,8 @@ interface Setting {
 function MainWrapper() {
   const dispatch = useAppDispatch();
   const location = useLocation();
-  const minimizeEmails = useAppSelector((state) => state.email.minimizeMailList);
-  const showMinimizeEmail = useAppSelector((state) => state.email.showMinimizeEmail);
-
-  const [searchParams] = useSearchParams();
-
-  const isInManagerPage = location.pathname.startsWith('/manager');
+  const minimizeEmails = useAppSelector(state => state.email.minimizeMailList);
+  const showMinimizeEmailId = useAppSelector(state => state.email.showMinimizeEmailId);
 
   const [show, setShow] = useState(false);
   const [notification, setNotification] = useState({ title: '', body: '' });
@@ -122,12 +114,12 @@ function MainWrapper() {
     navigate(url);
   };
 
-  const handleMaximizeEmailClick = (data: Partial<Email>) => {
-    dispatch(setShowMinimizeEmail(data));
+  const handleMaximizeEmailClick = (data: MinimizeEmailTypes) => {
+    dispatch(setShowMinimizeEmail(data.id));
     navigate('/emails/compose');
-  };
-  const handleCloseEmailClick = (data: Partial<Email>) => {
-    if (data.id !== undefined) {
+  }
+  const handleCloseEmailClick = (data: MinimizeEmailTypes) => {
+    if(data.id !== undefined) {
       dispatch(removeMinimizeEmail(data.id));
     }
   };
@@ -158,6 +150,10 @@ function MainWrapper() {
       handleClick: handleLogout,
     },
   ];
+
+  const convertedMinimizeEmailList = useMemo(() => {
+    return minimizeEmails.filter(value => value.id !== showMinimizeEmailId);
+  }, [minimizeEmails, showMinimizeEmailId])
 
   return (
     <React.Fragment>
@@ -209,8 +205,8 @@ function MainWrapper() {
         />
         <SideBar />
       </Drawer>
-      <MinimizeEmailList
-        data={minimizeEmails}
+      <MinimizeEmailList 
+        data={convertedMinimizeEmailList} 
         onMaximizeClick={handleMaximizeEmailClick}
         onCloseClick={handleCloseEmailClick}
       />
