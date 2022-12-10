@@ -103,6 +103,7 @@ const UploadFile: React.FC<Props> = ({ data, onDeleteFile }) => {
         </Box>
       </Box>
       <button
+        type='button'
         className="flex items-center justify-center shadow-md absolute top-0 right-0 -translate-x-1/2 translate-y-1/2 rounded-full"
         onClick={() => onDeleteFile()}>
         <CloseIcon sx={{ fontSize: 14 }} />

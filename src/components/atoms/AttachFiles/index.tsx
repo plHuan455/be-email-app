@@ -124,6 +124,7 @@ const AttachFiles: React.FC<Props> = ({
           {isDelete && (
             <button
               className="flex items-center justify-center shadow-md absolute top-0 right-0 translate-x-1/2 -translate-y-1/2 rounded-full"
+              type="button"
               onClick={() => onDeleteFile && onDeleteFile(index)}>
               <CloseIcon sx={{ fontSize: 14 }} />
             </button>
@@ -134,6 +135,7 @@ const AttachFiles: React.FC<Props> = ({
   }, [data]);
 
   const _renderUploadFiles = useMemo(() => {
+    console.log(dataFiles);
     return (
       dataFiles &&
       dataFiles.map((val, index) => {

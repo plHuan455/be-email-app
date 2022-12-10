@@ -27,7 +27,7 @@ import { useTranslation } from '@@packages/localization/src';
 import useEmailCompose from '../../../zustand/useEmailCompose';
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
-import { Email as EmailTypes, UserInfo } from '../Email/Interface';
+import { UserInfo } from '../Email/Interface';
 import { CreateEmailParam, sendEmail } from '@api/email';
 import {
   MESSAGE_SEND_EMAIL_FAILED,
@@ -39,11 +39,7 @@ import ModalBase from '@components/atoms/ModalBase';
 import DateTimePicker from '@components/atoms/DateTimePicker';
 import EmailPrivateHashtagContainer from '@containers/EmailPrivateHashtagContainer';
 import { useAppDispatch, useAppSelector } from '@redux/configureStore';
-import {
-  removeMinimizeEmail,
-  setMinimizeList,
-  setShowMinimizeEmail,
-} from '@redux/Email/reducer';
+// import { removeMinimizeEmail, setMinimizeList, setShowMinimizeEmail } from '@redux/Email/reducer';
 import Email from '../Email';
 import { useSelector } from 'react-redux';
 import { useMutation } from '@tanstack/react-query';
@@ -64,7 +60,7 @@ function EmailCompose() {
   const dispatch = useAppDispatch();
   const [searchParams] = useSearchParams();
 
-  const showMinimizeEmail = useAppSelector((state) => state.email.showMinimizeEmail);
+  // const showMinimizeEmail = useAppSelector(state => state.email.showMinimizeEmail);
   const [attachedFiles, setAttachedFiles] = useState<any>([]);
   const [attachFiles, setAttachFiles] = useState<any>([]);
   const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
@@ -110,42 +106,41 @@ function EmailCompose() {
     if (contentBlock) {
       const contentState = ContentState.createFromBlockArray(
         contentBlock.contentBlocks,
-      );
-      setEditorState(EditorState.createWithContent(contentState));
-    }
-  }, []);
+        );
+        setEditorState(EditorState.createWithContent(contentState));
+      }
+    }, []);
+    
+  // useEffect(() => {
+  //   if(!showMinimizeEmail) {
+  //     reset();
+  //     setAttachedFiles([]);
+  //     setAttachFiles([]);
+  //     setEditorState(EditorState.createEmpty())
+  //     return;
+  //   }
+  //   if(showMinimizeEmail?.title) setSubject(showMinimizeEmail.title)
+  //   if(showMinimizeEmail?.cc) setCc(showMinimizeEmail.cc);
+  //   if(showMinimizeEmail?.bcc) setBcc(showMinimizeEmail.bcc);
+  //   if(showMinimizeEmail?.mailContent) {
+  //     setContent(showMinimizeEmail.mailContent)
+  //     setEditorState(() => {
+  //       const contentBlock = htmlToDraft(showMinimizeEmail.mailContent);
+    
+  //       if (contentBlock) {
+  //         const contentState = ContentState.createFromBlockArray(
+  //           contentBlock.contentBlocks,
+  //         );
+  //         return EditorState.createWithContent(contentState)
+  //       }
+  //       return EditorState.createEmpty()
+  //     });
+  //   };
+  //   if(showMinimizeEmail?.sendTo) setNewReceivers(showMinimizeEmail.sendTo);
+  //   if(showMinimizeEmail?.attachFiles) setAttachedFiles(showMinimizeEmail.attachFiles);
+  //   if(showMinimizeEmail?.attachFiles) setAttachFiles(showMinimizeEmail.attachFiles);
 
-  useEffect(() => {
-    if (!showMinimizeEmail) {
-      reset();
-      setAttachedFiles([]);
-      setAttachFiles([]);
-      setEditorState(EditorState.createEmpty());
-      return;
-    }
-    if (showMinimizeEmail?.title) setSubject(showMinimizeEmail.title);
-    if (showMinimizeEmail?.cc) setCc(showMinimizeEmail.cc);
-    if (showMinimizeEmail?.bcc) setBcc(showMinimizeEmail.bcc);
-    if (showMinimizeEmail?.mailContent) {
-      setContent(showMinimizeEmail.mailContent);
-      setEditorState(() => {
-        const contentBlock = htmlToDraft(showMinimizeEmail.mailContent);
-
-        if (contentBlock) {
-          const contentState = ContentState.createFromBlockArray(
-            contentBlock.contentBlocks,
-          );
-          return EditorState.createWithContent(contentState);
-        }
-        return EditorState.createEmpty();
-      });
-    }
-    if (showMinimizeEmail?.sendTo) setNewReceivers(showMinimizeEmail.sendTo);
-    if (showMinimizeEmail?.attachFiles)
-      setAttachedFiles(showMinimizeEmail.attachFiles);
-    if (showMinimizeEmail?.attachFiles)
-      setAttachFiles(showMinimizeEmail.attachFiles);
-  }, [showMinimizeEmail]);
+  // }, [showMinimizeEmail]);
 
   const navigate = useNavigate();
 
@@ -288,22 +283,20 @@ function EmailCompose() {
     };
 
   const handleMinimizeCompose = () => {
-    dispatch(
-      setMinimizeList({
-        id: showMinimizeEmail?.id ?? undefined,
-        title: subject,
-        cc,
-        bcc,
-        sendTo: receivers,
-        mailContent: content,
-        attachFiles: attachFiles,
-        status: 'draft',
-        date: new Date().toDateString(),
-      }),
-    );
+    // dispatch(setMinimizeList({
+    //   id: showMinimizeEmail?.id ?? undefined,
+    //   title: subject,
+    //   cc,
+    //   bcc,
+    //   sendTo: receivers,
+    //   mailContent: content,
+    //   attachFiles: attachFiles,
+    //   status: 'draft',
+    //   date: new Date().toDateString(),
+    // }));
 
-    navigate('/emails');
-  };
+    // navigate('/emails');
+  }
 
   const onEditorStateChange = (val) => {
     setContent(draftToHtml(convertToRaw(editorState.getCurrentContent())));
@@ -321,9 +314,9 @@ function EmailCompose() {
           isZoom && 'fixed top-0 left-0 bottom-0'
         }`}>
         {/* Window Compose Actions  */}
-        <WindowComposeActions
-          className="pt-3 pr-3pt-3 pr-3 bg-white"
-          onMinimize={handleMinimizeCompose}
+        <WindowComposeActions 
+          className="pt-3 pr-3pt-3 pr-3 bg-white" 
+          onMinimizeClick={handleMinimizeCompose}
         />
         {/* Header */}
         <Box className="bg-white flex-1 flex flex-col overflow-scroll">
