@@ -19,12 +19,21 @@ const globalSlice = createSlice({
   initialState,
   reducers: {
     navigateIsShowEmailInfo(state) {
+      localStorage.setItem(
+        'isShow_Email_Information_Bar',
+        JSON.stringify(!state.isShowEmailInfo),
+      );
+
       return {
         ...state,
         isShowEmailInfo: !state.isShowEmailInfo,
       };
     },
     setIsShowEmailInfo(state, action) {
+      localStorage.setItem(
+        'isShow_Email_Information_Bar',
+        JSON.stringify(action.payload),
+      );
       return { ...state, isShowEmailInfo: action.payload };
     },
     setThemeMode(state, action) {

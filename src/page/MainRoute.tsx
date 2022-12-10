@@ -64,7 +64,11 @@ export const sideBarRouter: RouteObject[] = [
         element: <EmailCompose />,
       },
       {
-        path: '/emails/:status/:email',
+        path: '/emails/status/:status/:email',
+        element: <EmailMainWrapper />,
+      },
+      {
+        path: '/emails/tag/:tag/:email',
         element: <EmailMainWrapper />,
       },
     ],

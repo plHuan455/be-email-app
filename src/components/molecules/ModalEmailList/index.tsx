@@ -14,6 +14,7 @@ import { useGetEmail } from '@hooks/Email/useGetEmail';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import Loading from '@components/atoms/Loading';
 import { useLocation, useNavigate } from 'react-router-dom';
+import useLocalStorage from '@hooks/useLocalStorage';
 
 export interface EmailList {
   userId: number;
@@ -61,28 +62,45 @@ export type StatusOptions =
   | 'hashtag'
   | 'draft'
   | 'trash'
-  | 'blacklist';
+  | 'spam';
 
 type Props = {
   title: string;
   status: StatusOptions;
-  // emailData?: EmailList[];
   isActive: boolean;
   handleChangeModalStatus: (status: boolean) => void;
+  tag?: string;
+  renderType?: 'tag' | 'status';
   index?: number;
   handleChangeEmailTabNotiNumber?: (index: number, number: number) => void;
 };
 
-const ModalEmailList = (props: Props) => {
+const ModalEmailList: React.FC<Props> = ({
+  status,
+  isActive,
+  handleChangeModalStatus,
+  title,
+  tag,
+  renderType = 'status',
+  index,
+  handleChangeEmailTabNotiNumber,
+}) => {
   const [value, setValue] = React.useState(0);
 
   const locate = useLocation();
   const pathName = locate.pathname;
 
+  const currentPosition = localStorage.getItem('current_position');
+
   const { data: dataGetEmailManagerByStatus } = useQuery({
-    queryKey: ['get-email-manager', props.status, pathName],
-    queryFn: () => getEmailManagerWithQueryParams({ status: props.status }),
-    enabled: props.isActive,
+    queryKey: ['get-email-manager', status, pathName],
+    queryFn: () =>
+      renderType === 'tag'
+        ? getEmailManagerWithQueryParams({
+            tag: tag,
+          })
+        : getEmailManagerWithQueryParams({ status: status }),
+    enabled: isActive,
   });
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -95,6 +113,7 @@ const ModalEmailList = (props: Props) => {
         <EmailItem
           firstEmailContent={item.emails[0].content}
           emailStatus={item.emails[0].status}
+          emailTag={tag || undefined}
           dataEmail={item.emails}
           data={item.user_tag_info}
           key={index}
@@ -106,7 +125,7 @@ const ModalEmailList = (props: Props) => {
   const ModalEmailPending = useMemo(() => {
     return (
       <Box
-        className={props.isActive ? 'modal__active' : 'modal__inactive'}
+        className={isActive ? 'modal__active' : 'modal__inactive'}
         sx={{
           width: '100%',
           height: 'calc(100vh - 165px)',
@@ -116,7 +135,7 @@ const ModalEmailList = (props: Props) => {
           zIndex: 10,
         }}>
         <ButtonBase
-          onClick={() => props.handleChangeModalStatus(false)}
+          onClick={() => handleChangeModalStatus(false)}
           sx={{
             color: '#554CFF',
             padding: '0 10px',
@@ -128,7 +147,7 @@ const ModalEmailList = (props: Props) => {
           <Typography
             component={'p'}
             sx={{ fontWeight: 'bold', marginLeft: '10px' }}>
-            {props.title}
+            {title}
           </Typography>
         </ButtonBase>
         <Box>
@@ -149,12 +168,12 @@ const ModalEmailList = (props: Props) => {
         </TabPanel>
       </Box>
     );
-  }, [value, props]);
+  }, [value]);
 
   const ModalEmailApproved = useMemo(() => {
     return (
       <Box
-        className={props.isActive ? 'modal__active' : 'modal__inactive'}
+        className={isActive ? 'modal__active' : 'modal__inactive'}
         sx={{
           width: '100%',
           height: 'calc(100vh - 165px)',
@@ -164,7 +183,7 @@ const ModalEmailList = (props: Props) => {
           zIndex: 10,
         }}>
         <ButtonBase
-          onClick={() => props.handleChangeModalStatus(false)}
+          onClick={() => handleChangeModalStatus(false)}
           sx={{
             color: '#554CFF',
             display: 'flex',
@@ -176,7 +195,7 @@ const ModalEmailList = (props: Props) => {
           <Typography
             component={'p'}
             sx={{ fontWeight: 'bold', marginLeft: '10px' }}>
-            {props.title}
+            {title}
           </Typography>
         </ButtonBase>
         <Box sx={{}}>
@@ -197,12 +216,12 @@ const ModalEmailList = (props: Props) => {
         </TabPanel>
       </Box>
     );
-  }, [value, props]);
+  }, [value]);
 
   const ModalEmailCancel = useMemo(() => {
     return (
       <Box
-        className={props.isActive ? 'modal__active' : 'modal__inactive'}
+        className={isActive ? 'modal__active' : 'modal__inactive'}
         sx={{
           width: '100%',
           height: 'calc(100vh - 165px)',
@@ -212,7 +231,7 @@ const ModalEmailList = (props: Props) => {
           zIndex: 10,
         }}>
         <ButtonBase
-          onClick={() => props.handleChangeModalStatus(false)}
+          onClick={() => handleChangeModalStatus(false)}
           sx={{
             color: '#554CFF',
             display: 'flex',
@@ -224,7 +243,7 @@ const ModalEmailList = (props: Props) => {
           <Typography
             component={'p'}
             sx={{ fontWeight: 'bold', marginLeft: '10px' }}>
-            {props.title}
+            {title}
           </Typography>
         </ButtonBase>
         <Box sx={{}}>
@@ -245,12 +264,12 @@ const ModalEmailList = (props: Props) => {
         </TabPanel>
       </Box>
     );
-  }, [value, props]);
+  }, [value]);
 
   const ModalHashtag = useMemo(() => {
     return (
       <Box
-        className={props.isActive ? 'modal__active' : 'modal__inactive'}
+        className={isActive ? 'modal__active' : 'modal__inactive'}
         sx={{
           width: '100%',
           height: 'calc(100vh - 165px)',
@@ -260,7 +279,7 @@ const ModalEmailList = (props: Props) => {
           zIndex: 10,
         }}>
         <ButtonBase
-          onClick={() => props.handleChangeModalStatus(false)}
+          onClick={() => handleChangeModalStatus(false)}
           sx={{
             color: '#554CFF',
             display: 'flex',
@@ -272,7 +291,7 @@ const ModalEmailList = (props: Props) => {
           <Typography
             component={'p'}
             sx={{ fontWeight: 'bold', marginLeft: '10px' }}>
-            {props.title}
+            {title}
           </Typography>
         </ButtonBase>
         <Box sx={{}}>
@@ -293,12 +312,12 @@ const ModalEmailList = (props: Props) => {
         </TabPanel>
       </Box>
     );
-  }, [value, props]);
+  }, [value]);
 
   const navigate = useNavigate();
 
   const renderModalEmailList = () => {
-    switch (props.status) {
+    switch (status) {
       case 'pending':
         return ModalEmailPending;
       case 'approved':
@@ -315,7 +334,7 @@ const ModalEmailList = (props: Props) => {
 
   return (
     <Box
-      className={props.isActive ? 'modal__active' : 'modal__inactive'}
+      className={isActive ? 'modal__active' : 'modal__inactive'}
       sx={{
         width: '100%',
         height: 'calc(100vh - 165px)',
@@ -326,7 +345,7 @@ const ModalEmailList = (props: Props) => {
       }}>
       <ButtonBase
         onClick={() => {
-          props.handleChangeModalStatus(false);
+          handleChangeModalStatus(false);
         }}
         sx={{
           color: '#554CFF',
@@ -337,7 +356,7 @@ const ModalEmailList = (props: Props) => {
         }}>
         <ArrowLeft width={12} height={12} />
         <Typography component={'p'} sx={{ fontWeight: 'bold', marginLeft: '10px' }}>
-          {props.title}
+          {title}
         </Typography>
       </ButtonBase>
       <Box>
@@ -346,7 +365,9 @@ const ModalEmailList = (props: Props) => {
           value={value}
           onChange={handleChange}
           aria-label="basic tabs example">
-          <Tab className="tab" label="All" {...a11yProps(0)} />
+          {currentPosition === 'A' && (
+            <Tab className="tab" label="All" {...a11yProps(0)} />
+          )}
           <Tab className="tab" label="Me" {...a11yProps(1)} />
         </Tabs>
       </Box>

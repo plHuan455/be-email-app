@@ -15,11 +15,13 @@ type Props = {
   emailStatus: string;
   data: UserTagResponse;
   dataEmail: EmailResponse[];
+  emailTag?: string;
 };
 
 const EmailItem: React.FC<Props> = ({
   data,
   emailStatus,
+  emailTag,
   firstEmailContent,
   dataEmail,
 }) => {
@@ -29,7 +31,8 @@ const EmailItem: React.FC<Props> = ({
   const dispatch = useDispatch();
 
   const handleClickEmailItem = async (e) => {
-    navigate(`/emails/${emailStatus}/${user_email}`);
+    if (!emailTag) navigate(`/emails/status/${emailStatus}/${user_email}`);
+    else navigate(`/emails/tag/${emailTag}/${user_email}`);
   };
 
   return (

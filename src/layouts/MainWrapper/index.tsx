@@ -20,6 +20,7 @@ import {
   setShowMinimizeEmail,
 } from '@redux/Email/reducer';
 import { fetchToken, onMessageListener } from '../../messaging_init_in_sw';
+import { setIsShowEmailInfo } from '@redux/Global/reducer';
 
 const sideBarWidth = 75;
 const emailStatusWidth = 290;
@@ -68,8 +69,6 @@ function MainWrapper() {
   const [isTokenFound, setTokenFound] = useState(false);
   const [getFcmToken, setFcmToken] = useState('');
 
-  console.log(getFcmToken);
-
   Notification.requestPermission().then((permission) => {
     if (permission === 'granted') {
       console.log('line 28 Notification permission granted.');
@@ -104,6 +103,14 @@ function MainWrapper() {
   const toggleMobileSideBar = (value: boolean) => {
     return () => setOpenMobileSideBar(value);
   };
+
+  useEffect(() => {
+    const isShowEmailInfomation = JSON.parse(
+      localStorage.getItem('isShow_Email_Information_Bar') || 'false',
+    );
+
+    dispatch(setIsShowEmailInfo(isShowEmailInfomation));
+  }, []);
 
   const handleLogout = () => {
     auth.signout(() => {

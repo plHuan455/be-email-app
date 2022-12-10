@@ -55,18 +55,23 @@ function LoginContainer() {
     try {
       const res = await login({ email, password });
       // Change 'asdasd to res.data
-      auth.signin({}, res.data, async () => {
-        if (res.message === 'Login successful') {
-          const currentUser = await getUserWithEmail(email);
-          localStorage.setItem('current_user_name', currentUser.data.user_name);
-          localStorage.setItem('current_user_avt', currentUser.data.avatar);
-          // set current_email to 'email
-          localStorage.setItem('current_email', email);
-          localStorage.setItem('current_id', `${currentUser.data.user_id}`);
-          toast.success('Đăng nhập thành công!');
-          navigate('/');
-        }
-      });
+      auth.signin(
+        {},
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X2lkIjoxLCJlbWFpbCI6Imh1eW5obmdvY3F1YW42NDk5QGdtYWlsLmNvbSIsImV4cCI6NTk5MDQ3NDkxNn0.xuvfdQNUKezDeRtZRI-QNagxpDSeqQ1YYTH17O0zEmM',
+        async () => {
+          if (res.message === 'Login successful') {
+            const currentUser = await getUserWithEmail(email);
+            localStorage.setItem('current_user_name', currentUser.data.user_name);
+            localStorage.setItem('current_user_avt', currentUser.data.avatar);
+            // set current_email to 'email
+            localStorage.setItem('current_email', email);
+            localStorage.setItem('current_id', `${currentUser.data.user_id}`);
+            localStorage.setItem('current_position', currentUser.data.position);
+            toast.success('Đăng nhập thành công!');
+            navigate('/');
+          }
+        },
+      );
     } catch (error: any) {
       toast.error(t('Tài khoản chưa tồn tại hoặc sai thông tin đăng nhập'));
     }

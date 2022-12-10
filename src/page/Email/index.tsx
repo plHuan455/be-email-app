@@ -7,7 +7,7 @@ import EmailLayout from '@layouts/EmailLayout';
 
 const Email = () => {
   return (
-    <div className="w-full flex items-center content-around">
+    <div className="w-full flex content-around">
       <EmailStatusBar />
 
       <EmailLayout>

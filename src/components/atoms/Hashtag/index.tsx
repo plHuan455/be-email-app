@@ -8,17 +8,22 @@ import React, { useState } from 'react';
 interface Props {
   title: string;
   status: StatusOptions;
-  // emailData: EmailList[];
+  value: string;
   index: number;
 }
 
-const Hashtag: React.FC<Props> = ({ title, status, index }) => {
+const Hashtag: React.FC<Props> = ({ title, status, index, value }) => {
   const [modalStatus, setModalStatus] = useState(false);
+
+  // Handler FNC
+  const handleClickPrivateTag = (e) => {
+    setModalStatus(true);
+  };
 
   return (
     <Box key={index}>
       <ButtonBase
-        onClick={() => setModalStatus(true)}
+        onClick={handleClickPrivateTag}
         sx={{
           width: '100%',
           display: 'flex',
@@ -33,6 +38,8 @@ const Hashtag: React.FC<Props> = ({ title, status, index }) => {
       <ModalEmailList
         title={title}
         status={status}
+        renderType={'tag'}
+        tag={value}
         // emailData={emailData}
         isActive={modalStatus}
         handleChangeModalStatus={setModalStatus}

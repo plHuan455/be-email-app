@@ -2,10 +2,20 @@ import Plus from '@assets/icon/Plus';
 import Search from '@assets/icon/Search';
 import CustomButton from '@components/atoms/CustomButton';
 import Input from '@components/atoms/Input';
-import { Box, ButtonBase, colors, Grid, Typography } from '@mui/material';
+import {
+  Badge,
+  Box,
+  ButtonBase,
+  colors,
+  Grid,
+  Menu,
+  MenuItem,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import useEmailCompose from '../../../zustand/useEmailCompose';
+import EmailNotify from '../EmailNotify';
 
 type Props = {
   title: string;
@@ -36,15 +46,20 @@ const EmailStatusHeader = ({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          marginBottom: '48px',
+          marginBottom: '12px',
         }}>
         <Typography
           component={'p'}
           sx={{ fontSize: '24px', color: `${color}`, fontWeight: 'bold' }}>
           {title}
         </Typography>
+
+        <EmailNotify />
+      </Box>
+      <Box className="flex gap-3 justify-end py-4 border-b-2">
         {isComposeButton && (
           <CustomButton
+            className="py-3 hover:opacity-90 ease-linear duration-300"
             label="Compose"
             bgButtonColor="#554CFF"
             color="#fff"
@@ -56,7 +71,7 @@ const EmailStatusHeader = ({
           />
         )}
       </Box>
-      <Box>
+      <Box className="py-2">
         <Input
           type="text"
           inputMode="search"

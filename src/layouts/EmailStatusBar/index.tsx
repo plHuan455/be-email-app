@@ -20,9 +20,10 @@ import { useNavigate } from 'react-router-dom';
 import SingleOTPInput from '@components/atoms/Input/PinInput/SingleInput';
 import Hashtag from '@components/atoms/Hashtag';
 import { toast } from 'react-toastify';
-import { EmailTagsResponse, getAllEmailTags } from '@api/email';
+import { EmailTagsResponse, getAllEmailStatus, getAllEmailTag } from '@api/email';
 import EmailTab from '@components/molecules/EmailTab';
 import { HashtagTabs } from '@redux/Email/reducer';
+import { useQuery } from '@tanstack/react-query';
 
 type Props = {};
 
@@ -81,28 +82,9 @@ export const emailData: EmailList[] = [
 const EmailStatusBar = (props: Props) => {
   const [isCreateHashTag, setIsCreateHashTag] = useState<boolean>(false);
   const [newHashTagValue, setNewHashTagValue] = useState<string>('');
-  const [hashtagTabs, setHashtagTabs] = useState<HashtagTabs[]>([
-    {
-      title: '#metanode',
-      value: 'metanode',
-      status: 'hashtag',
-    },
-    {
-      title: '#sales',
-      value: 'sales',
-      status: 'hashtag',
-    },
-    {
-      title: '#tesla',
-      value: 'tesla',
-      status: 'hashtag',
-    },
-    {
-      title: '#yellow paper',
-      value: 'yellowpaper',
-      status: 'hashtag',
-    },
-  ]);
+  const [hashtagTabs, setHashtagTabs] = useState<HashtagTabs[]>(() => {
+    return JSON.parse(localStorage.getItem('private_hashtag') ?? JSON.stringify([]));
+  });
 
   const [emailTabs, setEmailTabs] = useState<EmailTabs[]>([
     {
@@ -139,57 +121,77 @@ const EmailStatusBar = (props: Props) => {
       emailData: emailData,
     },
     {
-      status: 'blacklist',
-      title: '#blacklist',
+      status: 'spam',
+      title: '#spam',
       notiNumber: 0,
       emailData: emailData,
     },
   ]);
 
-  // useEffect
+  // useQuery
 
-  useEffect(() => {
-    try {
-      getAllEmailTags().then((res) => {
-        if (res.data) {
-          setEmailTabs((prevState) => {
-            const data: EmailTabs[] = prevState.reduce(
-              (currVal: EmailTabs[], nextVal) => {
-                const foundInRes = res.data.find(
-                  (item) => item.tag === nextVal.status,
-                );
+  useQuery({
+    queryKey: ['get-all-email-status'],
+    queryFn: getAllEmailStatus,
+    onSuccess(res) {
+      if (res.data) {
+        setEmailTabs((prevState) => {
+          const data: EmailTabs[] = prevState.reduce(
+            (currVal: EmailTabs[], nextVal) => {
+              const foundInRes = res.data.find(
+                (item) => item.tag.toLowerCase() === nextVal.status,
+              );
 
-                if (foundInRes)
-                  return [...currVal, { ...nextVal, notiNumber: foundInRes.count }];
-                return [...currVal, nextVal];
-              },
-              [],
-            );
+              if (foundInRes)
+                return [...currVal, { ...nextVal, notiNumber: foundInRes.count }];
+              return [...currVal, nextVal];
+            },
+            [],
+          );
 
-            return data;
-          });
-          setEmailSecTab((prevState) => {
-            const data: EmailTabs[] = prevState.reduce(
-              (currVal: EmailTabs[], nextVal) => {
-                const foundInRes = res.data.find(
-                  (item) => item.tag === nextVal.status,
-                );
+          return data;
+        });
+        setEmailSecTab((prevState) => {
+          const data: EmailTabs[] = prevState.reduce(
+            (currVal: EmailTabs[], nextVal) => {
+              const foundInRes = res.data.find(
+                (item) => item.tag === nextVal.status,
+              );
 
-                if (foundInRes)
-                  return [...currVal, { ...nextVal, notiNumber: foundInRes.count }];
-                return [...currVal, nextVal];
-              },
-              [],
-            );
+              if (foundInRes)
+                return [...currVal, { ...nextVal, notiNumber: foundInRes.count }];
+              return [...currVal, nextVal];
+            },
+            [],
+          );
 
-            return data;
-          });
-        }
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  }, []);
+          return data;
+        });
+      }
+    },
+    onError(err) {
+      console.log(err);
+    },
+  });
+
+  useQuery({
+    queryKey: ['get-all-email-tag'],
+    queryFn: getAllEmailTag,
+    onSuccess(res) {
+      const privHashTagData = res.data.map<HashtagTabs>((hashTag) => ({
+        title: `#${hashTag.tag}`,
+        value: hashTag.tag,
+        status: 'hashtag',
+        notiNumber: hashTag.count,
+      }));
+
+      setHashtagTabs(privHashTagData);
+      localStorage.setItem('private_hashtag', JSON.stringify(privHashTagData));
+    },
+    onError(err) {
+      console.log(err);
+    },
+  });
 
   const handleChangeEmailTabsNotiNumber = useCallback(
     (index, number) => {
@@ -232,6 +234,7 @@ const EmailStatusBar = (props: Props) => {
         title: '#' + newHashTagValue,
         value: newHashTagValue,
         status: 'hashtag',
+        notiNumber: 0,
       };
 
       setHashtagTabs((prevState) => [...prevState, newValue]);
@@ -307,17 +310,34 @@ const EmailStatusBar = (props: Props) => {
 
   const _renderPrivateHashtag = useMemo(() => {
     return (
-      hashtagTabs &&
-      hashtagTabs.map((item, index) => {
-        return (
-          <Hashtag
-            title={item.title}
-            status={item.status}
-            // emailData={item.emailData}
-            index={index}
+      <Box>
+        {hashtagTabs &&
+          hashtagTabs.map((item, index) => {
+            return (
+              <Hashtag
+                title={item.title}
+                value={item.value}
+                status={item.status}
+                // emailData={item.emailData}
+                index={index}
+              />
+            );
+          })}
+        {!isCreateHashTag ? (
+          <CustomButton
+            onClick={handleClickCreateHashTag}
+            label="Create hashtag"
+            bgButtonColor="#554CFF"
+            color="#fff"
+            isAfterIcon={true}
+            isFullWidth
+            isHasSlash={true}
+            afterIcon={<Plus width={10} height={10} color={'#fff'} />}
           />
-        );
-      })
+        ) : (
+          CreateHashTag()
+        )}
+      </Box>
     );
   }, [hashtagTabs]);
 
@@ -347,20 +367,6 @@ const EmailStatusBar = (props: Props) => {
         {_renderEmailTags(emailSecTabs, 'emailSecTabs')}
         {_renderPrivateHashtag}
       </Box>
-      {!isCreateHashTag ? (
-        <CustomButton
-          onClick={handleClickCreateHashTag}
-          label="Create hashtag"
-          bgButtonColor="#554CFF"
-          color="#fff"
-          isAfterIcon={true}
-          isFullWidth
-          isHasSlash={true}
-          afterIcon={<Plus width={10} height={10} color={'#fff'} />}
-        />
-      ) : (
-        CreateHashTag()
-      )}
     </Box>
   );
 };

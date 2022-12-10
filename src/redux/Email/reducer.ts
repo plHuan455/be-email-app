@@ -12,6 +12,7 @@ export interface HashtagTabs {
   title: string;
   value: string;
   status: StatusOptions;
+  notiNumber: number;
 }
 
 const userReadList: UserRead[] = [
@@ -228,8 +229,13 @@ export interface EmailState {
 }
 
 const initialState: EmailState = {
-  minimizeMailList: JSON.parse(localStorage.getItem(LOCAL_STORAGE_MINIMIZE_EMAILS) ?? '[]').map(value => ({
-    ...value, sendTo: value?.sendTo?.map(value => new UserInfo(value.avatar, value.name, value.mail))
+  minimizeMailList: JSON.parse(
+    localStorage.getItem(LOCAL_STORAGE_MINIMIZE_EMAILS) ?? '[]',
+  ).map((value) => ({
+    ...value,
+    sendTo: value?.sendTo?.map(
+      (value) => new UserInfo(value.avatar, value.name, value.mail),
+    ),
   })),
   EmailsList: [],
   privateHashtag: [
@@ -237,21 +243,25 @@ const initialState: EmailState = {
       title: '#metanode',
       value: 'metanode',
       status: 'hashtag',
+      notiNumber: 0,
     },
     {
       title: '#sales',
       value: 'sales',
       status: 'hashtag',
+      notiNumber: 0,
     },
     {
       title: '#tesla',
       value: 'tesla',
       status: 'hashtag',
+      notiNumber: 0,
     },
     {
       title: '#yellow paper',
       value: 'yellowpaper',
       status: 'hashtag',
+      notiNumber: 0,
     },
   ],
   deletedEmailsList: [],
@@ -317,38 +327,54 @@ const EmailSlice = createSlice({
       return action.payload;
     },
     setMinimizeList(state, action: PayloadAction<Partial<Email>>) {
-      const foundMinimizeEmailIndex = state.minimizeMailList.findIndex(value => value.id === action.payload.id);
+      const foundMinimizeEmailIndex = state.minimizeMailList.findIndex(
+        (value) => value.id === action.payload.id,
+      );
       // if (state.minimizeMailList.length >= 2 && foundMinimizeEmailIndex === -1) {
       //   toast.error('Maximum minimized emails is 2');
       //   return state;
       // }
-      if(action.payload.id === state.showMinimizeEmail?.id) {
+      if (action.payload.id === state.showMinimizeEmail?.id) {
         state.showMinimizeEmail = undefined;
       }
       if (foundMinimizeEmailIndex === -1) {
-        state.minimizeMailList.push({ ...action.payload, id: action.payload.id ?? String(Date.now()) });
-      } 
-      else {
+        state.minimizeMailList.push({
+          ...action.payload,
+          id: action.payload.id ?? String(Date.now()),
+        });
+      } else {
         state.minimizeMailList[foundMinimizeEmailIndex] = action.payload;
       }
-      localStorage.setItem(LOCAL_STORAGE_MINIMIZE_EMAILS, JSON.stringify(state.minimizeMailList));
+      localStorage.setItem(
+        LOCAL_STORAGE_MINIMIZE_EMAILS,
+        JSON.stringify(state.minimizeMailList),
+      );
       return state;
     },
     setShowMinimizeEmail(state, action: PayloadAction<Partial<Email> | undefined>) {
       const currShowMinimizeEmail = state.showMinimizeEmail;
       state.showMinimizeEmail = action.payload;
-      state.minimizeMailList = state.minimizeMailList.filter(value => value.id !== action.payload?.id);
-      if(currShowMinimizeEmail && action.payload?.id !== currShowMinimizeEmail.id)
+      state.minimizeMailList = state.minimizeMailList.filter(
+        (value) => value.id !== action.payload?.id,
+      );
+      if (currShowMinimizeEmail && action.payload?.id !== currShowMinimizeEmail.id)
         state.minimizeMailList.push(currShowMinimizeEmail);
-      localStorage.setItem(LOCAL_STORAGE_MINIMIZE_EMAILS, JSON.stringify(state.minimizeMailList));
+      localStorage.setItem(
+        LOCAL_STORAGE_MINIMIZE_EMAILS,
+        JSON.stringify(state.minimizeMailList),
+      );
       return state;
     },
     removeMinimizeEmail(state, action: PayloadAction<string | undefined>) {
-      if(action.payload){
-        state.minimizeMailList = state.minimizeMailList.filter(value => value.id !== action.payload);
-        localStorage.setItem(LOCAL_STORAGE_MINIMIZE_EMAILS, JSON.stringify(state.minimizeMailList));
+      if (action.payload) {
+        state.minimizeMailList = state.minimizeMailList.filter(
+          (value) => value.id !== action.payload,
+        );
+        localStorage.setItem(
+          LOCAL_STORAGE_MINIMIZE_EMAILS,
+          JSON.stringify(state.minimizeMailList),
+        );
       }
-
     },
   },
 });

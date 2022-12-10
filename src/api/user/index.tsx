@@ -2,8 +2,17 @@ import { EMAIL_API_URL } from './../../constants/EmailAPI/index';
 import { Receiver } from '@layouts/InformationBar';
 import ApiClient from '@api/ApiClient';
 import { AxiosResponse } from 'axios';
-import { GET__USER__API, UPLOAD_FILE, USER__API, USER__API__GET } from '@constants/UserAPI';
-import { CreateEmployeeParams, DeleteUserResponse, UpdateEmployeeParams } from './interface';
+import {
+  GET__USER__API,
+  UPLOAD_FILE,
+  USER__API,
+  USER__API__GET,
+} from '@constants/UserAPI';
+import {
+  CreateEmployeeParams,
+  DeleteUserResponse,
+  UpdateEmployeeParams,
+} from './interface';
 
 // export interface Receiver {}
 
@@ -44,7 +53,10 @@ export const getUserWithEmail = async (
 };
 
 //GET ALL EMAIL
-export const getAllUser = async (query?: {page: number, limit: number}): Promise<AxiosResponse<UserResponse[]>> => {
+export const getAllUser = async (query?: {
+  page: number;
+  limit: number;
+}): Promise<AxiosResponse<UserResponse[]>> => {
   const url = USER__API;
   const res = await ApiClient.get(url, undefined, query);
   return res.data;
@@ -53,9 +65,9 @@ export const getAllUser = async (query?: {page: number, limit: number}): Promise
 // GET USER BY ID
 export const getUser = async (id: number): Promise<AxiosResponse<UserResponse>> => {
   const url = USER__API__GET;
-  const res = await ApiClient.get(url, {value: id});
+  const res = await ApiClient.get(url, { value: id });
   return res.data;
-}
+};
 // CREATE EMPLOYEE
 export const createEmployee = async (params: CreateEmployeeParams) => {
   const url = USER__API;
@@ -84,13 +96,15 @@ export const updateEmployee = async (id: number, params: UpdateEmployeeParams) =
     department_id: Number(params.department),
     role_id: Number(params.role),
     phone_number: params.phone,
-  }
-  const res = await ApiClient.put(`${url}/${id}`, undefined, cloneParams)
+  };
+  const res = await ApiClient.put(`${url}/${id}`, undefined, cloneParams);
   return res.data;
-}
+};
 
-export const deleteUser = async (id: number): Promise<AxiosResponse<DeleteUserResponse>> => {
+export const deleteUser = async (
+  id: number,
+): Promise<AxiosResponse<DeleteUserResponse>> => {
   const url = USER__API;
   const res = await ApiClient.delete(`${url}/${id}`, undefined);
-  return res.data
-}
+  return res.data;
+};

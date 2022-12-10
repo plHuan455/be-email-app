@@ -43,6 +43,7 @@ export interface EmailResponse {
   forward: string;
   html_string: string;
   send_at: string;
+  tags: [];
 }
 
 export interface UserTagResponse {
@@ -69,11 +70,21 @@ export interface EmailDeleteResponse {
   message?: string;
 }
 
-// GET ALL CUR EMAIL TAGS
-export const getAllEmailTags = async (): Promise<
+// GET ALL CUR EMAIL TAG
+export const getAllEmailTag = async (): Promise<
   AxiosResponse<EmailTagsResponse[]>
 > => {
   const url = `${EMAIL_MANAGER_API_URL}/all`;
+  const res = await ApiClient.get(url);
+
+  return res.data;
+};
+
+// GET ALL CUR EMAIL Status
+export const getAllEmailStatus = async (): Promise<
+  AxiosResponse<EmailTagsResponse[]>
+> => {
+  const url = `${EMAIL_MANAGER_API_URL}/all-status`;
   const res = await ApiClient.get(url);
 
   return res.data;
@@ -98,6 +109,7 @@ export const getEmailWithQueryParam = async (params?: {
 export const getEmailManagerWithQueryParams = async (params?: {
   status?: string;
   email?: string;
+  tag?: string;
 }): Promise<AxiosResponse<EmailManagerResponse[]>> => {
   const url = `${EMAIL_MANAGER_API_URL}/tag`;
   const res = await ApiClient.get(url, undefined, params);
