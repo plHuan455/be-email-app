@@ -6,10 +6,14 @@
   right: rem(40);
   z-index: 200;
 
+  transition: width 0.25s linear;
+
   &_item {
     width: rem(260);
     // background-color: #f2f6fc;
     border-radius: rem(8);
+    overflow: hidden;
+    transition: width 0.25s linear;
   }
 
   &_item ~ &_item {
