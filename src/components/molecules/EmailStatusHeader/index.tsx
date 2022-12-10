@@ -13,6 +13,8 @@ import {
   Tooltip,
   Typography,
 } from '@mui/material';
+import { useAppDispatch } from '@redux/configureStore';
+import { setShowMinimizeEmail } from '@redux/Email/reducer';
 import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import EmailNotify from '../EmailNotify';
