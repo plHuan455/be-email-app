@@ -3,6 +3,8 @@ import Search from '@assets/icon/Search';
 import CustomButton from '@components/atoms/CustomButton';
 import Input from '@components/atoms/Input';
 import { Box, ButtonBase, colors, Grid, Typography } from '@mui/material';
+import { useAppDispatch } from '@redux/configureStore';
+import { setShowMinimizeEmail } from '@redux/Email/reducer';
 import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useEmailCompose from '../../../zustand/useEmailCompose';
@@ -22,9 +24,11 @@ const EmailStatusHeader = ({
   color,
   bgButtonColor,
 }: Props) => {
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const handleComposeEmail = useCallback(() => {
+    dispatch(setShowMinimizeEmail(undefined));
     navigate('/emails/compose');
   }, []);
 

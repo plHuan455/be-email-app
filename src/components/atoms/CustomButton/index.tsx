@@ -19,12 +19,14 @@ type Props = {
   beforeIcon?: React.ReactNode;
   isHasSlash?: boolean;
   isFullWidth?: boolean;
+  type?: 'submit' | 'button'
   onClick?: React.MouseEventHandler<HTMLButtonElement> | undefined;
 };
 
-const CustomButton = (props: Props) => {
+const CustomButton = ({type = 'button', ...props}: Props) => {
   return (
     <ButtonBase
+      type={type}
       className={props.className}
       sx={{
         gap: '4px',

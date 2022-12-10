@@ -6,10 +6,11 @@ import { RenderButtonIcon } from '../EmailActions';
 
 interface WindowComposeActionsProps {
   className?: string;
-  onMinimize: () => void;
+  onMinimizeClick?: () => void;
+  onMaximizeClick?: () => void;
 }
 
-function WindowComposeActions({ className, onMinimize }: WindowComposeActionsProps) {
+function WindowComposeActions({ className, onMinimizeClick, onMaximizeClick }: WindowComposeActionsProps) {
   const { isZoom, reset, negativeIsZoom } = useEmailCompose();
 
   const navigate = useNavigate();
@@ -20,10 +21,13 @@ function WindowComposeActions({ className, onMinimize }: WindowComposeActionsPro
   };
 
   const handleMinimize = () => {
-    onMinimize();
+    if(onMinimizeClick){
+      onMinimizeClick();
+    }
   };
-
+  
   const handleZoom = () => {
+    if(onMaximizeClick) onMaximizeClick();
     negativeIsZoom();
   };
 
