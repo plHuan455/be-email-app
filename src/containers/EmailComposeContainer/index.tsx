@@ -62,20 +62,21 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
     if(!showMinimizeEmailId) return;
     const foundMinimizeEmail = minimizeEmailList.find(value => value.id === showMinimizeEmailId);
     if(foundMinimizeEmail) {
-      if(foundMinimizeEmail.to) method.setValue('to', foundMinimizeEmail.to);
-      if(foundMinimizeEmail.cc) method.setValue('cc', foundMinimizeEmail.cc);
-      if(foundMinimizeEmail.bcc) method.setValue('bcc', foundMinimizeEmail.bcc);
-      if(foundMinimizeEmail.subject) method.setValue('subject', foundMinimizeEmail.subject);
-      if(foundMinimizeEmail.content) method.setValue('content', getEditorStateFormHtmlString(foundMinimizeEmail.content));
-      if(foundMinimizeEmail.attachFiles) method.setValue('attachFiles', foundMinimizeEmail.attachFiles);
-      if(foundMinimizeEmail.sendAt) method.setValue('sendAt', foundMinimizeEmail.sendAt);
+      method.setValue('to', foundMinimizeEmail.to ?? []);
+      method.setValue('cc', foundMinimizeEmail.cc ?? []);
+      method.setValue('bcc', foundMinimizeEmail.bcc ?? []);
+      method.setValue('subject', foundMinimizeEmail.subject ?? '');
+      method.setValue('content', foundMinimizeEmail.content ? getEditorStateFormHtmlString(foundMinimizeEmail.content ?? '') : '');
+      method.setValue('attachFiles', foundMinimizeEmail.attachFiles ?? []);
+      method.setValue('sendAt', foundMinimizeEmail.sendAt ?? '');
       setTabBarColor(foundMinimizeEmail?.color);
     }
   }, [showMinimizeEmailId, minimizeEmailList, method])
 
   useEffect(() => {
     if(showMinimizeEmailId === undefined) {
-      method.reset()
+      method.reset();
+      setTabBarColor(undefined);
     }
   }, [showMinimizeEmailId, method])
 
