@@ -151,10 +151,6 @@ function MainWrapper() {
     },
   ];
 
-  const convertedMinimizeEmailList = useMemo(() => {
-    return minimizeEmails.filter(value => value.id !== showMinimizeEmailId);
-  }, [minimizeEmails, showMinimizeEmailId])
-
   return (
     <React.Fragment>
       {/* <Header
@@ -206,7 +202,8 @@ function MainWrapper() {
         <SideBar />
       </Drawer>
       <MinimizeEmailList 
-        data={convertedMinimizeEmailList} 
+        data={minimizeEmails}
+        hideEmailId={showMinimizeEmailId}
         onMaximizeClick={handleMaximizeEmailClick}
         onCloseClick={handleCloseEmailClick}
       />
