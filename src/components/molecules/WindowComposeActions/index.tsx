@@ -50,7 +50,6 @@ function WindowComposeActions({ sx, className, onMinimizeClick, onMaximizeClick 
     },
   };
 
-  console.log(sx);
   return (
     <Box className={`flex gap-x-1.5 justify-end ${className}`} sx={sx}>
       {Object.keys(WINDOWCOMPOSEACTIONS).map((val) => {

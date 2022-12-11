@@ -135,7 +135,6 @@ const AttachFiles: React.FC<Props> = ({
   }, [data]);
 
   const _renderUploadFiles = useMemo(() => {
-    console.log(dataFiles);
     return (
       dataFiles &&
       dataFiles.map((val, index) => {
