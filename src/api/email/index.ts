@@ -3,7 +3,7 @@ import {
   EMAIL_MANAGER_API_URL,
 } from './../../constants/EmailAPI/index';
 import { Receiver } from '@layouts/InformationBar';
-import ApiClient, { ApiResponse } from '@api/ApiClient';
+import ApiClient, { ApiResponse, CuSAxiosResponse } from '@api/ApiClient';
 import { AxiosResponse } from 'axios';
 import { AttachFile } from '@components/organisms/EmailMess';
 
@@ -95,7 +95,7 @@ export const getEmailWithQueryParam = async (params?: {
   status?: string;
   mail?: string | null;
   hashtag?: string;
-}): Promise<AxiosResponse<EmailResponse[]>> => {
+}): Promise<CuSAxiosResponse<EmailResponse[]>> => {
   const url = `${EMAIL_API_URL}/manager`;
   const res = await ApiClient.get(
     url,
@@ -155,7 +155,7 @@ export const sendEmail = async (
 //DELETE EMAIL
 export const deleteEmail = async (
   id: string,
-): Promise<AxiosResponse<EmailDeleteResponse>> => {
+): Promise<CuSAxiosResponse<EmailDeleteResponse>> => {
   const url = EMAIL_API_URL;
   const res = await ApiClient.delete(`${url}/${id}`, undefined);
   return res.data;

@@ -1,6 +1,6 @@
 import { EMAIL_API_URL } from './../../constants/EmailAPI/index';
 import { Receiver } from '@layouts/InformationBar';
-import ApiClient from '@api/ApiClient';
+import ApiClient, { CuSAxiosResponse } from '@api/ApiClient';
 import { AxiosResponse } from 'axios';
 import {
   GET__USER__API,
@@ -56,7 +56,7 @@ export const getUserWithEmail = async (
 export const getAllUser = async (query?: {
   page: number;
   limit: number;
-}): Promise<AxiosResponse<UserResponse[]>> => {
+}): Promise<CuSAxiosResponse<UserResponse[]>> => {
   const url = USER__API;
   const res = await ApiClient.get(url, undefined, query);
   return res.data;
