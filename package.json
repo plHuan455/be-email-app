@@ -30,7 +30,7 @@
     "draftjs-to-html": "^0.9.1",
     "es6-shim": "^0.35.6",
     "firebase": "^9.15.0",
-    "framer-motion": "^7.2.0",
+    "framer-motion": "^7.6.19",
     "html-to-draftjs": "^1.5.0",
     "loaders.css": "^0.1.2",
     "lodash": "^4.17.21",

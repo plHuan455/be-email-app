@@ -115,7 +115,10 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
           >
             <WindowComposeActions
               className="p-3 pr-3pt-3 pr-3"
-              sx={{backgroundColor: tabBarColor || 'white'}}
+              sx={{
+                backgroundColor: tabBarColor || 'white',
+                transition: 'background .25s linear'
+              }}
               onMinimizeClick={onMinimizeClick}
               onMaximizeClick={onMaximizeClick}
             />
@@ -247,6 +250,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                               isUpload={true}
                               isDelete={true}
                               onDeleteAll={() => { onChange([]) }}
+                              onUploaded={(fileUrl) => {}}
                               onDeleteFile={(index: number) => {
                                 const newValue = [...value];
                                 newValue.splice(index, 1);

@@ -2,6 +2,9 @@ import { UserInfo } from '@components/organisms/Email/Interface';
 import MinimizeEmail from '@components/organisms/MinimizeEmail';
 import { Box } from '@mui/material';
 import { rem } from '@utils/functions';
+import { motion, usePresence, AnimatePresence } from "framer-motion";
+import classNames from 'classnames';
+import { useLocation } from 'react-router-dom';
 
 export interface MinimizeEmailTypes {
   id?: string;
@@ -22,22 +25,50 @@ interface MinimizeEmailListProps {
 }
 
 const MinimizeEmailList: React.FC<MinimizeEmailListProps> = ({
-  data= [],
+  data = [],
   onMaximizeClick,
   onCloseClick,
 }) => {
-  return <div className="t-minimizeEmailList">
-    {data.map((value, index) => (
-      <Box className="t-minimizeEmailList_item" sx={{backgroundColor: value.color ?? '#f2f6fc'}} key={`minimize-email-list-${value.id}`}>
-        <MinimizeEmail 
-          key={`minimize-email-list-${index}`} 
-          title={value.subject || 'New Message'}
-          onMaximizeClick={() => onMaximizeClick(value)}
-          onCloseClick={() => onCloseClick(value)}
-        />
-      </Box>
-    ))}
-  </div>
+  const location = useLocation();
+  return (
+    <div
+      className="t-minimizeEmailList"
+    >
+      <AnimatePresence>
+        {data.map((value, index) => (
+          <motion.div
+            key={`minimize-email-list-${value.id}`}
+            className="t-minimizeEmailList_itemWrapper"
+            style={{ position: 'relative', marginLeft: rem(5), height: rem(46) }}
+            initial={{ width: 0, marginLeft: 0 }}
+            animate={{ width: rem(260), marginLeft: rem(5) }}
+            exit={{ width: 0, marginLeft: 0 }}
+            transition={{ type: "spring", stiffness: 500, damping: 50, mass: 1, duration: 5 }}
+          >
+            <motion.div
+              className="t-minimizeEmailList_item"
+              initial={
+                location.pathname === '/emails/compose'
+                  ? { translateY: '-800px', translateX: '-100px', opacity: 0, width: rem(500) }
+                  : {}
+              }
+              animate={{ translateY: 0, translateX: 0, opacity: 1, width: rem(260) }}
+              exit={{ translateY: '-800px', translateX: '-100px', opacity: 0, width: rem(500) }}
+              transition={{ type: "spring", stiffness: 500, damping: 50, mass: 1, duration: 5 }}
+              style={{ width: rem(260), height: rem(46), position: 'absolute',  backgroundColor: value.color ? value.color : '#f2f6fc'}}
+            >
+              <MinimizeEmail
+                key={`minimize-email-list-${index}`}
+                title={value.subject || 'New Message'}
+                onMaximizeClick={() => onMaximizeClick(value)}
+                onCloseClick={() => onCloseClick(value)}
+              />
+            </motion.div>
+          </motion.div>
+        ))}
+      </AnimatePresence>
+    </div>
+  )
 }
 
 export default MinimizeEmailList
