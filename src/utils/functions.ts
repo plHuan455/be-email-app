@@ -20,6 +20,37 @@ export const getEditorStateFormHtmlString = (data: string) => {
   return EditorState.createWithContent(state)
 }
 
+export const addHttp = (url: string) => {
+  if (url.match(/^https:\/\/|^http:\/\//g)) 
+     return url;
+  return `http://${url}`
+}
+
+export const createCustomFiles = (files: FileList | File[] | null) => {
+  if (!files) return [];
+  return Object.keys(files).map((key) => {
+    const file = files[key];
+    const fileType = file.type;
+    file.preview = URL.createObjectURL(file);
+    const res = {
+      name: file.name,
+      type: '',
+      url: file.preview,
+    };
+
+    if (fileType) {
+      const splitFileType = fileType.split('/');
+      const [firstSplitFileType, secondSplitFileType, ...restFileType] =
+        splitFileType;
+      if (firstSplitFileType === 'image') res.type = 'image';
+      else if (secondSplitFileType === 'pdf') res.type = 'pdf';
+      else res.type = 'file';
+    }
+
+    return res;
+  });
+}
+
 export const rem = (pixel: number) => {
   return `${pixel / 16}rem`;
 }

@@ -204,7 +204,7 @@ const EmailForward: React.FC<Props> = ({
           from: currentUserEmail ? currentUserEmail : '',
           cc: emailData.cc.map((item) => item.mail),
           bcc: emailData.bcc.map((item) => item.mail),
-          file: emailData.file,
+          files: emailData.file,
         },
       });
       toast.success(`Thành công!`);
