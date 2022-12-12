@@ -10,10 +10,11 @@ import CloseIcon from '@mui/icons-material/Close';
 
 interface Props {
   data: any;
+  onUploaded?: (uploadUrl: string) => void;
   onDeleteFile: () => void;
 }
 
-const UploadFile: React.FC<Props> = ({ data, onDeleteFile }) => {
+const UploadFile: React.FC<Props> = ({ data, onDeleteFile, onUploaded }) => {
   const [progressPercent, setProgressPercent] = useState<number>(10);
 
   const [customData, setCustomData] = useState(() => {
@@ -34,6 +35,7 @@ const UploadFile: React.FC<Props> = ({ data, onDeleteFile }) => {
     onSuccess(res) {
       setCustomData((prevState) => ({ ...prevState, url: `http://${res.data}` }));
       setProgressPercent(100);
+      if(onUploaded) onUploaded(res.data);
     },
     onError(res) {
       setCustomData((prevState) => ({ ...prevState, type: `error` }));

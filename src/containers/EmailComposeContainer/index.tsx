@@ -55,6 +55,7 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
     mutationFn: sendEmail,
     onSuccess: () => {
       toast.success('Email have been send');
+      method.reset();
     }
   })
 
@@ -79,6 +80,8 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
       setTabBarColor(undefined);
     }
   }, [showMinimizeEmailId, method])
+
+  console.log(method.watch(('subject')));
 
   const handleMinimizeClick = (id?: string) => {
     const values = method.getValues();
