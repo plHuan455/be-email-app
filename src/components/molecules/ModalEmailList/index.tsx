@@ -62,7 +62,8 @@ export type StatusOptions =
   | 'hashtag'
   | 'draft'
   | 'trash'
-  | 'spam';
+  | 'spam'
+  | 'sent';
 
 type Props = {
   title: string;

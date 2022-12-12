@@ -26,6 +26,11 @@ const EMAILSTATUS = {
     content: 'Pending',
     bgColor: '#6A98F2',
   },
+  cancelled: {
+    item: 'close',
+    content: 'Canceled',
+    bgColor: '#FF4C82',
+  },
   approved: {
     item: 'approved',
     content: 'Approved',

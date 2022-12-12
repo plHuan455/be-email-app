@@ -86,26 +86,37 @@ const EmailStatusBar = (props: Props) => {
     return JSON.parse(localStorage.getItem('private_hashtag') ?? JSON.stringify([]));
   });
 
-  const [emailTabs, setEmailTabs] = useState<EmailTabs[]>([
-    {
-      status: 'pending',
-      title: '#pending',
-      notiNumber: 0,
-      emailData: emailData,
-    },
-    {
-      status: 'approved',
-      title: '#approved',
-      notiNumber: 0,
-      emailData: emailData,
-    },
-    {
-      status: 'cancel',
-      title: '#cancel',
-      notiNumber: 0,
-      emailData: emailData,
-    },
-  ]);
+  const [emailTabs, setEmailTabs] = useState<EmailTabs[]>(() => {
+    return JSON.parse(
+      localStorage.getItem(`email_tabs`) ??
+        JSON.stringify([
+          {
+            status: 'pending',
+            title: '#pending',
+            notiNumber: 0,
+            emailData: emailData,
+          },
+          {
+            status: 'approved',
+            title: '#approved',
+            notiNumber: 0,
+            emailData: emailData,
+          },
+          {
+            status: 'sent',
+            title: '#sent',
+            notiNumber: 0,
+            emailData: emailData,
+          },
+          {
+            status: 'cancel',
+            title: '#cancel',
+            notiNumber: 0,
+            emailData: emailData,
+          },
+        ]),
+    );
+  });
 
   const [emailSecTabs, setEmailSecTab] = useState<EmailTabs[]>([
     {
@@ -149,6 +160,7 @@ const EmailStatusBar = (props: Props) => {
             [],
           );
 
+          localStorage.setItem('email_tabs', JSON.stringify(data));
           return data;
         });
         setEmailSecTab((prevState) => {

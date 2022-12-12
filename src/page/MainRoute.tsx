@@ -72,6 +72,10 @@ export const sideBarRouter: RouteObject[] = [
         path: '/emails/tag/:tag/:email',
         element: <EmailMainWrapper />,
       },
+      {
+        path: '/emails/tag/:tag',
+        element: <EmailMainWrapper />,
+      },
     ],
   },
   {

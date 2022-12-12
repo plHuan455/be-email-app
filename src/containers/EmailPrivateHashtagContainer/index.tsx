@@ -1,14 +1,23 @@
 import Icon from '@components/atoms/Icon';
 import EmailPrivateHashtag from '@components/molecules/EmailPrivateHashtag';
-import { Autocomplete, TextField } from '@mui/material';
+import { Autocomplete, Box, TextField } from '@mui/material';
 import { RootState } from '@redux/configureStore';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
-const EmailPrivateHashtagContainer = () => {
+interface Props {
+  data: [];
+  email?: string;
+}
+
+const EmailPrivateHashtagContainer: React.FC<Props> = ({ data, email }) => {
   const [isActive, setIsActive] = useState<boolean>(false);
 
   const { privateHashtag } = useSelector((state: RootState) => state.email);
+
+  // useNavigate
+  const navigate = useNavigate();
 
   //   handler FUNC
 
@@ -16,9 +25,23 @@ const EmailPrivateHashtagContainer = () => {
     setIsActive((prevState) => !prevState);
   };
 
+  const handleClickPrivateTag = (tag: string, email: string) => (e) => {
+    navigate(`/emails/tag/${tag}`);
+  };
+
   return (
     <div className="flex items-center  py-4">
       <span className="font-semibold">Hashtag:</span>
+      <Box>
+        {data.map((val, index) => (
+          <span
+            onClick={handleClickPrivateTag(val, email || '')}
+            className="inline-block px-2 text-[#554CFF] cursor-pointer hover:opacity-80"
+            key={index}>
+            #{val}
+          </span>
+        ))}
+      </Box>
       <div className="pl-2 flex items-center gap-2">
         {privateHashtag && isActive && (
           <EmailPrivateHashtag privateHashtagData={privateHashtag} />

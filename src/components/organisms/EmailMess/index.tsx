@@ -232,8 +232,6 @@ const EmailMess: React.FC<Props> = ({
           {renderSendTo()}
           {status.toLowerCase() !== 'null' && <EmailStatus emailStatus={status} />}
         </Box>
-        {/* Email Private Hashtag */}
-        <EmailPrivateHashtagContainer />
         {/* Email Content */}
         <Box className="py-9">
           <Box>
@@ -244,6 +242,8 @@ const EmailMess: React.FC<Props> = ({
         {emailData.attachFiles && (
           <AttachFiles data={emailData.attachFiles} isUpload={false} />
         )}
+        {/* Email Private Hashtag */}
+        <EmailPrivateHashtagContainer data={emailData.tags ?? []} />
         {/* Actions */}
         {(status === 'PENDING' || status === 'SENDING') && (
           <Box className="flex flex-wrap actions justify-end py-4">

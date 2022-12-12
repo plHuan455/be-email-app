@@ -106,11 +106,11 @@ function EmailCompose() {
     if (contentBlock) {
       const contentState = ContentState.createFromBlockArray(
         contentBlock.contentBlocks,
-        );
-        setEditorState(EditorState.createWithContent(contentState));
-      }
-    }, []);
-    
+      );
+      setEditorState(EditorState.createWithContent(contentState));
+    }
+  }, []);
+
   // useEffect(() => {
   //   if(!showMinimizeEmail) {
   //     reset();
@@ -126,7 +126,7 @@ function EmailCompose() {
   //     setContent(showMinimizeEmail.mailContent)
   //     setEditorState(() => {
   //       const contentBlock = htmlToDraft(showMinimizeEmail.mailContent);
-    
+
   //       if (contentBlock) {
   //         const contentState = ContentState.createFromBlockArray(
   //           contentBlock.contentBlocks,
@@ -294,9 +294,8 @@ function EmailCompose() {
     //   status: 'draft',
     //   date: new Date().toDateString(),
     // }));
-
     // navigate('/emails');
-  }
+  };
 
   const onEditorStateChange = (val) => {
     setContent(draftToHtml(convertToRaw(editorState.getCurrentContent())));
@@ -314,8 +313,8 @@ function EmailCompose() {
           isZoom && 'fixed top-0 left-0 bottom-0'
         }`}>
         {/* Window Compose Actions  */}
-        <WindowComposeActions 
-          className="pt-3 pr-3pt-3 pr-3 bg-white" 
+        <WindowComposeActions
+          className="pt-3 pr-3pt-3 pr-3 bg-white"
           onMinimizeClick={handleMinimizeCompose}
         />
         {/* Header */}
