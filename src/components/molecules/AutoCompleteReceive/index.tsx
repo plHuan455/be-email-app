@@ -78,9 +78,10 @@ const AutoCompleteReceive: React.FC<Props> = ({
       getOptionLabel={(option) => option.mail}
       defaultValue={defaultValue ? [...defaultValue] : []}
       filterSelectedOptions
+      autoHighlight
       renderOption={(props, option) => {
         return (
-          <MenuItem {...props} className="inline-block">
+          <MenuItem {...props} className="inline-block bg-red-900">
             <Receiver data={option} haveCloseIcon={false} />
           </MenuItem>
         );

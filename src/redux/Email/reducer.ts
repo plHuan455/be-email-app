@@ -345,6 +345,10 @@ const EmailSlice = createSlice({
     },
     addMinimizeEmail(state, action: PayloadAction<MinimizeEmailTypes>) {
       if (!action.payload.id) {
+        if(state.minimizeMailList.length >= 2) {
+          toast.error('The minimized email limit is two')
+          return state;
+        }
         state.minimizeMailList.push({
           ...action.payload,
           id: action.payload.id ?? String(Date.now()),

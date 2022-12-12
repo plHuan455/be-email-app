@@ -57,7 +57,7 @@ function LoginContainer() {
       // Change 'asdasd to res.data
       auth.signin(
         {},
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhY2NvdW50X2lkIjoxLCJlbWFpbCI6Imh1eW5obmdvY3F1YW42NDk5QGdtYWlsLmNvbSIsImV4cCI6NTk5MDQ3NDkxNn0.xuvfdQNUKezDeRtZRI-QNagxpDSeqQ1YYTH17O0zEmM',
+        res.data,
         async () => {
           if (res.message === 'Login successful') {
             const currentUser = await getUserWithEmail(email);

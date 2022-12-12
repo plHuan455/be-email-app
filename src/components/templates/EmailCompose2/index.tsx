@@ -250,6 +250,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                               isUpload={true}
                               isDelete={true}
                               onDeleteAll={() => { onChange([]) }}
+                              onUploaded={(fileUrl) => {}}
                               onDeleteFile={(index: number) => {
                                 const newValue = [...value];
                                 newValue.splice(index, 1);
