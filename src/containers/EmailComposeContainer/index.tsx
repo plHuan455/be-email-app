@@ -13,6 +13,7 @@ import { getEditorStateFormHtmlString } from "@utils/functions";
 import { UserInfo } from "@components/organisms/Email/Interface";
 import useDebounce from "@hooks/useDebouce";
 import { MinimizeEmailColor } from "@components/organisms/MinimizeEmail/interface";
+import { useNavigate } from "react-router-dom";
 
 const currentUserEmail = localStorage.getItem('current_email');
 
@@ -22,6 +23,7 @@ interface EmailComposeContainerProps {
 
 const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const minimizeEmailList = useAppSelector(state => state.email.minimizeMailList);
   const showMinimizeEmailId = useAppSelector(state => state.email.showMinimizeEmailId);
 
@@ -56,6 +58,7 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
     onSuccess: () => {
       toast.success('Email have been send');
       method.reset();
+      navigate(-1);
     }
   })
 
