@@ -19,17 +19,18 @@ import CustomButton from "@components/atoms/CustomButton";
 import UseTemplateButton from '@components/atoms/UseTemplateButton';
 import { UserInfo } from '@components/organisms/Email/Interface';
 import { Controller, FormProvider, UseFormReturn } from 'react-hook-form';
-import { useCallback, useRef } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import ModalBase from '@components/atoms/ModalBase';
 import DateTimePicker from '@components/atoms/DateTimePicker';
 import dayjs, { Dayjs } from 'dayjs';
-import { rem } from '@utils/functions';
+import { addHttp, rem } from '@utils/functions';
+import AttachFiles2, { FileInfoTypes } from '@components/molecules/AttachFiles2';
 
 export interface EmailComposeFields {
   to: UserInfo[];
   cc: UserInfo[];
   bcc: UserInfo[];
-  attachFiles: File[];
+  attachFiles: {fileUrls: (string | undefined)[], files: (File | undefined)[]};
   subject: string;
   content: any;
   sendAt?: string | null;
@@ -39,6 +40,7 @@ interface EmailComposeProps {
   method: UseFormReturn<EmailComposeFields>;
   isFullScreen?: boolean;
   isShowCCForm?: boolean;
+  attachFiles: (File | undefined)[];
   selectedData?: Dayjs | null;
   isShowCalendarModal?: boolean;
   calendarValue: Dayjs | null;
@@ -61,6 +63,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
   isShowCCForm = false,
   isShowCalendarModal = false,
   calendarValue,
+  attachFiles,
   tabBarColor,
   onMinimizeClick,
   onMaximizeClick,
@@ -79,31 +82,6 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
       fileInputRef.current.click()
     }
   }
-
-  const createCustomFiles = useCallback((files: FileList | null) => {
-    if (!files) return [];
-    return Object.keys(files).map((key) => {
-      const file = files[key];
-      const fileType = file.type;
-      file.preview = URL.createObjectURL(file);
-      const res = {
-        name: file.name,
-        type: '',
-        url: file.preview,
-      };
-
-      if (fileType) {
-        const splitFileType = fileType.split('/');
-        const [firstSplitFileType, secondSplitFileType, ...restFileType] =
-          splitFileType;
-        if (firstSplitFileType === 'image') res.type = 'image';
-        else if (secondSplitFileType === 'pdf') res.type = 'pdf';
-        else res.type = 'file';
-      }
-
-      return res;
-    });
-  }, [])
 
   return (
     <Box className="t-emailCompose w-full h-full">
@@ -137,7 +115,6 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                           onChange={(_, value) => { onChange(value) }}
                         />
                       </EmailComposeFormGroup>
-
                     )
                   }}
                 />
@@ -240,25 +217,29 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                 <EmailPrivateHashtagContainer /> */}
                     {/* Files List */}
                     <Box>
-                      <Controller
+                      <Controller 
                         name="attachFiles"
-                        render={({ field: { value, onChange } }) => {
-                          if (value.length !== 0) return (
-                            <AttachFiles
-                              data={createCustomFiles(value)}
-                              dataFiles={[...value]}
-                              isUpload={true}
-                              isDelete={true}
-                              onDeleteAll={() => { onChange([]) }}
-                              onUploaded={(fileUrl) => {}}
-                              onDeleteFile={(index: number) => {
-                                const newValue = [...value];
-                                newValue.splice(index, 1);
-                                onChange([...newValue])
-                              }}
-                            />)
-                          return <></>;
-                        }}
+                        render={({field: {value, onChange}}) => (
+                          <AttachFiles2
+                          fileUrls={value.fileUrls}
+                          fileList={value.files}
+                          inputId="react-compose-file-input"
+                          onUploaded={(index, url) => {
+                            const cloneAttachFiles = {...value};
+                            cloneAttachFiles.fileUrls[index] = url;
+                            onChange(cloneAttachFiles);
+                          }}
+                          onDelete={(index) => {
+                            const cloneAttachFile = {...value}
+                            cloneAttachFile.files[index] = undefined
+                            cloneAttachFile.fileUrls[index] = undefined;
+                            onChange(cloneAttachFile);
+                          }}
+                          onDeleteAll={() => {
+                            onChange({files: [], fileUrls: []})
+                          }}
+                        />
+                        )}
                       />
                     </Box>
                     {/* Greeting */}
@@ -318,27 +299,24 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                 <Button
                   className="bg-transparent p-2 hover:bg-transparent"
                   onClick={handleAttachFileClick}>
-                  <Controller
-                    name="attachFiles"
-                    render={({ field: { value, onChange } }) => (
-                      <input
-                        type="file"
-                        name="attachFile"
-                        id="email-compose-file"
-                        hidden
-                        ref={fileInputRef}
-                        onChange={(e) => {
-                          if (e.target.files) {
-                            const fileList: File[] = Object.keys(e.target.files).map(value => e.target.files ? e.target.files[value] : null);
-                            onChange([...value, ...fileList])
-                          }
-                          else {
-                            onChange([]);
-                          }
-                        }}
-                        multiple
-                      />
-                    )}
+                  <input
+                    type="file"
+                    name="test"
+                    id="react-compose-file-input"
+                    hidden
+                    ref={fileInputRef}
+                    onChange={(e) => {
+                      if (e.target.files) {
+                        const cloneAttachFile = method.getValues('attachFiles');
+                        cloneAttachFile.files = [...cloneAttachFile.files, ...Object.keys(e.target.files).map((key) => e.target.files?.[key])]
+                        method.setValue('attachFiles', cloneAttachFile)
+                        // onChangeAttachFile([
+                        //   ...method.getValues('attachFiles'),
+                        //   ...Object.keys(e.target.files).map((key) => e.target.files?.[key])
+                        // ])
+                      }
+                    }}
+                    multiple
                   />
                   <AttachFileIcon className="text-[#7D7E80]" />
                 </Button>

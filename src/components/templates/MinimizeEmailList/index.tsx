@@ -11,11 +11,12 @@ export interface MinimizeEmailTypes {
   to?: UserInfo[];
   cc?: UserInfo[];
   bcc?: UserInfo[];
-  attachFiles?: File[];
+  attachFiles?: {files: (File|undefined)[]; fileUrls: (string|undefined)[]}
   subject?: string;
   content?: string;
   sendAt?: string | null;
   color?: string;
+  fileUrls: (string | undefined)[];
 }
 
 interface MinimizeEmailListProps {

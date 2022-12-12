@@ -18,7 +18,8 @@ type Props = {
   isDelete?: boolean;
   onDeleteAll?: Function;
   onDeleteFile?: Function;
-  onUploaded?: (fileUrl: string) => void;
+  onUploaded?: (fileUrl: string, index: number) => void;
+  onUploading?: (isUploading: boolean) => void;
 };
 
 export const renderFileIconByType = (file: AttachFile) => {
@@ -81,6 +82,7 @@ const AttachFiles: React.FC<Props> = ({
   onDeleteAll,
   onDeleteFile,
   onUploaded,
+  onUploading,
 }) => {
   const _renderUserRead = useCallback((user) => {
     return (
@@ -147,12 +149,15 @@ const AttachFiles: React.FC<Props> = ({
             onDeleteFile={() => {
               onDeleteFile && onDeleteFile(index);
             }}
-            onUploaded={onUploaded}
+            onUploaded={(fileUrl) => {
+              if(onUploaded)  onUploaded(fileUrl, index);
+            }}
+            onUploading={onUploading}
           />
         );
       })
     );
-  }, [dataFiles, onUploaded]);
+  }, [dataFiles]);
 
   return (
     <Box

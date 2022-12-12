@@ -10,11 +10,19 @@ import CloseIcon from '@mui/icons-material/Close';
 
 interface Props {
   data: any;
+  uploadedData?: {name: string; type: string; url: string};
   onUploaded?: (uploadUrl: string) => void;
   onDeleteFile: () => void;
+  onUploading?: (isUploading: boolean) => void;
 }
 
-const UploadFile: React.FC<Props> = ({ data, onDeleteFile, onUploaded }) => {
+const UploadFile: React.FC<Props> = ({ 
+  data,
+  uploadedData,
+  onUploading = () => {} ,
+  onDeleteFile, 
+  onUploaded 
+}) => {
   const [progressPercent, setProgressPercent] = useState<number>(10);
 
   const [customData, setCustomData] = useState(() => {
@@ -29,18 +37,26 @@ const UploadFile: React.FC<Props> = ({ data, onDeleteFile, onUploaded }) => {
     return res;
   });
 
+  console.log(customData);
+
   const { isLoading: isUploadingFile } = useQuery({
-    queryKey: ['upload-file', data],
-    queryFn: async () => await uploadFile(data),
+    queryKey: [`upload-file-${data.name}`, data],
+    queryFn: async () => {
+      onUploading(true);
+      return await uploadFile(data)
+    },
     onSuccess(res) {
       setCustomData((prevState) => ({ ...prevState, url: `http://${res.data}` }));
       setProgressPercent(100);
       if(onUploaded) onUploaded(res.data);
+      onUploading(false);
     },
     onError(res) {
       setCustomData((prevState) => ({ ...prevState, type: `error` }));
       setProgressPercent(100);
+      onUploading(false);
     },
+    enabled: !Boolean(uploadedData)
   });
 
   useEffect(() => {

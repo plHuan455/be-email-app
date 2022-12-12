@@ -1,7 +1,7 @@
 import { sendEmail } from "@api/email";
 import EmailCompose2, { EmailComposeFields } from "@components/templates/EmailCompose2";
 import { useMutation } from "@tanstack/react-query";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import draftToHtml from 'draftjs-to-html';
@@ -9,11 +9,13 @@ import { EditorState, ContentState, convertToRaw } from 'draft-js';
 import dayjs, { Dayjs } from "dayjs";
 import { useAppDispatch, useAppSelector } from "@redux/configureStore";
 import { addMinimizeAndSetShowMinimizeEmail, addMinimizeEmail, setShowMinimizeEmail } from "@redux/Email/reducer";
-import { getEditorStateFormHtmlString } from "@utils/functions";
+import { addHttp, getEditorStateFormHtmlString } from "@utils/functions";
 import { UserInfo } from "@components/organisms/Email/Interface";
 import useDebounce from "@hooks/useDebouce";
 import { MinimizeEmailColor } from "@components/organisms/MinimizeEmail/interface";
 import { useNavigate } from "react-router-dom";
+import { FileInfoTypes } from "@components/molecules/AttachFiles2";
+import { uploadFile } from "@api/uploadFile";
 
 const currentUserEmail = localStorage.getItem('current_email');
 
@@ -27,6 +29,9 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
   const minimizeEmailList = useAppSelector(state => state.email.minimizeMailList);
   const showMinimizeEmailId = useAppSelector(state => state.email.showMinimizeEmailId);
 
+  const [attachFiles, setAttachFiles] = useState<(File|undefined)[]>([]);
+
+
   const method = useForm<EmailComposeFields>({
     defaultValues: {
       to: [],
@@ -34,7 +39,7 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
       bcc: [],
       subject: '',
       content: '',
-      attachFiles: [],
+      attachFiles: {fileUrls: [], files: []},
       sendAt: null,
     }
   });
@@ -42,7 +47,6 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
   const [calendarValue, setCalendarValue] = useState<Dayjs | null>(
     dayjs(Date.now()),
   );
-  const [isShowDate, setIsShowDate] = useState<boolean>(false);
   const [selectedDate, setSelectedDate] = useState<Dayjs | null | undefined>();
 
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
@@ -62,6 +66,16 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
     }
   })
 
+  // const {mutate: uploadFileMutate} = useMutation({
+  //   mutationKey: ['email-compose-upload-file'],
+  //   mutationFn: ({file, index} : {file: File; index: number}) =>  uploadFile(file),
+  //   onSuccess: (res, values) => {
+  //     const newAttachFiles = [...attachFiles];
+  //     newAttachFiles[values.index] = {isUploaded: true, file: {...newAttachFiles[values.index].file, url: res.data}}
+  //     setAttachFiles(newAttachFiles)
+  //   }
+  // })
+
   useEffect(()=>{
     if(!showMinimizeEmailId) return;
     const foundMinimizeEmail = minimizeEmailList.find(value => value.id === showMinimizeEmailId);
@@ -71,7 +85,6 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
       method.setValue('bcc', foundMinimizeEmail.bcc ?? []);
       method.setValue('subject', foundMinimizeEmail.subject ?? '');
       method.setValue('content', foundMinimizeEmail.content ? getEditorStateFormHtmlString(foundMinimizeEmail.content ?? '') : '');
-      method.setValue('attachFiles', foundMinimizeEmail.attachFiles ?? []);
       method.setValue('sendAt', foundMinimizeEmail.sendAt ?? '');
       setTabBarColor(foundMinimizeEmail?.color);
     }
@@ -84,8 +97,6 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
     }
   }, [showMinimizeEmailId, method])
 
-  console.log(method.watch(('subject')));
-
   const handleMinimizeClick = (id?: string) => {
     const values = method.getValues();
     method.reset();
@@ -94,12 +105,46 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
       id: id ?? showMinimizeEmailId,
       content: values.content ? draftToHtml(convertToRaw(values.content.getCurrentContent())) : '',
       color: tabBarColor ? tabBarColor : MinimizeEmailColor.getColor(),
+      attachFiles: values.attachFiles,
+      fileUrls: values.attachFiles.fileUrls,
     }))
     setIsFullScreen(false);
     setTabBarColor(undefined);
   }
   
+  const createCustomFiles = useCallback((files: FileList | File[] | null) => {
+    if (!files) return [];
+    return Object.keys(files).map((key) => {
+      const file = files[key];
+      const fileType = file.type;
+      file.preview = URL.createObjectURL(file);
+      const res = {
+        file: {
+          name: file.name,
+          type: '',
+          url: file.preview,
+        },
+        isUploaded: false,
+      };
+
+      if (fileType) {
+        const splitFileType = fileType.split('/');
+        const [firstSplitFileType, secondSplitFileType, ...restFileType] =
+          splitFileType;
+        if (firstSplitFileType === 'image') res.file.type = 'image';
+        else if (secondSplitFileType === 'pdf') res.file.type = 'pdf';
+        else res.file.type = 'file';
+      }
+
+      return res;
+    });
+  }, [])
+
   const handleSubmit = (values: EmailComposeFields) => {
+    // if(isFileUploading) {
+    //   toast.error('Please waiting for files uploaded')
+    //   return;
+    // }
     submitEmailComposeMutate({
       email: {
         subject: values.subject,
@@ -108,16 +153,17 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
         content: 'TODO REPLACE CONTENT',
         bcc: values.bcc.map(value => value.mail),
         cc: values.cc.map(value => value.mail),
-        file: [],
+        files: (values.attachFiles.fileUrls.filter(value => value !== undefined) as string[]).map(value => ({path: value})),
         from: currentUserEmail ? currentUserEmail : '',
       },
-      send_at: isShowDate ? calendarValue?.toISOString() ?? null : null,
+      send_at: selectedDate ? calendarValue?.toISOString() ?? null : null,
     })
   }
   
   return (
     <EmailCompose2
       method={method}
+      attachFiles={attachFiles}
       isFullScreen={isFullScreen}
       isShowCCForm={isShowCCForm}
       isShowCalendarModal={isShowCalendarModal}

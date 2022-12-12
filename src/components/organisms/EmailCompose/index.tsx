@@ -253,7 +253,7 @@ function EmailCompose() {
           from: currentUserEmail ? currentUserEmail : '',
           cc: emailData.cc.map((item) => item.mail),
           bcc: emailData.bcc.map((item) => item.mail),
-          file: [],
+          files: [],
         };
 
         const params: CreateEmailParam = {
