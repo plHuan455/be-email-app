@@ -6,6 +6,8 @@ import { Receiver } from '@layouts/InformationBar';
 import ApiClient, { ApiResponse, CuSAxiosResponse } from '@api/ApiClient';
 import { AxiosResponse } from 'axios';
 import { AttachFile } from '@components/organisms/EmailMess';
+import { async } from '@firebase/util';
+import { EmailUpdateQuery } from './interface';
 
 // export interface Receiver {}
 
@@ -158,5 +160,31 @@ export const deleteEmail = async (
 ): Promise<CuSAxiosResponse<EmailDeleteResponse>> => {
   const url = EMAIL_API_URL;
   const res = await ApiClient.delete(`${url}/${id}`, undefined);
+  return res.data;
+};
+
+// Update Email With Query
+export const updateEmailWithQuery = async (
+  id: number,
+  query: EmailUpdateQuery,
+): Promise<ApiResponse<EmailResponse>> => {
+  const url = `${EMAIL_API_URL}/${id}`;
+
+  const res = await ApiClient.put(url, undefined, query);
+
+  return res.data;
+};
+
+// Approve Email
+export const approveEmail = async (queryParam: {
+  email_id: number;
+  status: 'APPROVED';
+  note: string;
+  send_after: number;
+}): Promise<AxiosResponse<EmailResponse>> => {
+  const url = `${EMAIL_MANAGER_API_URL}`;
+
+  const res = await ApiClient.post(url, undefined, queryParam);
+
   return res.data;
 };

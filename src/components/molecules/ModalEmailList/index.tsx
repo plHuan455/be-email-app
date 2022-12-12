@@ -15,6 +15,8 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import Loading from '@components/atoms/Loading';
 import { useLocation, useNavigate } from 'react-router-dom';
 import useLocalStorage from '@hooks/useLocalStorage';
+import { useSelector } from 'react-redux';
+import { RootState } from '@redux/configureStore';
 
 export interface EmailList {
   userId: number;
@@ -58,7 +60,7 @@ function a11yProps(index: number) {
 export type StatusOptions =
   | 'pending'
   | 'approved'
-  | 'cancel'
+  | 'declined'
   | 'hashtag'
   | 'draft'
   | 'trash'
@@ -88,13 +90,15 @@ const ModalEmailList: React.FC<Props> = ({
 }) => {
   const [value, setValue] = React.useState(0);
 
+  const { EmailsList } = useSelector((state: RootState) => state.email);
+
   const locate = useLocation();
   const pathName = locate.pathname;
 
   const currentPosition = localStorage.getItem('current_position');
 
   const { data: dataGetEmailManagerByStatus } = useQuery({
-    queryKey: ['get-email-manager', status, pathName],
+    queryKey: ['get-email-manager', status, pathName, ...EmailsList],
     queryFn: () =>
       renderType === 'tag'
         ? getEmailManagerWithQueryParams({
@@ -323,7 +327,7 @@ const ModalEmailList: React.FC<Props> = ({
         return ModalEmailPending;
       case 'approved':
         return ModalEmailPending;
-      case 'cancel':
+      case 'declined':
         return ModalEmailPending;
       case 'hashtag':
         return ModalHashtag;

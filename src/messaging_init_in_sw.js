@@ -1,5 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
+
 var firebaseConfig = {
   apiKey: 'AIzaSyCLvxRkPCmGf2YeJshvG4o-pAJpxSHTphA',
   authDomain: 'emven-7e130.firebaseapp.com',

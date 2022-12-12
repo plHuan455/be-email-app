@@ -88,7 +88,7 @@ const AutoCompleteReceive: React.FC<Props> = ({
       }}
       renderInput={(params) => {
         if (isReadOnly) params.InputProps.endAdornment = undefined;
-        
+
         return (
           <Box className="flex justify-between items-center">
             <TextField

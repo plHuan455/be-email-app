@@ -6,11 +6,18 @@ import EmailStatus from '@components/atoms/EmailStatus';
 import OptionalAvatar from '@components/atoms/OptionalAvatar';
 
 import EmailActions from '@components/molecules/EmailActions';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import EmailForward from '../EmailForward';
-import { EmailResponse } from '@api/email';
+import { approveEmail, EmailResponse, updateEmailWithQuery } from '@api/email';
 import { UserInfo } from '../Email/Interface';
 import EmailPrivateHashtagContainer from '@containers/EmailPrivateHashtagContainer';
+import AlertDialog from '@components/molecules/AlertDialog';
+import { useMutation } from '@tanstack/react-query';
+import { emailData } from '@layouts/EmailStatusBar';
+import { toast } from 'react-toastify';
+import { string } from 'yup';
+import { useDispatch } from 'react-redux';
+import { deleteIndexEmail } from '@redux/Email/reducer';
 export interface UserRead {
   name: string;
   time: string;
@@ -58,6 +65,17 @@ const EmailMess: React.FC<Props> = ({
   //   setEditor(EditorState.createWithContent(contentState));
   // }, []);
 
+  const [isOpenAlertDialog, setIsOpenAlertDialog] = useState<boolean>(false);
+  const [isOpenAlertDialogEmailApproved, setIsOpenAlertDialogEmailApproved] =
+    useState<boolean>(false);
+  const [alertDialog, setAlertDialog] = useState<{
+    title: string;
+    desc: string;
+  }>({
+    title: 'Alert',
+    desc: 'Are you sure?',
+  });
+
   const cloneSendTo = !!emailData.to ? [...emailData.to] : [];
 
   const renderSendTo = () => {
@@ -97,14 +115,73 @@ const EmailMess: React.FC<Props> = ({
     );
   };
 
+  // useMutation
+  const { mutate: updateEmailStatus, isLoading: isLoadingUpdateEmailStatus } =
+    useMutation({
+      mutationKey: ['update-email'],
+      mutationFn: async (status: string) =>
+        await updateEmailWithQuery(emailData.id, { ...emailData, status: status }),
+      onSuccess() {
+        dispatch(deleteIndexEmail(index));
+        setIsOpenAlertDialog(false);
+        toast.success('Decline Successful!');
+      },
+    });
+
+  const { mutate: setApproveEmail, isLoading: isLoadingApprovedEmail } = useMutation(
+    {
+      mutationKey: ['Approve-email'],
+      mutationFn: async (query: {
+        email_id: number;
+        status: 'APPROVED';
+        note: string;
+        send_after: number;
+      }) => await approveEmail(query),
+      onSuccess() {
+        dispatch(deleteIndexEmail(index));
+        setIsOpenAlertDialogEmailApproved(false);
+        toast.success('Email has been Approved');
+      },
+    },
+  );
+
+  // useDispatch
+  const dispatch = useDispatch();
+
+  // Handle FUNC
+
+  const handleOnDecline = (data: EmailResponse) => (e) => {
+    setAlertDialog({
+      title: 'Alert',
+      desc: `Are you sure want to decline with title "${
+        data.subject ?? 'Empty'
+      }" from writer "${data.from ?? data.cc[0] ?? data.bcc[0] ?? 'No one'}"?`,
+    });
+    setIsOpenAlertDialog(true);
+  };
+
+  const handleOnApprove = (data: EmailResponse) => (e) => {
+    setAlertDialog({
+      title: 'Alert',
+      desc: `Are you sure want to Approve with title "${
+        data.subject ?? 'Empty'
+      }" from writer "${data.from ?? data.cc[0] ?? data.bcc[0] ?? 'No one'}"?`,
+    });
+    setIsOpenAlertDialogEmailApproved(true);
+  };
+
   // Render FUNC
   const _renderActionsPending = useMemo(() => {
     return (
       <>
-        <Button className="mx-1 bg-rose-600 py-1.5 px-5 hover:bg-rose-500">
+        <Button
+          onClick={handleOnDecline(emailData)}
+          className="mx-1 bg-rose-600 py-1.5 px-5 hover:bg-rose-500">
           DECLINE
         </Button>
-        <Button className="mx-1 py-1.5 px-5">APPROVE</Button>
+        <Button onClick={handleOnApprove(emailData)} className="mx-1 py-1.5 px-5">
+          APPROVE
+        </Button>
       </>
     );
   }, []);
@@ -235,7 +312,7 @@ const EmailMess: React.FC<Props> = ({
         {/* Email Content */}
         <Box className="py-9">
           <Box>
-            <p dangerouslySetInnerHTML={createMarkup(emailData.content)} />
+            <p dangerouslySetInnerHTML={createMarkup(emailData.html_string)} />
           </Box>
         </Box>
         {/* Files List If have */}
@@ -256,6 +333,44 @@ const EmailMess: React.FC<Props> = ({
       {/* Layer if status === 'Reply || ReplyAll' */}
       {(status === 'reply' || status === 'replyAll' || status === 'forward') &&
         _renderStatusLayer}
+
+      {/* Alert Dialog Declined */}
+      <AlertDialog
+        descriptionLabel={alertDialog.desc}
+        isLoading={isLoadingUpdateEmailStatus}
+        isOpen={isOpenAlertDialog}
+        onClose={() => {
+          setIsOpenAlertDialog(false);
+        }}
+        onAgree={() => {
+          updateEmailStatus('DECLINED');
+        }}
+        onDisagree={() => {
+          setIsOpenAlertDialog(false);
+        }}
+        titleLabel={alertDialog.title}
+      />
+      {/* Alert Dialog Approved */}
+      <AlertDialog
+        titleLabel={alertDialog.title}
+        descriptionLabel={alertDialog.desc}
+        isLoading={isLoadingApprovedEmail}
+        isOpen={isOpenAlertDialogEmailApproved}
+        onClose={() => {
+          setIsOpenAlertDialogEmailApproved(false);
+        }}
+        onAgree={() => {
+          setApproveEmail({
+            email_id: emailData.id,
+            note: '',
+            send_after: 0,
+            status: 'APPROVED',
+          });
+        }}
+        onDisagree={() => {
+          setIsOpenAlertDialogEmailApproved(false);
+        }}
+      />
     </Box>
   );
 };

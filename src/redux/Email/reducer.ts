@@ -6,6 +6,7 @@ import { MinimizeEmailColor } from '@components/organisms/MinimizeEmail/interfac
 import { MinimizeEmailTypes } from '@components/templates/MinimizeEmailList';
 import { emailData } from '@layouts/EmailStatusBar';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { clone } from 'lodash';
 import { toast } from 'react-toastify';
 
 export const LOCAL_STORAGE_MINIMIZE_EMAILS = 'minimize_emails';
@@ -322,6 +323,13 @@ const EmailSlice = createSlice({
     setDeletedEmails(state, action) {
       return { ...state, deletedEmailsList: action.payload };
     },
+    deleteIndexEmail(state, action) {
+      const cloneEmailsList = [...state.EmailsList];
+
+      cloneEmailsList.splice(action.payload, 1);
+
+      return { ...state, EmailsList: cloneEmailsList };
+    },
     setEmailStatus(state, action) {
       const { index, status } = action.payload;
 
@@ -345,8 +353,8 @@ const EmailSlice = createSlice({
     },
     addMinimizeEmail(state, action: PayloadAction<MinimizeEmailTypes>) {
       if (!action.payload.id) {
-        if(state.minimizeMailList.length >= 2) {
-          toast.error('The minimized email limit is two')
+        if (state.minimizeMailList.length >= 2) {
+          toast.error('The minimized email limit is two');
           return state;
         }
         state.minimizeMailList.push({
@@ -398,6 +406,7 @@ export const {
   addMinimizeEmail,
   removeMinimizeEmail,
   addMinimizeAndSetShowMinimizeEmail,
+  deleteIndexEmail,
 } = EmailSlice.actions;
 
 export default EmailSlice.reducer;

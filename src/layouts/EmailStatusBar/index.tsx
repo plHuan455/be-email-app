@@ -24,6 +24,7 @@ import { EmailTagsResponse, getAllEmailStatus, getAllEmailTag } from '@api/email
 import EmailTab from '@components/molecules/EmailTab';
 import { HashtagTabs } from '@redux/Email/reducer';
 import { useQuery } from '@tanstack/react-query';
+import { isEmpty } from 'lodash';
 
 type Props = {};
 
@@ -77,6 +78,53 @@ export const emailData: EmailList[] = [
   },
 ];
 
+const EmailTabsData: EmailTabs[] = [
+  {
+    status: 'pending',
+    title: '#pending',
+    notiNumber: 0,
+    emailData: emailData,
+  },
+  {
+    status: 'approved',
+    title: '#approved',
+    notiNumber: 0,
+    emailData: emailData,
+  },
+  {
+    status: 'sent',
+    title: '#sent',
+    notiNumber: 0,
+    emailData: emailData,
+  },
+  {
+    status: 'declined',
+    title: '#declined',
+    notiNumber: 0,
+    emailData: emailData,
+  },
+];
+const EmailTabsSecData: EmailTabs[] = [
+  {
+    status: 'draft',
+    title: '#draft',
+    notiNumber: 0,
+    emailData: emailData,
+  },
+  {
+    status: 'trash',
+    title: '#trash',
+    notiNumber: 0,
+    emailData: emailData,
+  },
+  {
+    status: 'spam',
+    title: '#spam',
+    notiNumber: 0,
+    emailData: emailData,
+  },
+];
+
 // const hashtagTabs:
 
 const EmailStatusBar = (props: Props) => {
@@ -86,58 +134,9 @@ const EmailStatusBar = (props: Props) => {
     return JSON.parse(localStorage.getItem('private_hashtag') ?? JSON.stringify([]));
   });
 
-  const [emailTabs, setEmailTabs] = useState<EmailTabs[]>(() => {
-    return JSON.parse(
-      localStorage.getItem(`email_tabs`) ??
-        JSON.stringify([
-          {
-            status: 'pending',
-            title: '#pending',
-            notiNumber: 0,
-            emailData: emailData,
-          },
-          {
-            status: 'approved',
-            title: '#approved',
-            notiNumber: 0,
-            emailData: emailData,
-          },
-          {
-            status: 'sent',
-            title: '#sent',
-            notiNumber: 0,
-            emailData: emailData,
-          },
-          {
-            status: 'cancel',
-            title: '#cancel',
-            notiNumber: 0,
-            emailData: emailData,
-          },
-        ]),
-    );
-  });
+  const [emailTabs, setEmailTabs] = useState<EmailTabs[]>(EmailTabsData);
 
-  const [emailSecTabs, setEmailSecTab] = useState<EmailTabs[]>([
-    {
-      status: 'draft',
-      title: '#draft',
-      notiNumber: 0,
-      emailData: emailData,
-    },
-    {
-      status: 'trash',
-      title: '#trash',
-      notiNumber: 0,
-      emailData: emailData,
-    },
-    {
-      status: 'spam',
-      title: '#spam',
-      notiNumber: 0,
-      emailData: emailData,
-    },
-  ]);
+  const [emailSecTabs, setEmailSecTab] = useState<EmailTabs[]>(EmailTabsSecData);
 
   // useQuery
 
@@ -145,7 +144,7 @@ const EmailStatusBar = (props: Props) => {
     queryKey: ['get-all-email-status'],
     queryFn: getAllEmailStatus,
     onSuccess(res) {
-      if (res.data) {
+      if (!isEmpty(res.data)) {
         setEmailTabs((prevState) => {
           const data: EmailTabs[] = prevState.reduce(
             (currVal: EmailTabs[], nextVal) => {
@@ -160,7 +159,6 @@ const EmailStatusBar = (props: Props) => {
             [],
           );
 
-          localStorage.setItem('email_tabs', JSON.stringify(data));
           return data;
         });
         setEmailSecTab((prevState) => {
