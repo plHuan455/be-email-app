@@ -9,6 +9,7 @@ import { isEmpty } from 'lodash';
 import { Email, UserInfo } from '@components/organisms/Email/Interface';
 import Icon from '@components/atoms/Icon';
 import { EmailResponse } from '@api/email';
+import styles from './styles.module.scss';
 
 export interface ReceiverData {
   name: string;
@@ -74,6 +75,7 @@ export const TitleOfInformationBlock = (
 export const UserName = (title: string) => {
   return (
     <Typography
+      className="textOneLine"
       component={'p'}
       sx={{
         fontSize: '12px',
@@ -115,6 +117,7 @@ const ShowMore: React.FC<{
 const InformationDetailBlock = (props: Props) => {
   const renderReceiver = (item: UserInfo, index: number) => (
     <Box
+      className="infoBlock"
       key={index}
       sx={{
         display: 'flex',
@@ -128,7 +131,10 @@ const InformationDetailBlock = (props: Props) => {
       />
       <Box sx={{ padding: '0 10px' }}>
         {UserName(item.name)}
-        <Typography component={'p'} sx={{ fontSize: '10px', color: '#999DA0' }}>
+        <Typography
+          className="textOneLine"
+          component={'p'}
+          sx={{ fontSize: '10px', color: '#999DA0' }}>
           {item.mail}
         </Typography>
       </Box>
@@ -158,10 +164,10 @@ const InformationDetailBlock = (props: Props) => {
               alt="sender avt"
               sx={{ width: '35px', height: '35px' }}
             />
-            <Box className="flex-1" sx={{ padding: '0 10px' }}>
+            <Box className={`flex-1 infoBlock`} sx={{ padding: '0 10px' }}>
               {UserName(sender?.name || '')}
               <Typography
-                className="truncate w-full"
+                className={`textOneLine`}
                 component={'p'}
                 sx={{ fontSize: '10px', color: '#999DA0' }}>
                 {sender?.mail}
@@ -197,7 +203,7 @@ const InformationDetailBlock = (props: Props) => {
               );
             })}
           {!isEmpty(props.ccData) && (
-            <>
+            <Box className="infoBlock">
               <Typography
                 component={'p'}
                 sx={{ fontSize: '12px', fontWeight: 'bold' }}>
@@ -206,7 +212,7 @@ const InformationDetailBlock = (props: Props) => {
               {props.ccData?.map((item, index) =>
                 renderReceiver(new UserInfo('', item, item), index),
               )}
-            </>
+            </Box>
           )}
           {!isEmpty(props.bccData) && (
             <>
@@ -221,51 +227,6 @@ const InformationDetailBlock = (props: Props) => {
             </>
           )}
         </Box>
-        {/* {props.receiverData &&
-          props.receiverData.map((item, index) => {
-            return (
-              <Box key={index}>
-                {item.isCC && (
-                  <Typography
-                    component={'p'}
-                    sx={{ fontSize: '12px', fontWeight: 'bold' }}>
-                    CC
-                  </Typography>
-                )}
-                {item.isBCC && (
-                  <Typography
-                    component={'p'}
-                    sx={{ fontSize: '12px', fontWeight: 'bold' }}>
-                    BCC
-                  </Typography>
-                )}
-                {props.isEmpty ? (
-                  <AvatarIfEmpty className="my-2" />
-                ) : (
-                  <Box
-                    sx={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      marginBottom: '10px',
-                    }}>
-                    <Avatar
-                      src={item.avatar}
-                      alt={`${item.name} avatar`}
-                      sx={{ width: '35px', height: '35px' }}
-                    />
-                    <Box sx={{ padding: '0 10px' }}>
-                      {UserName(item.name)}
-                      <Typography
-                        component={'p'}
-                        sx={{ fontSize: '10px', color: '#999DA0' }}>
-                        {item.position ? item.position : item.email}
-                      </Typography>
-                    </Box>
-                  </Box>
-                )}
-              </Box>
-            );
-          })} */}
       </Box>
     );
   }, [props]);

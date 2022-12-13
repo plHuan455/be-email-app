@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
@@ -89,13 +89,14 @@ const ModalEmailList: React.FC<Props> = ({
   handleChangeEmailTabNotiNumber,
 }) => {
   const [value, setValue] = React.useState(0);
+  const [selectedEmailItem, setSelectedEmailitem] = useState<number>();
 
   const { EmailsList } = useSelector((state: RootState) => state.email);
 
   const locate = useLocation();
   const pathName = locate.pathname;
 
-  const currentPosition = localStorage.getItem('current_position');
+  const currentPosition = localStorage.getItem('current_role');
 
   const { data: dataGetEmailManagerByStatus } = useQuery({
     queryKey: ['get-email-manager', status, pathName, ...EmailsList],
@@ -112,10 +113,18 @@ const ModalEmailList: React.FC<Props> = ({
     setValue(newValue);
   };
 
+  const handleSelectEmailItem = (index: number) => {
+    setSelectedEmailitem(index);
+  };
+
   const _renderEmtailItems = useMemo(() => {
     return (dataGetEmailManagerByStatus?.data ?? []).map((item, index) => {
       return (
         <EmailItem
+          onSelect={() => {
+            handleSelectEmailItem(index);
+          }}
+          isSelected={index === selectedEmailItem}
           firstEmailContent={item.emails[0].content}
           emailStatus={item.emails[0].status}
           emailTag={tag || undefined}
@@ -161,15 +170,15 @@ const ModalEmailList: React.FC<Props> = ({
             value={value}
             onChange={handleChange}
             aria-label="basic tabs example">
-            <Tab className="tab" label="All" {...a11yProps(0)} />
-            <Tab className="tab" label="Me" {...a11yProps(1)} />
+            <Tab className="tab" label="Me" {...a11yProps(0)} />
+            <Tab className="tab" label="All" {...a11yProps(1)} />
           </Tabs>
         </Box>
         <TabPanel value={value} index={0}>
-          {_renderEmtailItems}
+          Item Tab All
         </TabPanel>
         <TabPanel value={value} index={1}>
-          Item Tab All
+          {_renderEmtailItems}
         </TabPanel>
       </Box>
     );
@@ -305,8 +314,8 @@ const ModalEmailList: React.FC<Props> = ({
             value={value}
             onChange={handleChange}
             aria-label="basic tabs example">
-            <Tab className="tab" label="All" {...a11yProps(0)} />
-            <Tab className="tab" label="Me" {...a11yProps(1)} />
+            <Tab className="tab" label="Me" {...a11yProps(0)} />
+            <Tab className="tab" label="All" {...a11yProps(1)} />
           </Tabs>
         </Box>
         <TabPanel value={value} index={0}>
@@ -370,10 +379,10 @@ const ModalEmailList: React.FC<Props> = ({
           value={value}
           onChange={handleChange}
           aria-label="basic tabs example">
-          {currentPosition === 'A' && (
-            <Tab className="tab" label="All" {...a11yProps(0)} />
+          <Tab className="tab" label="Me" {...a11yProps(0)} />
+          {!currentPosition?.startsWith('EMPLOYEE') && (
+            <Tab className="tab" label="All" {...a11yProps(1)} />
           )}
-          <Tab className="tab" label="Me" {...a11yProps(1)} />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
