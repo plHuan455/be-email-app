@@ -15,6 +15,7 @@ import { useTranslation } from '@@packages/localization';
 import logoImg from '@assets/images/logo.png';
 import onboardingImg from '@assets/images/Illustrations/Onboarding/2.png';
 import avatarImg from '@assets/images/avatars/avatar-1.jpg';
+import { fetchToken, onMessageListener } from '../../messaging_init_in_sw';
 
 const schema = yup
   .object({
@@ -24,6 +25,8 @@ const schema = yup
   .required();
 
 function LoginContainer() {
+  const [isTokenFound, setTokenFound] = useState(false);
+  const [getFcmToken, setFcmToken] = useState('');
   const { t } = useTranslation();
   const navigate = useNavigate();
   const isLogined = localStorage.getItem('current_email') ? true : false;
@@ -65,6 +68,22 @@ function LoginContainer() {
           localStorage.setItem('current_id', `${currentUser.data.user_id}`);
           localStorage.setItem('current_position', currentUser.data.position);
           toast.success('Đăng nhập thành công!');
+
+          Notification.requestPermission().then((permission) => {
+            if (permission === 'granted') {
+              console.log('line 28 Notification permission granted.');
+              fetchToken(setTokenFound, setFcmToken);
+            }
+            if (permission === 'default') {
+              console.log('line 28 Notification permission default.');
+            }
+            if (permission === 'denied') {
+              console.log('line 28 Notification permission denied.');
+            }
+          });
+
+          if (isTokenFound) localStorage.setItem('device_token', getFcmToken);
+
           navigate('/');
         }
       });
@@ -76,10 +95,6 @@ function LoginContainer() {
   const onSubmit = (data) => {
     submitLogin({ email: data.email, password: data.password });
   };
-
-  // useEffect(() => {
-  //   navigate(0);
-  // }, [navigate]);
 
   const handleReLoginWithEmail = () => {
     localStorage.removeItem('current_email');
@@ -217,7 +232,7 @@ function LoginContainer() {
               )}
             </form>
           </Content>
-          <p>2022 Metanode, Inc</p>
+          <p>2022 Metanode, Inc.</p>
         </WrapContent>
       </WrapContainer>
     </Root>

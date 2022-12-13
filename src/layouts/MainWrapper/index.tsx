@@ -62,21 +62,6 @@ function MainWrapper() {
 
   const [show, setShow] = useState(false);
   const [notification, setNotification] = useState({ title: '', body: '' });
-  const [isTokenFound, setTokenFound] = useState(false);
-  const [getFcmToken, setFcmToken] = useState('');
-
-  Notification.requestPermission().then((permission) => {
-    if (permission === 'granted') {
-      console.log('line 28 Notification permission granted.');
-      fetchToken(setTokenFound, setFcmToken);
-    }
-    if (permission === 'default') {
-      console.log('line 28 Notification permission default.');
-    }
-    if (permission === 'denied') {
-      console.log('line 28 Notification permission denied.');
-    }
-  });
 
   onMessageListener()
     .then((payload) => {

@@ -7,6 +7,7 @@ import { StickyContainer, Sticky } from 'react-sticky';
 import { useDispatch, useSelector } from 'react-redux';
 import { navigateIsShowEmailInfo, setIsShowEmailInfo } from '@redux/Global/reducer';
 import { RootState } from '@redux/configureStore';
+import EmailNotify from '../EmailNotify';
 
 interface Props {
   className?: string;
@@ -57,6 +58,7 @@ const EmailsListActions: React.FC<Props> = ({ className }) => {
           />
         </IconButton>
       </Box>
+      <EmailNotify />
     </Box>
   );
   //     }}

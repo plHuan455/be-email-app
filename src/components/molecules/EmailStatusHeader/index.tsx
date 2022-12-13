@@ -57,24 +57,23 @@ const EmailStatusHeader = ({
           sx={{ fontSize: '24px', color: `${color}`, fontWeight: 'bold' }}>
           {title}
         </Typography>
+        <Box className="flex gap-3 justify-end">
+          {isComposeButton && (
+            <CustomButton
+              className="py-3 hover:opacity-90 ease-linear duration-300"
+              label="Compose"
+              bgButtonColor="#554CFF"
+              color="#fff"
+              isAfterIcon={true}
+              width={100}
+              isHasSlash={true}
+              afterIcon={<Plus width={10} height={10} color={'#fff'} />}
+              onClick={handleComposeEmail}
+            />
+          )}
+        </Box>
+      </Box>
 
-        <EmailNotify />
-      </Box>
-      <Box className="flex gap-3 justify-end py-4 border-b-2">
-        {isComposeButton && (
-          <CustomButton
-            className="py-3 hover:opacity-90 ease-linear duration-300"
-            label="Compose"
-            bgButtonColor="#554CFF"
-            color="#fff"
-            isAfterIcon={true}
-            width={100}
-            isHasSlash={true}
-            afterIcon={<Plus width={10} height={10} color={'#fff'} />}
-            onClick={handleComposeEmail}
-          />
-        )}
-      </Box>
       <Box className="py-2">
         <Input
           type="text"

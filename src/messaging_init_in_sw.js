@@ -22,6 +22,7 @@ export const fetchToken = (setTokenFound, setFcmToken) => {
       if (currentToken) {
         setTokenFound(true);
         setFcmToken(currentToken);
+        localStorage.setItem('device_token', currentToken);
       } else {
         console.log('No token found');
         setTokenFound(false);

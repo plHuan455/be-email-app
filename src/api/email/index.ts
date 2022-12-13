@@ -24,7 +24,7 @@ export interface CreateEmailParam {
     html_string: string;
     cc: string[];
     bcc: string[];
-    files: {path: string}[];
+    files: { path: string }[];
   };
   send_at?: string | null;
 }
@@ -73,10 +73,8 @@ export interface EmailDeleteResponse {
 }
 
 // GET ALL CUR EMAIL TAG
-export const getAllEmailTag = async (): Promise<
-  AxiosResponse<EmailTagsResponse[]>
-> => {
-  const url = `${EMAIL_MANAGER_API_URL}/all`;
+export const getAllEmailTag = async (): Promise<AxiosResponse<any[]>> => {
+  const url = `/api/hashtag`;
   const res = await ApiClient.get(url);
 
   return res.data;

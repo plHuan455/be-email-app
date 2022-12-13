@@ -92,12 +92,6 @@ const EmailTabsData: EmailTabs[] = [
     emailData: emailData,
   },
   {
-    status: 'sent',
-    title: '#sent',
-    notiNumber: 0,
-    emailData: emailData,
-  },
-  {
     status: 'declined',
     title: '#declined',
     notiNumber: 0,
@@ -105,6 +99,12 @@ const EmailTabsData: EmailTabs[] = [
   },
 ];
 const EmailTabsSecData: EmailTabs[] = [
+  {
+    status: 'sent',
+    title: '#sent',
+    notiNumber: 0,
+    emailData: emailData,
+  },
   {
     status: 'draft',
     title: '#draft',
@@ -165,7 +165,7 @@ const EmailStatusBar = (props: Props) => {
           const data: EmailTabs[] = prevState.reduce(
             (currVal: EmailTabs[], nextVal) => {
               const foundInRes = res.data.find(
-                (item) => item.tag === nextVal.status,
+                (item) => item.tag.toLowerCase() === nextVal.status,
               );
 
               if (foundInRes)
@@ -189,10 +189,10 @@ const EmailStatusBar = (props: Props) => {
     queryFn: getAllEmailTag,
     onSuccess(res) {
       const privHashTagData = res.data.map<HashtagTabs>((hashTag) => ({
-        title: `#${hashTag.tag}`,
-        value: hashTag.tag,
+        title: `#${hashTag.name}`,
+        value: hashTag.name,
         status: 'hashtag',
-        notiNumber: hashTag.count,
+        notiNumber: 0,
       }));
 
       setHashtagTabs(privHashTagData);

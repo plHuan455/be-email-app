@@ -158,9 +158,10 @@ const InformationDetailBlock = (props: Props) => {
               alt="sender avt"
               sx={{ width: '35px', height: '35px' }}
             />
-            <Box sx={{ padding: '0 10px' }}>
+            <Box className="flex-1" sx={{ padding: '0 10px' }}>
               {UserName(sender?.name || '')}
               <Typography
+                className="truncate w-full"
                 component={'p'}
                 sx={{ fontSize: '10px', color: '#999DA0' }}>
                 {sender?.mail}
