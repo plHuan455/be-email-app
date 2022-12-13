@@ -4,6 +4,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import utc from 'dayjs/plugin/utc';
 import draftToHtml from 'draftjs-to-html';
 import { EditorState, ContentState, convertToRaw } from 'draft-js';
 import dayjs, { Dayjs } from "dayjs";
@@ -16,6 +17,7 @@ import { MinimizeEmailColor } from "@components/organisms/MinimizeEmail/interfac
 import { useNavigate } from "react-router-dom";
 import { FileInfoTypes } from "@components/molecules/AttachFiles2";
 import { uploadFile } from "@api/uploadFile";
+dayjs.extend(utc)
 
 const currentUserEmail = localStorage.getItem('current_email');
 
@@ -145,6 +147,19 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
     //   toast.error('Please waiting for files uploaded')
     //   return;
     // }
+    // console.log({
+    //   email: {
+    //     subject: values.subject,
+    //     to: values.to.map(value => value.mail),
+    //     html_string: values.content === '' ? '' : draftToHtml(convertToRaw(values.content.getCurrentContent())),
+    //     content: 'TODO REPLACE CONTENT',
+    //     bcc: values.bcc.map(value => value.mail),
+    //     cc: values.cc.map(value => value.mail),
+    //     files: (values.attachFiles.fileUrls.filter(value => value !== undefined) as string[]).map(value => ({path: value})),
+    //     from: currentUserEmail ? currentUserEmail : '',
+    //   },
+    //   send_at: selectedDate ? dayjs.utc(selectedDate).toISOString() ?? 0 : 0,
+    // });
     submitEmailComposeMutate({
       email: {
         subject: values.subject,
@@ -156,7 +171,7 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
         files: (values.attachFiles.fileUrls.filter(value => value !== undefined) as string[]).map(value => ({path: value})),
         from: currentUserEmail ? currentUserEmail : '',
       },
-      send_at: selectedDate ? calendarValue?.toISOString() ?? null : null,
+      send_at: selectedDate ? dayjs.utc(selectedDate).toISOString() ?? '0' : '0',
     })
   }
   

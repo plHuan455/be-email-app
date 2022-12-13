@@ -128,8 +128,7 @@ const EmailMess: React.FC<Props> = ({
   const { mutate: updateEmailStatus, isLoading: isLoadingUpdateEmailStatus } =
     useMutation({
       mutationKey: ['update-email'],
-      mutationFn: async (status: string) =>
-        await updateEmailWithQuery(emailData.id, { ...emailData, status: status }),
+      mutationFn: (status: 'PENDING' | 'APPROVED' | 'DECLINED') => approveEmail({ email_id: emailData.id, status: status }),
       onSuccess() {
         dispatch(deleteIndexEmail(index));
         setIsOpenAlertDialog(false);
@@ -142,7 +141,7 @@ const EmailMess: React.FC<Props> = ({
       mutationKey: ['Approve-email'],
       mutationFn: async (query: {
         email_id: number;
-        status: 'APPROVED';
+        status: 'PENDING';
         note: string;
         send_after: number;
       }) => await approveEmail(query),
@@ -376,8 +375,8 @@ const EmailMess: React.FC<Props> = ({
           setApproveEmail({
             email_id: emailData.id,
             note: '',
-            send_after: 0,
-            status: 'APPROVED',
+            send_after: 15,
+            status: 'PENDING',
           });
         }}
         onDisagree={() => {

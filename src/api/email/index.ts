@@ -26,7 +26,7 @@ export interface CreateEmailParam {
     bcc: string[];
     files: { path: string }[];
   };
-  send_at?: string | null;
+  send_at?: string;
 }
 
 export interface EmailResponse {
@@ -176,9 +176,9 @@ export const updateEmailWithQuery = async (
 // Approve Email
 export const approveEmail = async (queryParam: {
   email_id: number;
-  status: 'APPROVED';
-  note: string;
-  send_after: number;
+  status: 'PENDING' | 'APPROVED' | 'DECLINED';
+  note?: string;
+  send_after?: number;
 }): Promise<AxiosResponse<EmailResponse>> => {
   const url = `${EMAIL_MANAGER_API_URL}`;
 
