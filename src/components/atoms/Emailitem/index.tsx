@@ -15,6 +15,8 @@ type Props = {
   emailStatus: string;
   data: UserTagResponse;
   dataEmail: EmailResponse[];
+  isSelected: boolean;
+  onSelect: () => void;
   emailTag?: string;
 };
 
@@ -23,6 +25,8 @@ const EmailItem: React.FC<Props> = ({
   emailStatus,
   emailTag,
   firstEmailContent,
+  isSelected,
+  onSelect,
   dataEmail,
 }) => {
   const { avatar, count, user_email, user_name } = data;
@@ -31,13 +35,14 @@ const EmailItem: React.FC<Props> = ({
   const dispatch = useDispatch();
 
   const handleClickEmailItem = async (e) => {
+    onSelect();
     if (!emailTag) navigate(`/emails/status/${emailStatus}/${user_email}`);
     else navigate(`/emails/tag/${emailTag}/${user_email}`);
   };
 
   return (
     <Box
-      className="email__item"
+      className={`email__item ${isSelected && 'selected'}`}
       sx={{
         display: 'flex',
         alignItems: 'center',

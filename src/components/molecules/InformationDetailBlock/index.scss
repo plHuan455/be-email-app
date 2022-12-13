@@ -1,0 +1,5 @@
+.infoBlock {
+  .textOneLine {
+    @include textOverflow(1);
+  }
+}

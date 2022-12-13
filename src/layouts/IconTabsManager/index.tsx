@@ -10,11 +10,11 @@ import { styled } from '@mui/material/styles';
 import logo from '../../assets/images/logo_without_text.png';
 import { Box, Tooltip } from '@mui/material';
 import Icon, { SVGIconProps } from '@components/atoms/Icon';
-import { RouteObject, useLocation, useNavigate } from 'react-router-dom';
-import ManagerAccount from '@assets/icon/ManagerAccount';
+import { useNavigate } from 'react-router-dom';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import Department from '@assets/icon/Department';
 import ArticleIcon from '@mui/icons-material/Article';
+import BookIcon from '@mui/icons-material/Book';
 
 export interface TabItem {
   title?: string;
@@ -30,14 +30,14 @@ const TabsData: TabItem[] = [
     url: '/emails',
   },
   {
+    title: 'Contact',
+    icon: <BookIcon />,
+    url: '/emails',
+  },
+  {
     title: 'Department',
     icon: <Department />,
     url: '/manager/department',
-  },
-  {
-    title: 'Contact',
-    icon: <LocalPhoneIcon />,
-    url: '/emails',
   },
   {
     title: 'Template',

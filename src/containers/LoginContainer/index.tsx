@@ -66,7 +66,7 @@ function LoginContainer() {
           // set current_email to 'email
           localStorage.setItem('current_email', email);
           localStorage.setItem('current_id', `${currentUser.data.user_id}`);
-          localStorage.setItem('current_position', currentUser.data.position);
+          localStorage.setItem('current_role', currentUser.data.role);
           toast.success('Đăng nhập thành công!');
 
           Notification.requestPermission().then((permission) => {

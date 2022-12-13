@@ -162,9 +162,13 @@ const Listbox = styled('ul')(
 
 interface Props {
   privateHashtagData: HashtagTabs[];
+  defaultValue: HashtagTabs[];
 }
 
-const EmailPrivateHashtag: React.FC<Props> = ({ privateHashtagData }) => {
+const EmailPrivateHashtag: React.FC<Props> = ({
+  privateHashtagData,
+  defaultValue,
+}) => {
   const {
     getRootProps,
     getInputLabelProps,
@@ -178,9 +182,9 @@ const EmailPrivateHashtag: React.FC<Props> = ({ privateHashtagData }) => {
     setAnchorEl,
   } = useAutocomplete({
     id: 'customized-hook-demo',
-    defaultValue: [],
+    defaultValue: [...defaultValue],
     multiple: true,
-    options: privateHashtagData,
+    options: [...privateHashtagData],
     getOptionLabel: (option) => option.title,
   });
 

@@ -1,5 +1,8 @@
 .email__item {
-    &:hover {
-        background-color: #e4e2ff;
-    }
+  &:hover {
+    background-color: #e4e2ff;
+  }
+  &.selected {
+    background-color: #e4e2ff;
+  }
 }

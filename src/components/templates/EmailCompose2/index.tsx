@@ -25,6 +25,9 @@ import DateTimePicker from '@components/atoms/DateTimePicker';
 import dayjs, { Dayjs } from 'dayjs';
 import { addHttp, rem } from '@utils/functions';
 import AttachFiles2, { FileInfoTypes } from '@components/molecules/AttachFiles2';
+import EmailPrivateHashtagContainer from '@containers/EmailPrivateHashtagContainer';
+import { useSelector } from 'react-redux';
+import { RootState } from '@redux/configureStore';
 
 export interface EmailComposeFields {
   to: UserInfo[];
@@ -76,6 +79,8 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
   onSubmit,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const { privateHashtags } = useSelector((state: RootState) => state.email);
 
   const handleAttachFileClick = () => {
     if (fileInputRef.current) {
@@ -217,8 +222,8 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                     )}
                   />
                   <Box>
-                    {/* Private Hashtag
-                <EmailPrivateHashtagContainer /> */}
+                    {/* Private Hashtag */}
+                    <EmailPrivateHashtagContainer defaultData={[]} />
                     {/* Greeting */}
                     <EmailGreeting
                       greetingLabel="Thanks and Best regards, ------"

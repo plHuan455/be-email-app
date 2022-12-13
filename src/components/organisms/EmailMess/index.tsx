@@ -17,7 +17,7 @@ import { emailData } from '@layouts/EmailStatusBar';
 import { toast } from 'react-toastify';
 import { string } from 'yup';
 import { useDispatch } from 'react-redux';
-import { deleteIndexEmail } from '@redux/Email/reducer';
+import { deleteIndexEmail, HashtagTabs } from '@redux/Email/reducer';
 export interface UserRead {
   name: string;
   time: string;
@@ -77,6 +77,15 @@ const EmailMess: React.FC<Props> = ({
   });
 
   const cloneSendTo = !!emailData.to ? [...emailData.to] : [];
+
+  const remapPrivateHashtag: HashtagTabs[] = emailData.tags
+    ? emailData.tags.map((val) => ({
+        notiNumber: 0,
+        status: 'hashtag',
+        title: `#${val}`,
+        value: val,
+      }))
+    : [];
 
   const renderSendTo = () => {
     const sendToLength = cloneSendTo.length;
@@ -144,6 +153,9 @@ const EmailMess: React.FC<Props> = ({
       },
     },
   );
+
+  // localStore
+  const currRole = localStorage.getItem('current_role');
 
   // useDispatch
   const dispatch = useDispatch();
@@ -257,7 +269,7 @@ const EmailMess: React.FC<Props> = ({
 
   return (
     <Box
-      className={`w-full relative flex flex-wrap ${
+      className={`o-EmailMess w-full relative flex flex-wrap ${
         type === 'send' && styles.flexRowReverse
       }`}>
       <Box
@@ -320,14 +332,15 @@ const EmailMess: React.FC<Props> = ({
           <AttachFiles data={emailData.attachFiles} isUpload={false} />
         )}
         {/* Email Private Hashtag */}
-        <EmailPrivateHashtagContainer data={emailData.tags ?? []} />
+        <EmailPrivateHashtagContainer defaultData={remapPrivateHashtag ?? []} />
         {/* Actions */}
-        {(status === 'PENDING' || status === 'SENDING') && (
-          <Box className="flex flex-wrap actions justify-end py-4">
-            <Box className="w-full h-[1px] bg-[#E0E0E0] mb-5"></Box>
-            {status === 'PENDING' ? _renderActionsPending : _renderActionsSending}
-          </Box>
-        )}
+        {(status === 'PENDING' || status === 'SENDING') &&
+          !currRole?.startsWith('EMPLOYEE') && (
+            <Box className="flex flex-wrap actions justify-end py-4">
+              <Box className="w-full h-[1px] bg-[#E0E0E0] mb-5"></Box>
+              {status === 'PENDING' ? _renderActionsPending : _renderActionsSending}
+            </Box>
+          )}
         {status === 'APPROVED' && _renderActionsApproved}
       </Box>
       {/* Layer if status === 'Reply || ReplyAll' */}

@@ -22,9 +22,10 @@ import Hashtag from '@components/atoms/Hashtag';
 import { toast } from 'react-toastify';
 import { EmailTagsResponse, getAllEmailStatus, getAllEmailTag } from '@api/email';
 import EmailTab from '@components/molecules/EmailTab';
-import { HashtagTabs } from '@redux/Email/reducer';
+import { HashtagTabs, setPrivateHashtag } from '@redux/Email/reducer';
 import { useQuery } from '@tanstack/react-query';
 import { isEmpty } from 'lodash';
+import { useDispatch } from 'react-redux';
 
 type Props = {};
 
@@ -134,9 +135,14 @@ const EmailStatusBar = (props: Props) => {
     return JSON.parse(localStorage.getItem('private_hashtag') ?? JSON.stringify([]));
   });
 
+  const [count, setCount] = useState<number>(0);
+
   const [emailTabs, setEmailTabs] = useState<EmailTabs[]>(EmailTabsData);
 
   const [emailSecTabs, setEmailSecTab] = useState<EmailTabs[]>(EmailTabsSecData);
+
+  // useDispatch
+  const dispatch = useDispatch();
 
   // useQuery
 
@@ -185,7 +191,7 @@ const EmailStatusBar = (props: Props) => {
   });
 
   useQuery({
-    queryKey: ['get-all-email-tag'],
+    queryKey: ['get-all-email-tag', count],
     queryFn: getAllEmailTag,
     onSuccess(res) {
       const privHashTagData = res.data.map<HashtagTabs>((hashTag) => ({
@@ -197,11 +203,16 @@ const EmailStatusBar = (props: Props) => {
 
       setHashtagTabs(privHashTagData);
       localStorage.setItem('private_hashtag', JSON.stringify(privHashTagData));
+      dispatch(setPrivateHashtag(privHashTagData));
     },
     onError(err) {
       console.log(err);
     },
   });
+
+  setInterval(() => {
+    setCount((prevState) => prevState + 1);
+  }, 300000);
 
   const handleChangeEmailTabsNotiNumber = useCallback(
     (index, number) => {

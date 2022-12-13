@@ -41,6 +41,7 @@ export interface UserResponse {
   position: string;
   role_id: number;
   user_name: string;
+  role: string;
 }
 
 //GET EMAIL WITH STATUS
