@@ -20,7 +20,7 @@ export interface CreateEmailParam {
     subject: string;
     to: string[];
     from: string;
-    content: string;
+    content?: string;
     html_string: string;
     cc: string[];
     bcc: string[];

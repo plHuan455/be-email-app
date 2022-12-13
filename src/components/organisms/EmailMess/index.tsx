@@ -4,7 +4,8 @@ import styles from './styles.module.scss';
 import AttachFiles from '@components/atoms/AttachFiles';
 import EmailStatus from '@components/atoms/EmailStatus';
 import OptionalAvatar from '@components/atoms/OptionalAvatar';
-
+import utc from 'dayjs/plugin/utc';
+dayjs.extend(utc)
 import EmailActions from '@components/molecules/EmailActions';
 import { useMemo, useState } from 'react';
 import EmailForward from '../EmailForward';
@@ -18,6 +19,7 @@ import { toast } from 'react-toastify';
 import { string } from 'yup';
 import { useDispatch } from 'react-redux';
 import { deleteIndexEmail, HashtagTabs } from '@redux/Email/reducer';
+import dayjs from 'dayjs';
 export interface UserRead {
   name: string;
   time: string;
@@ -372,10 +374,12 @@ const EmailMess: React.FC<Props> = ({
           setIsOpenAlertDialogEmailApproved(false);
         }}
         onAgree={() => {
+          // const now = Date.now() + 15 * 60 * 1000;
+          // const newDay = dayjs.utc(now);
           setApproveEmail({
             email_id: emailData.id,
             note: '',
-            send_after: 15,
+            send_after: 15 * 60,
             status: 'APPROVED',
           });
         }}

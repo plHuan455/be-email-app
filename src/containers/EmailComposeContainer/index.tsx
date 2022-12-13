@@ -1,22 +1,18 @@
 import { sendEmail } from "@api/email";
 import EmailCompose2, { EmailComposeFields } from "@components/templates/EmailCompose2";
-import { useMutation } from "@tanstack/react-query";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useCallback, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import utc from 'dayjs/plugin/utc';
 import draftToHtml from 'draftjs-to-html';
-import { EditorState, ContentState, convertToRaw } from 'draft-js';
+import { convertToRaw } from 'draft-js';
 import dayjs, { Dayjs } from "dayjs";
 import { useAppDispatch, useAppSelector } from "@redux/configureStore";
-import { addMinimizeAndSetShowMinimizeEmail, addMinimizeEmail, setShowMinimizeEmail } from "@redux/Email/reducer";
-import { addHttp, getEditorStateFormHtmlString } from "@utils/functions";
-import { UserInfo } from "@components/organisms/Email/Interface";
-import useDebounce from "@hooks/useDebouce";
+import { addMinimizeEmail } from "@redux/Email/reducer";
+import { getEditorStateFormHtmlString } from "@utils/functions";
 import { MinimizeEmailColor } from "@components/organisms/MinimizeEmail/interface";
 import { useNavigate } from "react-router-dom";
-import { FileInfoTypes } from "@components/molecules/AttachFiles2";
-import { uploadFile } from "@api/uploadFile";
 dayjs.extend(utc)
 
 const currentUserEmail = localStorage.getItem('current_email');
@@ -26,6 +22,7 @@ interface EmailComposeContainerProps {
 }
 
 const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
+  const queryClient = useQueryClient();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const minimizeEmailList = useAppSelector(state => state.email.minimizeMailList);
@@ -63,6 +60,7 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
     mutationFn: sendEmail,
     onSuccess: () => {
       toast.success('Email have been send');
+      queryClient.invalidateQueries({queryKey:['get-all-email-status']})
       method.reset();
       navigate(-1);
     }
@@ -158,20 +156,19 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
     //     files: (values.attachFiles.fileUrls.filter(value => value !== undefined) as string[]).map(value => ({path: value})),
     //     from: currentUserEmail ? currentUserEmail : '',
     //   },
-    //   send_at: selectedDate ? dayjs.utc(selectedDate).toISOString() ?? 0 : 0,
+    //   send_at: selectedDate ? dayjs.utc(selectedDate).toISOString() ?? dayjs.utc().toISOString() : dayjs.utc(selectedDate).toISOString(),
     // });
     submitEmailComposeMutate({
       email: {
         subject: values.subject,
         to: values.to.map(value => value.mail),
         html_string: values.content === '' ? '' : draftToHtml(convertToRaw(values.content.getCurrentContent())),
-        content: 'TODO REPLACE CONTENT',
         bcc: values.bcc.map(value => value.mail),
         cc: values.cc.map(value => value.mail),
         files: (values.attachFiles.fileUrls.filter(value => value !== undefined) as string[]).map(value => ({path: value})),
         from: currentUserEmail ? currentUserEmail : '',
       },
-      send_at: selectedDate ? dayjs.utc(selectedDate).toISOString() ?? '0' : '0',
+      send_at: selectedDate ? dayjs.utc(selectedDate).toISOString() ?? dayjs.utc().toISOString() : dayjs.utc(selectedDate).toISOString(),
     })
   }
   
