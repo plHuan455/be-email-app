@@ -258,7 +258,7 @@ function EmailCompose() {
 
         const params: CreateEmailParam = {
           email: email,
-          send_at: typeSend === 'SendTimer' ? valueCalendar?.toISOString() : null,
+          send_at: typeSend === 'SendTimer' ? valueCalendar?.toISOString() : '0',
           // send_at: '2022-11-28 10:12:25',
           //2022-12-01 16:08:15
         };

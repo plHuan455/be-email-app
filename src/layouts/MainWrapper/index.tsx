@@ -16,7 +16,7 @@ import MinimizeEmailList, {
   MinimizeEmailTypes,
 } from '@components/templates/MinimizeEmailList';
 import { Email } from '@components/organisms/Email/Interface';
-import { removeMinimizeEmail, setShowMinimizeEmail } from '@redux/Email/reducer';
+import { removeMinimizeEmail, resetEmailState, setShowMinimizeEmail } from '@redux/Email/reducer';
 import { fetchToken, onMessageListener } from '../../messaging_init_in_sw';
 import { setIsShowEmailInfo } from '@redux/Global/reducer';
 

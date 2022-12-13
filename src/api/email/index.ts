@@ -26,7 +26,7 @@ export interface CreateEmailParam {
     bcc: string[];
     files: { path: string }[];
   };
-  send_at?: string | null;
+  send_at?: string;
 }
 
 export interface EmailResponse {
