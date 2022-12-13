@@ -141,7 +141,7 @@ const EmailMess: React.FC<Props> = ({
       mutationKey: ['Approve-email'],
       mutationFn: async (query: {
         email_id: number;
-        status: 'PENDING';
+        status: 'PENDING' | 'APPROVED' | 'DECLINED';
         note: string;
         send_after: number;
       }) => await approveEmail(query),
@@ -376,7 +376,7 @@ const EmailMess: React.FC<Props> = ({
             email_id: emailData.id,
             note: '',
             send_after: 15,
-            status: 'PENDING',
+            status: 'APPROVED',
           });
         }}
         onDisagree={() => {
