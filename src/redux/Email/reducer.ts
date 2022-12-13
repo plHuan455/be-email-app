@@ -370,6 +370,10 @@ const EmailSlice = createSlice({
       );
       return state;
     },
+    resetEmailState(state) {
+      localStorage.removeItem(LOCAL_STORAGE_MINIMIZE_EMAILS)
+      state = initialState;
+    }
   },
 });
 
@@ -387,6 +391,7 @@ export const {
   removeMinimizeEmail,
   addMinimizeAndSetShowMinimizeEmail,
   deleteIndexEmail,
+  resetEmailState,
 } = EmailSlice.actions;
 
 export default EmailSlice.reducer;

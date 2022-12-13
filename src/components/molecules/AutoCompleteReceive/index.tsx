@@ -81,7 +81,7 @@ const AutoCompleteReceive: React.FC<Props> = ({
       autoHighlight
       renderOption={(props, option) => {
         return (
-          <MenuItem {...props} className="inline-block bg-red-900">
+          <MenuItem {...props} className="inline-block">
             <Receiver data={option} haveCloseIcon={false} />
           </MenuItem>
         );
