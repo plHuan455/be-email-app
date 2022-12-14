@@ -17,7 +17,7 @@ import {
 } from '@api/email';
 import { UserInfo } from '../Email/Interface';
 import EmailPrivateHashtagContainer from '@containers/EmailPrivateHashtagContainer';
-import AlertDialog from '@components/molecules/AlertDialog';
+import AlertDialog, { useAlertDialog } from '@components/molecules/AlertDialog';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { emailData } from '@layouts/EmailStatusBar';
 import { toast } from 'react-toastify';
@@ -83,6 +83,18 @@ const EmailMess: React.FC<Props> = ({
   const [isOpenAlertDialog, setIsOpenAlertDialog] = useState<boolean>(false);
   const [isOpenAlertDialogEmailApproved, setIsOpenAlertDialogEmailApproved] =
     useState<boolean>(false);
+
+  const {
+    isOpen: isAlertDialogOpen,
+    isLoading: isAlertDialogLoading,
+    description: alertDialogDescription,
+    onClose: onAlertDialogClose,
+    callback: alertDialogCallback,
+    title: alertDialogTitle,
+    setIsLoading: setALertDialogLoading,
+    setAlertData: setAlertDialogData,
+  } = useAlertDialog();
+
   const [alertDialog, setAlertDialog] = useState<{
     title: string;
     desc: string;
@@ -146,6 +158,7 @@ const EmailMess: React.FC<Props> = ({
       mutationFn: (status: 'PENDING' | 'APPROVED' | 'DECLINED') =>
         approveEmail({ email_id: emailData.id, status: status }),
       onSuccess() {
+        queryClient.invalidateQueries({queryKey:['get-email-manager']})
         dispatch(deleteIndexEmail(index));
         setIsOpenAlertDialog(false);
         toast.success('Decline Successful!');
@@ -177,6 +190,7 @@ const EmailMess: React.FC<Props> = ({
     mutationKey: ['email-mess-undo-email'],
     mutationFn: undoEmail,
     onSuccess() {
+      queryClient.invalidateQueries({queryKey:['get-email-manager']})
       toast.success('Email have been undo');
     },
     onError() {
@@ -192,7 +206,7 @@ const EmailMess: React.FC<Props> = ({
 
   // Handle FUNC
 
-  const handleApproveNow = (e) => {
+  const  handleApproveNow = (e) => {
     setApproveEmail({
       email_id: emailData.id,
       note: '',
@@ -213,24 +227,28 @@ const EmailMess: React.FC<Props> = ({
   };
 
   const handleOnDecline = (data: EmailResponse) => (e) => {
-    setAlertDialog({
-      title: 'Alert',
-      desc: `Are you sure want to decline with title "${
-        data.subject ?? 'Empty'
-      }" from writer "${data.from ?? data.cc[0] ?? data.bcc[0] ?? 'No one'}"?`,
-    });
-    setIsOpenAlertDialog(true);
+    setAlertDialogData(
+      'Alert', 
+      `Are you sure want to decline with title "${
+      data.subject ?? 'Empty'
+    }" from writer "${data.from ?? data.cc[0] ?? data.bcc[0] ?? 'No one'}"?`,
+      () => updateEmailStatus('DECLINED')
+    )
   };
 
   const handleOnApprove = (data: EmailResponse) => (e) => {
-    // setAlertDialog({
-    //   title: 'Alert',
-    //   desc: `Are you sure want to Approve with title "${
-    //     data.subject ?? 'Empty'
-    //   }" from writer "${data.from ?? data.cc[0] ?? data.bcc[0] ?? 'No one'}"?`,
-    // });
-    // setIsOpenAlertDialogEmailApproved(true);
-    setIsOpenModal(true);
+    setAlertDialogData(
+      'Alert',
+      `Are you sure want to Approve with title "${
+        data.subject ?? 'Empty'
+      }" from writer "${data.from ?? data.cc[0] ?? data.bcc[0] ?? 'No one'}"?`,
+      () => setApproveEmail({
+        email_id: emailData.id,
+        note: '',
+        send_after: 15 * 60,
+        status: 'APPROVED',
+      })
+    )
   };
 
   const handleUndoEmail = () => {
@@ -247,7 +265,11 @@ const EmailMess: React.FC<Props> = ({
   };
 
   const handleEmployeeCancel = () => {
-    setApproveEmail({email_id: emailData.id, status: 'DRAFT', send_after: 0, note: ''});
+    setAlertDialogData(
+      'Alert',
+      'Are you sure to cancel this email',
+      () => setApproveEmail({email_id: emailData.id, status: 'DRAFT', send_after: 0, note: ''})
+    )
   }
 
   // Render FUNC
@@ -434,45 +456,14 @@ const EmailMess: React.FC<Props> = ({
       {/* Layer if status === 'Reply || ReplyAll' */}
       {(status === 'reply' || status === 'replyAll' || status === 'forward') &&
         _renderStatusLayer}
-
-      {/* Alert Dialog Declined */}
       <AlertDialog
-        descriptionLabel={alertDialog.desc}
-        isLoading={isLoadingUpdateEmailStatus}
-        isOpen={isOpenAlertDialog}
-        onClose={() => {
-          setIsOpenAlertDialog(false);
-        }}
-        onAgree={() => {
-          updateEmailStatus('DECLINED');
-        }}
-        onDisagree={() => {
-          setIsOpenAlertDialog(false);
-        }}
-        titleLabel={alertDialog.title}
-      />
-      {/* Alert Dialog Approved */}
-      <AlertDialog
-        titleLabel={alertDialog.title}
-        descriptionLabel={alertDialog.desc}
-        isLoading={isLoadingApprovedEmail}
-        isOpen={isOpenAlertDialogEmailApproved}
-        onClose={() => {
-          setIsOpenAlertDialogEmailApproved(false);
-        }}
-        onAgree={() => {
-          // const now = Date.now() + 15 * 60 * 1000;
-          // const newDay = dayjs.utc(now);
-          setApproveEmail({
-            email_id: emailData.id,
-            note: '',
-            send_after: 15 * 60,
-            status: 'APPROVED',
-          });
-        }}
-        onDisagree={() => {
-          setIsOpenAlertDialogEmailApproved(false);
-        }}
+        titleLabel={alertDialogTitle}
+        descriptionLabel={alertDialogDescription}
+        isLoading={isAlertDialogLoading}  
+        isOpen={isAlertDialogOpen}
+        onClose={onAlertDialogClose}
+        onAgree={alertDialogCallback}
+        onDisagree={onAlertDialogClose}
       />
       <ModalBase
         isOpen={isOpenModal}

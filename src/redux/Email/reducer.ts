@@ -361,9 +361,10 @@ const EmailSlice = createSlice({
       return state;
     },
     removeMinimizeEmail(state, action: PayloadAction<string>) {
-      state.minimizeMailList = state.minimizeMailList.filter(
-        (value) => value.id !== action.payload,
-      );
+      state.minimizeMailList = state.minimizeMailList.filter((value) => {
+        if(value.id !== action.payload) return true;
+        MinimizeEmailColor.provideColor(value.color);
+      });
       localStorage.setItem(
         LOCAL_STORAGE_MINIMIZE_EMAILS,
         JSON.stringify(state.minimizeMailList),
@@ -371,7 +372,8 @@ const EmailSlice = createSlice({
       return state;
     },
     resetEmailState(state) {
-      localStorage.removeItem(LOCAL_STORAGE_MINIMIZE_EMAILS)
+      localStorage.removeItem(LOCAL_STORAGE_MINIMIZE_EMAILS);
+      MinimizeEmailColor.reset();
       state = initialState;
     }
   },
