@@ -9,6 +9,7 @@ import {
 } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { TransitionProps } from '@mui/material/transitions';
+import { rem } from '@utils/functions';
 import React, { useCallback, useRef, useState } from 'react';
 
 export interface AlertDialogProps {
@@ -118,8 +119,7 @@ const AlertDialog: React.FC<AlertDialogProps> = ({
             Cancel
           </Button>
           <LoadingButton
-            loading={isLoading}
-            loadingPosition="end"
+            loading={true || isLoading}
             sx={{
               color: '#198754',
               fontWeight: 'bold',
@@ -128,6 +128,10 @@ const AlertDialog: React.FC<AlertDialogProps> = ({
                 color: 'white',
                 backgroundColor: '#554cff',
               },
+              '&.MuiLoadingButton-loading': {
+                backgroundColor: '#b0aded',
+              },
+              ml: '24px !important',
             }}
             onClick={onAgree}>
             Agree
