@@ -8,6 +8,7 @@ import { AxiosResponse } from 'axios';
 import { AttachFile } from '@components/organisms/EmailMess';
 import { async } from '@firebase/util';
 import { EmailUpdateQuery } from './interface';
+import { number } from 'yup';
 
 // export interface Receiver {}
 
@@ -186,3 +187,9 @@ export const approveEmail = async (queryParam: {
 
   return res.data;
 };
+
+export const undoEmail = async({emailId, note}: {emailId: number, note?: string}) => {
+  const url =`${EMAIL_API_URL}/undo`;
+  const res = await ApiClient.post(url, undefined, {email_id: emailId, note});
+  return res.data;
+}
