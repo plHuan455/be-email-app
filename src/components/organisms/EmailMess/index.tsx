@@ -9,7 +9,12 @@ dayjs.extend(utc);
 import EmailActions from '@components/molecules/EmailActions';
 import { useMemo, useState } from 'react';
 import EmailForward from '../EmailForward';
-import { approveEmail, EmailResponse, updateEmailWithQuery } from '@api/email';
+import {
+  approveEmail,
+  EmailResponse,
+  undoEmail,
+  updateEmailWithQuery,
+} from '@api/email';
 import { UserInfo } from '../Email/Interface';
 import EmailPrivateHashtagContainer from '@containers/EmailPrivateHashtagContainer';
 import AlertDialog from '@components/molecules/AlertDialog';
@@ -22,6 +27,7 @@ import { deleteIndexEmail, HashtagTabs } from '@redux/Email/reducer';
 import dayjs, { Dayjs } from 'dayjs';
 import ModalBase from '@components/atoms/ModalBase';
 import SettimeInput from '@components/molecules/SettimeInput';
+import ControlEmailSend from '../ControlEmailSend';
 export interface UserRead {
   name: string;
   time: string;
@@ -63,6 +69,10 @@ const EmailMess: React.FC<Props> = ({
   const defaultStatus = useMemo(() => status, []);
   const [valueApproveIn, setValueApproveIn] = useState<Dayjs>(dayjs('2022-04-07'));
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
+
+  const sentAt = new Date(emailData.send_at);
+
+  console.log((sentAt.getTime() - new Date().getTime()) / 1000 / 60);
 
   // const [editor, setEditor] = useState(() => EditorState.createEmpty());
 
@@ -160,6 +170,22 @@ const EmailMess: React.FC<Props> = ({
     },
   );
 
+  const { mutate: undoEmailMutate, isLoading: isUndoEmailLoading } = useMutation({
+    mutationKey: ['email-mess-undo-email'],
+    mutationFn: undoEmail,
+    onSuccess() {
+      toast.success('Email have been undo');
+    },
+  });
+
+  const { mutate: sendEmailMutate, isLoading: isSendEmailLoading } = useMutation({
+    mutationKey: ['email-mess-send-email'],
+    mutationFn: undoEmail,
+    onSuccess() {
+      toast.success('Email have been send');
+    },
+  });
+
   // localStore
   const currRole = localStorage.getItem('current_role');
 
@@ -207,6 +233,19 @@ const EmailMess: React.FC<Props> = ({
     // });
     // setIsOpenAlertDialogEmailApproved(true);
     setIsOpenModal(true);
+  };
+
+  const handleUndoEmail = () => {
+    undoEmailMutate({ emailId: emailData.id });
+  };
+
+  const handleSendEmail = () => {
+    setApproveEmail({
+      email_id: emailData.id,
+      note: '',
+      status: 'APPROVED',
+      send_after: 0,
+    });
   };
 
   // Render FUNC
@@ -368,7 +407,13 @@ const EmailMess: React.FC<Props> = ({
               {status === 'PENDING' ? _renderActionsPending : _renderActionsSending}
             </Box>
           )}
-        {status === 'APPROVED' && _renderActionsApproved}
+        {status === 'APPROVED' && sentAt.getTime() > Date.now() && (
+          <ControlEmailSend
+            renameMinutes={(sentAt.getTime() - new Date().getTime()) / 1000 / 60}
+            onSend={handleUndoEmail}
+            onUndo={handleSendEmail}
+          />
+        )}
       </Box>
       {/* Layer if status === 'Reply || ReplyAll' */}
       {(status === 'reply' || status === 'replyAll' || status === 'forward') &&
