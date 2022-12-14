@@ -9,7 +9,7 @@ dayjs.extend(utc)
 import EmailActions from '@components/molecules/EmailActions';
 import { useMemo, useState } from 'react';
 import EmailForward from '../EmailForward';
-import { approveEmail, EmailResponse, updateEmailWithQuery } from '@api/email';
+import { approveEmail, EmailResponse, undoEmail, updateEmailWithQuery } from '@api/email';
 import { UserInfo } from '../Email/Interface';
 import EmailPrivateHashtagContainer from '@containers/EmailPrivateHashtagContainer';
 import AlertDialog from '@components/molecules/AlertDialog';
@@ -19,7 +19,8 @@ import { toast } from 'react-toastify';
 import { string } from 'yup';
 import { useDispatch } from 'react-redux';
 import { deleteIndexEmail, HashtagTabs } from '@redux/Email/reducer';
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
+import ControlEmailSend from '../ControlEmailSend';
 export interface UserRead {
   name: string;
   time: string;
@@ -60,6 +61,10 @@ const EmailMess: React.FC<Props> = ({
 }) => {
   const defaultStatus = useMemo(() => status, []);
 
+  const sentAt = new Date(emailData.send_at);
+
+  console.log((sentAt.getTime() - (new Date().getTime())) / 1000 / 60);
+
   // const [editor, setEditor] = useState(() => EditorState.createEmpty());
 
   // useEffect(() => {
@@ -82,11 +87,11 @@ const EmailMess: React.FC<Props> = ({
 
   const remapPrivateHashtag: HashtagTabs[] = emailData.tags
     ? emailData.tags.map((val) => ({
-        notiNumber: 0,
-        status: 'hashtag',
-        title: `#${val}`,
-        value: val,
-      }))
+      notiNumber: 0,
+      status: 'hashtag',
+      title: `#${val}`,
+      value: val,
+    }))
     : [];
 
   const renderSendTo = () => {
@@ -155,6 +160,22 @@ const EmailMess: React.FC<Props> = ({
     },
   );
 
+  const { mutate: undoEmailMutate, isLoading: isUndoEmailLoading} = useMutation({
+    mutationKey: ['email-mess-undo-email'],
+    mutationFn: undoEmail,
+    onSuccess(){
+      toast.success('Email have been undo');
+    }
+  })
+
+  const { mutate: sendEmailMutate, isLoading: isSendEmailLoading} = useMutation({
+    mutationKey: ['email-mess-send-email'],
+    mutationFn: undoEmail,
+    onSuccess(){
+      toast.success('Email have been send');
+    }
+  })
+
   // localStore
   const currRole = localStorage.getItem('current_role');
 
@@ -166,9 +187,8 @@ const EmailMess: React.FC<Props> = ({
   const handleOnDecline = (data: EmailResponse) => (e) => {
     setAlertDialog({
       title: 'Alert',
-      desc: `Are you sure want to decline with title "${
-        data.subject ?? 'Empty'
-      }" from writer "${data.from ?? data.cc[0] ?? data.bcc[0] ?? 'No one'}"?`,
+      desc: `Are you sure want to decline with title "${data.subject ?? 'Empty'
+        }" from writer "${data.from ?? data.cc[0] ?? data.bcc[0] ?? 'No one'}"?`,
     });
     setIsOpenAlertDialog(true);
   };
@@ -176,12 +196,19 @@ const EmailMess: React.FC<Props> = ({
   const handleOnApprove = (data: EmailResponse) => (e) => {
     setAlertDialog({
       title: 'Alert',
-      desc: `Are you sure want to Approve with title "${
-        data.subject ?? 'Empty'
-      }" from writer "${data.from ?? data.cc[0] ?? data.bcc[0] ?? 'No one'}"?`,
+      desc: `Are you sure want to Approve with title "${data.subject ?? 'Empty'
+        }" from writer "${data.from ?? data.cc[0] ?? data.bcc[0] ?? 'No one'}"?`,
     });
     setIsOpenAlertDialogEmailApproved(true);
   };
+  
+  const handleUndoEmail = () => {
+    undoEmailMutate({emailId: emailData.id});
+  }
+
+  const handleSendEmail = () => {
+    setApproveEmail({email_id: emailData.id, note: '', status: 'APPROVED', send_after: 0})
+  }
 
   // Render FUNC
   const _renderActionsPending = useMemo(() => {
@@ -254,15 +281,15 @@ const EmailMess: React.FC<Props> = ({
           status === 'reply'
             ? [emailData.from]
             : status === 'replyAll'
-            ? emailData.to
-            : emailData.to
+              ? emailData.to
+              : emailData.to
         }
         sendToDefault={
           status === 'reply'
             ? [emailData.from]
             : status === 'replyAll'
-            ? emailData.to
-            : []
+              ? emailData.to
+              : []
         }
       />
     );
@@ -270,13 +297,11 @@ const EmailMess: React.FC<Props> = ({
 
   return (
     <Box
-      className={`o-EmailMess w-full relative flex flex-wrap ${
-        type === 'send' && styles.flexRowReverse
-      }`}>
+      className={`o-EmailMess w-full relative flex flex-wrap ${type === 'send' && styles.flexRowReverse
+        }`}>
       <Box
-        className={`w-full flex flex-wrap ${styles.emailHeader} ${
-          isShowHeader && styles.showEmailHeader
-        } ${type === 'send' && styles.flexRowReverse}`}>
+        className={`w-full flex flex-wrap ${styles.emailHeader} ${isShowHeader && styles.showEmailHeader
+          } ${type === 'send' && styles.flexRowReverse}`}>
         <Box className={`flex-1`}>
           <OptionalAvatar
             className={` ${type === 'send' && styles.flexRowReverse}`}
@@ -303,18 +328,16 @@ const EmailMess: React.FC<Props> = ({
       </Box>
       <Box
         sx={{ boxShadow: '0px 10px 23px -15px rgba(159,159,159,0.54)' }}
-        className={`flex-1 bg-white ${
-          type === 'send'
-            ? 'rounded-tl-[36px] rounded-br-[36px]'
-            : 'rounded-tr-[36px] rounded-bl-[36px]'
-        } pb-4 ${styles.emailWrap} mb-8`}>
+        className={`flex-1 bg-white ${type === 'send'
+          ? 'rounded-tl-[36px] rounded-br-[36px]'
+          : 'rounded-tr-[36px] rounded-bl-[36px]'
+          } pb-4 ${styles.emailWrap} mb-8`}>
         {/* Header */}
         <Box
-          className={`cursor-pointer pb-6 bg-violet-200 py-4 ${
-            type === 'send'
-              ? 'rounded-br-[36px] rounded-tl-[36px]'
-              : 'rounded-bl-[36px] rounded-tr-[36px]'
-          }  relative`}
+          className={`cursor-pointer pb-6 bg-violet-200 py-4 ${type === 'send'
+            ? 'rounded-br-[36px] rounded-tl-[36px]'
+            : 'rounded-bl-[36px] rounded-tr-[36px]'
+            }  relative`}
           onClick={() => onShowHistory(emailData, emailData.id)}>
           <h1 className="text-stone-700 font-bold text-base mb-2">
             {emailData.subject}
@@ -342,7 +365,13 @@ const EmailMess: React.FC<Props> = ({
               {status === 'PENDING' ? _renderActionsPending : _renderActionsSending}
             </Box>
           )}
-        {status === 'APPROVED' && _renderActionsApproved}
+        {status === 'APPROVED' && sentAt.getTime() > Date.now() && 
+          (<ControlEmailSend 
+            renameMinutes={(sentAt.getTime() - (new Date().getTime())) / 1000 / 60} 
+            onSend={handleUndoEmail}
+            onUndo={handleSendEmail}
+          />)
+        }
       </Box>
       {/* Layer if status === 'Reply || ReplyAll' */}
       {(status === 'reply' || status === 'replyAll' || status === 'forward') &&
