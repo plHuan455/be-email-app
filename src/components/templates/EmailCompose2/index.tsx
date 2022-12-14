@@ -284,7 +284,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                 {Boolean(selectedDate) && (
                   <Box display="flex" alignItems="center">
                     <Typography variant="body1" sx={{ ml: rem(8) }}>
-                      {dayjs(selectedDate).format('LLL')}
+                      {dayjs(selectedDate).format('lll')}
                     </Typography>
                     <Button
                       variant="text"
