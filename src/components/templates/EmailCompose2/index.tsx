@@ -94,14 +94,11 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
       <FormProvider {...method}>
         <form
           className="p-8 flex items-center justify-center w-full h-full"
-          onSubmit={(e) => {
-            e.preventDefault();
-            method.handleSubmit(onSubmit)
-          }}
-        >
+          onSubmit={method.handleSubmit(onSubmit)}>
           <Box
-            className={`flex flex-col h-full w-full mx-auto shadow-xl bg-white rounded-3xl overflow-hidden z-5 transition-all ${isFullScreen && 'fixed top-0 left-0 bottom-0'
-              }`}>
+            className={`flex flex-col h-full w-full mx-auto shadow-xl bg-white rounded-3xl overflow-hidden z-5 transition-all ${
+              isFullScreen && 'fixed top-0 left-0 bottom-0'
+            }`}>
             <WindowComposeActions
               className="p-3 pr-3pt-3 pr-3"
               sx={{
@@ -111,7 +108,9 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
               onMinimizeClick={onMinimizeClick}
               onMaximizeClick={onMaximizeClick}
             />
-            <Box className="bg-white flex-1 flex flex-col overflow-scroll" ref={composeScrollRef}>
+            <Box
+              className="bg-white flex-1 flex flex-col overflow-scroll"
+              ref={composeScrollRef}>
               <Box className="px-9 py-10 pt-2 flex-1 flex flex-col">
                 <Controller
                   name="to"
@@ -331,10 +330,12 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                         //   attachFileRef.current.scrollIntoView({ behavior: "smooth", block: "end", inline: "end" });
                         // }
                         setTimeout(() => {
-                          if(composeScrollRef.current){
-                            composeScrollRef.current.scrollTo({top: composeScrollRef.current.scrollHeight});
+                          if (composeScrollRef.current) {
+                            composeScrollRef.current.scrollTo({
+                              top: composeScrollRef.current.scrollHeight,
+                            });
                           }
-                        }, 300)
+                        }, 300);
                         // onChangeAttachFile([
                         //   ...method.getValues('attachFiles'),
                         //   ...Object.keys(e.target.files).map((key) => e.target.files?.[key])
@@ -361,7 +362,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                 </Button> */}
                 <CustomButton
                   padding="8px 10px"
-                  classNameLabel='pr-1'
+                  classNameLabel="pr-1"
                   label={selectedDate ? 'SEND' : 'SEND NOW'}
                   type="submit"
                   bgButtonColor="#554CFF"

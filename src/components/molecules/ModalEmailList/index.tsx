@@ -185,7 +185,7 @@ const ModalEmailList: React.FC<Props> = ({
         </ButtonBase>
         <Box>
           <Tabs
-            className="cover__tabs"
+            className={`cover__tabs`}
             value={value}
             onChange={handleChange}
             aria-label="basic tabs example">
@@ -381,20 +381,24 @@ const ModalEmailList: React.FC<Props> = ({
           handleChangeModalStatus(false);
         }}
         sx={{
-          color: '#554CFF',
+          color: `${status === 'hashtag' ? '#4BAAA2' : '#554CFF'}`,
           padding: '0 10px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
         }}>
-        <ArrowLeft width={12} height={12} />
+        <ArrowLeft
+          width={12}
+          height={12}
+          color={`${status === 'hashtag' ? '#4BAAA2' : '#554CFF'}`}
+        />
         <Typography component={'p'} sx={{ fontWeight: 'bold', marginLeft: '10px' }}>
           {title}
         </Typography>
       </ButtonBase>
       <Box>
         <Tabs
-          className="cover__tabs"
+          className={`cover__tabs  ${status === 'hashtag' && 'hashtag'}`}
           value={value}
           onChange={handleChange}
           aria-label="basic tabs example">

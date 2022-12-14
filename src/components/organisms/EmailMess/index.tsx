@@ -5,7 +5,7 @@ import AttachFiles from '@components/atoms/AttachFiles';
 import EmailStatus from '@components/atoms/EmailStatus';
 import OptionalAvatar from '@components/atoms/OptionalAvatar';
 import utc from 'dayjs/plugin/utc';
-dayjs.extend(utc)
+dayjs.extend(utc);
 import EmailActions from '@components/molecules/EmailActions';
 import { useMemo, useState } from 'react';
 import EmailForward from '../EmailForward';
@@ -130,7 +130,8 @@ const EmailMess: React.FC<Props> = ({
   const { mutate: updateEmailStatus, isLoading: isLoadingUpdateEmailStatus } =
     useMutation({
       mutationKey: ['update-email'],
-      mutationFn: (status: 'PENDING' | 'APPROVED' | 'DECLINED') => approveEmail({ email_id: emailData.id, status: status }),
+      mutationFn: (status: 'PENDING' | 'APPROVED' | 'DECLINED') =>
+        approveEmail({ email_id: emailData.id, status: status }),
       onSuccess() {
         dispatch(deleteIndexEmail(index));
         setIsOpenAlertDialog(false);
