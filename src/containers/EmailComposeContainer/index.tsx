@@ -13,6 +13,7 @@ import { addMinimizeEmail } from "@redux/Email/reducer";
 import { getEditorStateFormHtmlString } from "@utils/functions";
 import { MinimizeEmailColor } from "@components/organisms/MinimizeEmail/interface";
 import { useNavigate } from "react-router-dom";
+import AlertDialog, { useAlertDialog } from "@components/molecules/AlertDialog";
 dayjs.extend(utc)
 
 const currentUserEmail = localStorage.getItem('current_email');
@@ -22,6 +23,17 @@ interface EmailComposeContainerProps {
 }
 
 const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
+  const {
+    isOpen: isAlertDialogOpen,
+    isLoading: isAlertDialogLoading,
+    title: alertDialogTitle,
+    description: alertDialogDescription,
+    setAlertData,
+    setIsLoading: setAlertDialog,
+    callback: alertDialogCallback,
+    onClose: onAlertDialogClose,
+  } = useAlertDialog();
+
   const queryClient = useQueryClient();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -159,6 +171,13 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
     //   },
     //   send_at: selectedDate ? dayjs.utc(selectedDate).toISOString() ?? dayjs.utc().toISOString() : dayjs.utc(selectedDate).toISOString(),
     // });
+    if(values.to.length === 0 && values.cc.length === 0 && values.bcc.length === 0) {
+      setAlertData('Can\'t send email', 'Can\'t send email without receiver', () => {
+        onAlertDialogClose();
+      });
+      return;
+    }
+
     submitEmailComposeMutate({
       email: {
         subject: values.subject,
@@ -174,34 +193,44 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
   }
   
   return (
-    <EmailCompose2
-      method={method}
-      attachFiles={attachFiles}
-      isFullScreen={isFullScreen}
-      isShowCCForm={isShowCCForm}
-      isShowCalendarModal={isShowCalendarModal}
-      selectedDate={selectedDate}
-      tabBarColor={tabBarColor}
-      calendarValue={calendarValue}
-      onMaximizeClick={() => setIsFullScreen(preState => !preState)}
-      onMinimizeClick={handleMinimizeClick}
-      onCCButtonClick={() => setIsShowCCForm(preState => !preState)}
-      onCloseCalendarModal={() => setIsShowCalendarModal(false)}
-      onChangeCalendarValue={(value) => setCalendarValue(value)}
-      onSubmit={handleSubmit}
-      onSendTimeClick={() => {
-        setIsShowCalendarModal(true);
-        setCalendarValue(dayjs(Date.now()))
-      }}
-      onUnsetTimeClick={() => {
-        setSelectedDate(undefined)
-        setIsShowCalendarModal(false);
-      }}
-      onSetTimeClick={() => {
-        setSelectedDate(calendarValue?.clone())
-        setIsShowCalendarModal(false);
-      }}
-    />
+    <>
+      <EmailCompose2
+        method={method}
+        attachFiles={attachFiles}
+        isFullScreen={isFullScreen}
+        isShowCCForm={isShowCCForm}
+        isShowCalendarModal={isShowCalendarModal}
+        selectedDate={selectedDate}
+        tabBarColor={tabBarColor}
+        calendarValue={calendarValue}
+        onMaximizeClick={() => setIsFullScreen(preState => !preState)}
+        onMinimizeClick={handleMinimizeClick}
+        onCCButtonClick={() => setIsShowCCForm(preState => !preState)}
+        onCloseCalendarModal={() => setIsShowCalendarModal(false)}
+        onChangeCalendarValue={(value) => setCalendarValue(value)}
+        onSubmit={handleSubmit}
+        onSendTimeClick={() => {
+          setIsShowCalendarModal(true);
+          setCalendarValue(dayjs(Date.now()))
+        }}
+        onUnsetTimeClick={() => {
+          setSelectedDate(undefined)
+          setIsShowCalendarModal(false);
+        }}
+        onSetTimeClick={() => {
+          setSelectedDate(calendarValue?.clone())
+          setIsShowCalendarModal(false);
+        }}
+      />
+      <AlertDialog 
+        isShowDisagreeBtn={false}
+        isOpen={isAlertDialogOpen}
+        descriptionLabel={alertDialogDescription}
+        titleLabel={alertDialogTitle}
+        onClose={onAlertDialogClose}
+        onAgree={alertDialogCallback}
+      />
+    </>
   )
 }
 

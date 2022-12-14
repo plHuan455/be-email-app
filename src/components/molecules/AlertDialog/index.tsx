@@ -17,6 +17,7 @@ export interface AlertDialogProps {
   titleLabel: string;
   descriptionLabel: string;
   isOpen: boolean;
+  isShowDisagreeBtn?: boolean;
   onAgree?: () => void;
   onDisagree?: () => void;
   onClose: () => void;
@@ -42,7 +43,7 @@ export const useAlertDialog = (isOpenDefault: boolean = false) => {
   }>({
     title: '',
     description: '',
-    callback: () => {},
+    callback: () => { },
   });
 
   const setAlertData = (
@@ -62,7 +63,7 @@ export const useAlertDialog = (isOpenDefault: boolean = false) => {
     alertDataRef.current = {
       title: '',
       description: '',
-      callback: () => {},
+      callback: () => { },
     };
 
     setIsOpen(false);
@@ -86,6 +87,7 @@ const AlertDialog: React.FC<AlertDialogProps> = ({
   titleLabel,
   descriptionLabel,
   isOpen,
+  isShowDisagreeBtn = true,
   onDisagree,
   onAgree,
   onClose,
@@ -105,7 +107,7 @@ const AlertDialog: React.FC<AlertDialogProps> = ({
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button
+          {isShowDisagreeBtn && <Button
             sx={{
               color: '#dc3545',
               fontWeight: 'bold',
@@ -118,6 +120,7 @@ const AlertDialog: React.FC<AlertDialogProps> = ({
             onClick={onDisagree}>
             Cancel
           </Button>
+          }
           <LoadingButton
             loading={isLoading}
             sx={{
