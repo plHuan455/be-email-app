@@ -72,8 +72,6 @@ const EmailMess: React.FC<Props> = ({
 
   const sentAt = new Date(emailData.send_at);
 
-  console.log((sentAt.getTime() - new Date().getTime()) / 1000 / 60);
-
   // const [editor, setEditor] = useState(() => EditorState.createEmpty());
 
   // useEffect(() => {
@@ -283,30 +281,37 @@ const EmailMess: React.FC<Props> = ({
     );
   }, []);
 
-  const _renderActionsApproved = useCallback(
-    ({ remainMinute }: { remainMinute: number; onCancel: () => void }) => {
-      return (
-        <Box className="flex actions justify-end py-4">
-          <Box className="flex items-center border border-[#9696C6] px-4 py-2 rounded-[16px]">
-            <Box className="pr-7">
-              <p className="text-[#181818] text-[14px] font-normal">
-                Your email will be sent in
-                <span className="text-[#554CFF] inline-block pl-1">
-                  {remainMinute} minutes
-                </span>
-              </p>
-            </Box>
-            <Box>
-              <Button className="bg-transparent hover:bg-slate-200 text-[#554CFF] font-bold">
-                Cancel
-              </Button>
-            </Box>
+  console.log({
+    rename: sentAt.getTime() - (Date.now() - 7 * 1000 * 60 * 60),
+    send_at: new Date(emailData.send_at).getMinutes(),
+  });
+
+  const _renderActionsApproved = ({
+    remainMinute,
+  }: {
+    remainMinute: number;
+    onCancel: () => void;
+  }) => {
+    return (
+      <Box className="flex actions justify-end py-4">
+        <Box className="flex items-center border border-[#9696C6] px-4 py-2 rounded-[16px]">
+          <Box className="pr-7">
+            <p className="text-[#181818] text-[14px] font-normal">
+              Your email will be sent in
+              <span className="text-[#554CFF] inline-block pl-1">
+                {remainMinute} minutes
+              </span>
+            </p>
+          </Box>
+          <Box>
+            <Button className="bg-transparent hover:bg-slate-200 text-[#554CFF] font-bold">
+              Cancel
+            </Button>
           </Box>
         </Box>
-      );
-    },
-    [],
-  );
+      </Box>
+    );
+  };
 
   const _renderStatusLayer = useMemo(() => {
     return (
@@ -410,7 +415,7 @@ const EmailMess: React.FC<Props> = ({
                 {sentAt.getTime() > Date.now() &&
                   _renderActionsApproved({
                     remainMinute: Math.round(
-                      (sentAt.getTime() - new Date().getTime()) / 1000 / 60,
+                      (sentAt.getTime() - Date.now()) / 1000 / 60,
                     ),
                     onCancel: () => {},
                   })}
