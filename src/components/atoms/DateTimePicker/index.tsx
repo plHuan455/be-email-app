@@ -16,6 +16,8 @@ const DateTimePicker: React.FC<Props> = ({ value, setValueCalendar }) => {
         renderInput={(props) => <TextField {...props} />}
         label="DateTimePicker"
         value={value}
+        openTo={'hours'}
+        views={['hours', 'minutes', 'day']}
         onChange={(newValue) => {
           setValueCalendar(newValue);
         }}
