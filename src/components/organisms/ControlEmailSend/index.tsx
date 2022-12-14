@@ -32,7 +32,7 @@ const ControlEmailSend: React.FC<ControlEmailSendProps> = ({
       <Box
         display="flex"
         alignItems="center"
-        sx={{ml: rem(26)}}
+        sx={{ml: rem(12)}}
       >
         <Button 
           variant="text"

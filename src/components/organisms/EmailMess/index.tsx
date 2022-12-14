@@ -7,7 +7,7 @@ import OptionalAvatar from '@components/atoms/OptionalAvatar';
 import utc from 'dayjs/plugin/utc';
 dayjs.extend(utc)
 import EmailActions from '@components/molecules/EmailActions';
-import { useMemo, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import EmailForward from '../EmailForward';
 import { approveEmail, EmailResponse, undoEmail, updateEmailWithQuery } from '@api/email';
 import { UserInfo } from '../Email/Interface';
@@ -62,8 +62,6 @@ const EmailMess: React.FC<Props> = ({
   const defaultStatus = useMemo(() => status, []);
 
   const sentAt = new Date(emailData.send_at);
-
-  console.log((sentAt.getTime() - (new Date().getTime())) / 1000 / 60);
 
   // const [editor, setEditor] = useState(() => EditorState.createEmpty());
 
@@ -157,19 +155,19 @@ const EmailMess: React.FC<Props> = ({
         setIsOpenAlertDialogEmailApproved(false);
         toast.success('Email has been Approved');
       },
-      onError(){
+      onError() {
         toast.error('Can\'t approve email');
       }
     },
   );
 
-  const { mutate: undoEmailMutate, isLoading: isUndoEmailLoading} = useMutation({
+  const { mutate: undoEmailMutate, isLoading: isUndoEmailLoading } = useMutation({
     mutationKey: ['email-mess-undo-email'],
     mutationFn: undoEmail,
-    onSuccess(){
+    onSuccess() {
       toast.success('Email have been undo');
     },
-    onError(){
+    onError() {
       toast.error('Can\'t undo email');
     }
   })
@@ -199,13 +197,13 @@ const EmailMess: React.FC<Props> = ({
     });
     setIsOpenAlertDialogEmailApproved(true);
   };
-  
+
   const handleUndoEmail = () => {
-    undoEmailMutate({emailId: emailData.id});
+    undoEmailMutate({ emailId: emailData.id });
   }
 
   const handleSendEmail = () => {
-    setApproveEmail({email_id: emailData.id, note: '', status: 'APPROVED', send_after: 0})
+    setApproveEmail({ email_id: emailData.id, note: '', status: 'APPROVED', send_after: 0 })
   }
 
   // Render FUNC
@@ -245,14 +243,19 @@ const EmailMess: React.FC<Props> = ({
     );
   }, []);
 
-  const _renderActionsApproved = useMemo(() => {
+  console.log({
+    rename: sentAt.getTime() - (Date.now() - 7 * 1000 * 60 * 60), 
+    send_at: new Date(emailData.send_at).getMinutes()
+});
+
+  const _renderActionsApproved = ({ remainMinute }: { remainMinute: number, onCancel: () => void }) => {
     return (
       <Box className="flex actions justify-end py-4">
         <Box className="flex items-center border border-[#9696C6] px-4 py-2 rounded-[16px]">
           <Box className="pr-7">
             <p className="text-[#181818] text-[14px] font-normal">
               Your email will be sent in
-              <span className="text-[#554CFF] inline-block pl-1">8 minutes</span>
+              <span className="text-[#554CFF] inline-block pl-1">{remainMinute} minutes</span>
             </p>
           </Box>
           <Box>
@@ -263,7 +266,7 @@ const EmailMess: React.FC<Props> = ({
         </Box>
       </Box>
     );
-  }, []);
+  }
 
   const _renderStatusLayer = useMemo(() => {
     return (
@@ -358,14 +361,22 @@ const EmailMess: React.FC<Props> = ({
         {/* Actions */}
         {(status === 'PENDING' || status === 'SENDING') &&
           !currRole?.startsWith('EMPLOYEE') && (
-            <Box className="flex flex-wrap actions justify-end py-4">
-              <Box className="w-full h-[1px] bg-[#E0E0E0] mb-5"></Box>
-              {status === 'PENDING' ? _renderActionsPending : _renderActionsSending}
+            <Box className="flex flex-wrap actions items-center py-4 justify-between">
+              <Box>
+                {sentAt.getTime() > Date.now() &&
+                  _renderActionsApproved({
+                    remainMinute: Math.round((sentAt.getTime() - Date.now()) / 1000 / 60),
+                    onCancel: () => { }
+                  })}
+              </Box>
+              <Box>
+                {status === 'PENDING' ? _renderActionsPending : _renderActionsSending}
+              </Box>
             </Box>
           )}
-        {status === 'APPROVED' && sentAt.getTime() > Date.now() && 
-          (<ControlEmailSend 
-            renameMinutes={(sentAt.getTime() - (new Date().getTime())) / 1000 / 60} 
+        {status === 'APPROVED' && sentAt.getTime() > Date.now() &&
+          (<ControlEmailSend
+            renameMinutes={Math.round((sentAt.getTime() - (new Date().getTime())) / 1000 / 60)}
             onSend={handleUndoEmail}
             onUndo={handleSendEmail}
           />)
