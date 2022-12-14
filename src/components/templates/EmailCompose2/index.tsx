@@ -94,10 +94,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
       <FormProvider {...method}>
         <form
           className="p-8 flex items-center justify-center w-full h-full"
-          onSubmit={(e) => {
-            e.preventDefault();
-            method.handleSubmit(onSubmit)
-          }}
+          onSubmit={method.handleSubmit(onSubmit)}
         >
           <Box
             className={`flex flex-col h-full w-full mx-auto shadow-xl bg-white rounded-3xl overflow-hidden z-5 transition-all ${isFullScreen && 'fixed top-0 left-0 bottom-0'
@@ -287,7 +284,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                 {Boolean(selectedDate) && (
                   <Box display="flex" alignItems="center">
                     <Typography variant="body1" sx={{ ml: rem(8) }}>
-                      {dayjs(selectedDate).format('hh:mm DD/MM/YYYY')}
+                      {dayjs(selectedDate).format('LLL')}
                     </Typography>
                     <Button
                       variant="text"
