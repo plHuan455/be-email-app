@@ -1,5 +1,6 @@
 import TableViewIcon from '@mui/icons-material/TableView';
 import SendIcon from '@mui/icons-material/Send';
+import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { SingleOTPInputComponent } from '@components/atoms/Input/PinInput/SingleInput';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
@@ -19,7 +20,7 @@ import CustomButton from '@components/atoms/CustomButton';
 import UseTemplateButton from '@components/atoms/UseTemplateButton';
 import { UserInfo } from '@components/organisms/Email/Interface';
 import { Controller, FormProvider, UseFormReturn } from 'react-hook-form';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import ModalBase from '@components/atoms/ModalBase';
 import DateTimePicker from '@components/atoms/DateTimePicker';
 import dayjs, { Dayjs } from 'dayjs';
@@ -44,7 +45,7 @@ interface EmailComposeProps {
   isFullScreen?: boolean;
   isShowCCForm?: boolean;
   attachFiles: (File | undefined)[];
-  selectedData?: Dayjs | null;
+  selectedDate?: Dayjs | null;
   isShowCalendarModal?: boolean;
   calendarValue: Dayjs | null;
   tabBarColor?: string;
@@ -62,11 +63,10 @@ interface EmailComposeProps {
 const EmailCompose2: React.FC<EmailComposeProps> = ({
   method,
   isFullScreen = false,
-  selectedData,
+  selectedDate,
   isShowCCForm = false,
   isShowCalendarModal = false,
   calendarValue,
-  attachFiles,
   tabBarColor,
   onMinimizeClick,
   onMaximizeClick,
@@ -79,6 +79,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
   onSubmit,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const composeScrollRef = useRef<HTMLDivElement>(null);
 
   const { privateHashtags } = useSelector((state: RootState) => state.email);
 
@@ -93,11 +94,14 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
       <FormProvider {...method}>
         <form
           className="p-8 flex items-center justify-center w-full h-full"
-          onSubmit={method.handleSubmit(onSubmit)}>
+          onSubmit={(e) => {
+            e.preventDefault();
+            method.handleSubmit(onSubmit)
+          }}
+        >
           <Box
-            className={`flex flex-col h-full w-full mx-auto shadow-xl bg-white rounded-3xl overflow-hidden z-5 transition-all ${
-              isFullScreen && 'fixed top-0 left-0 bottom-0'
-            }`}>
+            className={`flex flex-col h-full w-full mx-auto shadow-xl bg-white rounded-3xl overflow-hidden z-5 transition-all ${isFullScreen && 'fixed top-0 left-0 bottom-0'
+              }`}>
             <WindowComposeActions
               className="p-3 pr-3pt-3 pr-3"
               sx={{
@@ -107,7 +111,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
               onMinimizeClick={onMinimizeClick}
               onMaximizeClick={onMaximizeClick}
             />
-            <Box className="bg-white flex-1 flex flex-col overflow-scroll">
+            <Box className="bg-white flex-1 flex flex-col overflow-scroll" ref={composeScrollRef}>
               <Box className="px-9 py-10 pt-2 flex-1 flex flex-col">
                 <Controller
                   name="to"
@@ -272,7 +276,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                 <CustomButton
                   className="flex-shrink-1"
                   padding="8px 10px"
-                  label="SEND TIMER"
+                  label="SCHEDULE"
                   bgButtonColor="#554CFF"
                   color="#fff"
                   textSize={15}
@@ -280,10 +284,10 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                   beforeIcon={<TableViewIcon fontSize="small" />}
                   onClick={onSendTimeClick}
                 />
-                {Boolean(selectedData) && (
+                {Boolean(selectedDate) && (
                   <Box display="flex" alignItems="center">
                     <Typography variant="body1" sx={{ ml: rem(8) }}>
-                      {dayjs(selectedData).format('hh:mm DD/MM/YYYY')}
+                      {dayjs(selectedDate).format('hh:mm DD/MM/YYYY')}
                     </Typography>
                     <Button
                       variant="text"
@@ -323,6 +327,14 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                           ),
                         ];
                         method.setValue('attachFiles', cloneAttachFile);
+                        // if (attachFileRef.current) {
+                        //   attachFileRef.current.scrollIntoView({ behavior: "smooth", block: "end", inline: "end" });
+                        // }
+                        setTimeout(() => {
+                          if(composeScrollRef.current){
+                            composeScrollRef.current.scrollTo({top: composeScrollRef.current.scrollHeight});
+                          }
+                        }, 300)
                         // onChangeAttachFile([
                         //   ...method.getValues('attachFiles'),
                         //   ...Object.keys(e.target.files).map((key) => e.target.files?.[key])
@@ -334,15 +346,31 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                   <AttachFileIcon className="text-[#7D7E80]" />
                 </Button>
                 {/* </Tooltip> */}
+                {/* <Button
+                  sx={{
+                    color: "#ffffff",
+                    backgroundColor: "#554CFF",
+                    padding: `${rem(8)} ${rem(10)}`,
+                    fontSize: rem(15),
+                    lineHeight: rem(15),
+                  }}
+                  endIcon=
+                  type="submit"
+                >
+                  {selectedDate ? 'SEND' : 'SEND NOW'}
+                </Button> */}
                 <CustomButton
                   padding="8px 10px"
-                  label="SEND NOW"
+                  classNameLabel='pr-1'
+                  label={selectedDate ? 'SEND' : 'SEND NOW'}
                   type="submit"
                   bgButtonColor="#554CFF"
                   color="#fff"
                   textSize={15}
-                  isBeforeIcon={true}
+                  isBeforeIcon={!Boolean(selectedDate)}
                   beforeIcon={<SendIcon fontSize="small" />}
+                  isAfterIcon={Boolean(selectedDate)}
+                  afterIcon={<AccessTimeIcon fontSize="small" />}
                 />
               </Box>
             </Box>
@@ -364,7 +392,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                   sx={{ flexBasis: '50%' }}
                   color={'error'}
                   onClick={onUnsetTimeClick}>
-                  UNSET
+                  SEND NOW
                 </Button>
                 <Button
                   className="button-create-mui"
