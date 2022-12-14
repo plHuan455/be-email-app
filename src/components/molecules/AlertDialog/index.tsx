@@ -2,6 +2,7 @@ import LoadingButton from '@mui/lab/LoadingButton';
 import { Button, DialogActions, DialogContent, DialogContentText, DialogTitle, Slide } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { TransitionProps } from '@mui/material/transitions';
+import { rem } from '@utils/functions';
 import React, { useCallback, useRef, useState } from 'react';
 
 export interface AlertDialogProps {
@@ -28,12 +29,12 @@ export const useAlertDialog = (isOpenDefault: boolean = false) => {
   const [isOpen, setIsOpen] = useState<boolean>(isOpenDefault);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const alertDataRef = useRef<{title: string, description: string, callback: () => void}>({
+  const alertDataRef = useRef<{ title: string, description: string, callback: () => void }>({
     title: '',
     description: '',
-    callback: () => {},
+    callback: () => { },
   });
-  
+
   const setAlertData = (title: string, description: string, callback: () => void) => {
     alertDataRef.current = {
       title,
@@ -42,12 +43,12 @@ export const useAlertDialog = (isOpenDefault: boolean = false) => {
     }
     setIsOpen(true);
   }
-  
+
   const onClose = useCallback(() => {
     alertDataRef.current = {
       title: '',
       description: '',
-      callback: () => {},
+      callback: () => { },
     }
 
     setIsOpen(false);
@@ -91,7 +92,7 @@ const AlertDialog: React.FC<AlertDialogProps> = ({
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button 
+          <Button
             sx={{
               color: '#dc3545',
               fontWeight: 'bold',
@@ -99,15 +100,14 @@ const AlertDialog: React.FC<AlertDialogProps> = ({
               '&:hover': {
                 color: 'white',
                 backgroundColor: '#554cff',
-              }
-            }} 
+              },
+            }}
             onClick={onDisagree}
           >
             Cancel
           </Button>
           <LoadingButton
-            loading={isLoading}
-            loadingPosition="end"
+            loading={true || isLoading}
             sx={{
               color: '#198754',
               fontWeight: 'bold',
@@ -115,10 +115,14 @@ const AlertDialog: React.FC<AlertDialogProps> = ({
               '&:hover': {
                 color: 'white',
                 backgroundColor: '#554cff',
-              }
-            }} 
+              },
+              '&.MuiLoadingButton-loading':{
+                backgroundColor: '#b0aded',
+              },
+              ml: '24px !important',
+            }}
             onClick={onAgree}
-            >Agree
+          >Agree
           </LoadingButton>
         </DialogActions>
       </div>
