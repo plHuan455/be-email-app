@@ -167,9 +167,9 @@ const EmailMess: React.FC<Props> = ({
         setIsOpenAlertDialogEmailApproved(false);
         toast.success('Email has been Approved');
       },
-      onError(){
-        toast.error('Can\'t approve email');
-      }
+      onError() {
+        toast.error("Can't approve email");
+      },
     },
   );
 
@@ -179,22 +179,10 @@ const EmailMess: React.FC<Props> = ({
     onSuccess() {
       toast.success('Email have been undo');
     },
-<<<<<<< HEAD
-  });
-
-  const { mutate: sendEmailMutate, isLoading: isSendEmailLoading } = useMutation({
-    mutationKey: ['email-mess-send-email'],
-    mutationFn: undoEmail,
-    onSuccess() {
-      toast.success('Email have been send');
+    onError() {
+      toast.error("Can't undo email");
     },
   });
-=======
-    onError(){
-      toast.error('Can\'t undo email');
-    }
-  })
->>>>>>> 5b65b0c509d65e6d22d422a747ace60232ff484a
 
   // localStore
   const currRole = localStorage.getItem('current_role');
@@ -480,10 +468,10 @@ const EmailMess: React.FC<Props> = ({
           }
         />
         <Box className="flex gap-2">
-          <Button onClick={handleApproveNow}>Approve Now</Button>
-          <Button onClick={handleApproveSettime} color="error">
-            Approve
+          <Button onClick={handleApproveNow} color="error">
+            Approve Now
           </Button>
+          <Button onClick={handleApproveSettime}>Approve</Button>
         </Box>
       </ModalBase>
     </Box>
