@@ -119,7 +119,7 @@ const AlertDialog: React.FC<AlertDialogProps> = ({
             Cancel
           </Button>
           <LoadingButton
-            loading={true || isLoading}
+            loading={isLoading}
             sx={{
               color: '#198754',
               fontWeight: 'bold',

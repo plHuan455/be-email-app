@@ -13,9 +13,15 @@ const DateTimePicker: React.FC<Props> = ({ value, setValueCalendar }) => {
   return (
     <Box className="p-4">
       <MobileDateTimePicker
-        renderInput={(props) => <TextField {...props} />}
+        renderInput={(props) => {
+          console.log(props)
+        return <TextField {...props} />
+      }}
         label="DateTimePicker"
+        inputFormat="lll"
         value={value}
+        openTo={'hours'}
+        views={['hours', 'minutes', 'day']}
         onChange={(newValue) => {
           setValueCalendar(newValue);
         }}
