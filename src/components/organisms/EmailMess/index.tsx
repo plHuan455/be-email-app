@@ -18,7 +18,7 @@ import {
 import { UserInfo } from '../Email/Interface';
 import EmailPrivateHashtagContainer from '@containers/EmailPrivateHashtagContainer';
 import AlertDialog from '@components/molecules/AlertDialog';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { emailData } from '@layouts/EmailStatusBar';
 import { toast } from 'react-toastify';
 import { string } from 'yup';
@@ -69,6 +69,7 @@ const EmailMess: React.FC<Props> = ({
   const defaultStatus = useMemo(() => status, []);
   const [valueApproveIn, setValueApproveIn] = useState<Dayjs>(dayjs('2022-04-07'));
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
+  const queryClient = useQueryClient();
 
   const sentAt = new Date(emailData.send_at);
 
@@ -156,11 +157,12 @@ const EmailMess: React.FC<Props> = ({
       mutationKey: ['Approve-email'],
       mutationFn: async (query: {
         email_id: number;
-        status: 'PENDING' | 'APPROVED' | 'DECLINED';
+        status: 'PENDING' | 'APPROVED' | 'DECLINED' | 'DRAFT';
         note: string;
         send_after: number;
       }) => await approveEmail(query),
       onSuccess() {
+        queryClient.invalidateQueries({queryKey:['get-email-manager']})
         dispatch(deleteIndexEmail(index));
         setIsOpenAlertDialogEmailApproved(false);
         toast.success('Email has been Approved');
@@ -244,6 +246,10 @@ const EmailMess: React.FC<Props> = ({
     });
   };
 
+  const handleEmployeeCancel = () => {
+    setApproveEmail({email_id: emailData.id, status: 'DRAFT', send_after: 0, note: ''});
+  }
+
   // Render FUNC
   const _renderActionsPending = useMemo(() => {
     return (
@@ -281,17 +287,7 @@ const EmailMess: React.FC<Props> = ({
     );
   }, []);
 
-  console.log({
-    rename: sentAt.getTime() - (Date.now() - 7 * 1000 * 60 * 60),
-    send_at: new Date(emailData.send_at).getMinutes(),
-  });
-
-  const _renderActionsApproved = ({
-    remainMinute,
-  }: {
-    remainMinute: number;
-    onCancel: () => void;
-  }) => {
+  const _renderActionsApproved = ({ remainMinute, onCancel }: { remainMinute: number, onCancel: () => void }) => {
     return (
       <Box className="flex actions justify-end py-4">
         <Box className="flex items-center border border-[#9696C6] px-4 py-2 rounded-[16px]">
@@ -304,7 +300,7 @@ const EmailMess: React.FC<Props> = ({
             </p>
           </Box>
           <Box>
-            <Button className="bg-transparent hover:bg-slate-200 text-[#554CFF] font-bold">
+            <Button className="bg-transparent hover:bg-slate-200 text-[#554CFF] font-bold" onClick={onCancel}>
               Cancel
             </Button>
           </Box>
@@ -414,10 +410,8 @@ const EmailMess: React.FC<Props> = ({
               <Box>
                 {sentAt.getTime() > Date.now() &&
                   _renderActionsApproved({
-                    remainMinute: Math.round(
-                      (sentAt.getTime() - Date.now()) / 1000 / 60,
-                    ),
-                    onCancel: () => {},
+                    remainMinute: Math.round((sentAt.getTime() - Date.now()) / 1000 / 60),
+                    onCancel: () => {handleEmployeeCancel()}
                   })}
               </Box>
               <Box>
