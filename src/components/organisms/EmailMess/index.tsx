@@ -167,6 +167,9 @@ const EmailMess: React.FC<Props> = ({
         setIsOpenAlertDialogEmailApproved(false);
         toast.success('Email has been Approved');
       },
+      onError(){
+        toast.error('Can\'t approve email');
+      }
     },
   );
 
@@ -176,6 +179,7 @@ const EmailMess: React.FC<Props> = ({
     onSuccess() {
       toast.success('Email have been undo');
     },
+<<<<<<< HEAD
   });
 
   const { mutate: sendEmailMutate, isLoading: isSendEmailLoading } = useMutation({
@@ -185,6 +189,12 @@ const EmailMess: React.FC<Props> = ({
       toast.success('Email have been send');
     },
   });
+=======
+    onError(){
+      toast.error('Can\'t undo email');
+    }
+  })
+>>>>>>> 5b65b0c509d65e6d22d422a747ace60232ff484a
 
   // localStore
   const currRole = localStorage.getItem('current_role');
