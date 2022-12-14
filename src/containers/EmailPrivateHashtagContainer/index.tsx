@@ -42,7 +42,7 @@ const EmailPrivateHashtagContainer: React.FC<Props> = ({ defaultData }) => {
           </span>
         ))}
       </Box>
-      <div className="pl-2 flex items-center gap-2">
+      <div className="pl-2 flex flex-1 items-center gap-2">
         {privateHashtags && isActive && (
           <EmailPrivateHashtag
             defaultValue={defaultData}

@@ -15,6 +15,7 @@ const Root = styled('div')(
     theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.65)' : 'rgba(0,0,0,.85)'
   };
   font-size: 14px;
+  flex: 1;
 `,
 );
 
@@ -192,7 +193,9 @@ const EmailPrivateHashtag: React.FC<Props> = ({
     <Root>
       <div {...getRootProps()} className="flex items-center">
         <Label {...getInputLabelProps()}></Label>
-        <InputWrapper ref={setAnchorEl} className={focused ? 'focused' : ''}>
+        <InputWrapper
+          ref={setAnchorEl}
+          className={`${focused ? 'focused' : ''} flex-1`}>
           {value.map((option: HashtagTabs, index: number) => (
             <StyledTag label={option.title} {...getTagProps({ index })} />
           ))}

@@ -19,7 +19,9 @@ import { toast } from 'react-toastify';
 import { string } from 'yup';
 import { useDispatch } from 'react-redux';
 import { deleteIndexEmail, HashtagTabs } from '@redux/Email/reducer';
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
+import ModalBase from '@components/atoms/ModalBase';
+import SettimeInput from '@components/molecules/SettimeInput';
 export interface UserRead {
   name: string;
   time: string;
@@ -59,6 +61,8 @@ const EmailMess: React.FC<Props> = ({
   onChangeStatus,
 }) => {
   const defaultStatus = useMemo(() => status, []);
+  const [valueApproveIn, setValueApproveIn] = useState<Dayjs>(dayjs('2022-04-07'));
+  const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
 
   // const [editor, setEditor] = useState(() => EditorState.createEmpty());
 
@@ -164,6 +168,26 @@ const EmailMess: React.FC<Props> = ({
 
   // Handle FUNC
 
+  const handleApproveNow = (e) => {
+    setApproveEmail({
+      email_id: emailData.id,
+      note: '',
+      send_after: 0,
+      status: 'APPROVED',
+    });
+    setIsOpenModal(false);
+  };
+
+  const handleApproveSettime = (e) => {
+    setApproveEmail({
+      email_id: emailData.id,
+      note: '',
+      send_after: valueApproveIn.minute() * 60 + valueApproveIn.second(),
+      status: 'APPROVED',
+    });
+    setIsOpenModal(false);
+  };
+
   const handleOnDecline = (data: EmailResponse) => (e) => {
     setAlertDialog({
       title: 'Alert',
@@ -175,13 +199,14 @@ const EmailMess: React.FC<Props> = ({
   };
 
   const handleOnApprove = (data: EmailResponse) => (e) => {
-    setAlertDialog({
-      title: 'Alert',
-      desc: `Are you sure want to Approve with title "${
-        data.subject ?? 'Empty'
-      }" from writer "${data.from ?? data.cc[0] ?? data.bcc[0] ?? 'No one'}"?`,
-    });
-    setIsOpenAlertDialogEmailApproved(true);
+    // setAlertDialog({
+    //   title: 'Alert',
+    //   desc: `Are you sure want to Approve with title "${
+    //     data.subject ?? 'Empty'
+    //   }" from writer "${data.from ?? data.cc[0] ?? data.bcc[0] ?? 'No one'}"?`,
+    // });
+    // setIsOpenAlertDialogEmailApproved(true);
+    setIsOpenModal(true);
   };
 
   // Render FUNC
@@ -317,7 +342,7 @@ const EmailMess: React.FC<Props> = ({
               : 'rounded-bl-[36px] rounded-tr-[36px]'
           }  relative`}
           onClick={() => onShowHistory(emailData, emailData.id)}>
-          <h1 className="text-stone-700 font-bold text-base mb-2">
+          <h1 className="text-stone-700 font-bold text-base mb-2 mr-16">
             {emailData.subject}
           </h1>
           {renderSendTo()}
@@ -388,6 +413,24 @@ const EmailMess: React.FC<Props> = ({
           setIsOpenAlertDialogEmailApproved(false);
         }}
       />
+      <ModalBase
+        isOpen={isOpenModal}
+        title="Set time to Approve"
+        submitLabel=""
+        onClose={() => setIsOpenModal(false)}>
+        <SettimeInput
+          value={valueApproveIn}
+          setValueCalendar={(newValue: dayjs.Dayjs | null) =>
+            newValue && setValueApproveIn(newValue)
+          }
+        />
+        <Box className="flex gap-2">
+          <Button onClick={handleApproveNow}>Approve Now</Button>
+          <Button onClick={handleApproveSettime} color="error">
+            Approve
+          </Button>
+        </Box>
+      </ModalBase>
     </Box>
   );
 };

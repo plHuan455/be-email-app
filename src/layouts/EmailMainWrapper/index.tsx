@@ -39,7 +39,7 @@ const EmailMainWrapper = () => {
     onSuccess: (res) => {
       dispatch(
         setEmailsList(
-          params.status === 'pending'
+          params.status?.toLowerCase() === 'pending'
             ? res.data[0].emails.reverse()
             : res.data[0].emails,
         ),
