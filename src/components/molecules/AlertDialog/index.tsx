@@ -1,5 +1,12 @@
 import LoadingButton from '@mui/lab/LoadingButton';
-import { Button, DialogActions, DialogContent, DialogContentText, DialogTitle, Slide } from '@mui/material';
+import {
+  Button,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Slide,
+} from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import { TransitionProps } from '@mui/material/transitions';
 import React, { useCallback, useRef, useState } from 'react';
@@ -23,36 +30,43 @@ const Transition = React.forwardRef(function Transition(
   return <Slide direction="up" ref={ref} {...props} />;
 });
 
-
 export const useAlertDialog = (isOpenDefault: boolean = false) => {
   const [isOpen, setIsOpen] = useState<boolean>(isOpenDefault);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  const alertDataRef = useRef<{title: string, description: string, callback: () => void}>({
+  const alertDataRef = useRef<{
+    title: string;
+    description: string;
+    callback: () => void;
+  }>({
     title: '',
     description: '',
     callback: () => {},
   });
-  
-  const setAlertData = (title: string, description: string, callback: () => void) => {
+
+  const setAlertData = (
+    title: string,
+    description: string,
+    callback: () => void,
+  ) => {
     alertDataRef.current = {
       title,
       description,
       callback,
-    }
+    };
     setIsOpen(true);
-  }
-  
+  };
+
   const onClose = useCallback(() => {
     alertDataRef.current = {
       title: '',
       description: '',
       callback: () => {},
-    }
+    };
 
     setIsOpen(false);
     setIsLoading(false);
-  }, [setIsOpen])
+  }, [setIsOpen]);
 
   return {
     isOpen,
@@ -63,8 +77,8 @@ export const useAlertDialog = (isOpenDefault: boolean = false) => {
     setAlertData,
     setIsLoading,
     onClose,
-  }
-}
+  };
+};
 
 const AlertDialog: React.FC<AlertDialogProps> = ({
   isLoading = false,
@@ -81,8 +95,7 @@ const AlertDialog: React.FC<AlertDialogProps> = ({
       TransitionComponent={Transition}
       keepMounted
       onClose={onClose}
-      aria-describedby="alert-dialog-slide-description"
-    >
+      aria-describedby="alert-dialog-slide-description">
       <div className="m-alertDialog">
         <DialogTitle>{titleLabel}</DialogTitle>
         <DialogContent>
@@ -91,7 +104,7 @@ const AlertDialog: React.FC<AlertDialogProps> = ({
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          <Button 
+          <Button
             sx={{
               color: '#dc3545',
               fontWeight: 'bold',
@@ -99,10 +112,9 @@ const AlertDialog: React.FC<AlertDialogProps> = ({
               '&:hover': {
                 color: 'white',
                 backgroundColor: '#554cff',
-              }
-            }} 
-            onClick={onDisagree}
-          >
+              },
+            }}
+            onClick={onDisagree}>
             Cancel
           </Button>
           <LoadingButton
@@ -115,15 +127,15 @@ const AlertDialog: React.FC<AlertDialogProps> = ({
               '&:hover': {
                 color: 'white',
                 backgroundColor: '#554cff',
-              }
-            }} 
-            onClick={onAgree}
-            >Agree
+              },
+            }}
+            onClick={onAgree}>
+            Agree
           </LoadingButton>
         </DialogActions>
       </div>
     </Dialog>
-  )
-}
+  );
+};
 
 export default AlertDialog;

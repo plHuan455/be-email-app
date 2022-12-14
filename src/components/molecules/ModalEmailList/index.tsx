@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Typography from '@mui/material/Typography';
@@ -9,7 +9,11 @@ import './index.scss';
 import { ButtonBase } from '@mui/material';
 import ArrowLeft from '@assets/icon/ArrowLeft';
 import EmailItem from '@components/atoms/Emailitem';
-import { EmailResponse, getEmailManagerWithQueryParams } from '@api/email';
+import {
+  EmailManagerResponse,
+  EmailResponse,
+  getEmailManagerWithQueryParams,
+} from '@api/email';
 import { useGetEmail } from '@hooks/Email/useGetEmail';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import Loading from '@components/atoms/Loading';
@@ -90,8 +94,12 @@ const ModalEmailList: React.FC<Props> = ({
 }) => {
   const [value, setValue] = React.useState(0);
   const [selectedEmailItem, setSelectedEmailitem] = useState<number>();
+  const [userEmails, setUserEmail] = useState<EmailManagerResponse[]>();
+  const [userAllEmails, setUserAllEmail] = useState<EmailManagerResponse[]>();
 
   const { EmailsList } = useSelector((state: RootState) => state.email);
+
+  const CURRENT_EMAIL = localStorage.getItem('current_email');
 
   const locate = useLocation();
   const pathName = locate.pathname;
@@ -107,6 +115,14 @@ const ModalEmailList: React.FC<Props> = ({
           })
         : getEmailManagerWithQueryParams({ status: status }),
     enabled: isActive,
+    onSuccess: (res) => {
+      setUserEmail(
+        res.data.filter((vals) => vals.user_tag_info.user_email === CURRENT_EMAIL),
+      );
+      setUserAllEmail(
+        res.data.filter((vals) => vals.user_tag_info.user_email !== CURRENT_EMAIL),
+      );
+    },
   });
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -117,24 +133,27 @@ const ModalEmailList: React.FC<Props> = ({
     setSelectedEmailitem(index);
   };
 
-  const _renderEmtailItems = useMemo(() => {
-    return (dataGetEmailManagerByStatus?.data ?? []).map((item, index) => {
-      return (
-        <EmailItem
-          onSelect={() => {
-            handleSelectEmailItem(index);
-          }}
-          isSelected={index === selectedEmailItem}
-          firstEmailContent={item.emails[0].content}
-          emailStatus={item.emails[0].status}
-          emailTag={tag || undefined}
-          dataEmail={item.emails}
-          data={item.user_tag_info}
-          key={index}
-        />
-      );
-    });
-  }, [dataGetEmailManagerByStatus]);
+  const _renderEmtailItems = useCallback(
+    (emailsData: EmailManagerResponse[]) => {
+      return (emailsData ?? []).map((item, index) => {
+        return (
+          <EmailItem
+            onSelect={() => {
+              handleSelectEmailItem(index);
+            }}
+            isSelected={index === selectedEmailItem}
+            firstEmailContent={item.emails[0].content}
+            emailStatus={item.emails[0].status}
+            emailTag={tag || undefined}
+            dataEmail={item.emails}
+            data={item.user_tag_info}
+            key={index}
+          />
+        );
+      });
+    },
+    [dataGetEmailManagerByStatus],
+  );
 
   const ModalEmailPending = useMemo(() => {
     return (
@@ -178,7 +197,7 @@ const ModalEmailList: React.FC<Props> = ({
           Item Tab All
         </TabPanel>
         <TabPanel value={value} index={1}>
-          {_renderEmtailItems}
+          {userEmails && _renderEmtailItems(userEmails)}
         </TabPanel>
       </Box>
     );
@@ -386,10 +405,10 @@ const ModalEmailList: React.FC<Props> = ({
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        {_renderEmtailItems}
+        {userEmails && _renderEmtailItems(userEmails)}
       </TabPanel>
       <TabPanel value={value} index={1}>
-        Item Tab All
+        {userAllEmails && _renderEmtailItems(userAllEmails)}
       </TabPanel>
     </Box>
   );

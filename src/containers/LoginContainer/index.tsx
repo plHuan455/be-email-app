@@ -141,7 +141,7 @@ function LoginContainer() {
           <Box>
             {isLogined ? (
               <WrapTitle>
-                <h3>Lock screen</h3>
+                <h3>Login</h3>
                 <p>Enter your password to unlock the screen!</p>
               </WrapTitle>
             ) : (

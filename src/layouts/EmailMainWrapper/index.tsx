@@ -37,7 +37,13 @@ const EmailMainWrapper = () => {
     mutationKey: ['get-emails', params],
     mutationFn: () => getEmailManagerWithQueryParams(params),
     onSuccess: (res) => {
-      dispatch(setEmailsList(res.data[0].emails));
+      dispatch(
+        setEmailsList(
+          params.status === 'pending'
+            ? res.data[0].emails.reverse()
+            : res.data[0].emails,
+        ),
+      );
       return res.data;
     },
     onError: (res) => {

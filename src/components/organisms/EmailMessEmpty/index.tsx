@@ -46,7 +46,7 @@ const EmailMessEmpty: React.FC<Props> = ({ isLoading = false }) => {
         <Box className="w-full flex">
           {/* <Box className="w-[5%]"></Box> */}
           <Box className="flex-1">
-            <EmailActions isActiveClick={false} />
+            {/* <EmailActions isActiveClick={false} /> */}
           </Box>
         </Box>
       </Box>

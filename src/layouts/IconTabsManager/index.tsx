@@ -2,11 +2,6 @@ import * as React from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import { styled } from '@mui/material/styles';
-// import EmailIcon from '@mui/icons-material/Email';
-// import ChatIcon from '@mui/icons-material/Chat';
-// import PeopleIcon from '@mui/icons-material/People';
-// import DialpadIcon from '@mui/icons-material/Dialpad';
-// import DonutSmallIcon from '@mui/icons-material/DonutSmall';
 import logo from '../../assets/images/logo_without_text.png';
 import { Box, Tooltip } from '@mui/material';
 import Icon, { SVGIconProps } from '@components/atoms/Icon';
@@ -14,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import Department from '@assets/icon/Department';
 import ArticleIcon from '@mui/icons-material/Article';
-import BookIcon from '@mui/icons-material/Book';
+import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
 
 export interface TabItem {
   title?: string;
@@ -31,7 +26,7 @@ const TabsData: TabItem[] = [
   },
   {
     title: 'Contact',
-    icon: <BookIcon />,
+    icon: <PermContactCalendarIcon />,
     url: '/emails',
   },
   {

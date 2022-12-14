@@ -346,6 +346,7 @@ const EmailStatusBar = (props: Props) => {
           })}
         {!isCreateHashTag ? (
           <CustomButton
+            className="m-2"
             onClick={handleClickCreateHashTag}
             label="Create hashtag"
             bgButtonColor="#554CFF"
