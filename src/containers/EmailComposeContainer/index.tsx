@@ -86,6 +86,7 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
       method.setValue('subject', foundMinimizeEmail.subject ?? '');
       method.setValue('content', foundMinimizeEmail.content ? getEditorStateFormHtmlString(foundMinimizeEmail.content ?? '') : '');
       method.setValue('sendAt', foundMinimizeEmail.sendAt ?? '');
+      method.setValue('attachFiles', foundMinimizeEmail.attachFiles ?? {files:[], fileUrls: []})
       setTabBarColor(foundMinimizeEmail?.color);
     }
   }, [showMinimizeEmailId, minimizeEmailList, method])
@@ -179,7 +180,7 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
       isFullScreen={isFullScreen}
       isShowCCForm={isShowCCForm}
       isShowCalendarModal={isShowCalendarModal}
-      selectedData={selectedDate}
+      selectedDate={selectedDate}
       tabBarColor={tabBarColor}
       calendarValue={calendarValue}
       onMaximizeClick={() => setIsFullScreen(preState => !preState)}
@@ -192,9 +193,13 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
         setIsShowCalendarModal(true);
         setCalendarValue(dayjs(Date.now()))
       }}
-      onUnsetTimeClick={() => setSelectedDate(undefined)}
+      onUnsetTimeClick={() => {
+        setSelectedDate(undefined)
+        setIsShowCalendarModal(false);
+      }}
       onSetTimeClick={() => {
         setSelectedDate(calendarValue?.clone())
+        setIsShowCalendarModal(false);
       }}
     />
   )
