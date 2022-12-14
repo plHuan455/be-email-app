@@ -59,7 +59,7 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
     mutationKey: ['email-compose-submit'],
     mutationFn: sendEmail,
     onSuccess: () => {
-      toast.success('Email have been send');
+      toast.success('Email have been sent');
       queryClient.invalidateQueries({queryKey:['get-all-email-status']})
       method.reset();
       navigate(-1);
