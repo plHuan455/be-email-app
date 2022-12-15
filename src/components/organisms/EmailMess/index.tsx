@@ -281,10 +281,10 @@ const EmailMess: React.FC<Props> = ({
     );
   }, []);
 
-  console.log({
-    rename: sentAt.getTime() - (Date.now() - 7 * 1000 * 60 * 60),
-    send_at: new Date(emailData.send_at).getMinutes(),
-  });
+  // console.log({
+  //   rename: sentAt.getTime() - (Date.now() - 7 * 1000 * 60 * 60),
+  //   send_at: new Date(emailData.send_at).getMinutes(),
+  // });
 
   const _renderActionsApproved = ({
     remainMinute,
