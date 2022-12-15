@@ -37,6 +37,8 @@ const EmailNotify = () => {
           '& .MuiPaper-root': {
             border: '1px solid #e5e7eb',
             paddingInline: 0,
+            maxHeight: '100vh',
+            overflow: 'scroll',
           },
         }}>
         <MenuItem onClick={handleClose}>
@@ -45,13 +47,13 @@ const EmailNotify = () => {
         <MenuItem onClick={handleClose}>
           Phượng Nguyễn vừa gửi cho bạn 1 tin nhắn
         </MenuItem>
-        <MenuItem className="justify-center">
+        {/* <MenuItem className="justify-center">
           <span
             className="inline-block text-center underline w-full text-[#554CFF] hover:opacity-70"
             onClick={handleClose}>
             Show More
           </span>
-        </MenuItem>
+        </MenuItem> */}
       </Menu>
     </Box>
   );
