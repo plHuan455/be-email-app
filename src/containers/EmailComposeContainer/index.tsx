@@ -1,4 +1,4 @@
-import { sendEmail } from '@api/email';
+import { sendEmail, deleteEmail } from '@api/email';
 import EmailCompose2, {
   EmailComposeFields,
 } from '@components/templates/EmailCompose2';
@@ -22,7 +22,7 @@ dayjs.extend(utc);
 
 const currentUserEmail = localStorage.getItem('current_email');
 
-interface EmailComposeContainerProps {}
+interface EmailComposeContainerProps { }
 
 const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
   const {
@@ -35,6 +35,8 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
     callback: alertDialogCallback,
     onClose: onAlertDialogClose,
   } = useAlertDialog();
+
+  const workingEmail = useAppSelector(state => state.email.workingEmail);
 
   const queryClient = useQueryClient();
   const dispatch = useAppDispatch();
@@ -72,12 +74,20 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
 
   const [tabBarColor, setTabBarColor] = useState<string>();
 
+  const { mutate: deleteEmailMutate } = useMutation({
+    mutationKey: ['email-compose-delete-email'],
+    mutationFn: deleteEmail
+  });
+
   const { mutate: submitEmailComposeMutate, isLoading: isEmailComposeSubmitting } =
     useMutation({
       mutationKey: ['email-compose-submit'],
       mutationFn: sendEmail,
       onSuccess: (res) => {
         toast.success('Email have been sent');
+        if (workingEmail.id !== undefined) {
+          deleteEmailMutate(workingEmail.id);
+        }
         navigate(`/emails/status/PENDING/${res.data.from}`);
         queryClient.invalidateQueries({ queryKey: ['get-all-email-status'] });
         method.reset();
