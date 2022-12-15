@@ -150,7 +150,7 @@ export const sendEmail = async (
 ): Promise<AxiosResponse<EmailResponse>> => {
   const url = EMAIL_API_URL;
   const res = await ApiClient.post(url, undefined, params);
-  return res;
+  return res.data;
 };
 
 //DELETE EMAIL

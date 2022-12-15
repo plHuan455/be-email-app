@@ -223,6 +223,7 @@ const emailsList: Email[] = [
 export interface EmailState {
   showMinimizeEmailId?: string;
   minimizeMailList: MinimizeEmailTypes[];
+  workingEmail: MinimizeEmailTypes;
   EmailsList: EmailResponse[];
   privateHashtags: HashtagTabs[];
   deletedEmailsList: EmailResponse[];
@@ -234,6 +235,7 @@ export interface EmailState {
 export const LOCAL_STORAGE_PRIVATE_HASHTAG = 'private_hashtag';
 
 const initialState: EmailState = {
+  workingEmail: {},
   minimizeMailList: JSON.parse(
     localStorage.getItem(LOCAL_STORAGE_MINIMIZE_EMAILS) ?? '[]',
   ).map((value) => ({
@@ -362,7 +364,7 @@ const EmailSlice = createSlice({
     },
     removeMinimizeEmail(state, action: PayloadAction<string>) {
       state.minimizeMailList = state.minimizeMailList.filter((value) => {
-        if(value.id !== action.payload) return true;
+        if (value.id !== action.payload) return true;
         MinimizeEmailColor.provideColor(value.color);
       });
       localStorage.setItem(
@@ -375,11 +377,16 @@ const EmailSlice = createSlice({
       localStorage.removeItem(LOCAL_STORAGE_MINIMIZE_EMAILS);
       MinimizeEmailColor.reset();
       state = initialState;
+    },
+    setWorkingEmail(state, action: PayloadAction<MinimizeEmailTypes>){
+      state.workingEmail = action.payload;
+      return state;
     }
   },
 });
 
 export const {
+  setWorkingEmail,
   setPrivateHashtag,
   setEmailStatus,
   setEmailsList,
