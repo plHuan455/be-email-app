@@ -5,7 +5,7 @@ import React from 'react';
 import { EmailList } from '@components/molecules/ModalEmailList';
 import './index.scss';
 import { EmailResponse, getEmailWithQueryParam, UserTagResponse } from '@api/email';
-import { useNavigate } from 'react-router-dom';
+import { createSearchParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useGetEmail } from '@hooks/Email/useGetEmail';
 import { setEmailsList } from '@redux/Email/reducer';
@@ -31,13 +31,26 @@ const EmailItem: React.FC<Props> = ({
 }) => {
   const { avatar, count, user_email, user_name } = data;
 
+  const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
   const handleClickEmailItem = async (e) => {
     onSelect();
-    if (!emailTag) navigate(`/emails/status/${emailStatus}/${user_email}`);
-    else navigate(`/emails/tag/${emailTag}/${user_email}`);
+    if (!emailTag)
+      navigate({
+        pathname: `/emails/status/${emailStatus}/${user_email}`,
+        search: createSearchParams({
+          tab: searchParams.get('tab') || 'me',
+        }).toString(),
+      });
+    else
+      navigate({
+        pathname: `/emails/tag/${emailStatus}/${user_email}`,
+        search: createSearchParams({
+          tab: searchParams.get('tab') || 'me',
+        }).toString(),
+      });
   };
 
   return (
