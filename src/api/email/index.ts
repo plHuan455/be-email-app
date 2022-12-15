@@ -188,8 +188,14 @@ export const approveEmail = async (queryParam: {
   return res.data;
 };
 
-export const undoEmail = async({emailId, note}: {emailId: number, note?: string}) => {
-  const url =`${EMAIL_API_URL}/undo`;
-  const res = await ApiClient.post(url, undefined, {email_id: emailId, note});
+export const undoEmail = async ({
+  emailId,
+  note,
+}: {
+  emailId: number;
+  note?: string;
+}) => {
+  const url = `${EMAIL_API_URL}/undo`;
+  const res = await ApiClient.post(url, undefined, { email_id: emailId, note });
   return res.data;
-}
+};

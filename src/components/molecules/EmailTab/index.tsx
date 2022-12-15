@@ -2,9 +2,9 @@ import { getEmailManagerWithQueryParams } from '@api/email';
 import { ButtonBase, Typography } from '@mui/material';
 import { setEmailsList } from '@redux/Email/reducer';
 import { useMutation } from '@tanstack/react-query';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import ModalEmailList, { StatusOptions } from '../ModalEmailList';
 
 interface Props {
@@ -19,6 +19,16 @@ const EmailTab: React.FC<Props> = ({ title, notiNumber, status, type, index }) =
   // useState
   const [modalStatus, setModalStatus] = useState(false);
 
+  // useParams
+  const params = useParams();
+
+  // useEffect
+  useEffect(() => {
+    if (!params.status) return;
+
+    if (params.status.toLowerCase() === status.toLowerCase()) setModalStatus(true);
+  }, [params]);
+
   // useNavigate
   const navigate = useNavigate();
 
@@ -27,7 +37,7 @@ const EmailTab: React.FC<Props> = ({ title, notiNumber, status, type, index }) =
 
   // Handler FUNC
   const handleOpenEmailTab = (e) => {
-    setModalStatus(true);
+    navigate(`/emails/status/${status.toUpperCase()}`);
   };
 
   const handleChangeModalStatus = () => {
