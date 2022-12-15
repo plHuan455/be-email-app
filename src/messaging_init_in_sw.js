@@ -25,16 +25,14 @@ export const fetchToken = (setTokenFound, setFcmToken) => {
         setTokenFound(true);
         setFcmToken(currentToken);
         localStorage.setItem('device_token', currentToken);
-        useQuery({
-          queryKey: ['post-device-key', currentToken],
-          queryFn: postDeviceKey(currentToken),
-          onSuccess: (res) => {
-            console.log(`-----------------Post Device key successfull! `, res);
-          },
-          onError: (err) => {
+        postDeviceKey(currentToken)
+          .then((res) => {
+            console.log(res);
+            localStorage.setItem('device_key_id', res.data.id);
+          })
+          .catch((err) => {
             console.log(`----------Have some error when post device key, `, err);
-          },
-        });
+          });
       } else {
         console.log('No token found');
         setTokenFound(false);
