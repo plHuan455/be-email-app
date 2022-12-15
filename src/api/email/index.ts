@@ -106,6 +106,18 @@ export const getEmailWithQueryParam = async (params?: {
   return res.data;
 };
 
+// Get Emails List
+export const getEmailsListWithQueryParams = async (params?: {
+  status?: string;
+  email?: string;
+  tag?: string;
+}): Promise<AxiosResponse<EmailManagerResponse[]>> => {
+  const url = `${EMAIL_MANAGER_API_URL}`;
+  const res = await ApiClient.get(url, undefined, params);
+
+  return res.data;
+};
+
 // GET EMAIL MANAGER STATUS
 export const getEmailManagerWithQueryParams = async (params?: {
   status?: string;
@@ -188,8 +200,14 @@ export const approveEmail = async (queryParam: {
   return res.data;
 };
 
-export const undoEmail = async({emailId, note}: {emailId: number, note?: string}) => {
-  const url =`${EMAIL_API_URL}/undo`;
-  const res = await ApiClient.post(url, undefined, {email_id: emailId, note});
+export const undoEmail = async ({
+  emailId,
+  note,
+}: {
+  emailId: number;
+  note?: string;
+}) => {
+  const url = `${EMAIL_API_URL}/undo`;
+  const res = await ApiClient.post(url, undefined, { email_id: emailId, note });
   return res.data;
-}
+};

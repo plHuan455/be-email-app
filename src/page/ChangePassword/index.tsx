@@ -129,7 +129,7 @@ const ChangePassword = () => {
 
           <WrapActions>
             <Button size="large" type="submit">
-              {t('Unlock')}
+              {t('Change Password')}
             </Button>
           </WrapActions>
         </form>

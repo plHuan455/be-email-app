@@ -63,6 +63,11 @@ const EmailActionsList = {
     label: 'Unread',
     color: '#8E8E91',
   },
+  star: {
+    icon: 'star',
+    label: 'Add favorites',
+    color: 'rgb(250, 175, 0)',
+  },
 };
 
 interface Props {

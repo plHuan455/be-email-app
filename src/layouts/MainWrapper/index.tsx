@@ -16,12 +16,21 @@ import MinimizeEmailList, {
   MinimizeEmailTypes,
 } from '@components/templates/MinimizeEmailList';
 import { Email } from '@components/organisms/Email/Interface';
-import { removeMinimizeEmail, resetEmailState, setShowMinimizeEmail } from '@redux/Email/reducer';
+import {
+  removeMinimizeEmail,
+  resetEmailState,
+  setShowMinimizeEmail,
+} from '@redux/Email/reducer';
 import { fetchToken, onMessageListener } from '../../messaging_init_in_sw';
 import { setIsShowEmailInfo } from '@redux/Global/reducer';
+import { deleteDeviceKey } from '@api/deviceKey';
 
 const sideBarWidth = 75;
 const emailStatusWidth = 290;
+
+const DEVICE_KEY_ID: number = JSON.parse(
+  localStorage.getItem('device_key_id') || '0',
+);
 
 const useStyles = makeStyles()((theme) => ({
   body: {
@@ -98,6 +107,7 @@ function MainWrapper() {
     auth.signout(() => {
       toast.success('Bái bai!');
     });
+    deleteDeviceKey(DEVICE_KEY_ID);
   };
 
   const handleChangePage = (url: string) => () => {

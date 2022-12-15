@@ -17,7 +17,7 @@ import {
 import { useGetEmail } from '@hooks/Email/useGetEmail';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import Loading from '@components/atoms/Loading';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import useLocalStorage from '@hooks/useLocalStorage';
 import { useSelector } from 'react-redux';
 import { RootState } from '@redux/configureStore';
@@ -93,7 +93,7 @@ const ModalEmailList: React.FC<Props> = ({
   handleChangeEmailTabNotiNumber,
 }) => {
   const [value, setValue] = React.useState(0);
-  const [selectedEmailItem, setSelectedEmailitem] = useState<number>();
+  const [selectedEmail, setSelectedEmail] = useState<string>();
   const [userEmails, setUserEmail] = useState<EmailManagerResponse[]>();
   const [userAllEmails, setUserAllEmail] = useState<EmailManagerResponse[]>();
 
@@ -103,8 +103,14 @@ const ModalEmailList: React.FC<Props> = ({
 
   const locate = useLocation();
   const pathName = locate.pathname;
+  const params = useParams();
 
   const currentPosition = localStorage.getItem('current_role');
+
+  useEffect(() => {
+    if (!params.email) return;
+    setSelectedEmail(params.email);
+  }, [params]);
 
   const { data: dataGetEmailManagerByStatus } = useQuery({
     queryKey: ['get-email-manager', status, pathName, ...EmailsList],
@@ -129,8 +135,8 @@ const ModalEmailList: React.FC<Props> = ({
     setValue(newValue);
   };
 
-  const handleSelectEmailItem = (index: number) => {
-    setSelectedEmailitem(index);
+  const handleSelectEmailItem = (email: string) => {
+    setSelectedEmail(email);
   };
 
   const _renderEmtailItems = useCallback(
@@ -139,9 +145,9 @@ const ModalEmailList: React.FC<Props> = ({
         return (
           <EmailItem
             onSelect={() => {
-              handleSelectEmailItem(index);
+              handleSelectEmailItem(item.user_tag_info.user_email);
             }}
-            isSelected={index === selectedEmailItem}
+            isSelected={item.user_tag_info.user_email === selectedEmail}
             firstEmailContent={item.emails[0].content}
             emailStatus={item.emails[0].status}
             emailTag={tag || undefined}
