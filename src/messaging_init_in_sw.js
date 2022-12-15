@@ -27,7 +27,6 @@ export const fetchToken = (setTokenFound, setFcmToken) => {
         localStorage.setItem('device_token', currentToken);
         postDeviceKey(currentToken)
           .then((res) => {
-            console.log(res);
             localStorage.setItem('device_key_id', res.data.id);
           })
           .catch((err) => {

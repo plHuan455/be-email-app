@@ -17,7 +17,12 @@ import {
 import { useGetEmail } from '@hooks/Email/useGetEmail';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import Loading from '@components/atoms/Loading';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from 'react-router-dom';
 import useLocalStorage from '@hooks/useLocalStorage';
 import { useSelector } from 'react-redux';
 import { RootState } from '@redux/configureStore';
@@ -92,6 +97,10 @@ const ModalEmailList: React.FC<Props> = ({
   index,
   handleChangeEmailTabNotiNumber,
 }) => {
+  const [searchParams] = useSearchParams();
+
+  const tagParams = searchParams.get('tab');
+
   const [value, setValue] = React.useState(0);
   const [selectedEmail, setSelectedEmail] = useState<string>();
   const [userEmails, setUserEmail] = useState<EmailManagerResponse[]>();
@@ -106,6 +115,14 @@ const ModalEmailList: React.FC<Props> = ({
   const params = useParams();
 
   const currentPosition = localStorage.getItem('current_role');
+
+  useEffect(() => {
+    if (!tagParams) setValue(0);
+    else {
+      if (tagParams === 'me') setValue(0);
+      else setValue(1);
+    }
+  }, [tagParams]);
 
   useEffect(() => {
     if (!params.email) return;
@@ -133,6 +150,8 @@ const ModalEmailList: React.FC<Props> = ({
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
+    if (newValue === 0) navigate('?tab=me');
+    else navigate('?tab=all');
   };
 
   const handleSelectEmailItem = (email: string) => {

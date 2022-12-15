@@ -237,19 +237,20 @@ const EmailMess: React.FC<Props> = ({
   };
 
   const handleOnApprove = (data: EmailResponse) => (e) => {
-    setAlertDialogData(
-      'Alert',
-      `Are you sure want to Approve with title "${
-        data.subject ?? 'Empty'
-      }" from writer "${data.from ?? data.cc[0] ?? data.bcc[0] ?? 'No one'}"?`,
-      () =>
-        setApproveEmail({
-          email_id: emailData.id,
-          note: '',
-          send_after: 15 * 60,
-          status: 'APPROVED',
-        }),
-    );
+    // setAlertDialogData(
+    //   'Alert',
+    //   `Are you sure want to Approve with title "${
+    //     data.subject ?? 'Empty'
+    //   }" from writer "${data.from ?? data.cc[0] ?? data.bcc[0] ?? 'No one'}"?`,
+    //   () =>
+    //     setApproveEmail({
+    //       email_id: emailData.id,
+    //       note: '',
+    //       send_after: 15 * 60,
+    //       status: 'APPROVED',
+    //     }),
+    // );
+    setIsOpenModal(true);
   };
 
   const handleUndoEmail = () => {
