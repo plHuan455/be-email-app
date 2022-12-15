@@ -30,7 +30,7 @@ const EmailPrivateHashtagContainer: React.FC<Props> = ({ defaultData }) => {
   };
 
   return (
-    <div className="flex items-center  py-4">
+    <div className="flex items-center py-4 flex-wrap">
       <span className="font-semibold">Hashtag:</span>
       <Box>
         {defaultData.map((val, index) => (
@@ -42,7 +42,7 @@ const EmailPrivateHashtagContainer: React.FC<Props> = ({ defaultData }) => {
           </span>
         ))}
       </Box>
-      <div className="pl-2 flex flex-1 items-center gap-2">
+      <div className="pl-2 flex flex-1 items-center gap-2 min-w-[260px]">
         {privateHashtags && isActive && (
           <EmailPrivateHashtag
             defaultValue={defaultData}
@@ -52,7 +52,7 @@ const EmailPrivateHashtagContainer: React.FC<Props> = ({ defaultData }) => {
         <span
           className="flex items-center justify-center p-2 rounded-full border border-[#E0E0E0] cursor-pointer ease-in duration-300 hover:bg-[#F6F3FD]"
           onClick={handleNavigateIsActive}>
-          <Icon icon={isActive ? 'close' : 'plus'} />
+          <Icon icon={isActive ? 'check' : 'plus'} />
         </span>
       </div>
     </div>

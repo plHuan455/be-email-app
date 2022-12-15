@@ -8,6 +8,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { styled } from '@mui/material/styles';
 import { autocompleteClasses } from '@mui/material/Autocomplete';
 import { HashtagTabs } from '@redux/Email/reducer';
+import { isEmpty } from 'lodash';
 
 const Root = styled('div')(
   ({ theme }) => `
@@ -170,6 +171,8 @@ const EmailPrivateHashtag: React.FC<Props> = ({
   privateHashtagData,
   defaultValue,
 }) => {
+  const [tempOption, setTempOption] = React.useState<HashtagTabs>();
+
   const {
     getRootProps,
     getInputLabelProps,
@@ -185,9 +188,27 @@ const EmailPrivateHashtag: React.FC<Props> = ({
     id: 'customized-hook-demo',
     defaultValue: [...defaultValue],
     multiple: true,
-    options: [...privateHashtagData],
+    autoHighlight: true,
+    options: tempOption
+      ? [...privateHashtagData, tempOption]
+      : [...privateHashtagData],
     getOptionLabel: (option) => option.title,
   });
+
+  // Handler FNC
+  const handleInputHashtag = (e) => {
+    const inputValue = e.target.value;
+    const isMatchHashtagType = inputValue.match(/([a-zA-Z]+\b)/);
+
+    if (isMatchHashtagType) {
+      setTempOption({
+        notiNumber: 0,
+        status: 'hashtag',
+        title: `#${inputValue}`,
+        value: inputValue,
+      });
+    } else setTempOption(undefined);
+  };
 
   return (
     <Root>
@@ -199,7 +220,7 @@ const EmailPrivateHashtag: React.FC<Props> = ({
           {value.map((option: HashtagTabs, index: number) => (
             <StyledTag label={option.title} {...getTagProps({ index })} />
           ))}
-          <input {...getInputProps()} />
+          <input {...getInputProps()} onInput={handleInputHashtag} />
         </InputWrapper>
       </div>
       {groupedOptions.length > 0 ? (
