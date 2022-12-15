@@ -47,13 +47,6 @@ const EmailNotify = () => {
         <MenuItem onClick={handleClose}>
           Phượng Nguyễn vừa gửi cho bạn 1 tin nhắn
         </MenuItem>
-        {/* <MenuItem className="justify-center">
-          <span
-            className="inline-block text-center underline w-full text-[#554CFF] hover:opacity-70"
-            onClick={handleClose}>
-            Show More
-          </span>
-        </MenuItem> */}
       </Menu>
     </Box>
   );
