@@ -1,3 +1,5 @@
+import { postDeviceKey } from '@api/deviceKey';
+import { useQuery } from '@tanstack/react-query';
 import { initializeApp } from 'firebase/app';
 import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 
@@ -23,6 +25,16 @@ export const fetchToken = (setTokenFound, setFcmToken) => {
         setTokenFound(true);
         setFcmToken(currentToken);
         localStorage.setItem('device_token', currentToken);
+        useQuery({
+          queryKey: ['post-device-key', currentToken],
+          queryFn: postDeviceKey(currentToken),
+          onSuccess: (res) => {
+            console.log(`-----------------Post Device key successfull! `, res);
+          },
+          onError: (err) => {
+            console.log(`----------Have some error when post device key, `, err);
+          },
+        });
       } else {
         console.log('No token found');
         setTokenFound(false);
