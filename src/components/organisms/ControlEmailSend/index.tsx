@@ -26,7 +26,7 @@ const ControlEmailSend: React.FC<ControlEmailSendProps> = ({
         if (preState <= 0) return 0;
         return preState - 1;
       })
-    })
+    }, 60000)
 
     return () => clearInterval(handleInterval);
   }, [remainMinutes])
