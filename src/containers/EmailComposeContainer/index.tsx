@@ -22,7 +22,7 @@ dayjs.extend(utc);
 
 const currentUserEmail = localStorage.getItem('current_email');
 
-interface EmailComposeContainerProps { }
+interface EmailComposeContainerProps {}
 
 const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
   const {
@@ -36,7 +36,7 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
     onClose: onAlertDialogClose,
   } = useAlertDialog();
 
-  const workingEmail = useAppSelector(state => state.email.workingEmail);
+  const workingEmail = useAppSelector((state) => state.email.workingEmail);
 
   const queryClient = useQueryClient();
   const dispatch = useAppDispatch();
@@ -76,7 +76,7 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
 
   const { mutate: deleteEmailMutate } = useMutation({
     mutationKey: ['email-compose-delete-email'],
-    mutationFn: deleteEmail
+    mutationFn: deleteEmail,
   });
 
   const { mutate: submitEmailComposeMutate, isLoading: isEmailComposeSubmitting } =
