@@ -82,8 +82,6 @@ function LoginContainer() {
             }
           });
 
-          if (isTokenFound) localStorage.setItem('device_token', getFcmToken);
-
           navigate('/');
         }
       });

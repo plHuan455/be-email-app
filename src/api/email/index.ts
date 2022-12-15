@@ -106,6 +106,18 @@ export const getEmailWithQueryParam = async (params?: {
   return res.data;
 };
 
+// Get Emails List
+export const getEmailsListWithQueryParams = async (params?: {
+  status?: string;
+  email?: string;
+  tag?: string;
+}): Promise<AxiosResponse<EmailManagerResponse[]>> => {
+  const url = `${EMAIL_MANAGER_API_URL}`;
+  const res = await ApiClient.get(url, undefined, params);
+
+  return res.data;
+};
+
 // GET EMAIL MANAGER STATUS
 export const getEmailManagerWithQueryParams = async (params?: {
   status?: string;
