@@ -446,7 +446,7 @@ const EmailMess: React.FC<Props> = ({
                 {sentAt.getTime() > Date.now() && (
                   <ControlEmailSend
                     variant="cancel"
-                    remainMinutes={Math.round(
+                    remainMinutes={Math.floor(
                       (sentAt.getTime() - Date.now()) / 1000 / 60,
                     )}
                     onCancel={handleEmployeeCancel}
@@ -462,7 +462,7 @@ const EmailMess: React.FC<Props> = ({
           )}
         {status === 'APPROVED' && sentAt.getTime() > Date.now() && (
           <ControlEmailSend
-            remainMinutes={Math.round(
+            remainMinutes={Math.floor(
               (sentAt.getTime() - new Date().getTime()) / 1000 / 60,
             )}
             onSend={handleUndoEmail}

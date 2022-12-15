@@ -31,6 +31,8 @@ const ControlEmailSend: React.FC<ControlEmailSendProps> = ({
     return () => clearInterval(handleInterval);
   }, [remainMinutes])
 
+  if(remainMinutesState <= 0) return null
+
   return (<Box className="t-controlEmailSend flex actions justify-end py-4">
     <Box className="flex items-center px-4 py-2 rounded-[16px]"
       sx={{
