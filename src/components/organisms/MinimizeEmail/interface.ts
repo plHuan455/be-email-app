@@ -1,11 +1,15 @@
-const colors = ['#f2e4cb', '#f2f6fc', '#e6ffee'];
+const colors = ['#f2e4cb', '#e6ffee', '#f2f6fc'];
+// const colors = ['red', 'green'];
 export class MinimizeEmailColor {
-  static colorList = colors;
+  static colorList: string[] = [...colors];
   
   static getColor(){
     if(this.colorList.length === 0) return '';
-    const index = Math.round(Math.random() * this.colorList.length);
     return this.colorList.pop();
+  }
+  
+  static provideColor(color?: string) {
+    if(color) this.colorList.push(color);
   }
 
   static reset(){
