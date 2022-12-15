@@ -14,6 +14,7 @@ import { getEditorStateFormHtmlString } from "@utils/functions";
 import { MinimizeEmailColor } from "@components/organisms/MinimizeEmail/interface";
 import { useNavigate } from "react-router-dom";
 import AlertDialog, { useAlertDialog } from "@components/molecules/AlertDialog";
+import useAutoStoreEmail from "@hooks/Email/useAutoStoreEmail";
 dayjs.extend(utc)
 
 const currentUserEmail = localStorage.getItem('current_email');
@@ -39,6 +40,8 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
   const navigate = useNavigate();
   const minimizeEmailList = useAppSelector(state => state.email.minimizeMailList);
   const showMinimizeEmailId = useAppSelector(state => state.email.showMinimizeEmailId);
+
+  const {onFieldsChange} = useAutoStoreEmail(5000);
 
   const [attachFiles, setAttachFiles] = useState<(File|undefined)[]>([]);
 
@@ -78,15 +81,9 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
     }
   })
 
-  // const {mutate: uploadFileMutate} = useMutation({
-  //   mutationKey: ['email-compose-upload-file'],
-  //   mutationFn: ({file, index} : {file: File; index: number}) =>  uploadFile(file),
-  //   onSuccess: (res, values) => {
-  //     const newAttachFiles = [...attachFiles];
-  //     newAttachFiles[values.index] = {isUploaded: true, file: {...newAttachFiles[values.index].file, url: res.data}}
-  //     setAttachFiles(newAttachFiles)
-  //   }
-  // })
+  method.watch((values, {name, type}) => {
+    onFieldsChange(name, values as EmailComposeFields)
+  })
 
   useEffect(()=>{
     if(!showMinimizeEmailId) return;
@@ -124,53 +121,8 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
     setIsFullScreen(false);
     setTabBarColor(undefined);
   }
-  
-  const createCustomFiles = useCallback((files: FileList | File[] | null) => {
-    if (!files) return [];
-    return Object.keys(files).map((key) => {
-      const file = files[key];
-      const fileType = file.type;
-      file.preview = URL.createObjectURL(file);
-      const res = {
-        file: {
-          name: file.name,
-          type: '',
-          url: file.preview,
-        },
-        isUploaded: false,
-      };
-
-      if (fileType) {
-        const splitFileType = fileType.split('/');
-        const [firstSplitFileType, secondSplitFileType, ...restFileType] =
-          splitFileType;
-        if (firstSplitFileType === 'image') res.file.type = 'image';
-        else if (secondSplitFileType === 'pdf') res.file.type = 'pdf';
-        else res.file.type = 'file';
-      }
-
-      return res;
-    });
-  }, [])
 
   const handleSubmit = (values: EmailComposeFields) => {
-    // if(isFileUploading) {
-    //   toast.error('Please waiting for files uploaded')
-    //   return;
-    // }
-    // console.log({
-    //   email: {
-    //     subject: values.subject,
-    //     to: values.to.map(value => value.mail),
-    //     html_string: values.content === '' ? '' : draftToHtml(convertToRaw(values.content.getCurrentContent())),
-    //     content: 'TODO REPLACE CONTENT',
-    //     bcc: values.bcc.map(value => value.mail),
-    //     cc: values.cc.map(value => value.mail),
-    //     files: (values.attachFiles.fileUrls.filter(value => value !== undefined) as string[]).map(value => ({path: value})),
-    //     from: currentUserEmail ? currentUserEmail : '',
-    //   },
-    //   send_at: selectedDate ? dayjs.utc(selectedDate).toISOString() ?? dayjs.utc().toISOString() : dayjs.utc(selectedDate).toISOString(),
-    // });
     if(values.to.length === 0 && values.cc.length === 0 && values.bcc.length === 0) {
       setAlertData('Can\'t send email', 'Can\'t send email without receiver', () => {
         onAlertDialogClose();

@@ -80,10 +80,6 @@ const EmailMess: React.FC<Props> = ({
   //   setEditor(EditorState.createWithContent(contentState));
   // }, []);
 
-  const [isOpenAlertDialog, setIsOpenAlertDialog] = useState<boolean>(false);
-  const [isOpenAlertDialogEmailApproved, setIsOpenAlertDialogEmailApproved] =
-    useState<boolean>(false);
-
   const {
     isOpen: isAlertDialogOpen,
     isLoading: isAlertDialogLoading,
@@ -160,9 +156,11 @@ const EmailMess: React.FC<Props> = ({
       onSuccess() {
         queryClient.invalidateQueries({ queryKey: ['get-email-manager'] })
         dispatch(deleteIndexEmail(index));
-        setIsOpenAlertDialog(false);
         toast.success('Decline Successful!');
       },
+      onSettled() {
+        onAlertDialogClose();
+      }
     });
 
   const { mutate: setApproveEmail, isLoading: isLoadingApprovedEmail } = useMutation(
@@ -177,12 +175,14 @@ const EmailMess: React.FC<Props> = ({
       onSuccess() {
         queryClient.invalidateQueries({ queryKey: ['get-email-manager'] })
         dispatch(deleteIndexEmail(index));
-        setIsOpenAlertDialogEmailApproved(false);
         toast.success('Email has been Approved');
       },
       onError() {
         toast.error("Can't approve email");
       },
+      onSettled() {
+        onAlertDialogClose();
+      }
     },
   );
 
