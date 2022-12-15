@@ -13,18 +13,11 @@ import dayjs, { Dayjs } from 'dayjs';
 import { useAppDispatch, useAppSelector } from '@redux/configureStore';
 import { addMinimizeEmail } from '@redux/Email/reducer';
 import { getEditorStateFormHtmlString } from '@utils/functions';
-import { MinimizeEmailColor } from '@components/organisms/MinimizeEmail/interface';
-import { useNavigate } from 'react-router-dom';
 import AlertDialog, { useAlertDialog } from '@components/molecules/AlertDialog';
 import useAutoStoreEmail from '@hooks/Email/useAutoStoreEmail';
 dayjs.extend(utc);
-import dayjs, { Dayjs } from 'dayjs';
-import { useAppDispatch, useAppSelector } from '@redux/configureStore';
-import { addMinimizeEmail } from '@redux/Email/reducer';
-import { getEditorStateFormHtmlString } from '@utils/functions';
 import { MinimizeEmailColor } from '@components/organisms/MinimizeEmail/interface';
 import { useNavigate } from 'react-router-dom';
-import AlertDialog, { useAlertDialog } from '@components/molecules/AlertDialog';
 dayjs.extend(utc);
 
 const currentUserEmail = localStorage.getItem('current_email');
@@ -52,8 +45,6 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
   );
 
   const { onFieldsChange } = useAutoStoreEmail(5000);
-
-  const [attachFiles, setAttachFiles] = useState<(File | undefined)[]>([]);
 
   const [attachFiles, setAttachFiles] = useState<(File | undefined)[]>([]);
 
