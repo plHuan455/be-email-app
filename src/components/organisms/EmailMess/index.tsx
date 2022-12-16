@@ -80,10 +80,6 @@ const EmailMess: React.FC<Props> = ({
   //   setEditor(EditorState.createWithContent(contentState));
   // }, []);
 
-  const [isOpenAlertDialog, setIsOpenAlertDialog] = useState<boolean>(false);
-  const [isOpenAlertDialogEmailApproved, setIsOpenAlertDialogEmailApproved] =
-    useState<boolean>(false);
-
   const {
     isOpen: isAlertDialogOpen,
     isLoading: isAlertDialogLoading,
@@ -160,8 +156,10 @@ const EmailMess: React.FC<Props> = ({
       onSuccess() {
         queryClient.invalidateQueries({ queryKey: ['get-email-manager'] });
         dispatch(deleteIndexEmail(index));
-        setIsOpenAlertDialog(false);
         toast.success('Decline Successful!');
+      },
+      onSettled() {
+        onAlertDialogClose();
       },
     });
 
@@ -177,11 +175,13 @@ const EmailMess: React.FC<Props> = ({
       onSuccess() {
         queryClient.invalidateQueries({ queryKey: ['get-email-manager'] });
         dispatch(deleteIndexEmail(index));
-        setIsOpenAlertDialogEmailApproved(false);
         toast.success('Email has been Approved');
       },
       onError() {
         toast.error("Can't approve email");
+      },
+      onSettled() {
+        onAlertDialogClose();
       },
     },
   );
@@ -237,19 +237,20 @@ const EmailMess: React.FC<Props> = ({
   };
 
   const handleOnApprove = (data: EmailResponse) => (e) => {
-    setAlertDialogData(
-      'Alert',
-      `Are you sure want to Approve with title "${
-        data.subject ?? 'Empty'
-      }" from writer "${data.from ?? data.cc[0] ?? data.bcc[0] ?? 'No one'}"?`,
-      () =>
-        setApproveEmail({
-          email_id: emailData.id,
-          note: '',
-          send_after: 15 * 60,
-          status: 'APPROVED',
-        }),
-    );
+    // setAlertDialogData(
+    //   'Alert',
+    //   `Are you sure want to Approve with title "${
+    //     data.subject ?? 'Empty'
+    //   }" from writer "${data.from ?? data.cc[0] ?? data.bcc[0] ?? 'No one'}"?`,
+    //   () =>
+    //     setApproveEmail({
+    //       email_id: emailData.id,
+    //       note: '',
+    //       send_after: 15 * 60,
+    //       status: 'APPROVED',
+    //     }),
+    // );
+    setIsOpenModal(true);
   };
 
   const handleUndoEmail = () => {
@@ -442,15 +443,15 @@ const EmailMess: React.FC<Props> = ({
           !currRole?.startsWith('EMPLOYEE') && (
             <Box className="flex flex-wrap actions items-center py-4 justify-between">
               <Box>
-                {sentAt.getTime() > Date.now() &&
-                  _renderActionsApproved({
-                    remainMinute: Math.round(
+                {sentAt.getTime() > Date.now() && (
+                  <ControlEmailSend
+                    variant="cancel"
+                    remainMinutes={Math.floor(
                       (sentAt.getTime() - Date.now()) / 1000 / 60,
-                    ),
-                    onCancel: () => {
-                      handleEmployeeCancel();
-                    },
-                  })}
+                    )}
+                    onCancel={handleEmployeeCancel}
+                  />
+                )}
               </Box>
               <Box>
                 {status === 'PENDING'
@@ -461,7 +462,7 @@ const EmailMess: React.FC<Props> = ({
           )}
         {status === 'APPROVED' && sentAt.getTime() > Date.now() && (
           <ControlEmailSend
-            renameMinutes={Math.round(
+            remainMinutes={Math.floor(
               (sentAt.getTime() - new Date().getTime()) / 1000 / 60,
             )}
             onSend={handleUndoEmail}

@@ -1,4 +1,4 @@
-import { sendEmail } from '@api/email';
+import { sendEmail, deleteEmail } from '@api/email';
 import EmailCompose2, {
   EmailComposeFields,
 } from '@components/templates/EmailCompose2';
@@ -13,9 +13,11 @@ import dayjs, { Dayjs } from 'dayjs';
 import { useAppDispatch, useAppSelector } from '@redux/configureStore';
 import { addMinimizeEmail } from '@redux/Email/reducer';
 import { getEditorStateFormHtmlString } from '@utils/functions';
+import AlertDialog, { useAlertDialog } from '@components/molecules/AlertDialog';
+import useAutoStoreEmail from '@hooks/Email/useAutoStoreEmail';
+dayjs.extend(utc);
 import { MinimizeEmailColor } from '@components/organisms/MinimizeEmail/interface';
 import { useNavigate } from 'react-router-dom';
-import AlertDialog, { useAlertDialog } from '@components/molecules/AlertDialog';
 dayjs.extend(utc);
 
 const currentUserEmail = localStorage.getItem('current_email');
@@ -34,6 +36,8 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
     onClose: onAlertDialogClose,
   } = useAlertDialog();
 
+  const workingEmail = useAppSelector((state) => state.email.workingEmail);
+
   const queryClient = useQueryClient();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -41,6 +45,8 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
   const showMinimizeEmailId = useAppSelector(
     (state) => state.email.showMinimizeEmailId,
   );
+
+  const { onFieldsChange } = useAutoStoreEmail(5000);
 
   const [attachFiles, setAttachFiles] = useState<(File | undefined)[]>([]);
 
@@ -68,27 +74,29 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
 
   const [tabBarColor, setTabBarColor] = useState<string>();
 
+  const { mutate: deleteEmailMutate } = useMutation({
+    mutationKey: ['email-compose-delete-email'],
+    mutationFn: deleteEmail,
+  });
+
   const { mutate: submitEmailComposeMutate, isLoading: isEmailComposeSubmitting } =
     useMutation({
       mutationKey: ['email-compose-submit'],
       mutationFn: sendEmail,
       onSuccess: (res) => {
         toast.success('Email have been sent');
+        if (workingEmail.id !== undefined) {
+          deleteEmailMutate(workingEmail.id);
+        }
         navigate(`/emails/status/PENDING/${res.data.from}`);
         queryClient.invalidateQueries({ queryKey: ['get-all-email-status'] });
         method.reset();
       },
     });
 
-  // const {mutate: uploadFileMutate} = useMutation({
-  //   mutationKey: ['email-compose-upload-file'],
-  //   mutationFn: ({file, index} : {file: File; index: number}) =>  uploadFile(file),
-  //   onSuccess: (res, values) => {
-  //     const newAttachFiles = [...attachFiles];
-  //     newAttachFiles[values.index] = {isUploaded: true, file: {...newAttachFiles[values.index].file, url: res.data}}
-  //     setAttachFiles(newAttachFiles)
-  //   }
-  // })
+  method.watch((values, { name, type }) => {
+    onFieldsChange(name, values as EmailComposeFields);
+  });
 
   useEffect(() => {
     if (!showMinimizeEmailId) return;
