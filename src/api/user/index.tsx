@@ -5,6 +5,7 @@ import { AxiosResponse } from 'axios';
 import {
   GET__USER__API,
   UPLOAD_FILE,
+  USER_PROFILE,
   USER__API,
   USER__API__GET,
 } from '@constants/UserAPI';
@@ -45,11 +46,9 @@ export interface UserResponse {
 }
 
 //GET EMAIL WITH STATUS
-export const getUserWithEmail = async (
-  email: string,
-): Promise<AxiosResponse<UserResponse>> => {
-  const url = GET__USER__API;
-  const res = await ApiClient.get(url, { value: email }, {});
+export const getUserWithEmail = async (): Promise<AxiosResponse<UserResponse>> => {
+  const url = `${USER_PROFILE}`;
+  const res = await ApiClient.put(url);
   return res.data;
 };
 

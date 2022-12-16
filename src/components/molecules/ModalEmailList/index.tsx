@@ -110,6 +110,7 @@ const ModalEmailList: React.FC<Props> = ({
   const params = useParams();
 
   const currentPosition = localStorage.getItem('current_role');
+  const currEmail = localStorage.getItem('current_email');
 
   useEffect(() => {
     if (!tagParams) setValue(0);
@@ -125,7 +126,7 @@ const ModalEmailList: React.FC<Props> = ({
   }, [params]);
 
   const { data: dataGetEmailManagerByStatus } = useQuery({
-    queryKey: ['get-email-manager', pathName, ...EmailsList],
+    queryKey: ['get-email-manager', pathName, ...EmailsList, value],
     queryFn: () =>
       getListCatalogWithQueryParam({
         catalog: catalog,
@@ -152,7 +153,7 @@ const ModalEmailList: React.FC<Props> = ({
       return (emailsData ?? []).map((item, index) => {
         return (
           <EmailItem
-            type="send"
+            // type={item.user_email === currEmail ? 'send' : 'receive'}
             onSelect={() => {
               handleSelectEmailItem(item.user_id);
             }}

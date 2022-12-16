@@ -85,7 +85,7 @@ const useAutoStoreEmail = (delayTime: number = 5000) => {
 
           return [...curr, ...mails];
         }, []) ?? [],
-      html_string: contentString,
+      text_html: contentString,
       bcc: workingEmail.bcc?.map((value) => value.mail) ?? [],
       cc: workingEmail.cc?.map((value) => value.mail) ?? [],
       attachs:

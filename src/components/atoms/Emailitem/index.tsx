@@ -17,7 +17,7 @@ type Props = {
   data: CatalogTabResponse;
   // dataEmail: EmailResponse[];
   isSelected: boolean;
-  type: 'receive' | 'send';
+  // type: 'receive' | 'send';
   emailCatalog: string;
   onSelect: () => void;
 };
@@ -27,7 +27,7 @@ const EmailItem: React.FC<Props> = ({
   emailCatalog,
   // firstEmailContent,
   isSelected,
-  type,
+  // type,
   onSelect,
   // dataEmail,
 }) => {
@@ -43,14 +43,14 @@ const EmailItem: React.FC<Props> = ({
     onSelect();
     if (!emailCatalog)
       navigate({
-        pathname: `/emails/status/${emailCatalog}/${user_id}`,
+        pathname: `/emails/catalog/${emailCatalog}/${user_id}`,
         search: createSearchParams({
           tab: searchParams.get('tab') || 'me',
         }).toString(),
       });
     else
       navigate({
-        pathname: `/emails/tag/${emailCatalog}/${user_id}`,
+        pathname: `/emails/catalog/${emailCatalog}/${user_id}`,
         search: createSearchParams({
           tab: searchParams.get('tab') || 'me',
         }).toString(),
@@ -78,8 +78,8 @@ const EmailItem: React.FC<Props> = ({
         }}>
         <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
           <Avatar
-            src={avt}
-            alt="sender avt"
+            src={data.avatar}
+            alt={`${data.last_name} ${data.first_name}`}
             sx={{ width: '35px', height: '35px' }}
           />
           <Box sx={{ width: '70%' }}>
@@ -132,7 +132,7 @@ const EmailItem: React.FC<Props> = ({
       ) : (
         ''
       )}
-      <Icon className={`${type === 'send' && 'rotate-180'}`} icon="reply" />
+      {/* <Icon className={`${type === 'send' && 'rotate-180'}`} icon="reply" /> */}
     </Box>
   );
 };

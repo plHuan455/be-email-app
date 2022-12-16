@@ -99,10 +99,10 @@ const EmailMess: React.FC<Props> = ({
     desc: 'Are you sure?',
   });
 
-  const cloneSendTo = !!emailData.to ? [...emailData.to] : [];
+  const cloneSendTo = !!emailData.email.to ? [...emailData.email.to] : [];
 
-  const remapPrivateHashtag: HashtagTabs[] = emailData.tags
-    ? emailData.tags.map((val) => ({
+  const remapPrivateHashtag: HashtagTabs[] = emailData.email.tags
+    ? emailData.email.tags.map((val) => ({
         notiNumber: 0,
         status: 'hashtag',
         title: `#${val}`,
@@ -238,8 +238,10 @@ const EmailMess: React.FC<Props> = ({
     setAlertDialogData(
       'Alert',
       `Are you sure want to decline with title "${
-        data.subject ?? 'Empty'
-      }" from writer "${data.from ?? data.cc[0] ?? data.bcc[0] ?? 'No one'}"?`,
+        data.email.subject ?? 'Empty'
+      }" from writer "${
+        data.email.from ?? data.email.cc[0] ?? data.email.bcc[0] ?? 'No one'
+      }"?`,
       () => updateEmailStatus('DECLINED'),
     );
   };
@@ -364,16 +366,16 @@ const EmailMess: React.FC<Props> = ({
         classNameContent="shadow-lg p-4 absolute z-10 top-1/2 right-[40px] w-[90%] -translate-y-1/2 bg-white rounded-[11px] border border-[#E3E3E3] "
         sendTo={
           status === 'reply'
-            ? [emailData.from]
+            ? [emailData.email.from]
             : status === 'replyAll'
-            ? emailData.to
-            : emailData.to
+            ? emailData.email.to
+            : emailData.email.to
         }
         sendToDefault={
           status === 'reply'
-            ? [emailData.from]
+            ? [emailData.email.from]
             : status === 'replyAll'
-            ? emailData.to
+            ? emailData.email.to
             : []
         }
       />
@@ -429,7 +431,7 @@ const EmailMess: React.FC<Props> = ({
           }  relative`}
           onClick={() => onShowHistory(emailData, emailData.id)}>
           <h1 className="text-stone-700 font-bold text-base mb-2 mr-16">
-            {emailData.subject}
+            {emailData.email.subject}
           </h1>
           {renderSendTo()}
           {status.toLowerCase() !== 'null' && <EmailStatus emailStatus={status} />}
@@ -437,17 +439,18 @@ const EmailMess: React.FC<Props> = ({
         {/* Email Content */}
         <Box className="py-9">
           <Box>
-            <p dangerouslySetInnerHTML={createMarkup(emailData.html_string)} />
+            <p dangerouslySetInnerHTML={createMarkup(emailData.email.html_string)} />
           </Box>
         </Box>
         {/* Files List If have */}
-        {emailData.attachFiles && (
-          <AttachFiles data={emailData.attachFiles} isUpload={false} />
+        {emailData.email.attachFiles && (
+          <AttachFiles data={emailData.email.attachFiles} isUpload={false} />
         )}
         {/* Email Private Hashtag */}
         <EmailPrivateHashtagContainer defaultData={remapPrivateHashtag ?? []} />
         {/* Actions */}
-        {(status === 'PENDING' || status === 'SENDING') &&
+        {(status.toUpperCase() === 'PENDING' ||
+          status.toUpperCase() === 'SENDING') &&
           !currRole?.startsWith('EMPLOYEE') && (
             <Box className="flex flex-wrap actions items-center py-4 justify-between">
               <Box>

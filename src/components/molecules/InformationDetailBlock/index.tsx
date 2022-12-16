@@ -144,8 +144,8 @@ const InformationDetailBlock = (props: Props) => {
   const SenderBlock = useMemo(() => {
     const sender = new UserInfo(
       '',
-      props.data?.writer_name || '',
-      props.data?.from || '',
+      props.data?.email.writer_id.toString() || '',
+      props.data?.email.from || '',
     );
 
     return (

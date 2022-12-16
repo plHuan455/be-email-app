@@ -22,8 +22,6 @@ import Email from '@components/organisms/Email';
 import ManagerEmployee from './Manager/ManagerEmployee';
 import ManagerDepartment from './Manager/ManagerDepartment';
 import SettingRoles from './Settings/SettingsRoles';
-import EmailMessEmpty from '@components/organisms/EmailMessEmpty';
-import EmailCompose from '@components/organisms/EmailCompose';
 import Manager from './Manager';
 import ChangePassword from './ChangePassword';
 import UserProfile from '../layouts/UserProfile';

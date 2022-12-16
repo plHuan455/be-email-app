@@ -20,31 +20,38 @@ export interface CreateEmailParam {
     to: string[];
     from: string;
     content?: string;
-    html_string: string;
+    text_html: string;
     cc: string[];
     bcc: string[];
     attachs: { path: string }[];
   };
   send_at?: string;
+  tags?: string[];
 }
 
 export interface EmailResponse {
   id: number;
-  to: string[];
-  subject: string;
-  from: string;
-  content: string;
-  cc: string[];
-  bcc: string[];
-  status: string;
-  writer_name: string;
-  writer_id: number;
-  attachFiles?: AttachFile[];
-  created_at: string;
-  forward: string;
-  html_string: string;
+  user_id: string;
+  email_id: string;
   send_at: string;
-  tags: [];
+  created_at: string;
+  email: {
+    id: number;
+    from: string;
+    to: string[];
+    cc: string[];
+    bcc: string[];
+    subject: string;
+    type: string;
+    writer_id: number;
+    html_string: string;
+    content: string;
+    attachFiles?: AttachFile[];
+    tags: [];
+  };
+  type: string;
+  status: string;
+  approve_at: string;
 }
 
 export interface UserTagResponse {
@@ -75,6 +82,18 @@ export interface EmailDeleteResponse {
 export const getAllEmailTag = async (): Promise<AxiosResponse<any[]>> => {
   const url = `/api/hashtag`;
   const res = await ApiClient.get(url);
+
+  return res.data;
+};
+
+// GET ALL EMAILS WITH CATALOG
+export const getAllEmailByCatalog = async (params?: {
+  user_id?: string;
+  catalog?: string;
+}): Promise<AxiosResponse<EmailResponse[]>> => {
+  const url = `${EMAIL_CATALOG}/detail`;
+
+  const res = await ApiClient.get(url, undefined, params);
 
   return res.data;
 };

@@ -159,7 +159,7 @@ const Email: React.FC<Props> = () => {
   const checkIsReceiveEmail = useCallback(
     (id) => {
       return (
-        EmailsList.find((mail) => mail.id === id)?.from !==
+        EmailsList.find((mail) => mail.id === id)?.email.from !==
         localStorage.getItem('current_email')
       );
     },
@@ -276,7 +276,9 @@ const Email: React.FC<Props> = () => {
             key={email.id}
             status={email.status}
             type={checkIsReceiveEmail(email.id) ? 'receive' : 'send'}
-            userInfo={new UserInfo('', email.writer_name, email.from)}
+            userInfo={
+              new UserInfo('', email.email.writer_id.toString(), email.email.from)
+            }
             emailData={email}
             onShowHistory={handleShowHistory}
             isShowHeader={showHistory === email.id}
