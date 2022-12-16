@@ -69,20 +69,12 @@ export const sideBarRouter: RouteObject[] = [
         element: <EmailComposePage />,
       },
       {
-        path: '/emails/status/:status/:email',
+        path: '/emails/catalog/:catalog/:user_id',
         element: <EmailMainWrapper />,
       },
       {
-        path: '/emails/status/:status',
+        path: '/emails/catalog/:catalog',
         element: <EmailEmptyContainer />,
-      },
-      {
-        path: '/emails/tag/:tag/:email',
-        element: <EmailMainWrapper />,
-      },
-      {
-        path: '/emails/tag/:tag',
-        element: <EmailMainWrapper />,
       },
     ],
   },
@@ -109,8 +101,8 @@ export const declareRouter: RouteObject[] = [
         element: <Navigate to={'/emails'} replace={true} />,
       },
       { path: '/about', element: <AboutPage /> },
-      { 
-        path: '/contact', 
+      {
+        path: '/contact',
         element: <ContactLayout />,
         children: [
           {
@@ -121,7 +113,7 @@ export const declareRouter: RouteObject[] = [
             path: '/contact/groups',
             element: <ContactGroups />,
           },
-        ]
+        ],
       },
       {
         path: '/change-password',

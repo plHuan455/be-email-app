@@ -11,8 +11,8 @@ import ArrowLeft from '@assets/icon/ArrowLeft';
 import EmailItem from '@components/atoms/Emailitem';
 import {
   EmailManagerResponse,
-  EmailResponse,
   getEmailManagerWithQueryParams,
+  getListCatalogWithQueryParam,
 } from '@api/email';
 import { useGetEmail } from '@hooks/Email/useGetEmail';
 import { useMutation, useQuery } from '@tanstack/react-query';
@@ -26,6 +26,7 @@ import {
 import useLocalStorage from '@hooks/useLocalStorage';
 import { useSelector } from 'react-redux';
 import { RootState } from '@redux/configureStore';
+import { CatalogTabResponse } from '@api/email/interface';
 
 export interface EmailList {
   userId: number;
@@ -78,22 +79,18 @@ export type StatusOptions =
 
 type Props = {
   title: string;
-  status: StatusOptions;
+  catalog: string;
   isActive: boolean;
   handleChangeModalStatus: (status: boolean) => void;
-  tag?: string;
-  renderType?: 'tag' | 'status';
   index?: number;
   handleChangeEmailTabNotiNumber?: (index: number, number: number) => void;
 };
 
 const ModalEmailList: React.FC<Props> = ({
-  status,
+  catalog,
   isActive,
   handleChangeModalStatus,
   title,
-  tag,
-  renderType = 'status',
   index,
   handleChangeEmailTabNotiNumber,
 }) => {
@@ -102,13 +99,11 @@ const ModalEmailList: React.FC<Props> = ({
   const tagParams = searchParams.get('tab');
 
   const [value, setValue] = React.useState(0);
-  const [selectedEmail, setSelectedEmail] = useState<string>();
-  const [userEmails, setUserEmail] = useState<EmailManagerResponse[]>();
-  const [userAllEmails, setUserAllEmail] = useState<EmailManagerResponse[]>();
+  const [selectedUserId, setSelectedUserId] = useState<number>();
+  const [userEmails, setUserEmail] = useState<CatalogTabResponse[]>();
+  const [userAllEmails, setUserAllEmail] = useState<CatalogTabResponse[]>();
 
   const { EmailsList } = useSelector((state: RootState) => state.email);
-
-  const CURRENT_EMAIL = localStorage.getItem('current_email');
 
   const locate = useLocation();
   const pathName = locate.pathname;
@@ -125,26 +120,20 @@ const ModalEmailList: React.FC<Props> = ({
   }, [tagParams]);
 
   useEffect(() => {
-    if (!params.email) return;
-    setSelectedEmail(params.email);
+    if (!params.user_id) return;
+    setSelectedUserId(Number(params.user_id) || 0);
   }, [params]);
 
   const { data: dataGetEmailManagerByStatus } = useQuery({
-    queryKey: ['get-email-manager', status, pathName, ...EmailsList],
+    queryKey: ['get-email-manager', pathName, ...EmailsList],
     queryFn: () =>
-      renderType === 'tag'
-        ? getEmailManagerWithQueryParams({
-            tag: tag,
-          })
-        : getEmailManagerWithQueryParams({ status: status }),
+      getListCatalogWithQueryParam({
+        catalog: catalog,
+        subject: tagParams || 'me',
+      }),
     enabled: isActive,
     onSuccess: (res) => {
-      setUserEmail(
-        res.data.filter((vals) => vals.user_tag_info.user_email === CURRENT_EMAIL),
-      );
-      setUserAllEmail(
-        res.data.filter((vals) => vals.user_tag_info.user_email !== CURRENT_EMAIL),
-      );
+      setUserEmail(res.data);
     },
   });
 
@@ -154,25 +143,24 @@ const ModalEmailList: React.FC<Props> = ({
     else navigate('?tab=all');
   };
 
-  const handleSelectEmailItem = (email: string) => {
-    setSelectedEmail(email);
+  const handleSelectEmailItem = (user_id: number) => {
+    setSelectedUserId(user_id);
   };
 
   const _renderEmtailItems = useCallback(
-    (emailsData: EmailManagerResponse[]) => {
+    (emailsData: CatalogTabResponse[]) => {
       return (emailsData ?? []).map((item, index) => {
         return (
           <EmailItem
             type="send"
             onSelect={() => {
-              handleSelectEmailItem(item.user_tag_info.user_email);
+              handleSelectEmailItem(item.user_id);
             }}
-            isSelected={item.user_tag_info.user_email === selectedEmail}
-            firstEmailContent={item.emails[0].content}
-            emailStatus={item.emails[0].status}
-            emailTag={tag || undefined}
-            dataEmail={item.emails}
-            data={item.user_tag_info}
+            isSelected={item.user_id === selectedUserId}
+            // firstEmailContent={item.emails[0].content}
+            emailCatalog={catalog}
+            // dataEmail={item.emails}
+            data={item}
             key={index}
           />
         );

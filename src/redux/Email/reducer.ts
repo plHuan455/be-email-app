@@ -1,4 +1,4 @@
-import { EmailResponse } from '@api/email/interface';
+import { EmailResponse } from '@api/email';
 import { EmailList, StatusOptions } from '@components/molecules/ModalEmailList';
 import { Email, UserInfo } from '@components/organisms/Email/Interface';
 import { AttachFile, UserRead } from '@components/organisms/EmailMess';

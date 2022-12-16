@@ -9,7 +9,7 @@ import { isEmpty } from 'lodash';
 import { Email, UserInfo } from '@components/organisms/Email/Interface';
 import Icon from '@components/atoms/Icon';
 import styles from './styles.module.scss';
-import { EmailResponse } from '@api/email/interface';
+import { EmailResponse } from '@api/email';
 
 export interface ReceiverData {
   name: string;

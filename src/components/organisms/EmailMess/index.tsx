@@ -9,7 +9,12 @@ dayjs.extend(utc);
 import EmailActions from '@components/molecules/EmailActions';
 import { useCallback, useMemo, useState } from 'react';
 import EmailForward from '../EmailForward';
-import { approveEmail, undoEmail, updateEmailWithQuery } from '@api/email';
+import {
+  approveEmail,
+  EmailResponse,
+  undoEmail,
+  updateEmailWithQuery,
+} from '@api/email';
 import { UserInfo } from '../Email/Interface';
 import EmailPrivateHashtagContainer from '@containers/EmailPrivateHashtagContainer';
 import AlertDialog, { useAlertDialog } from '@components/molecules/AlertDialog';
@@ -23,7 +28,6 @@ import dayjs, { Dayjs } from 'dayjs';
 import ModalBase from '@components/atoms/ModalBase';
 import SettimeInput from '@components/molecules/SettimeInput';
 import ControlEmailSend from '../ControlEmailSend';
-import { EmailResponse } from '@api/email/interface';
 export interface UserRead {
   name: string;
   time: string;

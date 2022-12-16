@@ -9,12 +9,13 @@ import { useDispatch } from 'react-redux';
 import { useGetEmail } from '@hooks/Email/useGetEmail';
 import { setEmailsList } from '@redux/Email/reducer';
 import Icon from '../Icon';
-import { EmailResponse, UserTagResponse } from '@api/email/interface';
+import { EmailResponse, UserTagResponse } from '@api/email';
+import { CatalogTabResponse } from '@api/email/interface';
 
 type Props = {
-  firstEmailContent: string;
-  data: UserTagResponse;
-  dataEmail: EmailResponse[];
+  // firstEmailContent: string;
+  data: CatalogTabResponse;
+  // dataEmail: EmailResponse[];
   isSelected: boolean;
   type: 'receive' | 'send';
   emailCatalog: string;
@@ -24,13 +25,15 @@ type Props = {
 const EmailItem: React.FC<Props> = ({
   data,
   emailCatalog,
-  firstEmailContent,
+  // firstEmailContent,
   isSelected,
   type,
   onSelect,
-  dataEmail,
+  // dataEmail,
 }) => {
-  const { avatar, count, user_email, user_name } = data;
+  const { avatar, amount, user_id, user_email, first_name, last_name } = data;
+
+  const fullName = `${last_name} ${first_name}`;
 
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -40,14 +43,14 @@ const EmailItem: React.FC<Props> = ({
     onSelect();
     if (!emailCatalog)
       navigate({
-        pathname: `/emails/status/${emailCatalog}/${user_email}`,
+        pathname: `/emails/status/${emailCatalog}/${user_id}`,
         search: createSearchParams({
           tab: searchParams.get('tab') || 'me',
         }).toString(),
       });
     else
       navigate({
-        pathname: `/emails/tag/${emailCatalog}/${user_email}`,
+        pathname: `/emails/tag/${emailCatalog}/${user_id}`,
         search: createSearchParams({
           tab: searchParams.get('tab') || 'me',
         }).toString(),
@@ -91,7 +94,7 @@ const EmailItem: React.FC<Props> = ({
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
               }}>
-              <span className="font-bold">{user_name}</span> | {user_email}
+              <span className="font-bold">{fullName}</span> | {user_email}
             </Typography>
             <Typography
               component={'p'}
@@ -105,12 +108,12 @@ const EmailItem: React.FC<Props> = ({
                 overflow: 'hidden',
                 fontWeight: 'bold',
               }}>
-              {firstEmailContent}
+              {/* {firstEmailContent} */}
             </Typography>
           </Box>
         </Box>
       </Box>
-      {count > 0 ? (
+      {amount > 0 ? (
         <Typography
           component={'p'}
           sx={{
@@ -124,7 +127,7 @@ const EmailItem: React.FC<Props> = ({
             padding: '0 5px',
             color: '#495057',
           }}>
-          {count > 9 ? '9+' : count}
+          {amount > 9 ? '9+' : amount}
         </Typography>
       ) : (
         ''

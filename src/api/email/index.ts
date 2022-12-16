@@ -1,5 +1,6 @@
 import {
   EMAIL_API_URL,
+  EMAIL_CATALOG,
   EMAIL_MANAGER_API_URL,
 } from './../../constants/EmailAPI/index';
 import { Receiver } from '@layouts/InformationBar';
@@ -7,15 +8,12 @@ import ApiClient, { ApiResponse, CuSAxiosResponse } from '@api/ApiClient';
 import { AxiosResponse } from 'axios';
 import { AttachFile } from '@components/organisms/EmailMess';
 import { async } from '@firebase/util';
-import { EmailUpdateQuery } from './interface';
+import {
+  CatalogTabResponse,
+  EmailCatalogResponse,
+  EmailUpdateQuery,
+} from './interface';
 import { number } from 'yup';
-
-// export interface Receiver {}
-
-// interface FileType {
-//   path: string;
-// }
-
 export interface CreateEmailParam {
   email: {
     subject: string;
@@ -81,6 +79,17 @@ export const getAllEmailTag = async (): Promise<AxiosResponse<any[]>> => {
   return res.data;
 };
 
+// Get All Catalog Tab
+export const getAllCatalogTab = async (): Promise<
+  AxiosResponse<EmailCatalogResponse[]>
+> => {
+  const url = `${EMAIL_CATALOG}`;
+
+  const res = await ApiClient.get(url);
+
+  return res.data;
+};
+
 // GET ALL CUR EMAIL Status
 export const getAllEmailStatus = async (): Promise<
   AxiosResponse<EmailTagsResponse[]>
@@ -88,6 +97,16 @@ export const getAllEmailStatus = async (): Promise<
   const url = `${EMAIL_MANAGER_API_URL}/all-status`;
   const res = await ApiClient.get(url);
 
+  return res.data;
+};
+
+// GET LIST CATALOG
+export const getListCatalogWithQueryParam = async (params: {
+  catalog: string;
+  subject: string;
+}): Promise<CuSAxiosResponse<CatalogTabResponse[]>> => {
+  const url = `${EMAIL_CATALOG}/info`;
+  const res = await ApiClient.get(url, {}, params);
   return res.data;
 };
 

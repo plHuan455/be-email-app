@@ -8,11 +8,11 @@ import React, { useState } from 'react';
 interface Props {
   title: string;
   status: StatusOptions;
-  value: string;
+  catalog: string;
   index: number;
 }
 
-const Hashtag: React.FC<Props> = ({ title, status, index, value }) => {
+const Hashtag: React.FC<Props> = ({ title, status, index, catalog }) => {
   const [modalStatus, setModalStatus] = useState(false);
 
   // Handler FNC
@@ -37,9 +37,7 @@ const Hashtag: React.FC<Props> = ({ title, status, index, value }) => {
       </ButtonBase>
       <ModalEmailList
         title={title}
-        status={status}
-        renderType={'tag'}
-        catalog={value}
+        catalog={catalog}
         isActive={modalStatus}
         handleChangeModalStatus={setModalStatus}
       />

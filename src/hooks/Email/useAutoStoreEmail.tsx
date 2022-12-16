@@ -1,4 +1,9 @@
-import { approveEmail, sendEmail, updateEmailWithQuery } from '@api/email';
+import {
+  approveEmail,
+  CreateEmailParam,
+  sendEmail,
+  updateEmailWithQuery,
+} from '@api/email';
 import utc from 'dayjs/plugin/utc';
 import { EmailComposeFields } from '@components/templates/EmailCompose2';
 import { MinimizeEmailTypes } from '@components/templates/MinimizeEmailList';
@@ -10,7 +15,7 @@ import { getHtmlStringFromEditorState } from '@utils/functions';
 import dayjs from 'dayjs';
 import { isEmpty } from 'lodash';
 import { useEffect, useRef, useState } from 'react';
-import { CreateEmailParam, EmailUpdateQuery } from '@api/email/interface';
+import { EmailUpdateQuery } from '@api/email/interface';
 
 const currentUserEmail = localStorage.getItem('current_email');
 

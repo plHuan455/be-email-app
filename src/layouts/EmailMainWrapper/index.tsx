@@ -9,11 +9,7 @@ import { useParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import { setEmailIsLoading, setEmailsList } from '@redux/Email/reducer';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import {
-  getEmailManagerWithQueryParams,
-  getEmailsListWithQueryParams,
-  getEmailWithQueryParam,
-} from '@api/email';
+import { getEmailsListWithQueryParams } from '@api/email';
 import { toast } from 'react-toastify';
 
 const receiverData: Receiver[] = [

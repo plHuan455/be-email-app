@@ -28,7 +28,7 @@ import useEmailCompose from '../../../zustand/useEmailCompose';
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
 import { UserInfo } from '../Email/Interface';
-import { sendEmail } from '@api/email';
+import { CreateEmailParam, sendEmail } from '@api/email';
 import {
   MESSAGE_SEND_EMAIL_FAILED,
   MESSAGE_SEND_EMAIL_SUCCESSFUL,
@@ -43,7 +43,6 @@ import { useAppDispatch, useAppSelector } from '@redux/configureStore';
 import Email from '../Email';
 import { useSelector } from 'react-redux';
 import { useMutation } from '@tanstack/react-query';
-import { CreateEmailParam } from '@api/email/interface';
 
 const fromData: UserInfo[] = [new UserInfo(avatarImg, 'sender', 'sender@gmail.com')];
 
