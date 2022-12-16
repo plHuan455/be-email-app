@@ -7,6 +7,8 @@ import { Button, Grid } from '@mui/material';
 import { rem } from '@utils/functions';
 import { Controller, FormProvider, UseFormReturn } from 'react-hook-form';
 import styled from 'styled-components';
+import { useState } from 'react';
+import BasePhoneInput from '@components/atoms/Input/BasePhoneInput';
 
 export interface AddEmployeeField {
   avatar?: File;
@@ -59,6 +61,7 @@ function AddEmployeeModal({
   onClose,
   onSubmit,
 }: AddEmployeeModalProps) {
+  // const [country, setCountry] = useState('vn')
   return (
     <ModalBase
       isOpen={isOpen}
@@ -110,7 +113,12 @@ function AddEmployeeModal({
                   name="phone"
                   render={({ field: { value, onChange }, fieldState }) => (
                     <InputWrapper>
-                      <ValidateInput
+                    <BasePhoneInput
+                      label={"Phone number"}
+                      value={value}
+                      onChange={onChange}
+                    />
+                      {/* <ValidateInput
                         label="Phone number"
                         id='create-employee-phone'
                         type="text"
@@ -119,7 +127,7 @@ function AddEmployeeModal({
                         placeHolder="Phone number"
                         errors={fieldState.error?.message}
                         onChange={onChange}
-                      />
+                      /> */}
                     </InputWrapper>
                   )}
                 />
