@@ -31,6 +31,7 @@ import UserProfileContainer from './UserProfileContainer';
 import EmailEmptyContainer from '@containers/EmailEmptyContainer';
 import EmailMainWrapper from '@layouts/EmailMainWrapper';
 import EmailComposePage from './Email/EmailComposePage';
+import ContactPage from './Contact';
 
 export const managerRouter: RouteObject[] = [
   {
@@ -105,6 +106,7 @@ export const declareRouter: RouteObject[] = [
         element: <Navigate to={'/emails'} replace={true} />,
       },
       { path: '/about', element: <AboutPage /> },
+      { path: '/contact', element: <ContactPage /> },
       {
         path: '/change-password',
         element: <ChangePassword />,
