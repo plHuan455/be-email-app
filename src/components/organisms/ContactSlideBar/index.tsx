@@ -75,7 +75,7 @@ const ContactSlideBar: React.FC<ContactSlideBarProps> = ({
         <List>
           {menuList.map((menu, menuIndex) => (
             <Box >
-              <NavLink to={menu.navigate ?? ''}>
+              <NavLink to={menu.navigate ?? '#'}>
                 {({ isActive }) => (
                   <ListItemButton
                     onClick={() => onMenuTitleClick(menuIndex)}
@@ -101,7 +101,7 @@ const ContactSlideBar: React.FC<ContactSlideBarProps> = ({
               {menu.menuItems !== undefined && <Collapse in={menuIndex === expandIndex} timeout="auto" unmountOnExit>
                 <List component="div" disablePadding>
                   {menu.menuItems.map((value, index) => (
-                    <NavLink to={value.navigate ?? ''}>
+                    <NavLink to={value.navigate ?? '#'}>
                       <ListItemButton
                         sx={{
                           pl: 4,

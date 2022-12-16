@@ -257,7 +257,7 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
             : draftToHtml(convertToRaw(values.content.getCurrentContent())),
         bcc: values.bcc.map((value) => value.mail),
         cc: values.cc.map((value) => value.mail),
-        files: (
+        attachs: (
           values.attachFiles.fileUrls.filter(
             (value) => value !== undefined,
           ) as string[]

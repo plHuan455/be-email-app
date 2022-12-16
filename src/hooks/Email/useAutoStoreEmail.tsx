@@ -88,7 +88,7 @@ const useAutoStoreEmail = (delayTime: number = 5000) => {
       html_string: contentString,
       bcc: workingEmail.bcc?.map((value) => value.mail) ?? [],
       cc: workingEmail.cc?.map((value) => value.mail) ?? [],
-      files:
+      attachs:
         (
           workingEmail.attachFiles?.fileUrls.filter(
             (value) => value !== undefined,

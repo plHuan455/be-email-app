@@ -25,7 +25,7 @@ export interface CreateEmailParam {
     html_string: string;
     cc: string[];
     bcc: string[];
-    files: { path: string }[];
+    attachs: { path: string }[];
   };
   send_at?: string;
 }
