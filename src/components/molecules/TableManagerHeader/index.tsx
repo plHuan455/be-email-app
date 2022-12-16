@@ -21,7 +21,7 @@ const TableHeader: React.FC<Props> = ({ plusButtonTitle = '', isHaveActions = tr
   };
 
   return (
-    <div className="flex justify-between my-3">
+    <div className="m-tableHeader flex justify-between my-3">
       {props.children}
       {isHaveActions && (
         <Box className="flex gap-3 items-start">
