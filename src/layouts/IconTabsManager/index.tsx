@@ -27,7 +27,7 @@ const TabsData: TabItem[] = [
   {
     title: 'Contact',
     icon: <PermContactCalendarIcon />,
-    url: '/emails',
+    url: '/contact',
   },
   {
     title: 'Department',
