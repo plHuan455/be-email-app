@@ -4,7 +4,9 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { SingleOTPInputComponent } from '@components/atoms/Input/PinInput/SingleInput';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
-import AutoCompleteReceive from '@components/molecules/AutoCompleteReceive';
+import AutoCompleteReceive, {
+  InputContactBlock,
+} from '@components/molecules/AutoCompleteReceive';
 import EmailComposeFormGroup from '@components/molecules/EmailComposeFormGroup';
 import WindowComposeActions from '@components/molecules/WindowComposeActions';
 import { Editor } from 'react-draft-wysiwyg';
@@ -29,9 +31,10 @@ import AttachFiles2, { FileInfoTypes } from '@components/molecules/AttachFiles2'
 import EmailPrivateHashtagContainer from '@containers/EmailPrivateHashtagContainer';
 import { useSelector } from 'react-redux';
 import { RootState } from '@redux/configureStore';
+import { backUpData } from '@containers/EmailComposeContainer';
 
 export interface EmailComposeFields {
-  to: UserInfo[];
+  to: InputContactBlock[];
   cc: UserInfo[];
   bcc: UserInfo[];
   attachFiles: { fileUrls: (string | undefined)[]; files: (File | undefined)[] };
@@ -120,8 +123,9 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                         <AutoCompleteReceive
                           isActiveCcFrom={isShowCCForm}
                           onClickCcFromLabel={onCCButtonClick}
-                          defaultValue={value}
-                          data={value}
+                          defaultValue={[]}
+                          data={backUpData}
+                          value={value}
                           onChange={(_, value) => {
                             onChange(value);
                           }}
@@ -141,7 +145,8 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                         render={({ field: { value, onChange } }) => (
                           <AutoCompleteReceive
                             isShowCcFromLabel={false}
-                            data={value}
+                            value={value}
+                            data={backUpData}
                             defaultValue={value}
                             onChange={(_, value) => {
                               onChange(value);
@@ -159,7 +164,8 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                         render={({ field: { value, onChange } }) => (
                           <AutoCompleteReceive
                             isShowCcFromLabel={false}
-                            data={value}
+                            value={value}
+                            data={backUpData}
                             defaultValue={value}
                             onChange={(_, value) => onChange(value)}
                           />
@@ -171,7 +177,8 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                       label="From:"
                       isHaveBorderBottom={true}>
                       <AutoCompleteReceive
-                        data={[]}
+                        value={[]}
+                        data={backUpData}
                         defaultValue={[]}
                         isShowCcFromLabel={false}
                         isReadOnly={true}

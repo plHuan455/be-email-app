@@ -17,8 +17,45 @@ import AlertDialog, { useAlertDialog } from '@components/molecules/AlertDialog';
 dayjs.extend(utc);
 import { MinimizeEmailColor } from '@components/organisms/MinimizeEmail/interface';
 import { useNavigate } from 'react-router-dom';
-import useAutoStoreEmail from '@hooks/Email/useAutoStoreEmail';
+import useAutoStoreEmail from '../../hooks/Email/useAutoStoreEmail';
+import { UserInfo } from '@components/organisms/Email/Interface';
+import { InputContactBlock } from '@components/molecules/AutoCompleteReceive';
 dayjs.extend(utc);
+
+export const backUpData: InputContactBlock[] = [
+  {
+    contact_name: 'Phòng IT',
+    employeesList: [
+      new UserInfo('', 'giang', 'giang@mail.mail'),
+      new UserInfo('', 'huan', 'huan@mail.mail'),
+      new UserInfo('', 'quan', 'quan@mail.mail'),
+    ],
+  },
+  {
+    contact_name: 'Phòng FE',
+    employeesList: [
+      new UserInfo('', 'giang', 'giang@mail.mail'),
+      new UserInfo('', 'huan', 'huan@mail.mail'),
+      new UserInfo('', 'quan', 'quan@mail.mail'),
+    ],
+  },
+  {
+    contact_name: 'Phòng BE',
+    employeesList: [
+      new UserInfo('', 'giang', 'giang@mail.mail'),
+      new UserInfo('', 'huan', 'huan@mail.mail'),
+      new UserInfo('', 'quan', 'quan@mail.mail'),
+    ],
+  },
+  {
+    contact_name: 'Contact 1',
+    employeesList: [
+      new UserInfo('', 'giang', 'giang@mail.mail'),
+      new UserInfo('', 'huan', 'huan@mail.mail'),
+      new UserInfo('', 'quan', 'quan@mail.mail'),
+    ],
+  },
+];
 
 const currentUserEmail = localStorage.getItem('current_email');
 
@@ -209,7 +246,11 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
     submitEmailComposeMutate({
       email: {
         subject: values.subject,
-        to: values.to.map((value) => value.mail),
+        to: values.to.reduce((curr: string[], next) => {
+          const mails = next.employeesList.map((employee) => employee.mail);
+
+          return [...curr, ...mails];
+        }, []),
         html_string:
           values.content === ''
             ? ''
