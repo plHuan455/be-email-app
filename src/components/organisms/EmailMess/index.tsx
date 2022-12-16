@@ -158,6 +158,10 @@ const EmailMess: React.FC<Props> = ({
         dispatch(deleteIndexEmail(index));
         toast.success('Decline Successful!');
       },
+      onError(err:any, params){
+        console.log(err);
+        toast.error(`Can't ${params} email (${err.response?.status ? `CODE: ${err.response?.status}` : ''})`);
+      },
       onSettled() {
         onAlertDialogClose();
       },
