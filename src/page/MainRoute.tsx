@@ -32,6 +32,9 @@ import EmailEmptyContainer from '@containers/EmailEmptyContainer';
 import EmailMainWrapper from '@layouts/EmailMainWrapper';
 import EmailComposePage from './Email/EmailComposePage';
 import ContactPage from './Contact';
+import ContactLayout from '@layouts/Contact';
+import ContactSharing from './Contact/ContactSharing';
+import ContactGroups from './Contact/ContactGroup';
 
 export const managerRouter: RouteObject[] = [
   {
@@ -106,7 +109,20 @@ export const declareRouter: RouteObject[] = [
         element: <Navigate to={'/emails'} replace={true} />,
       },
       { path: '/about', element: <AboutPage /> },
-      { path: '/contact', element: <ContactPage /> },
+      { 
+        path: '/contact', 
+        element: <ContactLayout />,
+        children: [
+          {
+            path: '/contact/sharing',
+            element: <ContactSharing />,
+          },
+          {
+            path: '/contact/groups',
+            element: <ContactGroups />,
+          },
+        ]
+      },
       {
         path: '/change-password',
         element: <ChangePassword />,
