@@ -1,5 +1,3 @@
-import { EmailResponse } from '@api/email';
-
 export interface AuthResponse {
   user_name: string;
   position: string;

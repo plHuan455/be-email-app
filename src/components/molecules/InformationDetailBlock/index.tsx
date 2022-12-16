@@ -8,8 +8,8 @@ import AnimationTimeline from '@components/atoms/AnimationTimeline';
 import { isEmpty } from 'lodash';
 import { Email, UserInfo } from '@components/organisms/Email/Interface';
 import Icon from '@components/atoms/Icon';
-import { EmailResponse } from '@api/email';
 import styles from './styles.module.scss';
+import { EmailResponse } from '@api/email/interface';
 
 export interface ReceiverData {
   name: string;

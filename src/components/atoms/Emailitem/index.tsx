@@ -4,28 +4,26 @@ import avt from '../../../assets/images/avatars/avatar-1.jpg';
 import React from 'react';
 import { EmailList } from '@components/molecules/ModalEmailList';
 import './index.scss';
-import { EmailResponse, getEmailWithQueryParam, UserTagResponse } from '@api/email';
 import { createSearchParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useGetEmail } from '@hooks/Email/useGetEmail';
 import { setEmailsList } from '@redux/Email/reducer';
 import Icon from '../Icon';
+import { EmailResponse, UserTagResponse } from '@api/email/interface';
 
 type Props = {
   firstEmailContent: string;
-  emailStatus: string;
   data: UserTagResponse;
   dataEmail: EmailResponse[];
   isSelected: boolean;
   type: 'receive' | 'send';
+  emailCatalog: string;
   onSelect: () => void;
-  emailTag?: string;
 };
 
 const EmailItem: React.FC<Props> = ({
   data,
-  emailStatus,
-  emailTag,
+  emailCatalog,
   firstEmailContent,
   isSelected,
   type,
@@ -40,16 +38,16 @@ const EmailItem: React.FC<Props> = ({
 
   const handleClickEmailItem = async (e) => {
     onSelect();
-    if (!emailTag)
+    if (!emailCatalog)
       navigate({
-        pathname: `/emails/status/${emailStatus}/${user_email}`,
+        pathname: `/emails/status/${emailCatalog}/${user_email}`,
         search: createSearchParams({
           tab: searchParams.get('tab') || 'me',
         }).toString(),
       });
     else
       navigate({
-        pathname: `/emails/tag/${emailStatus}/${user_email}`,
+        pathname: `/emails/tag/${emailCatalog}/${user_email}`,
         search: createSearchParams({
           tab: searchParams.get('tab') || 'me',
         }).toString(),

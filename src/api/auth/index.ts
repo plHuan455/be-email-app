@@ -1,7 +1,7 @@
 import ApiClient, { ApiResponse } from '@api/ApiClient';
 import { AuthResponse, AuthUpdate } from './interface';
 
-export type Auth = '/auth/login';
+export type Auth = '/v1/api/author/login';
 export type AuthChangePassword = '/auth/setting';
 export const GetAuthProfile = '/api/user';
 export const UpdateAuthProfile = '/api/user/profile';
@@ -9,7 +9,7 @@ export const UpdateAuthProfile = '/api/user/profile';
 const CURR_EMAIL = localStorage.getItem('current_email') || '';
 
 export const login = async ({ email, password }): Promise<ApiResponse<string>> => {
-  const url: Auth = `/auth/login`;
+  const url: Auth = `/v1/api/author/login`;
   const res = await ApiClient.post(url, undefined, { email, password });
   return res.data;
 };

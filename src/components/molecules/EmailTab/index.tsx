@@ -81,7 +81,7 @@ const EmailTab: React.FC<Props> = ({ title, notiNumber, status, type, index }) =
       <ModalEmailList
         index={index}
         title={title}
-        status={status}
+        catalog={status}
         isActive={modalStatus}
         handleChangeModalStatus={handleChangeModalStatus}
       />

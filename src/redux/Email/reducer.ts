@@ -1,4 +1,4 @@
-import { EmailResponse } from '@api/email';
+import { EmailResponse } from '@api/email/interface';
 import { EmailList, StatusOptions } from '@components/molecules/ModalEmailList';
 import { Email, UserInfo } from '@components/organisms/Email/Interface';
 import { AttachFile, UserRead } from '@components/organisms/EmailMess';
@@ -378,10 +378,10 @@ const EmailSlice = createSlice({
       MinimizeEmailColor.reset();
       state = initialState;
     },
-    setWorkingEmail(state, action: PayloadAction<MinimizeEmailTypes>){
+    setWorkingEmail(state, action: PayloadAction<MinimizeEmailTypes>) {
       state.workingEmail = action.payload;
       return state;
-    }
+    },
   },
 });
 

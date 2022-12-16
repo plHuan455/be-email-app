@@ -39,8 +39,7 @@ const Hashtag: React.FC<Props> = ({ title, status, index, value }) => {
         title={title}
         status={status}
         renderType={'tag'}
-        tag={value}
-        // emailData={emailData}
+        catalog={value}
         isActive={modalStatus}
         handleChangeModalStatus={setModalStatus}
       />

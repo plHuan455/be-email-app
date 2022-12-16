@@ -1,9 +1,6 @@
-import {
-  EmailResponse,
-  getAllEmail,
-  getEmailWithQueryParam,
-} from './../../api/email/index';
+import { getAllEmail, getEmailWithQueryParam } from './../../api/email/index';
 import React, { useEffect, useState } from 'react';
+import { EmailResponse } from '@api/email/interface';
 
 export const useGetEmail = (status: string, mail?: string) => {
   const CURRENT_USER_EMAIL = localStorage.getItem('current_email')
