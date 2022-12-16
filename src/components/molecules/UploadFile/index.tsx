@@ -7,13 +7,16 @@ import { useQuery } from '@tanstack/react-query';
 import React, { useEffect, useMemo, useState } from 'react';
 import styles from './styles.module.scss';
 import CloseIcon from '@mui/icons-material/Close';
+import useMinimizedUpload from '@zustand/useMinimizedUpload';
 
 interface Props {
   data: any;
   uploadedData?: {name: string; type: string; url: string};
   onUploaded?: (uploadUrl: string) => void;
+  onUpload?: (customData: any) => void;
   onDeleteFile: () => void;
   onUploading?: (isUploading: boolean) => void;
+  percent?: number; // to get the percentage of uploading file outside of the component
 }
 
 const UploadFile: React.FC<Props> = ({ 
@@ -21,23 +24,22 @@ const UploadFile: React.FC<Props> = ({
   uploadedData,
   onUploading = () => {} ,
   onDeleteFile, 
-  onUploaded 
+  onUploaded,
+  onUpload,
 }) => {
-  const [progressPercent, setProgressPercent] = useState<number>(10);
-
+  const [progressPercent, setProgressPercent] = useState<number>(data?.percentage ?? 10);
   const [customData, setCustomData] = useState(() => {
     // data.preview = URL.createObjectURL(data);
 
     const res = {
-      name: data.name,
-      type: '',
-      url: '',
-    };
+      ...data,
+      percentage: data?.percentage ?? 0 
+    }
 
     return res;
   });
 
-  console.log(customData);
+  // console.log(customData);
 
   const { isLoading: isUploadingFile } = useQuery({
     queryKey: [`upload-file-${data.name}`, data],
@@ -51,12 +53,12 @@ const UploadFile: React.FC<Props> = ({
       if(onUploaded) onUploaded(res.data);
       onUploading(false);
     },
-    onError(res) {
+    onError(err) {
       setCustomData((prevState) => ({ ...prevState, type: `error` }));
       setProgressPercent(100);
       onUploading(false);
     },
-    enabled: !Boolean(uploadedData)
+    enabled: !Boolean(uploadedData) || !(data.percentage === 100),
   });
 
   useEffect(() => {
@@ -72,6 +74,7 @@ const UploadFile: React.FC<Props> = ({
         setCustomData((prevState) => ({ ...prevState, type: `pdf` }));
       else setCustomData((prevState) => ({ ...prevState, type: `file` }));
     }
+    onUpload?.(customData)
   }, []);
 
   useEffect(() => {

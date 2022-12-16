@@ -190,25 +190,25 @@ const EmailStatusBar = (props: Props) => {
     },
   });
 
-  useQuery({
-    queryKey: ['get-all-email-tag', count],
-    queryFn: getAllEmailTag,
-    onSuccess(res) {
-      const privHashTagData = res.data.map<HashtagTabs>((hashTag) => ({
-        title: `#${hashTag.name}`,
-        value: hashTag.name,
-        status: 'hashtag',
-        notiNumber: 0,
-      }));
+  // useQuery({
+  //   queryKey: ['get-all-email-tag', count],
+  //   queryFn: getAllEmailTag,
+  //   onSuccess(res) {
+  //     const privHashTagData = res.data.map<HashtagTabs>((hashTag) => ({
+  //       title: `#${hashTag.name}`,
+  //       value: hashTag.name,
+  //       status: 'hashtag',
+  //       notiNumber: 0,
+  //     }));
 
-      setHashtagTabs(privHashTagData);
-      localStorage.setItem('private_hashtag', JSON.stringify(privHashTagData));
-      dispatch(setPrivateHashtag(privHashTagData));
-    },
-    onError(err) {
-      console.log(err);
-    },
-  });
+  //     setHashtagTabs(privHashTagData);
+  //     localStorage.setItem('private_hashtag', JSON.stringify(privHashTagData));
+  //     dispatch(setPrivateHashtag(privHashTagData));
+  //   },
+  //   onError(err) {
+  //     console.log(err);
+  //   },
+  // });
 
   setInterval(() => {
     setCount((prevState) => prevState + 1);

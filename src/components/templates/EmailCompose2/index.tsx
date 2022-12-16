@@ -29,6 +29,7 @@ import AttachFiles2, { FileInfoTypes } from '@components/molecules/AttachFiles2'
 import EmailPrivateHashtagContainer from '@containers/EmailPrivateHashtagContainer';
 import { useSelector } from 'react-redux';
 import { RootState } from '@redux/configureStore';
+import useMinimizedUpload from '@zustand/useMinimizedUpload';
 
 export interface EmailComposeFields {
   to: UserInfo[];
@@ -42,6 +43,7 @@ export interface EmailComposeFields {
 
 interface EmailComposeProps {
   method: UseFormReturn<EmailComposeFields>;
+  index?: number;
   isFullScreen?: boolean;
   isShowCCForm?: boolean;
   attachFiles: (File | undefined)[];
@@ -62,6 +64,7 @@ interface EmailComposeProps {
 
 const EmailCompose2: React.FC<EmailComposeProps> = ({
   method,
+  index,
   isFullScreen = false,
   selectedDate,
   isShowCCForm = false,
@@ -80,7 +83,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const composeScrollRef = useRef<HTMLDivElement>(null);
-
+  const { emails, setEmail, setFiles } = useMinimizedUpload() 
   const { privateHashtags } = useSelector((state: RootState) => state.email);
 
   const handleAttachFileClick = () => {
@@ -88,6 +91,16 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
       fileInputRef.current.click();
     }
   };
+
+  const handleOnUploadFile = (fileList, emailIndex) => {
+    if(typeof emailIndex === 'undefined')
+      return setEmail({ files: [...fileList.map(file => ({ ...file }))] })
+    setFiles(emailIndex, [...fileList.map(file => ({ ...file }))] )
+  }
+
+  useEffect(() => {
+    console.log("upload", emails)
+  }, [emails])
 
   return (
     <Box className="t-emailCompose w-full h-full">
@@ -242,6 +255,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                           if (value.files.length === 0) return <></>;
                           return (
                             <AttachFiles2
+                              emailIndex={index}
                               fileUrls={value.fileUrls}
                               fileList={value.files}
                               inputId="react-compose-file-input"
@@ -250,10 +264,11 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                                 cloneAttachFiles.fileUrls[index] = url;
                                 onChange(cloneAttachFiles);
                               }}
+                              onUpload={(fileList, emailIndex) => handleOnUploadFile(fileList, emailIndex)}
                               onDelete={(index) => {
                                 const cloneAttachFile = { ...value };
-                                cloneAttachFile.files[index] = undefined;
-                                cloneAttachFile.fileUrls[index] = undefined;
+                                cloneAttachFile.files.splice(index, 1);
+                                cloneAttachFile.fileUrls.splice(index, 1);
                                 onChange(cloneAttachFile);
                               }}
                               onDeleteAll={() => {

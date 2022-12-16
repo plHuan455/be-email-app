@@ -13,6 +13,7 @@ import { addMinimizeEmail } from "@redux/Email/reducer";
 import { getEditorStateFormHtmlString } from "@utils/functions";
 import { MinimizeEmailColor } from "@components/organisms/MinimizeEmail/interface";
 import { useNavigate } from "react-router-dom";
+import useMinimizedUpload from "@zustand/useMinimizedUpload";
 dayjs.extend(utc)
 
 const currentUserEmail = localStorage.getItem('current_email');
@@ -27,7 +28,6 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
   const navigate = useNavigate();
   const minimizeEmailList = useAppSelector(state => state.email.minimizeMailList);
   const showMinimizeEmailId = useAppSelector(state => state.email.showMinimizeEmailId);
-
   const [attachFiles, setAttachFiles] = useState<(File|undefined)[]>([]);
 
 
@@ -55,6 +55,8 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
 
   const [tabBarColor, setTabBarColor] = useState<string>();
 
+  const [emailIndex, setEmailIndex] = useState<number>()
+
   const {mutate: submitEmailComposeMutate, isLoading: isEmailComposeSubmitting} = useMutation({
     mutationKey: ['email-compose-submit'],
     mutationFn: sendEmail,
@@ -78,6 +80,7 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
 
   useEffect(()=>{
     if(!showMinimizeEmailId) return;
+    setEmailIndex(minimizeEmailList.findIndex(value => value.id === showMinimizeEmailId))
     const foundMinimizeEmail = minimizeEmailList.find(value => value.id === showMinimizeEmailId);
     if(foundMinimizeEmail) {
       method.setValue('to', foundMinimizeEmail.to ?? []);
@@ -175,6 +178,7 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
   
   return (
     <EmailCompose2
+      index={emailIndex}
       method={method}
       attachFiles={attachFiles}
       isFullScreen={isFullScreen}

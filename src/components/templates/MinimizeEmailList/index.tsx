@@ -5,6 +5,7 @@ import { rem } from '@utils/functions';
 import { motion, usePresence, AnimatePresence } from "framer-motion";
 import classNames from 'classnames';
 import { useLocation } from 'react-router-dom';
+import useMinimizedUpload from '@zustand/useMinimizedUpload';
 
 export interface MinimizeEmailTypes {
   id?: string;
@@ -31,6 +32,14 @@ const MinimizeEmailList: React.FC<MinimizeEmailListProps> = ({
   onCloseClick,
 }) => {
   const location = useLocation();
+  const { deleteEmail } = useMinimizedUpload();
+  console.log(data)
+
+  const handleCloseMiniMail = (index: number, value) => {
+    deleteEmail(index)
+    onCloseClick(value)
+  }
+
   return (
     <div
       className="t-minimizeEmailList"
@@ -60,9 +69,10 @@ const MinimizeEmailList: React.FC<MinimizeEmailListProps> = ({
             >
               <MinimizeEmail
                 key={`minimize-email-list-${index}`}
+                index={index}
                 title={value.subject || 'New Message'}
                 onMaximizeClick={() => onMaximizeClick(value)}
-                onCloseClick={() => onCloseClick(value)}
+                onCloseClick={() => handleCloseMiniMail(index, value)}
               />
             </motion.div>
           </motion.div>
