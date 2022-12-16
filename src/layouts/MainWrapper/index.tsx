@@ -24,6 +24,7 @@ import {
 import { fetchToken, onMessageListener } from '../../messaging_init_in_sw';
 import { setIsShowEmailInfo } from '@redux/Global/reducer';
 import { deleteDeviceKey } from '@api/deviceKey';
+import { unShiftNotificationList } from '@redux/Notify/reducer';
 
 const sideBarWidth = 75;
 const emailStatusWidth = 290;
@@ -79,6 +80,7 @@ function MainWrapper() {
         body: payload.notification.body,
       });
       setShow(true);
+      dispatch(unShiftNotificationList(payload.notification));
     })
     .catch((err) => console.log('failed', err));
 
