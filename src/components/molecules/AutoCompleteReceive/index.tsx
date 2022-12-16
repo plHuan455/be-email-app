@@ -15,25 +15,33 @@ import './styles.scss';
 import { emailRegex } from '@constants/constants';
 
 import { isEmpty } from 'lodash';
+import ContactReceive from '@components/atoms/ContactReceive';
+
+export interface InputContactBlock {
+  contact_name: string;
+  employeesList: UserInfo[];
+}
 
 interface Props {
-  data: UserInfo[];
-  defaultValue?: UserInfo[];
+  value: InputContactBlock[];
+  data: InputContactBlock[];
+  defaultValue?: InputContactBlock[];
   isShowCcFromLabel?: boolean;
   onClickCcFromLabel?: React.MouseEventHandler<HTMLSpanElement> | undefined;
   isReadOnly?: boolean;
   onChange?:
     | ((
         event: React.SyntheticEvent<Element, Event>,
-        value: UserInfo[],
+        value: InputContactBlock[],
         reason: AutocompleteChangeReason,
-        details?: AutocompleteChangeDetails<UserInfo> | undefined,
+        details?: AutocompleteChangeDetails<InputContactBlock> | undefined,
       ) => void)
     | undefined;
   isActiveCcFrom?: boolean;
 }
 
 const AutoCompleteReceive: React.FC<Props> = ({
+  value,
   data,
   defaultValue,
   isShowCcFromLabel = true,
@@ -42,7 +50,7 @@ const AutoCompleteReceive: React.FC<Props> = ({
   onChange = (e) => {},
   isActiveCcFrom = false,
 }) => {
-  const [tempNewUserInfo, setTempNewUserInfo] = useState<UserInfo[]>([]);
+  const [tempNewUserInfo, setTempNewUserInfo] = useState<InputContactBlock[]>([]);
 
   const handleChangeInput = (e) => {
     const value = (e.target as HTMLInputElement).value.toLowerCase();
@@ -51,12 +59,19 @@ const AutoCompleteReceive: React.FC<Props> = ({
 
     if (matchEmailRegex) {
       // if input value is email type
-      setTempNewUserInfo([new UserInfo('', value, value)]);
+      setTempNewUserInfo([
+        {
+          contact_name: value,
+          employeesList: [new UserInfo('', value, value)],
+        },
+      ]);
     } else {
       // if input value not email type
       if (!isEmpty(tempNewUserInfo)) setTempNewUserInfo([]);
     }
   };
+
+  console.log(tempNewUserInfo);
 
   const handleDeleteReceiver = (cb, index) => {
     return (e) => {
@@ -66,23 +81,31 @@ const AutoCompleteReceive: React.FC<Props> = ({
       }
     };
   };
+
   return (
     <Autocomplete
-      value={data}
+      value={value}
       onChange={onChange}
       readOnly={isReadOnly}
       className="emailComposeTo"
       multiple
       id="tags-outlined"
       options={[...data, ...tempNewUserInfo]}
-      getOptionLabel={(option) => option.mail}
-      defaultValue={defaultValue ? [...defaultValue] : []}
+      getOptionLabel={(option) => option.contact_name}
+      defaultValue={defaultValue ? defaultValue : []}
       filterSelectedOptions
       autoHighlight
       renderOption={(props, option) => {
+        if (option.contact_name.match(emailRegex))
+          return (
+            <MenuItem {...props} className="block">
+              <Receiver data={option.employeesList[0]} haveCloseIcon={false} />
+            </MenuItem>
+          );
+
         return (
-          <MenuItem {...props} className="inline-block">
-            <Receiver data={option} haveCloseIcon={false} />
+          <MenuItem {...props} className="block">
+            <p>{option.contact_name}</p>
           </MenuItem>
         );
       }}
@@ -112,10 +135,19 @@ const AutoCompleteReceive: React.FC<Props> = ({
         return list.map((receiver, index) => {
           const props = getTagProps({ index: index });
 
+          if (receiver.contact_name.match(emailRegex))
+            return (
+              <Receiver
+                key={index}
+                data={receiver.employeesList[0]}
+                haveCloseIcon={!isReadOnly}
+                onDelete={handleDeleteReceiver(props.onDelete, index)}
+              />
+            );
+
           return (
-            <Receiver
-              key={index}
-              data={receiver}
+            <ContactReceive
+              contactName={receiver.contact_name}
               haveCloseIcon={!isReadOnly}
               onDelete={handleDeleteReceiver(props.onDelete, index)}
             />

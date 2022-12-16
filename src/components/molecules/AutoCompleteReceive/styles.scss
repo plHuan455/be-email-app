@@ -6,3 +6,10 @@
     padding-block: 0 !important;
   }
 }
+
+.MuiAutocomplete-popper {
+  .MuiPaper-root {
+    max-height: 400px;
+    overflow: scroll;
+  }
+}

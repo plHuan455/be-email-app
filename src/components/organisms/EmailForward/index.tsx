@@ -219,7 +219,7 @@ const EmailForward: React.FC<Props> = ({
     return (
       <>
         <Box>
-          <Box className="py-3">
+          {/* <Box className="py-3">
             <EmailComposeFormGroup
               className="py-1"
               label="To:"
@@ -233,11 +233,11 @@ const EmailForward: React.FC<Props> = ({
                 onChange={onChangeReceiversData}
               />
             </EmailComposeFormGroup>
-          </Box>
+          </Box> */}
         </Box>
         <Box>
           {/* Cc, From */}
-          {isShowCcFrom && (
+          {/* {isShowCcFrom && (
             <Box className="mb-2">
               <EmailComposeFormGroup
                 className="py-1"
@@ -277,7 +277,7 @@ const EmailForward: React.FC<Props> = ({
                 />
               </EmailComposeFormGroup>
             </Box>
-          )}
+          )} */}
           <Box>
             <Editor
               toolbarHidden

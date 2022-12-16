@@ -135,8 +135,6 @@ const EmailStatusBar = (props: Props) => {
     return JSON.parse(localStorage.getItem('private_hashtag') ?? JSON.stringify([]));
   });
 
-  const [count, setCount] = useState<number>(0);
-
   const [emailTabs, setEmailTabs] = useState<EmailTabs[]>(EmailTabsData);
 
   const [emailSecTabs, setEmailSecTab] = useState<EmailTabs[]>(EmailTabsSecData);
@@ -191,7 +189,7 @@ const EmailStatusBar = (props: Props) => {
   });
 
   useQuery({
-    queryKey: ['get-all-email-tag', count],
+    queryKey: ['get-all-email-tag'],
     queryFn: getAllEmailTag,
     onSuccess(res) {
       const privHashTagData = res.data.map<HashtagTabs>((hashTag) => ({
@@ -209,10 +207,6 @@ const EmailStatusBar = (props: Props) => {
       console.log(err);
     },
   });
-
-  setInterval(() => {
-    setCount((prevState) => prevState + 1);
-  }, 300000);
 
   const handleChangeEmailTabsNotiNumber = useCallback(
     (index, number) => {

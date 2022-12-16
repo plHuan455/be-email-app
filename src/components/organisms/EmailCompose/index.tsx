@@ -321,7 +321,7 @@ function EmailCompose() {
         <Box className="bg-white flex-1 flex flex-col overflow-scroll">
           <Box className="px-9 py-10 pt-2 flex-1 flex flex-col">
             {/* Compose To */}
-            <EmailComposeFormGroup label={'To:'}>
+            {/* <EmailComposeFormGroup label={'To:'}>
               <AutoCompleteReceive
                 data={[]}
                 defaultValue={receivers}
@@ -329,11 +329,11 @@ function EmailCompose() {
                 onChange={handleChangeReceivers}
                 isActiveCcFrom={isShowCcFrom}
               />
-            </EmailComposeFormGroup>
+            </EmailComposeFormGroup> */}
             {/* Cc, From */}
             {isShowCcFrom && (
               <Box className="mb-2">
-                <EmailComposeFormGroup
+                {/* <EmailComposeFormGroup
                   className="py-1"
                   label="Cc:"
                   isHaveBorderBottom={true}>
@@ -367,7 +367,7 @@ function EmailCompose() {
                     isShowCcFromLabel={false}
                     isReadOnly={true}
                   />
-                </EmailComposeFormGroup>
+                </EmailComposeFormGroup> */}
               </Box>
             )}
             {/* Subject */}
