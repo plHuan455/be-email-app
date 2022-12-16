@@ -26,7 +26,7 @@ const EmailPrivateHashtagContainer: React.FC<Props> = ({ defaultData }) => {
   };
 
   const handleClickPrivateTag = (tag: string) => (e) => {
-    navigate(`/emails/tag/${tag}`);
+    navigate(`/emails/catalog/tag/${tag}`);
   };
 
   return (

@@ -152,7 +152,7 @@ const EmailMess: React.FC<Props> = ({
     useMutation({
       mutationKey: ['update-email'],
       mutationFn: (status: 'PENDING' | 'APPROVED' | 'DECLINED') =>
-        approveEmail({ email_id: emailData.id, status: status }),
+        approveEmail({ user_email_id: emailData.email.id, status: status }),
       onSuccess() {
         queryClient.invalidateQueries({ queryKey: ['get-email-manager'] });
         dispatch(deleteIndexEmail(index));
@@ -175,10 +175,10 @@ const EmailMess: React.FC<Props> = ({
     {
       mutationKey: ['Approve-email'],
       mutationFn: async (query: {
-        email_id: number;
+        user_email_id: number;
         status: 'PENDING' | 'APPROVED' | 'DECLINED' | 'DRAFT';
         note: string;
-        send_after: number;
+        approve_after: number;
       }) => await approveEmail(query),
       onSuccess() {
         queryClient.invalidateQueries({ queryKey: ['get-email-manager'] });
@@ -216,9 +216,9 @@ const EmailMess: React.FC<Props> = ({
 
   const handleApproveNow = (e) => {
     setApproveEmail({
-      email_id: emailData.id,
+      user_email_id: emailData.email.id,
       note: '',
-      send_after: 0,
+      approve_after: 0,
       status: 'APPROVED',
     });
     setIsOpenModal(false);
@@ -226,9 +226,9 @@ const EmailMess: React.FC<Props> = ({
 
   const handleApproveSettime = (e) => {
     setApproveEmail({
-      email_id: emailData.id,
+      user_email_id: emailData.email.id,
       note: '',
-      send_after: valueApproveIn.minute() * 60 + valueApproveIn.second(),
+      approve_after: valueApproveIn.minute() * 60 + valueApproveIn.second(),
       status: 'APPROVED',
     });
     setIsOpenModal(false);
@@ -269,19 +269,19 @@ const EmailMess: React.FC<Props> = ({
 
   const handleSendEmail = () => {
     setApproveEmail({
-      email_id: emailData.id,
+      user_email_id: emailData.email.id,
       note: '',
       status: 'APPROVED',
-      send_after: 0,
+      approve_after: 0,
     });
   };
 
   const handleEmployeeCancel = () => {
     setAlertDialogData('Alert', 'Are you sure to cancel this email', () =>
       setApproveEmail({
-        email_id: emailData.id,
+        user_email_id: emailData.email.id,
         status: 'DRAFT',
-        send_after: 0,
+        approve_after: 0,
         note: '',
       }),
     );

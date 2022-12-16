@@ -68,6 +68,7 @@ const EmailTab: React.FC<Props> = ({ title, notiNumber, catalog, type, index }) 
               width: '14px',
               height: '18px',
               fontSize: '10px',
+              fontWeight: 700,
               borderRadius: '3px',
               display: 'flex',
               alignItems: 'center',

@@ -126,6 +126,7 @@ const EmailItem: React.FC<Props> = ({
             justifyContent: 'center',
             padding: '0 5px',
             color: '#495057',
+            fontWeight: 700,
           }}>
           {amount > 9 ? '9+' : amount}
         </Typography>

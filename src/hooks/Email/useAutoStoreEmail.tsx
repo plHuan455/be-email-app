@@ -30,9 +30,9 @@ const useAutoStoreEmail = (delayTime: number = 5000) => {
     mutationFn: async (params: { data: CreateEmailParam; emailId?: number }) => {
       const res = await sendEmail(params.data);
       const draft = await approveEmail({
-        email_id: res.data.id,
+        user_email_id: res.data.id,
         status: 'DRAFT',
-        send_after: 0,
+        approve_after: 0,
       });
       return draft;
     },

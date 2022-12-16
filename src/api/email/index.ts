@@ -226,10 +226,10 @@ export const updateEmailWithQuery = async (
 
 // Approve Email
 export const approveEmail = async (queryParam: {
-  email_id: number;
+  user_email_id: number;
   status: 'PENDING' | 'APPROVED' | 'DECLINED' | 'DRAFT';
   note?: string;
-  send_after?: number;
+  approve_after?: number;
 }): Promise<AxiosResponse<EmailResponse>> => {
   const url = `${EMAIL_MANAGER_API_URL}`;
 
