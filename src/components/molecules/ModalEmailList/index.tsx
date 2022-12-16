@@ -163,6 +163,7 @@ const ModalEmailList: React.FC<Props> = ({
       return (emailsData ?? []).map((item, index) => {
         return (
           <EmailItem
+            type="send"
             onSelect={() => {
               handleSelectEmailItem(item.user_tag_info.user_email);
             }}

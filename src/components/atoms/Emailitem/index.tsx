@@ -9,6 +9,7 @@ import { createSearchParams, useNavigate, useSearchParams } from 'react-router-d
 import { useDispatch } from 'react-redux';
 import { useGetEmail } from '@hooks/Email/useGetEmail';
 import { setEmailsList } from '@redux/Email/reducer';
+import Icon from '../Icon';
 
 type Props = {
   firstEmailContent: string;
@@ -16,6 +17,7 @@ type Props = {
   data: UserTagResponse;
   dataEmail: EmailResponse[];
   isSelected: boolean;
+  type: 'receive' | 'send';
   onSelect: () => void;
   emailTag?: string;
 };
@@ -26,6 +28,7 @@ const EmailItem: React.FC<Props> = ({
   emailTag,
   firstEmailContent,
   isSelected,
+  type,
   onSelect,
   dataEmail,
 }) => {
@@ -128,6 +131,7 @@ const EmailItem: React.FC<Props> = ({
       ) : (
         ''
       )}
+      <Icon className={`${type === 'send' && 'rotate-180'}`} icon="reply" />
     </Box>
   );
 };
