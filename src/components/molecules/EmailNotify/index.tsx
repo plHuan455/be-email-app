@@ -1,10 +1,16 @@
 import { Badge, Box, IconButton, Menu, MenuItem, Tooltip } from '@mui/material';
-import React from 'react';
+import React, { useMemo } from 'react';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
+import { useSelector } from 'react-redux';
+import { RootState } from '@redux/configureStore';
 
 const EmailNotify = () => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
+
+  const { notificationList } = useSelector((state: RootState) => state.notify);
+
+  // Handler FNC
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
@@ -12,10 +18,21 @@ const EmailNotify = () => {
     setAnchorEl(null);
   };
 
+  // Render FNC
+  const _renderNotificationItem = useMemo(() => {
+    if (notificationList.length === 0) return null;
+
+    return notificationList.map((notify, index) => (
+      <MenuItem onClick={handleClose} key={index}>
+        <b>{notify.title}</b>: <span>{notify.body}</span>
+      </MenuItem>
+    ));
+  }, [notificationList]);
+
   return (
     <Box>
       <Tooltip title={'Notify'} placement="right">
-        <Badge badgeContent={1} color="error">
+        <Badge badgeContent={notificationList.length} color="error">
           <IconButton onClick={handleClick}>
             <NotificationsActiveIcon
               sx={{
@@ -35,23 +52,15 @@ const EmailNotify = () => {
         }}
         sx={{
           '& .MuiPaper-root': {
+            minWidth: '180px',
+            borderRadius: '8px',
             border: '1px solid #e5e7eb',
             paddingInline: 0,
+            maxHeight: '100vh',
+            overflow: 'scroll',
           },
         }}>
-        <MenuItem onClick={handleClose}>
-          Giang Đỗ vừa gửi cho bạn 1 tin nhắn
-        </MenuItem>
-        <MenuItem onClick={handleClose}>
-          Phượng Nguyễn vừa gửi cho bạn 1 tin nhắn
-        </MenuItem>
-        <MenuItem className="justify-center">
-          <span
-            className="inline-block text-center underline w-full text-[#554CFF] hover:opacity-70"
-            onClick={handleClose}>
-            Show More
-          </span>
-        </MenuItem>
+        {_renderNotificationItem}
       </Menu>
     </Box>
   );

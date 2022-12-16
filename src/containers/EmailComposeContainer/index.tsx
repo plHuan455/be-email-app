@@ -14,10 +14,10 @@ import { useAppDispatch, useAppSelector } from '@redux/configureStore';
 import { addMinimizeEmail } from '@redux/Email/reducer';
 import { getEditorStateFormHtmlString } from '@utils/functions';
 import AlertDialog, { useAlertDialog } from '@components/molecules/AlertDialog';
-import useAutoStoreEmail from '@hooks/Email/useAutoStoreEmail';
 dayjs.extend(utc);
 import { MinimizeEmailColor } from '@components/organisms/MinimizeEmail/interface';
 import { useNavigate } from 'react-router-dom';
+import useAutoStoreEmail from '@hooks/Email/useAutoStoreEmail';
 dayjs.extend(utc);
 
 const currentUserEmail = localStorage.getItem('current_email');
