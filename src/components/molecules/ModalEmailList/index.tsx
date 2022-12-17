@@ -153,14 +153,11 @@ const ModalEmailList: React.FC<Props> = ({
       return (emailsData ?? []).map((item, index) => {
         return (
           <EmailItem
-            // type={item.user_email === currEmail ? 'send' : 'receive'}
             onSelect={() => {
               handleSelectEmailItem(item.user_id);
             }}
             isSelected={item.user_id === selectedUserId}
-            // firstEmailContent={item.emails[0].content}
             emailCatalog={catalog}
-            // dataEmail={item.emails}
             data={item}
             key={index}
           />
@@ -427,7 +424,7 @@ const ModalEmailList: React.FC<Props> = ({
         {userEmails && _renderEmtailItems(userEmails)}
       </TabPanel>
       <TabPanel value={value} index={1}>
-        {userAllEmails && _renderEmtailItems(userAllEmails)}
+        {userEmails && _renderEmtailItems(userEmails)}
       </TabPanel>
     </Box>
   );

@@ -46,6 +46,7 @@ function createMarkup(htmlString) {
 interface Props {
   emailData: EmailResponse;
   userInfo: UserInfo;
+  // isShowContent: boolean;
   onChangeStatus: (status: any, index: any) => void;
   onShowHistory: Function;
   status: string;
