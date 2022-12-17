@@ -125,7 +125,8 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
         if (workingEmail.id !== undefined) {
           deleteEmailMutate(workingEmail.id);
         }
-        navigate(`/emails/status/PENDING/${res.data.email.from}`);
+        if(res?.data?.user_id)
+          navigate(`/emails/catalog/pending/${res.data.user_id}`);
         queryClient.invalidateQueries({ queryKey: ['get-all-email-status'] });
         method.reset();
       },
