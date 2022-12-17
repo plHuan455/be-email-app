@@ -227,7 +227,7 @@ export const updateEmailWithQuery = async (
 // Approve Email
 export const approveEmail = async (queryParam: {
   user_email_id: number;
-  status: 'PENDING' | 'APPROVED' | 'DECLINED' | 'DRAFT';
+  status: 'PENDING' | 'approved' | 'DECLINED' | 'DRAFT';
   note?: string;
   approve_after?: number;
 }): Promise<AxiosResponse<EmailResponse>> => {
