@@ -76,11 +76,11 @@ function MainWrapper() {
   onMessageListener()
     .then((payload) => {
       setNotification({
-        title: payload.notification.title,
-        body: payload.notification.body,
+        title: payload.data.title,
+        body: payload.data.body,
       });
       setShow(true);
-      dispatch(unShiftNotificationList(payload.notification));
+      dispatch(unShiftNotificationList(payload.data));
     })
     .catch((err) => console.log('failed', err));
 

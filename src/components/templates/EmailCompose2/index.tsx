@@ -232,14 +232,14 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                     )}
                   />
                   <Box>
-                    {/* Private Hashtag */}
-                    <EmailPrivateHashtagContainer defaultData={[]} />
                     {/* Greeting */}
                     <EmailGreeting
                       greetingLabel="Thanks and Best regards, ------"
                       isHaveLogo={true}
                       logo={<LogoWithLabel />}
                     />
+                    {/* Private Hashtag */}
+                    <EmailPrivateHashtagContainer defaultData={[]} />
                     {/* Files List */}
                     <Box>
                       <Controller
