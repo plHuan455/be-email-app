@@ -8,8 +8,8 @@ import AnimationTimeline from '@components/atoms/AnimationTimeline';
 import { isEmpty } from 'lodash';
 import { Email, UserInfo } from '@components/organisms/Email/Interface';
 import Icon from '@components/atoms/Icon';
-import { EmailResponse } from '@api/email';
 import styles from './styles.module.scss';
+import { EmailResponse } from '@api/email';
 
 export interface ReceiverData {
   name: string;
@@ -144,8 +144,8 @@ const InformationDetailBlock = (props: Props) => {
   const SenderBlock = useMemo(() => {
     const sender = new UserInfo(
       '',
-      props.data?.writer_name || '',
-      props.data?.from || '',
+      props.data?.email.writer_id.toString() || '',
+      props.data?.email.from || '',
     );
 
     return (

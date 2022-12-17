@@ -378,10 +378,10 @@ const EmailSlice = createSlice({
       MinimizeEmailColor.reset();
       state = initialState;
     },
-    setWorkingEmail(state, action: PayloadAction<MinimizeEmailTypes>){
+    setWorkingEmail(state, action: PayloadAction<MinimizeEmailTypes>) {
       state.workingEmail = action.payload;
       return state;
-    }
+    },
   },
 });
 

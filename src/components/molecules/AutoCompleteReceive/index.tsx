@@ -16,6 +16,7 @@ import { emailRegex } from '@constants/constants';
 
 import { isEmpty } from 'lodash';
 import ContactReceive from '@components/atoms/ContactReceive';
+import Icon from '@components/atoms/Icon';
 
 export interface InputContactBlock {
   contact_name: string;
@@ -105,7 +106,16 @@ const AutoCompleteReceive: React.FC<Props> = ({
 
         return (
           <MenuItem {...props} className="block">
-            <p>{option.contact_name}</p>
+            <p className="flex gap-2 font-medium items-center">
+              <Icon
+                width={20}
+                height={20}
+                rawColor="#7061e2"
+                icon="department"
+                className="bg-slate-400/60 rounded-full p-1"
+              />
+              {option.contact_name}
+            </p>
           </MenuItem>
         );
       }}

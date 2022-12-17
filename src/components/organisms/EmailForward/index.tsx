@@ -200,7 +200,7 @@ const EmailForward: React.FC<Props> = ({
           subject: emailData.subject,
           to: emailData.receivers.map((item) => item.mail),
           content: emailData.content,
-          html_string: emailData.content,
+          text_html: emailData.content,
           from: currentUserEmail ? currentUserEmail : '',
           cc: emailData.cc.map((item) => item.mail),
           bcc: emailData.bcc.map((item) => item.mail),

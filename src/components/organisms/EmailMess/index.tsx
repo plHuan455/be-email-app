@@ -99,10 +99,10 @@ const EmailMess: React.FC<Props> = ({
     desc: 'Are you sure?',
   });
 
-  const cloneSendTo = !!emailData.to ? [...emailData.to] : [];
+  const cloneSendTo = !!emailData.email.to ? [...emailData.email.to] : [];
 
-  const remapPrivateHashtag: HashtagTabs[] = emailData.tags
-    ? emailData.tags.map((val) => ({
+  const remapPrivateHashtag: HashtagTabs[] = emailData.email.tags
+    ? emailData.email.tags.map((val) => ({
         notiNumber: 0,
         status: 'hashtag',
         title: `#${val}`,
@@ -152,15 +152,19 @@ const EmailMess: React.FC<Props> = ({
     useMutation({
       mutationKey: ['update-email'],
       mutationFn: (status: 'PENDING' | 'APPROVED' | 'DECLINED') =>
-        approveEmail({ email_id: emailData.id, status: status }),
+        approveEmail({ user_email_id: emailData.email.id, status: status }),
       onSuccess() {
         queryClient.invalidateQueries({ queryKey: ['get-email-manager'] });
         dispatch(deleteIndexEmail(index));
         toast.success('Decline Successful!');
       },
-      onError(err:any, params){
+      onError(err: any, params) {
         console.log(err);
-        toast.error(`Can't ${params} email (${err.response?.status ? `CODE: ${err.response?.status}` : ''})`);
+        toast.error(
+          `Can't ${params} email (${
+            err.response?.status ? `CODE: ${err.response?.status}` : ''
+          })`,
+        );
       },
       onSettled() {
         onAlertDialogClose();
@@ -171,10 +175,10 @@ const EmailMess: React.FC<Props> = ({
     {
       mutationKey: ['Approve-email'],
       mutationFn: async (query: {
-        email_id: number;
+        user_email_id: number;
         status: 'PENDING' | 'APPROVED' | 'DECLINED' | 'DRAFT';
         note: string;
-        send_after: number;
+        approve_after: number;
       }) => await approveEmail(query),
       onSuccess() {
         queryClient.invalidateQueries({ queryKey: ['get-email-manager'] });
@@ -212,9 +216,9 @@ const EmailMess: React.FC<Props> = ({
 
   const handleApproveNow = (e) => {
     setApproveEmail({
-      email_id: emailData.id,
+      user_email_id: emailData.email.id,
       note: '',
-      send_after: 0,
+      approve_after: 0,
       status: 'APPROVED',
     });
     setIsOpenModal(false);
@@ -222,9 +226,9 @@ const EmailMess: React.FC<Props> = ({
 
   const handleApproveSettime = (e) => {
     setApproveEmail({
-      email_id: emailData.id,
+      user_email_id: emailData.email.id,
       note: '',
-      send_after: valueApproveIn.minute() * 60 + valueApproveIn.second(),
+      approve_after: valueApproveIn.minute() * 60 + valueApproveIn.second(),
       status: 'APPROVED',
     });
     setIsOpenModal(false);
@@ -234,8 +238,10 @@ const EmailMess: React.FC<Props> = ({
     setAlertDialogData(
       'Alert',
       `Are you sure want to decline with title "${
-        data.subject ?? 'Empty'
-      }" from writer "${data.from ?? data.cc[0] ?? data.bcc[0] ?? 'No one'}"?`,
+        data.email.subject ?? 'Empty'
+      }" from writer "${
+        data.email.from ?? data.email.cc[0] ?? data.email.bcc[0] ?? 'No one'
+      }"?`,
       () => updateEmailStatus('DECLINED'),
     );
   };
@@ -263,19 +269,19 @@ const EmailMess: React.FC<Props> = ({
 
   const handleSendEmail = () => {
     setApproveEmail({
-      email_id: emailData.id,
+      user_email_id: emailData.email.id,
       note: '',
       status: 'APPROVED',
-      send_after: 0,
+      approve_after: 0,
     });
   };
 
   const handleEmployeeCancel = () => {
     setAlertDialogData('Alert', 'Are you sure to cancel this email', () =>
       setApproveEmail({
-        email_id: emailData.id,
+        user_email_id: emailData.email.id,
         status: 'DRAFT',
-        send_after: 0,
+        approve_after: 0,
         note: '',
       }),
     );
@@ -360,16 +366,16 @@ const EmailMess: React.FC<Props> = ({
         classNameContent="shadow-lg p-4 absolute z-10 top-1/2 right-[40px] w-[90%] -translate-y-1/2 bg-white rounded-[11px] border border-[#E3E3E3] "
         sendTo={
           status === 'reply'
-            ? [emailData.from]
+            ? [emailData.email.from]
             : status === 'replyAll'
-            ? emailData.to
-            : emailData.to
+            ? emailData.email.to
+            : emailData.email.to
         }
         sendToDefault={
           status === 'reply'
-            ? [emailData.from]
+            ? [emailData.email.from]
             : status === 'replyAll'
-            ? emailData.to
+            ? emailData.email.to
             : []
         }
       />
@@ -425,7 +431,7 @@ const EmailMess: React.FC<Props> = ({
           }  relative`}
           onClick={() => onShowHistory(emailData, emailData.id)}>
           <h1 className="text-stone-700 font-bold text-base mb-2 mr-16">
-            {emailData.subject}
+            {emailData.email.subject}
           </h1>
           {renderSendTo()}
           {status.toLowerCase() !== 'null' && <EmailStatus emailStatus={status} />}
@@ -433,17 +439,18 @@ const EmailMess: React.FC<Props> = ({
         {/* Email Content */}
         <Box className="py-9">
           <Box>
-            <p dangerouslySetInnerHTML={createMarkup(emailData.html_string)} />
+            <p dangerouslySetInnerHTML={createMarkup(emailData.email.html_string)} />
           </Box>
         </Box>
         {/* Files List If have */}
-        {emailData.attachFiles && (
-          <AttachFiles data={emailData.attachFiles} isUpload={false} />
+        {emailData.email.attachFiles && (
+          <AttachFiles data={emailData.email.attachFiles} isUpload={false} />
         )}
         {/* Email Private Hashtag */}
         <EmailPrivateHashtagContainer defaultData={remapPrivateHashtag ?? []} />
         {/* Actions */}
-        {(status === 'PENDING' || status === 'SENDING') &&
+        {(status.toUpperCase() === 'PENDING' ||
+          status.toUpperCase() === 'SENDING') &&
           !currRole?.startsWith('EMPLOYEE') && (
             <Box className="flex flex-wrap actions items-center py-4 justify-between">
               <Box>

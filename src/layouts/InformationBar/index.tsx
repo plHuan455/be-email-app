@@ -107,7 +107,7 @@ const InformationBar = (props: Props) => {
   const getAllAttachFiles: () => AttachFile[] = () => {
     const attachFiles: AttachFile[] = EmailsList.reduce(
       (cur: AttachFile[], next) => {
-        if (next.attachFiles) return [...cur, ...next.attachFiles];
+        if (next.email.attachFiles) return [...cur, ...next.email.attachFiles];
         return cur;
       },
       [],
@@ -116,7 +116,7 @@ const InformationBar = (props: Props) => {
     return attachFiles;
   };
   const checkIsShowMoreReceivers: () => boolean = () =>
-    !!currEmail.to || !!currEmail.cc || !!currEmail.bcc;
+    !!currEmail.email.to || !!currEmail.email.cc || !!currEmail.email.bcc;
 
   // const receiveData: ReceiverData[] = getReceiverData();
   const allAttachFiles: AttachFile[] = getAllAttachFiles();
@@ -139,9 +139,9 @@ const InformationBar = (props: Props) => {
           <InformationDetailBlock
             title="Receiver"
             isBorderBottom={true}
-            receiverData={currEmail.to}
-            ccData={currEmail.cc}
-            bccData={currEmail.bcc}
+            receiverData={currEmail.email.to}
+            ccData={currEmail.email.cc}
+            bccData={currEmail.email.bcc}
             // data={currEmail}
             isShowMore={false}
           />
@@ -193,9 +193,9 @@ const InformationBar = (props: Props) => {
       <InformationDetailBlock
         title="Receiver"
         isBorderBottom={true}
-        receiverData={currEmail.to && [currEmail.to[0]]}
-        ccData={currEmail.cc && [currEmail.cc[0]]}
-        bccData={currEmail.bcc && [currEmail.bcc[0]]}
+        receiverData={currEmail.email.to && [currEmail.email.to[0]]}
+        ccData={currEmail.email.cc && [currEmail.email.cc[0]]}
+        bccData={currEmail.email.bcc && [currEmail.email.bcc[0]]}
         // data={currEmail}
         isShowMore={checkIsShowMoreReceivers()}
         onShowMore={handleClickShowMore('receiver')}

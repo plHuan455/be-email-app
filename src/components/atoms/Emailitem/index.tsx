@@ -4,32 +4,36 @@ import avt from '../../../assets/images/avatars/avatar-1.jpg';
 import React from 'react';
 import { EmailList } from '@components/molecules/ModalEmailList';
 import './index.scss';
-import { EmailResponse, getEmailWithQueryParam, UserTagResponse } from '@api/email';
 import { createSearchParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { useGetEmail } from '@hooks/Email/useGetEmail';
 import { setEmailsList } from '@redux/Email/reducer';
+import Icon from '../Icon';
+import { EmailResponse, UserTagResponse } from '@api/email';
+import { CatalogTabResponse } from '@api/email/interface';
 
 type Props = {
-  firstEmailContent: string;
-  emailStatus: string;
-  data: UserTagResponse;
-  dataEmail: EmailResponse[];
+  // firstEmailContent: string;
+  data: CatalogTabResponse;
+  // dataEmail: EmailResponse[];
   isSelected: boolean;
+  // type: 'receive' | 'send';
+  emailCatalog: string;
   onSelect: () => void;
-  emailTag?: string;
 };
 
 const EmailItem: React.FC<Props> = ({
   data,
-  emailStatus,
-  emailTag,
-  firstEmailContent,
+  emailCatalog,
+  // firstEmailContent,
   isSelected,
+  // type,
   onSelect,
-  dataEmail,
+  // dataEmail,
 }) => {
-  const { avatar, count, user_email, user_name } = data;
+  const { avatar, amount, user_id, user_email, first_name, last_name } = data;
+
+  const fullName = `${last_name} ${first_name}`;
 
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -37,16 +41,16 @@ const EmailItem: React.FC<Props> = ({
 
   const handleClickEmailItem = async (e) => {
     onSelect();
-    if (!emailTag)
+    if (!emailCatalog)
       navigate({
-        pathname: `/emails/status/${emailStatus}/${user_email}`,
+        pathname: `/emails/catalog/${emailCatalog}/${user_id}`,
         search: createSearchParams({
           tab: searchParams.get('tab') || 'me',
         }).toString(),
       });
     else
       navigate({
-        pathname: `/emails/tag/${emailStatus}/${user_email}`,
+        pathname: `/emails/catalog/${emailCatalog}/${user_id}`,
         search: createSearchParams({
           tab: searchParams.get('tab') || 'me',
         }).toString(),
@@ -74,8 +78,8 @@ const EmailItem: React.FC<Props> = ({
         }}>
         <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
           <Avatar
-            src={avt}
-            alt="sender avt"
+            src={data.avatar}
+            alt={`${data.last_name} ${data.first_name}`}
             sx={{ width: '35px', height: '35px' }}
           />
           <Box sx={{ width: '70%' }}>
@@ -90,7 +94,7 @@ const EmailItem: React.FC<Props> = ({
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
               }}>
-              <span className="font-bold">{user_name}</span> | {user_email}
+              <span className="font-bold">{fullName}</span> | {user_email}
             </Typography>
             <Typography
               component={'p'}
@@ -104,12 +108,12 @@ const EmailItem: React.FC<Props> = ({
                 overflow: 'hidden',
                 fontWeight: 'bold',
               }}>
-              {firstEmailContent}
+              {/* {firstEmailContent} */}
             </Typography>
           </Box>
         </Box>
       </Box>
-      {count > 0 ? (
+      {amount > 0 ? (
         <Typography
           component={'p'}
           sx={{
@@ -122,12 +126,14 @@ const EmailItem: React.FC<Props> = ({
             justifyContent: 'center',
             padding: '0 5px',
             color: '#495057',
+            fontWeight: 700,
           }}>
-          {count > 9 ? '9+' : count}
+          {amount > 9 ? '9+' : amount}
         </Typography>
       ) : (
         ''
       )}
+      {/* <Icon className={`${type === 'send' && 'rotate-180'}`} icon="reply" /> */}
     </Box>
   );
 };

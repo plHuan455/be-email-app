@@ -20,7 +20,12 @@ import { useNavigate } from 'react-router-dom';
 import SingleOTPInput from '@components/atoms/Input/PinInput/SingleInput';
 import Hashtag from '@components/atoms/Hashtag';
 import { toast } from 'react-toastify';
-import { EmailTagsResponse, getAllEmailStatus, getAllEmailTag } from '@api/email';
+import {
+  EmailTagsResponse,
+  getAllCatalogTab,
+  getAllEmailStatus,
+  getAllEmailTag,
+} from '@api/email';
 import EmailTab from '@components/molecules/EmailTab';
 import { HashtagTabs, setPrivateHashtag } from '@redux/Email/reducer';
 import { useQuery } from '@tanstack/react-query';
@@ -146,18 +151,29 @@ const EmailStatusBar = (props: Props) => {
 
   useQuery({
     queryKey: ['get-all-email-status'],
-    queryFn: getAllEmailStatus,
+    queryFn: getAllCatalogTab,
     onSuccess(res) {
       if (!isEmpty(res.data)) {
+        const privHashTagData = res.data.splice(7).map<HashtagTabs>((hashTag) => ({
+          title: `#${hashTag.value}`,
+          value: hashTag.value,
+          status: 'hashtag',
+          notiNumber: hashTag.amount,
+        }));
+
+        setHashtagTabs(privHashTagData);
+        localStorage.setItem('private_hashtag', JSON.stringify(privHashTagData));
+        dispatch(setPrivateHashtag(privHashTagData));
+
         setEmailTabs((prevState) => {
           const data: EmailTabs[] = prevState.reduce(
             (currVal: EmailTabs[], nextVal) => {
               const foundInRes = res.data.find(
-                (item) => item.tag.toLowerCase() === nextVal.status,
+                (item) => item.value.toLowerCase() === nextVal.status,
               );
 
               if (foundInRes)
-                return [...currVal, { ...nextVal, notiNumber: foundInRes.count }];
+                return [...currVal, { ...nextVal, notiNumber: foundInRes.amount }];
               return [...currVal, nextVal];
             },
             [],
@@ -169,11 +185,11 @@ const EmailStatusBar = (props: Props) => {
           const data: EmailTabs[] = prevState.reduce(
             (currVal: EmailTabs[], nextVal) => {
               const foundInRes = res.data.find(
-                (item) => item.tag.toLowerCase() === nextVal.status,
+                (item) => item.value.toLowerCase() === nextVal.status,
               );
 
               if (foundInRes)
-                return [...currVal, { ...nextVal, notiNumber: foundInRes.count }];
+                return [...currVal, { ...nextVal, notiNumber: foundInRes.amount }];
               return [...currVal, nextVal];
             },
             [],
@@ -182,26 +198,6 @@ const EmailStatusBar = (props: Props) => {
           return data;
         });
       }
-    },
-    onError(err) {
-      console.log(err);
-    },
-  });
-
-  useQuery({
-    queryKey: ['get-all-email-tag'],
-    queryFn: getAllEmailTag,
-    onSuccess(res) {
-      const privHashTagData = res.data.map<HashtagTabs>((hashTag) => ({
-        title: `#${hashTag.name}`,
-        value: hashTag.name,
-        status: 'hashtag',
-        notiNumber: 0,
-      }));
-
-      setHashtagTabs(privHashTagData);
-      localStorage.setItem('private_hashtag', JSON.stringify(privHashTagData));
-      dispatch(setPrivateHashtag(privHashTagData));
     },
     onError(err) {
       console.log(err);
@@ -312,7 +308,7 @@ const EmailStatusBar = (props: Props) => {
                   index={index}
                   key={index}
                   notiNumber={item.notiNumber ? item.notiNumber : 0}
-                  status={item.status}
+                  catalog={item.status}
                   title={item.title}
                   type={emailTabType}
                 />
@@ -331,7 +327,7 @@ const EmailStatusBar = (props: Props) => {
             return (
               <Hashtag
                 title={item.title}
-                value={item.value}
+                catalog={item.value}
                 status={item.status}
                 // emailData={item.emailData}
                 index={index}

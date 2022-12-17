@@ -10,12 +10,12 @@ import ModalEmailList, { StatusOptions } from '../ModalEmailList';
 interface Props {
   title: string;
   notiNumber: number;
-  status: StatusOptions;
+  catalog: StatusOptions;
   type: string;
   index: number;
 }
 
-const EmailTab: React.FC<Props> = ({ title, notiNumber, status, type, index }) => {
+const EmailTab: React.FC<Props> = ({ title, notiNumber, catalog, type, index }) => {
   // useState
   const [modalStatus, setModalStatus] = useState(false);
 
@@ -24,9 +24,9 @@ const EmailTab: React.FC<Props> = ({ title, notiNumber, status, type, index }) =
 
   // useEffect
   useEffect(() => {
-    if (!params.status) return;
+    if (!params.catalog) return;
 
-    if (params.status.toLowerCase() === status.toLowerCase()) setModalStatus(true);
+    if (params.catalog.toLowerCase() === catalog.toLowerCase()) setModalStatus(true);
   }, [params]);
 
   // useNavigate
@@ -37,7 +37,7 @@ const EmailTab: React.FC<Props> = ({ title, notiNumber, status, type, index }) =
 
   // Handler FUNC
   const handleOpenEmailTab = (e) => {
-    navigate(`/emails/status/${status.toUpperCase()}`);
+    navigate(`/emails/catalog/${catalog.toUpperCase()}`);
   };
 
   const handleChangeModalStatus = () => {
@@ -68,6 +68,7 @@ const EmailTab: React.FC<Props> = ({ title, notiNumber, status, type, index }) =
               width: '14px',
               height: '18px',
               fontSize: '10px',
+              fontWeight: 700,
               borderRadius: '3px',
               display: 'flex',
               alignItems: 'center',
@@ -81,7 +82,7 @@ const EmailTab: React.FC<Props> = ({ title, notiNumber, status, type, index }) =
       <ModalEmailList
         index={index}
         title={title}
-        status={status}
+        catalog={catalog}
         isActive={modalStatus}
         handleChangeModalStatus={handleChangeModalStatus}
       />

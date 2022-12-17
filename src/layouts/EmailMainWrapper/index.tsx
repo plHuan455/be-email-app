@@ -9,11 +9,7 @@ import { useParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import { setEmailIsLoading, setEmailsList } from '@redux/Email/reducer';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import {
-  getEmailManagerWithQueryParams,
-  getEmailsListWithQueryParams,
-  getEmailWithQueryParam,
-} from '@api/email';
+import { getAllEmailByCatalog, getEmailsListWithQueryParams } from '@api/email';
 import { toast } from 'react-toastify';
 
 const receiverData: Receiver[] = [
@@ -42,11 +38,13 @@ const EmailMainWrapper = () => {
   // Get Emails List
   const { isLoading: isLoadingGetEmailsList } = useQuery({
     queryKey: ['get-emails-list'],
-    queryFn: () => getEmailsListWithQueryParams(params),
+    queryFn: () => getAllEmailByCatalog(params),
     onSuccess: (res) => {
       dispatch(
         setEmailsList(
-          params.status?.toLowerCase() === 'pending' ? res.data.reverse() : res.data,
+          params.catalog?.toLowerCase() === 'pending'
+            ? res.data.reverse()
+            : res.data,
         ),
       );
       return res.data;
