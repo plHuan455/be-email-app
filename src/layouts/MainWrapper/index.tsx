@@ -26,10 +26,9 @@ import { fetchToken, onMessageListener } from '../../messaging_init_in_sw';
 import { setIsShowEmailInfo } from '@redux/Global/reducer';
 import { deleteDeviceKey } from '@api/deviceKey';
 import { unShiftNotificationList } from '@redux/Notify/reducer';
+import { IS_EMPLOYEE_ROLE } from '@constants/localStore';
 import { useQuery } from '@tanstack/react-query';
 import { getHashtags } from '@api/email';
-
-import { IS_EMPLOYEE_ROLE } from '@constants/localStore';
 
 const sideBarWidth = 75;
 const emailStatusWidth = 290;

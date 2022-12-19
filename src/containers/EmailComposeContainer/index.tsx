@@ -281,6 +281,7 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
           ) as string[]
         ).map((value) => ({ path: value })),
         from: currentUserEmail ? currentUserEmail : '',
+        hashtags: values.hashtags.map(value => value.value)
       },
       send_at: selectedDate
         ? dayjs.utc(selectedDate).toISOString() ?? dayjs.utc().toISOString()

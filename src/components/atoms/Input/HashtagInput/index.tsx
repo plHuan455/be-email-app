@@ -1,6 +1,15 @@
-import { Autocomplete, Box, Chip, FormLabel, InputBase, makeStyles, MenuItem, TextField } from "@mui/material"
-import { rem } from "@utils/functions"
-import { useState } from "react";
+import {
+  Autocomplete,
+  Box,
+  Chip,
+  FormLabel,
+  InputBase,
+  makeStyles,
+  MenuItem,
+  TextField,
+} from '@mui/material';
+import { rem } from '@utils/functions';
+import { useState } from 'react';
 
 export interface HashtagOptionTypes {
   name: string;
@@ -19,39 +28,37 @@ const HashtagInput: React.FC<HashTagInputProps> = ({
   label,
   value,
   placeholder,
-  optionList = [{
-    name: 'test',
-    value: 'test'
-  }],
+  optionList = [
+    {
+      name: 'test',
+      value: 'test',
+    },
+  ],
   optionRegex,
   onChange,
 }) => {
   const [tempOption, setTempOption] = useState<HashtagOptionTypes>();
   const handleInput = (e) => {
-    if(!optionRegex) return;
-    const inputValue = e.target.value
+    if (!optionRegex) return;
+    const inputValue = e.target.value;
     const isMatchHashtagType = inputValue.match(optionRegex);
-    const isExist = optionList.some(option => option.value === `#${inputValue}` )
+    const isExist = optionList.some((option) => option.value === `#${inputValue}`);
 
     if (isMatchHashtagType && !isExist) {
       setTempOption({
         name: `${inputValue}`,
-        value: `${inputValue}`
+        value: `${inputValue}`,
       });
     } else setTempOption(undefined);
-  }
+  };
   return (
-    <Box 
-      className="a-hashtagInput"
-      display="flex"
-      alignItems="center"
-    >
+    <Box className="a-hashtagInput" display="flex" alignItems="center">
       {label !== undefined && <FormLabel>{label}</FormLabel>}
       <Autocomplete
         multiple
         value={value}
         options={tempOption ? [tempOption, ...optionList] : optionList}
-        getOptionLabel={option => option.name}
+        getOptionLabel={(option) => option.name}
         autoHighlight
         defaultValue={[]}
         filterSelectedOptions
@@ -60,35 +67,38 @@ const HashtagInput: React.FC<HashTagInputProps> = ({
           ml: label !== undefined ? rem(12) : 0,
           flexGrow: 1,
           '.Mui-focused': {
-            backgroundColor: 'transparent'
+            backgroundColor: 'transparent',
           },
           '.MuiAutocomplete-option': {
-            padding: rem(8)
+            padding: rem(8),
           },
           '& fieldset': {
-            border: '1px solid #1f1f1f5d'
+            border: '1px solid #1f1f1f5d',
           },
           '.MuiOutlinedInput-root: hover .MuiOutlinedInput-notchedOutline': {
-            border: '1px solid #1f1f1f5d'
+            border: '1px solid #1f1f1f5d',
           },
           '.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
-            border: '1px solid #1f1f1f5d'
-          }
+            border: '1px solid #1f1f1f5d',
+          },
         }}
         renderTags={(value, getTagProps) =>
           value.map((option, index: number) => (
-            <Chip variant="outlined" label={option.name} {...getTagProps({ index })} />
+            <Chip
+              variant="outlined"
+              label={option.name}
+              {...getTagProps({ index })}
+            />
           ))
         }
         renderOption={(props, option) => {
-          if(value.some(valueData => valueData.value === option.value)) return null;
+          if (value.some((valueData) => valueData.value === option.value))
+            return null;
           return (
             <MenuItem {...props} className="block">
-              <p className="flex gap-2 font-medium items-center">
-                {option.name}
-              </p>
+              <p className="flex gap-2 font-medium items-center">{option.name}</p>
             </MenuItem>
-          )
+          );
         }}
         renderInput={(params) => (
           <TextField
@@ -101,8 +111,8 @@ const HashtagInput: React.FC<HashTagInputProps> = ({
                 py: rem(4),
               },
               '.Mui-focused': {
-                backgroundColor: 'transparent'
-              }
+                backgroundColor: 'transparent',
+              },
             }}
             onInput={handleInput}
             className="a-hashtagInput_input"
@@ -111,7 +121,7 @@ const HashtagInput: React.FC<HashTagInputProps> = ({
         )}
       />
     </Box>
-  )
-}
+  );
+};
 
-export default HashtagInput
+export default HashtagInput;

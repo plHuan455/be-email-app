@@ -19,7 +19,7 @@ export interface MinimizeEmailTypes {
   sendAt?: string | null;
   color?: string;
   fileUrls?: (string | undefined)[];
-  hashtags?: {name: string; value: string}[]
+  hashtags?: { name: string; value: string }[];
 }
 
 interface MinimizeEmailListProps {
