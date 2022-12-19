@@ -313,14 +313,14 @@ const ModalEmailList: React.FC<Props> = ({
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        {!isLoadingGetEmailData ? (
+        {isLoadingGetEmailData ? (
           <Loading isLoading={isLoadingGetEmailData} size={'xs'} />
         ) : (
           _renderEmtailItems(userEmails)
         )}
       </TabPanel>
       <TabPanel value={value} index={1}>
-        {!isLoadingGetEmailData ? (
+        {isLoadingGetEmailData ? (
           <Loading isLoading={isLoadingGetEmailData} size={'xs'} />
         ) : (
           _renderEmtailItems(userEmails)
