@@ -246,31 +246,32 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
       return;
     }
 
-    console.log({
-      email: {
-        subject: values.subject,
-        to: values.to.reduce((curr: string[], next) => {
-          const mails = next.employeesList.map((employee) => employee.mail);
+    // console.log({
+    //   email: {
+    //     subject: values.subject,
+    //     to: values.to.reduce((curr: string[], next) => {
+    //       const mails = next.employeesList.map((employee) => employee.mail);
 
-          return [...curr, ...mails];
-        }, []),
-        text_html:
-          values.content === ''
-            ? ''
-            : draftToHtml(convertToRaw(values.content.getCurrentContent())),
-        bcc: values.bcc.map((value) => value.mail),
-        cc: values.cc.map((value) => value.mail),
-        attachs: (
-          values.attachFiles.fileUrls.filter(
-            (value) => value !== undefined,
-          ) as string[]
-        ).map((value) => ({ path: value })),
-        from: currentUserEmail ? currentUserEmail : '',
-      },
-      send_at: selectedDate
-        ? dayjs.utc(selectedDate).toISOString() ?? dayjs.utc().toISOString()
-        : dayjs.utc(selectedDate).toISOString(),
-    });
+    //       return [...curr, ...mails];
+    //     }, []),
+    //     text_html:
+    //       values.content === ''
+    //         ? ''
+    //         : draftToHtml(convertToRaw(values.content.getCurrentContent())),
+    //     bcc: values.bcc.map((value) => value.mail),
+    //     cc: values.cc.map((value) => value.mail),
+    //     attachs: (
+    //       values.attachFiles.fileUrls.filter(
+    //         (value) => value !== undefined,
+    //       ) as string[]
+    //     ).map((value) => ({ path: value })),
+    //     from: currentUserEmail ? currentUserEmail : '',
+    //   },
+    //   send_at: selectedDate
+    //     ? dayjs.utc(selectedDate).toISOString() ?? dayjs.utc().toISOString()
+    //     : dayjs.utc(selectedDate).toISOString(),
+    // });
+
     submitEmailComposeMutate({
       email: {
         subject: values.subject,

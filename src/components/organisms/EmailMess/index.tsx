@@ -182,10 +182,20 @@ const EmailMess: React.FC<Props> = ({
         note: string;
         approve_after: number;
       }) => await approveEmail(query),
-      onSuccess() {
+      onSuccess(_, params) {
         queryClient.invalidateQueries({ queryKey: ['get-email-manager'] });
         dispatch(deleteIndexEmail(index));
-        toast.success('Email has been Approved');
+
+        switch(params.status) {
+          case 'DRAFT': {
+            toast.success('Email has been cancel');
+            break;
+          }
+          case 'approved': {
+            toast.success('Email has been Approved');
+            break;
+          }
+        }
       },
       onError() {
         toast.error("Can't approve email");
@@ -216,7 +226,7 @@ const EmailMess: React.FC<Props> = ({
 
   // Handle FUNC
 
-  const handleApproveNow = (e) => {
+  const handleApproveNow = () => {
     setApproveEmail({
       user_email_id: emailData.id,
       note: '',
@@ -314,7 +324,7 @@ const EmailMess: React.FC<Props> = ({
               <ControlEmailSend
                 variant="cancel"
                 remainMinutes={
-                  100 || Math.floor((sentAt.getTime() - Date.now()) / 1000 / 60)
+                  Math.floor((sentAt.getTime() - Date.now()) / 1000 / 60)
                 }
                 onCancel={handleEmployeeCancel}
               />
@@ -330,7 +340,8 @@ const EmailMess: React.FC<Props> = ({
                 remainMinutes={Math.floor(
                   (approveAt.getTime() - Date.now()) / 60000,
                 )}
-                onCancel={handleEmployeeCancel}
+                onUndo={handleUndoEmail}
+                onSend={handleApproveNow}
               />
             </Box>
           );
@@ -359,7 +370,7 @@ const EmailMess: React.FC<Props> = ({
         </Box>
       );
     else return null;
-  }, []);
+  }, [sentAt, approveAt, status, currRole]);
 
   const _renderActionsSending = useMemo(() => {
     return (

@@ -1,4 +1,5 @@
 import {
+  EMAIL_API_MANAGER_UNDO,
   EMAIL_API_URL,
   EMAIL_CATALOG,
   EMAIL_MANAGER_API_URL,
@@ -260,7 +261,7 @@ export const undoEmail = async ({
   emailId: number;
   note?: string;
 }) => {
-  const url = `${EMAIL_API_URL}/undo`;
-  const res = await ApiClient.post(url, undefined, { email_id: emailId, note });
+  const url = `${EMAIL_API_MANAGER_UNDO}`;
+  const res = await ApiClient.post(url, undefined, { user_email_id: emailId, note });
   return res.data;
 };
