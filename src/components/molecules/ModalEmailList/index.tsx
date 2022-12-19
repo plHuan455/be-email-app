@@ -126,20 +126,21 @@ const ModalEmailList: React.FC<Props> = ({
     setSelectedUserId(Number(params.user_id) || 0);
   }, [params]);
 
-  const { data: dataGetEmailManagerByStatus } = useQuery({
-    queryKey: ['get-email-manager', pathName, ...EmailsList, value],
-    queryFn: () => {
-      setUserEmail([]);
-      return getListCatalogWithQueryParam({
-        catalog: catalog,
-        subject: tagParams || 'me',
-      });
-    },
-    enabled: isActive,
-    onSuccess: (res) => {
-      setUserEmail(res.data);
-    },
-  });
+  const { data: dataGetEmailManagerByStatus, isLoading: isLoadingGetEmailData } =
+    useQuery({
+      queryKey: ['get-email-manager', pathName, ...EmailsList, value],
+      queryFn: () => {
+        setUserEmail([]);
+        return getListCatalogWithQueryParam({
+          catalog: catalog,
+          subject: tagParams || 'me',
+        });
+      },
+      enabled: isActive,
+      onSuccess: (res) => {
+        setUserEmail(res.data);
+      },
+    });
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -312,17 +313,17 @@ const ModalEmailList: React.FC<Props> = ({
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        {!isEmpty(userEmails) ? (
-          _renderEmtailItems(userEmails)
+        {!isLoadingGetEmailData ? (
+          <Loading isLoading={isLoadingGetEmailData} size={'xs'} />
         ) : (
-          <Loading isLoading={isEmpty(userEmails)} size={'xs'} />
+          _renderEmtailItems(userEmails)
         )}
       </TabPanel>
       <TabPanel value={value} index={1}>
-        {!isEmpty(userEmails) ? (
-          _renderEmtailItems(userEmails)
+        {!isLoadingGetEmailData ? (
+          <Loading isLoading={isLoadingGetEmailData} size={'xs'} />
         ) : (
-          <Loading isLoading={isEmpty(userEmails)} size={'xs'} />
+          _renderEmtailItems(userEmails)
         )}
       </TabPanel>
     </Box>

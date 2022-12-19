@@ -78,6 +78,21 @@ export interface EmailDeleteResponse {
   message?: string;
 }
 
+const API_EMAIL_USER = '/v1/api/email/user';
+
+// Email Action
+
+export const EmailActions = async (params: {
+  user_email_id: number;
+  action: 'delete' | 'spam' | 'favorite' | 'unread';
+}): Promise<CuSAxiosResponse<any>> => {
+  const url = `${API_EMAIL_USER}/action`;
+
+  const res = await ApiClient.post(url, undefined, params);
+
+  return res.data;
+};
+
 // GET ALL CUR EMAIL TAG
 export const getAllEmailTag = async (): Promise<AxiosResponse<any[]>> => {
   const url = `/api/hashtag`;

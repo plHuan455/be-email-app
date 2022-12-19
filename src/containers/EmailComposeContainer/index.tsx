@@ -233,6 +233,8 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
     //   },
     //   send_at: selectedDate ? dayjs.utc(selectedDate).toISOString() ?? dayjs.utc().toISOString() : dayjs.utc(selectedDate).toISOString(),
     // });
+    // console.log(dayjs.utc(selectedDate).toISOString());
+
     if (
       values.to.length === 0 &&
       values.cc.length === 0 &&
@@ -244,6 +246,31 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
       return;
     }
 
+    console.log({
+      email: {
+        subject: values.subject,
+        to: values.to.reduce((curr: string[], next) => {
+          const mails = next.employeesList.map((employee) => employee.mail);
+
+          return [...curr, ...mails];
+        }, []),
+        text_html:
+          values.content === ''
+            ? ''
+            : draftToHtml(convertToRaw(values.content.getCurrentContent())),
+        bcc: values.bcc.map((value) => value.mail),
+        cc: values.cc.map((value) => value.mail),
+        attachs: (
+          values.attachFiles.fileUrls.filter(
+            (value) => value !== undefined,
+          ) as string[]
+        ).map((value) => ({ path: value })),
+        from: currentUserEmail ? currentUserEmail : '',
+      },
+      send_at: selectedDate
+        ? dayjs.utc(selectedDate).toISOString() ?? dayjs.utc().toISOString()
+        : dayjs.utc(selectedDate).toISOString(),
+    });
     submitEmailComposeMutate({
       email: {
         subject: values.subject,
