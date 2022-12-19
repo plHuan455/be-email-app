@@ -37,9 +37,10 @@ const EmailMainWrapper = () => {
 
   // Get Emails List
   const { isLoading: isLoadingGetEmailsList } = useQuery({
-    queryKey: ['get-emails-list'],
+    queryKey: ['get-emails-list', params.catalog, params.user_id],
     queryFn: () => getAllEmailByCatalog(params),
     onSuccess: (res) => {
+      console.log(res.data);
       dispatch(
         setEmailsList(
           params.catalog?.toLowerCase() === 'pending'

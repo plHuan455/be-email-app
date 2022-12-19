@@ -16,7 +16,6 @@ import {
 } from '@api/email';
 import { useGetEmail } from '@hooks/Email/useGetEmail';
 import { useMutation, useQuery } from '@tanstack/react-query';
-import Loading from '@components/atoms/Loading';
 import {
   useLocation,
   useNavigate,
@@ -27,6 +26,8 @@ import useLocalStorage from '@hooks/useLocalStorage';
 import { useSelector } from 'react-redux';
 import { RootState } from '@redux/configureStore';
 import { CatalogTabResponse } from '@api/email/interface';
+import Loading from '@components/atoms/Loading';
+import { isEmpty } from 'lodash';
 
 export interface EmailList {
   userId: number;
@@ -100,7 +101,7 @@ const ModalEmailList: React.FC<Props> = ({
 
   const [value, setValue] = React.useState(0);
   const [selectedUserId, setSelectedUserId] = useState<number>();
-  const [userEmails, setUserEmail] = useState<CatalogTabResponse[]>();
+  const [userEmails, setUserEmail] = useState<CatalogTabResponse[]>([]);
   const [userAllEmails, setUserAllEmail] = useState<CatalogTabResponse[]>();
 
   const { EmailsList } = useSelector((state: RootState) => state.email);
@@ -127,11 +128,13 @@ const ModalEmailList: React.FC<Props> = ({
 
   const { data: dataGetEmailManagerByStatus } = useQuery({
     queryKey: ['get-email-manager', pathName, ...EmailsList, value],
-    queryFn: () =>
-      getListCatalogWithQueryParam({
+    queryFn: () => {
+      setUserEmail([]);
+      return getListCatalogWithQueryParam({
         catalog: catalog,
         subject: tagParams || 'me',
-      }),
+      });
+    },
     enabled: isActive,
     onSuccess: (res) => {
       setUserEmail(res.data);
@@ -215,102 +218,6 @@ const ModalEmailList: React.FC<Props> = ({
     );
   }, [value]);
 
-  const ModalEmailApproved = useMemo(() => {
-    return (
-      <Box
-        className={isActive ? 'modal__active' : 'modal__inactive'}
-        sx={{
-          width: '100%',
-          height: 'calc(100vh - 165px)',
-          position: 'absolute',
-          transition: '.3s ease-in-out',
-          backgroundColor: '#f7f7fc',
-          zIndex: 10,
-        }}>
-        <ButtonBase
-          onClick={() => handleChangeModalStatus(false)}
-          sx={{
-            color: '#554CFF',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '0 10px',
-          }}>
-          <ArrowLeft width={12} height={12} />
-          <Typography
-            component={'p'}
-            sx={{ fontWeight: 'bold', marginLeft: '10px' }}>
-            {title}
-          </Typography>
-        </ButtonBase>
-        <Box sx={{}}>
-          <Tabs
-            className="cover__tabs"
-            value={value}
-            onChange={handleChange}
-            aria-label="basic tabs example">
-            <Tab className="tab" label="All" {...a11yProps(0)} />
-            <Tab className="tab" label="Me" {...a11yProps(1)} />
-          </Tabs>
-        </Box>
-        <TabPanel value={value} index={0}>
-          props
-        </TabPanel>
-        <TabPanel value={value} index={1}>
-          Item Two
-        </TabPanel>
-      </Box>
-    );
-  }, [value]);
-
-  const ModalEmailCancel = useMemo(() => {
-    return (
-      <Box
-        className={isActive ? 'modal__active' : 'modal__inactive'}
-        sx={{
-          width: '100%',
-          height: 'calc(100vh - 165px)',
-          position: 'absolute',
-          transition: '.3s ease-in-out',
-          backgroundColor: '#f7f7fc',
-          zIndex: 10,
-        }}>
-        <ButtonBase
-          onClick={() => handleChangeModalStatus(false)}
-          sx={{
-            color: '#554CFF',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '0 10px',
-          }}>
-          <ArrowLeft width={12} height={12} />
-          <Typography
-            component={'p'}
-            sx={{ fontWeight: 'bold', marginLeft: '10px' }}>
-            {title}
-          </Typography>
-        </ButtonBase>
-        <Box sx={{}}>
-          <Tabs
-            className="cover__tabs"
-            value={value}
-            onChange={handleChange}
-            aria-label="basic tabs example">
-            <Tab className="tab" label="All" {...a11yProps(0)} />
-            <Tab className="tab" label="Me" {...a11yProps(1)} />
-          </Tabs>
-        </Box>
-        <TabPanel value={value} index={0}>
-          props
-        </TabPanel>
-        <TabPanel value={value} index={1}>
-          Item Two
-        </TabPanel>
-      </Box>
-    );
-  }, [value]);
-
   const ModalHashtag = useMemo(() => {
     return (
       <Box
@@ -361,22 +268,6 @@ const ModalEmailList: React.FC<Props> = ({
 
   const navigate = useNavigate();
 
-  const renderModalEmailList = () => {
-    switch (status) {
-      case 'pending':
-        return ModalEmailPending;
-      case 'approved':
-        return ModalEmailPending;
-      case 'declined':
-        return ModalEmailPending;
-      case 'hashtag':
-        return ModalHashtag;
-
-      default:
-        return ModalEmailPending;
-    }
-  };
-
   return (
     <Box
       className={isActive ? 'modal__active' : 'modal__inactive'}
@@ -421,10 +312,18 @@ const ModalEmailList: React.FC<Props> = ({
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
-        {userEmails && _renderEmtailItems(userEmails)}
+        {!isEmpty(userEmails) ? (
+          _renderEmtailItems(userEmails)
+        ) : (
+          <Loading isLoading={isEmpty(userEmails)} size={'xs'} />
+        )}
       </TabPanel>
       <TabPanel value={value} index={1}>
-        {userEmails && _renderEmtailItems(userEmails)}
+        {!isEmpty(userEmails) ? (
+          _renderEmtailItems(userEmails)
+        ) : (
+          <Loading isLoading={isEmpty(userEmails)} size={'xs'} />
+        )}
       </TabPanel>
     </Box>
   );

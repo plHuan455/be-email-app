@@ -67,7 +67,6 @@ const EmailMess: React.FC<Props> = ({
   index,
   onChangeStatus,
 }) => {
-
   const defaultStatus = useMemo(() => status, []);
   const [valueApproveIn, setValueApproveIn] = useState<Dayjs>(dayjs('2022-04-07'));
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
@@ -106,11 +105,11 @@ const EmailMess: React.FC<Props> = ({
 
   const remapPrivateHashtag: HashtagTabs[] = emailData.email.tags
     ? emailData.email.tags.map((val) => ({
-      notiNumber: 0,
-      status: 'hashtag',
-      title: `#${val}`,
-      value: val,
-    }))
+        notiNumber: 0,
+        status: 'hashtag',
+        title: `#${val}`,
+        value: val,
+      }))
     : [];
 
   const renderSendTo = () => {
@@ -164,7 +163,8 @@ const EmailMess: React.FC<Props> = ({
       onError(err: any, params) {
         console.log(err);
         toast.error(
-          `Can't ${params} email (${err.response?.status ? `CODE: ${err.response?.status}` : ''
+          `Can't ${params} email (${
+            err.response?.status ? `CODE: ${err.response?.status}` : ''
           })`,
         );
       },
@@ -209,8 +209,7 @@ const EmailMess: React.FC<Props> = ({
   });
 
   // localStore
-  const currRole = localStorage.getItem('current_role');
-
+  const currRole = localStorage.getItem('current_role')?.toUpperCase();
 
   // useDispatch
   const dispatch = useDispatch();
@@ -231,7 +230,7 @@ const EmailMess: React.FC<Props> = ({
     setApproveEmail({
       user_email_id: emailData.id,
       note: '',
-      approve_after: valueApproveIn.minute()*60 + valueApproveIn.second(),
+      approve_after: valueApproveIn.minute() * 60 + valueApproveIn.second(),
       status: 'approved',
     });
     setIsOpenModal(false);
@@ -240,8 +239,10 @@ const EmailMess: React.FC<Props> = ({
   const handleOnDecline = (data: EmailResponse) => (e) => {
     setAlertDialogData(
       'Alert',
-      `Are you sure want to decline with title "${data.email.subject ?? 'Empty'
-      }" from writer "${data.email.from ?? data.email.cc[0] ?? data.email.bcc[0] ?? 'No one'
+      `Are you sure want to decline with title "${
+        data.email.subject ?? 'Empty'
+      }" from writer "${
+        data.email.from ?? data.email.cc[0] ?? data.email.bcc[0] ?? 'No one'
       }"?`,
       () => updateEmailStatus('DECLINED'),
     );
@@ -282,13 +283,11 @@ const EmailMess: React.FC<Props> = ({
       setApproveEmail({
         user_email_id: emailData.id,
         status: 'DRAFT',
-        approve_after: valueApproveIn.hour() * 60  + valueApproveIn.minute(),
+        approve_after: valueApproveIn.hour() * 60 + valueApproveIn.minute(),
         note: '',
       }),
     );
   };
-
-  console.log(emailData);
 
   // Render FUNC
   const _renderActionsPending = useMemo(() => {
@@ -304,6 +303,62 @@ const EmailMess: React.FC<Props> = ({
         </Button>
       </>
     );
+  }, []);
+
+  const _renderActionsPendingItems = useMemo(() => {
+    const _renderActionsPendingItem = () => {
+      if (currRole?.startsWith('EMPLOYEE')) {
+        if (emailData.type === 'send' && sentAt.getTime() > Date.now())
+          return (
+            <Box>
+              <ControlEmailSend
+                variant="cancel"
+                remainMinutes={
+                  100 || Math.floor((sentAt.getTime() - Date.now()) / 1000 / 60)
+                }
+                onCancel={handleEmployeeCancel}
+              />
+            </Box>
+          );
+        else return null;
+      } else {
+        if (approveAt.getTime() > Date.now())
+          return (
+            <Box>
+              <ControlEmailSend
+                variant="undoSendNow"
+                remainMinutes={Math.floor(
+                  (approveAt.getTime() - Date.now()) / 60000,
+                )}
+                onCancel={handleEmployeeCancel}
+              />
+            </Box>
+          );
+        else
+          return (
+            <Box className="flex flex-1 justify-end">
+              <Button
+                onClick={handleOnDecline(emailData)}
+                className="mx-1 bg-rose-600 py-1.5 px-5 hover:bg-rose-500">
+                DECLINE
+              </Button>
+              <Button
+                onClick={handleOnApprove(emailData)}
+                className="mx-1 py-1.5 px-5">
+                APPROVE
+              </Button>
+            </Box>
+          );
+      }
+    };
+
+    if (status.toUpperCase() === 'PENDING' || status.toUpperCase() === 'SENDING')
+      return (
+        <Box className="flex flex-wrap actions items-center py-4 justify-between">
+          {_renderActionsPendingItem()}
+        </Box>
+      );
+    else return null;
   }, []);
 
   const _renderActionsSending = useMemo(() => {
@@ -371,15 +426,15 @@ const EmailMess: React.FC<Props> = ({
           status === 'reply'
             ? [emailData.email.from]
             : status === 'replyAll'
-              ? emailData.email.to
-              : emailData.email.to
+            ? emailData.email.to
+            : emailData.email.to
         }
         sendToDefault={
           status === 'reply'
             ? [emailData.email.from]
             : status === 'replyAll'
-              ? emailData.email.to
-              : []
+            ? emailData.email.to
+            : []
         }
       />
     );
@@ -387,11 +442,13 @@ const EmailMess: React.FC<Props> = ({
 
   return (
     <Box
-      className={`o-EmailMess w-full relative flex flex-wrap ${type === 'send' && styles.flexRowReverse
-        }`}>
+      className={`o-EmailMess w-full relative flex flex-wrap ${
+        type === 'send' && styles.flexRowReverse
+      }`}>
       <Box
-        className={`w-full flex flex-wrap ${styles.emailHeader} ${isShowHeader && styles.showEmailHeader
-          } ${type === 'send' && styles.flexRowReverse}`}>
+        className={`w-full flex flex-wrap ${styles.emailHeader} ${
+          isShowHeader && styles.showEmailHeader
+        } ${type === 'send' && styles.flexRowReverse}`}>
         <Box className={`flex-1`}>
           <OptionalAvatar
             className={` ${type === 'send' && styles.flexRowReverse}`}
@@ -418,16 +475,18 @@ const EmailMess: React.FC<Props> = ({
       </Box>
       <Box
         sx={{ boxShadow: '0px 10px 23px -15px rgba(159,159,159,0.54)' }}
-        className={`flex-1 bg-white ${type === 'send'
-          ? 'rounded-tl-[36px] rounded-br-[36px]'
-          : 'rounded-tr-[36px] rounded-bl-[36px]'
-          } pb-4 ${styles.emailWrap} mb-8`}>
+        className={`flex-1 bg-white ${
+          type === 'send'
+            ? 'rounded-tl-[36px] rounded-br-[36px]'
+            : 'rounded-tr-[36px] rounded-bl-[36px]'
+        } pb-4 ${styles.emailWrap} mb-8`}>
         {/* Header */}
         <Box
-          className={`cursor-pointer pb-6 bg-violet-200 py-4 ${type === 'send'
-            ? 'rounded-br-[36px] rounded-tl-[36px]'
-            : 'rounded-bl-[36px] rounded-tr-[36px]'
-            }  relative`}
+          className={`cursor-pointer pb-6 bg-violet-200 py-4 ${
+            type === 'send'
+              ? 'rounded-br-[36px] rounded-tl-[36px]'
+              : 'rounded-bl-[36px] rounded-tr-[36px]'
+          }  relative`}
           onClick={() => onShowHistory(emailData, emailData.id)}>
           <h1 className="text-stone-700 font-bold text-base mb-2 mr-16">
             {emailData.email.subject}
@@ -448,32 +507,39 @@ const EmailMess: React.FC<Props> = ({
         {/* Email Private Hashtag */}
         <EmailPrivateHashtagContainer defaultData={remapPrivateHashtag ?? []} />
         {/* Actions */}
-        {(status.toUpperCase() === 'PENDING' ||
+        {_renderActionsPendingItems}
+        {/* {(status.toUpperCase() === 'PENDING' ||
           status.toUpperCase() === 'SENDING') && (
-            <Box className="flex flex-wrap actions items-center py-4 justify-between">
-              <Box>
-                { currRole?.startsWith('EMPLOYEE') && emailData.type === 'send' && sentAt.getTime() > Date.now() ? (
-                  <ControlEmailSend
-                    variant="cancel"
-                    remainMinutes={100 || Math.floor(
-                      (sentAt.getTime() - Date.now()) / 1000 / 60,
-                    )}
-                    onCancel={handleEmployeeCancel}
-                  />
-                ) : null }
-              </Box>
-              <Box>
-                {!currRole?.startsWith('EMPLOYEE') && approveAt.getTime() > Date.now() ? <ControlEmailSend
+          <Box className="flex flex-wrap actions items-center py-4 justify-between">
+            <Box>
+              {currRole?.startsWith('EMPLOYEE') &&
+              emailData.type === 'send' &&
+              sentAt.getTime() > Date.now() ? (
+                <ControlEmailSend
+                  variant="cancel"
+                  remainMinutes={
+                    100 || Math.floor((sentAt.getTime() - Date.now()) / 1000 / 60)
+                  }
+                  onCancel={handleEmployeeCancel}
+                />
+              ) : null}
+            </Box>
+            <Box>
+              {!currRole?.startsWith('EMPLOYEE') &&
+              approveAt.getTime() > Date.now() ? (
+                <ControlEmailSend
                   variant="undoSendNow"
                   remainMinutes={Math.floor(
                     (approveAt.getTime() - Date.now()) / 60000,
                   )}
                   onCancel={handleEmployeeCancel}
-                /> : _renderActionsPending}
-              </Box>
+                />
+              ) : (
+                _renderActionsPending
+              )}
             </Box>
-          )
-        }
+          </Box>
+        )} */}
         {status === 'APPROVED' && sentAt.getTime() > Date.now() && (
           <ControlEmailSend
             remainMinutes={Math.floor(
