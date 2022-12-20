@@ -50,6 +50,11 @@ export interface EmailResponse {
     text_html: string;
     content: string;
     attachFiles?: AttachFile[];
+    attachs?: {
+      id: number;
+      email_id: number;
+      path: string;
+    }[];
     tags: [];
   };
   tags: string[];

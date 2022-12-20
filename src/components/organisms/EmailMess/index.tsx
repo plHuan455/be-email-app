@@ -28,6 +28,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import ModalBase from '@components/atoms/ModalBase';
 import SettimeInput from '@components/molecules/SettimeInput';
 import ControlEmailSend from '../ControlEmailSend';
+import { isEmpty } from 'lodash';
 export interface UserRead {
   name: string;
   time: string;
@@ -67,8 +68,8 @@ const EmailMess: React.FC<Props> = ({
   isShowActions = false,
   index,
   onChangeStatus,
-  onUpdateHashtagClick
-}) => {  
+  onUpdateHashtagClick,
+}) => {
   const defaultStatus = useMemo(() => status, []);
   const [valueApproveIn, setValueApproveIn] = useState<Dayjs>(dayjs('2022-04-07'));
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
@@ -76,13 +77,6 @@ const EmailMess: React.FC<Props> = ({
 
   const sentAt = new Date(emailData.send_at);
   const approveAt = new Date(emailData.approve_at);
-
-  // const [editor, setEditor] = useState(() => EditorState.createEmpty());
-
-  // useEffect(() => {
-  //   const contentState = convertFromRaw(JSON.parse(mailContent));
-  //   setEditor(EditorState.createWithContent(contentState));
-  // }, []);
 
   const {
     isOpen: isAlertDialogOpen,
@@ -95,27 +89,41 @@ const EmailMess: React.FC<Props> = ({
     setAlertData: setAlertDialogData,
   } = useAlertDialog();
 
-  const [alertDialog, setAlertDialog] = useState<{
-    title: string;
-    desc: string;
-  }>({
-    title: 'Alert',
-    desc: 'Are you sure?',
-  });
-
-
   const cloneSendTo = !!emailData.email.to ? [...emailData.email.to] : [];
 
   const remapPrivateHashtag = useMemo<HashtagTabs[]>(() => {
     return emailData?.tags
-    ? emailData.tags.map((val) => ({
-        notiNumber: 0,
-        status: 'hashtag',
-        title: `#${val}`,
-        value: val,
-      }))
-    : []
-  }, [])
+      ? emailData.tags.map((val) => ({
+          notiNumber: 0,
+          status: 'hashtag',
+          title: `#${val}`,
+          value: val,
+        }))
+      : [];
+  }, []);
+
+  const _renderAttachesFiles = useMemo(() => {
+    if (!emailData.email.attachs) return null;
+
+    const newAttachesFile: AttachFile[] = emailData.email.attachs.map((file) => {
+      const clonePath = file.path;
+
+      const fileName = clonePath.replace(/^.*[\\\/]/, '');
+
+      const fileType = /[.]/.exec(fileName)
+        ? /[^.]+$/.exec(fileName)?.toString()
+        : undefined;
+
+      return {
+        name: fileName,
+        type: fileType ? fileType : 'file',
+        url: file.path,
+      };
+    });
+    console.log(newAttachesFile);
+
+    return <AttachFiles data={newAttachesFile} isUpload={false} />;
+  }, [emailData]);
 
   const renderSendTo = () => {
     const sendToLength = cloneSendTo.length;
@@ -522,13 +530,11 @@ const EmailMess: React.FC<Props> = ({
           </Box>
         </Box>
         {/* Files List If have */}
-        {emailData.email.attachFiles && (
-          <AttachFiles data={emailData.email.attachFiles} isUpload={false} />
-        )}
+        {_renderAttachesFiles}
         {/* Email Private Hashtag */}
-        <EmailPrivateHashtagContainer 
-          defaultData={remapPrivateHashtag ?? []} 
-          onChangeDefaultData={(data) => console.log(data)} 
+        <EmailPrivateHashtagContainer
+          defaultData={remapPrivateHashtag ?? []}
+          onChangeDefaultData={(data) => console.log(data)}
           onCheckClick={onUpdateHashtagClick}
         />
         {/* Actions */}
