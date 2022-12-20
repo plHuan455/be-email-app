@@ -15,7 +15,7 @@ import {
   getListCatalogWithQueryParam,
 } from '@api/email';
 import { useGetEmail } from '@hooks/Email/useGetEmail';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   useLocation,
   useNavigate,
@@ -126,6 +126,13 @@ const ModalEmailList: React.FC<Props> = ({
     setSelectedUserId(Number(params.user_id) || 0);
   }, [params]);
 
+  // useSelector
+  const { notificationList } = useSelector((state: RootState) => state.notify);
+
+  // useQuery
+
+  const queryClient = useQueryClient();
+
   const { data: dataGetEmailManagerByStatus, isLoading: isLoadingGetEmailData } =
     useQuery({
       queryKey: ['get-email-manager', pathName, ...EmailsList, value],
@@ -141,6 +148,13 @@ const ModalEmailList: React.FC<Props> = ({
         setUserEmail(res.data);
       },
     });
+
+  // useEffect
+  useEffect(() => {
+    if (!isEmpty(notificationList)) {
+      queryClient.invalidateQueries({ queryKey: ['get-email-manager'] });
+    }
+  }, [notificationList]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);

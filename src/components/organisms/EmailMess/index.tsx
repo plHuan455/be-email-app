@@ -50,7 +50,7 @@ interface Props {
   onChangeStatus: (status: any, index: any) => void;
   onShowHistory: Function;
   status: string;
-  type?: string;
+  type: 'receive' | 'send';
   isShowHeader?: boolean;
   isShowActions?: boolean;
   index?: number;
@@ -183,16 +183,20 @@ const EmailMess: React.FC<Props> = ({
         approve_after: number;
       }) => await approveEmail(query),
       onSuccess(_, params) {
-        queryClient.invalidateQueries({ queryKey: ['get-email-manager'] });
-        dispatch(deleteIndexEmail(index));
+        queryClient.invalidateQueries({ queryKey: ['get-emails-list'] });
 
-        switch(params.status) {
+        switch (params.status) {
           case 'DRAFT': {
             toast.success('Email has been cancel');
             break;
           }
           case 'approved': {
-            toast.success('Email has been Approved');
+            if (params.approve_after > 0) {
+              toast.success(`Email will be approved after ${params.approve_after}`);
+            } else {
+              dispatch(deleteIndexEmail(index));
+              toast.success('Email has been Approved');
+            }
             break;
           }
         }
@@ -210,7 +214,7 @@ const EmailMess: React.FC<Props> = ({
     mutationKey: ['email-mess-undo-email'],
     mutationFn: undoEmail,
     onSuccess() {
-      queryClient.invalidateQueries({ queryKey: ['get-email-manager'] });
+      queryClient.invalidateQueries({ queryKey: ['get-emails-list'] });
       toast.success('Email have been undo');
     },
     onError() {
@@ -323,9 +327,9 @@ const EmailMess: React.FC<Props> = ({
             <Box>
               <ControlEmailSend
                 variant="cancel"
-                remainMinutes={
-                  Math.floor((sentAt.getTime() - Date.now()) / 1000 / 60)
-                }
+                remainMinutes={Math.floor(
+                  (sentAt.getTime() - Date.now()) / 1000 / 60,
+                )}
                 onCancel={handleEmployeeCancel}
               />
             </Box>
@@ -464,7 +468,7 @@ const EmailMess: React.FC<Props> = ({
           <OptionalAvatar
             className={` ${type === 'send' && styles.flexRowReverse}`}
             data={userInfo}
-            isShowAvatar={true}
+            isShowAvatar={false}
             optionDate={emailData.created_at}
           />
         </Box>
@@ -472,6 +476,7 @@ const EmailMess: React.FC<Props> = ({
           <Box className="w-full flex">
             <Box className="flex-1">
               <EmailActions
+                type={type}
                 isActiveClick={true}
                 emailIndex={index}
                 handleChangeStatus={onChangeStatus}
@@ -508,7 +513,7 @@ const EmailMess: React.FC<Props> = ({
         {/* Email Content */}
         <Box className="py-9">
           <Box>
-            <p dangerouslySetInnerHTML={createMarkup(emailData.email.html_string)} />
+            <p dangerouslySetInnerHTML={createMarkup(emailData.email.text_html)} />
           </Box>
         </Box>
         {/* Files List If have */}

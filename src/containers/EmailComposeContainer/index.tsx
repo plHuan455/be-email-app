@@ -26,8 +26,8 @@ export const backUpData: InputContactBlock[] = [
   {
     contact_name: 'Phòng IT',
     employeesList: [
-      new UserInfo('', 'giang', 'giang@mail.mail'),
-      new UserInfo('', 'huan', 'huan@mail.mail'),
+      new UserInfo('', 'giang', 'giangz0009@gmail.com'),
+      new UserInfo('', 'huan', 'giangemployee2@notification.trade'),
       new UserInfo('', 'quan', 'quan@mail.mail'),
     ],
   },
@@ -59,30 +59,30 @@ export const backUpData: InputContactBlock[] = [
 
 const hashtagList = [
   {
-    "id": 2,
-    "name": "hihi",
-    "created_at": "2022-12-15T11:25:04.515Z"
+    id: 2,
+    name: 'hihi',
+    created_at: '2022-12-15T11:25:04.515Z',
   },
   {
-    "id": 3,
-    "name": "metanode",
-    "created_at": "2022-12-15T15:25:12.572Z"
+    id: 3,
+    name: 'metanode',
+    created_at: '2022-12-15T15:25:12.572Z',
   },
   {
-    "id": 4,
-    "name": "hello",
-    "created_at": "2022-12-15T15:48:54.342Z"
+    id: 4,
+    name: 'hello',
+    created_at: '2022-12-15T15:48:54.342Z',
   },
   {
-    "id": 5,
-    "name": "sale",
-    "created_at": "2022-12-15T16:42:28.644Z"
+    id: 5,
+    name: 'sale',
+    created_at: '2022-12-15T16:42:28.644Z',
   },
-]
+];
 
 const currentUserEmail = localStorage.getItem('current_email');
 
-interface EmailComposeContainerProps { }
+interface EmailComposeContainerProps {}
 
 const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
   const {
@@ -183,7 +183,7 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
         'attachFiles',
         foundMinimizeEmail.attachFiles ?? { files: [], fileUrls: [] },
       );
-      method.setValue('hashtags', foundMinimizeEmail?.hashtags ?? [])
+      method.setValue('hashtags', foundMinimizeEmail?.hashtags ?? []);
       setTabBarColor(foundMinimizeEmail?.color);
     }
   }, [showMinimizeEmailId, minimizeEmailList, method]);
@@ -219,7 +219,6 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
     setIsFullScreen(false);
     setTabBarColor(undefined);
   };
-
 
   const handleSubmit = (values: EmailComposeFields) => {
 
@@ -281,6 +280,7 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
           ) as string[]
         ).map((value) => ({ path: value })),
         from: currentUserEmail ? currentUserEmail : '',
+        hashtags: values.hashtags.map((value) => value.value),
       },
       send_at: selectedDate
         ? dayjs.utc(selectedDate).toISOString() ?? dayjs.utc().toISOString()

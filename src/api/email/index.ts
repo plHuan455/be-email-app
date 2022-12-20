@@ -47,7 +47,7 @@ export interface EmailResponse {
     subject: string;
     type: string;
     writer_id: number;
-    html_string: string;
+    text_html: string;
     content: string;
     attachFiles?: AttachFile[];
     tags: [];
@@ -269,7 +269,7 @@ export const undoEmail = async ({
 };
 
 export const getHashtags = async () => {
-    const url = EMAIL_HASHTAG_API_URL;
-    const res = await ApiClient.get(url, undefined, undefined);
-    return res.data;
-}
+  const url = EMAIL_HASHTAG_API_URL;
+  const res = await ApiClient.get(url, undefined, undefined);
+  return res.data;
+};

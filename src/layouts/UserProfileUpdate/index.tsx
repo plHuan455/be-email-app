@@ -9,6 +9,8 @@ import { Box, Button, Grid } from '@mui/material';
 import React from 'react';
 import { Controller, FormProvider, UseFormReturn } from 'react-hook-form';
 
+import './styles.scss';
+
 export interface UpdateUserProfileField {
   avatar?: File;
   user_name: string;
@@ -28,14 +30,11 @@ const UserProfileUpdate: React.FC<Props> = ({
   onSubmit,
   onBackToView,
 }) => {
-  const { avatar, user_name, email, phone_number, position, role, department } =
-    userInfoData;
-
   // useTranslation
   const { t } = useTranslation();
 
   return (
-    <Box className="h-full relative">
+    <Box className="h-full relative userUpdateProfile">
       <Box className="absolute top-0 left-0 cursor-pointer">
         <span className="inline-block p-4" onClick={() => onBackToView()}>
           <ArrowLeft width={24} height={24} />
@@ -69,16 +68,54 @@ const UserProfileUpdate: React.FC<Props> = ({
             </Grid>
             <Grid item xs={6}>
               <Controller
-                name="user_name"
+                name="first_name"
                 render={({ field: { value, onChange }, fieldState }) => (
                   <div>
                     <ValidateInput
-                      label="Username"
+                      label="First Name:"
                       className="text-sm text-[16px]"
                       type="text"
                       fullWidth
                       value={value}
-                      placeHolder="Username"
+                      placeHolder="First Name"
+                      errors={fieldState.error?.message}
+                      onChange={onChange}
+                    />
+                  </div>
+                )}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <Controller
+                name="last_name"
+                render={({ field: { value, onChange }, fieldState }) => (
+                  <div>
+                    <ValidateInput
+                      label="Last Name:"
+                      className="text-sm text-[16px]"
+                      type="text"
+                      fullWidth
+                      value={value}
+                      placeHolder="Last Name"
+                      errors={fieldState.error?.message}
+                      onChange={onChange}
+                    />
+                  </div>
+                )}
+              />
+            </Grid>
+            <Grid item xs={6}>
+              <Controller
+                name="identity"
+                render={({ field: { value, onChange }, fieldState }) => (
+                  <div>
+                    <ValidateInput
+                      label="Identity:"
+                      className="text-sm text-[16px]"
+                      type="text"
+                      fullWidth
+                      value={value}
+                      placeHolder="Identity"
                       errors={fieldState.error?.message}
                       onChange={onChange}
                     />

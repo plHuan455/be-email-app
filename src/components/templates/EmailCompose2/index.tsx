@@ -33,7 +33,9 @@ import { useSelector } from 'react-redux';
 import { RootState } from '@redux/configureStore';
 import { backUpData } from '@containers/EmailComposeContainer';
 import { HashtagTabs } from '@redux/Email/reducer';
-import HashtagInput, { HashtagOptionTypes } from '@components/atoms/Input/HashtagInput';
+import HashtagInput, {
+  HashtagOptionTypes,
+} from '@components/atoms/Input/HashtagInput';
 
 export interface EmailComposeFields {
   to: InputContactBlock[];
@@ -42,7 +44,7 @@ export interface EmailComposeFields {
   attachFiles: { fileUrls: (string | undefined)[]; files: (File | undefined)[] };
   subject: string;
   content: any;
-  hashtags: {name: string; value: string}[];
+  hashtags: { name: string; value: string }[];
   sendAt?: string | null;
 }
 
@@ -249,15 +251,15 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                       logo={<LogoWithLabel />}
                     />
                     {/* Private Hashtag */}
-                    <Controller 
+                    <Controller
                       name="hashtags"
-                      render={({field: {value, onChange}}) => (
-                        <HashtagInput 
-                          label="Hashtags: " 
-                          optionList={hashtagOptions} 
-                          value={value} 
+                      render={({ field: { value, onChange } }) => (
+                        <HashtagInput
+                          label="Hashtags: "
+                          optionList={hashtagOptions}
+                          value={value}
                           onChange={onChange}
-                          placeholder='Enter hashtags'
+                          placeholder="Enter hashtags"
                           optionRegex={new RegExp(/([a-zA-Z0-9]+\b)/)}
                         />
                       )}
