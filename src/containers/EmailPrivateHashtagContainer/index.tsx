@@ -9,9 +9,11 @@ import { useNavigate } from 'react-router-dom';
 
 interface Props {
   defaultData: HashtagTabs[];
+  onChangeDefaultData: (value: HashtagTabs[]) => void;
+  onCheckClick?: () => void;
 }
 
-const EmailPrivateHashtagContainer: React.FC<Props> = ({ defaultData }) => {
+const EmailPrivateHashtagContainer: React.FC<Props> = ({ defaultData, onChangeDefaultData, onCheckClick }) => {
   const [isActive, setIsActive] = useState<boolean>(false);
 
   const { privateHashtags } = useSelector((state: RootState) => state.email);
@@ -23,6 +25,7 @@ const EmailPrivateHashtagContainer: React.FC<Props> = ({ defaultData }) => {
 
   const handleNavigateIsActive = (e) => {
     setIsActive((prevState) => !prevState);
+    if(onCheckClick && isActive) onCheckClick();
   };
 
   const handleClickPrivateTag = (tag: string) => (e) => {
@@ -31,8 +34,8 @@ const EmailPrivateHashtagContainer: React.FC<Props> = ({ defaultData }) => {
 
   return (
     <div className="flex items-center py-4 flex-wrap relative">
-      <span className="font-semibold">Hashtag:</span>
-      <Box>
+      <span className="font-semibold py-2">Hashtag:</span>
+      {!isActive && <Box>
         {defaultData.map((val, index) => (
           <span
             onClick={handleClickPrivateTag(val.value)}
@@ -41,12 +44,13 @@ const EmailPrivateHashtagContainer: React.FC<Props> = ({ defaultData }) => {
             {val.title}
           </span>
         ))}
-      </Box>
+      </Box>}
       <div className="pl-2 flex flex-1 items-center gap-2 min-w-[260px]">
         {privateHashtags && isActive && (
           <EmailPrivateHashtag
             defaultValue={defaultData}
             privateHashtagData={privateHashtags}
+            onChangeDefaultValue={onChangeDefaultData}
           />
         )}
         <span
