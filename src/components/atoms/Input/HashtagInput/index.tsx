@@ -9,7 +9,7 @@ import {
   TextField,
 } from '@mui/material';
 import { rem } from '@utils/functions';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 
 export interface HashtagOptionTypes {
   name: string;
@@ -28,26 +28,27 @@ const HashtagInput: React.FC<HashTagInputProps> = ({
   label,
   value,
   placeholder,
-  optionList = [
-    {
-      name: 'test',
-      value: 'test',
-    },
-  ],
+  optionList = [],
   optionRegex,
   onChange,
 }) => {
   const [tempOption, setTempOption] = useState<HashtagOptionTypes>();
+
+  // const options = useMemo(() => {
+  //   if(tempOption) return [tempOption, ...optionList]
+  //   return optionList;
+  // }, [optionList, tempOption])
+
   const handleInput = (e) => {
     if (!optionRegex) return;
     const inputValue = e.target.value;
     const isMatchHashtagType = inputValue.match(optionRegex);
-    const isExist = optionList.some((option) => option.value === `#${inputValue}`);
+    const isExist = optionList.some((option) => option.value === inputValue);
 
     if (isMatchHashtagType && !isExist) {
       setTempOption({
-        name: `${inputValue}`,
-        value: `${inputValue}`,
+        name: inputValue,
+        value: inputValue,
       });
     } else setTempOption(undefined);
   };
@@ -57,7 +58,7 @@ const HashtagInput: React.FC<HashTagInputProps> = ({
       <Autocomplete
         multiple
         value={value}
-        options={tempOption ? [tempOption, ...optionList] : optionList}
+        options={tempOption ? [tempOption, ...optionList]: optionList}
         getOptionLabel={(option) => option.name}
         autoHighlight
         defaultValue={[]}
@@ -88,12 +89,15 @@ const HashtagInput: React.FC<HashTagInputProps> = ({
               variant="outlined"
               label={option.name}
               {...getTagProps({ index })}
+              sx={{
+                color: '#4BAAA2',
+                fontWeight: 600,
+                borderColor: '#4BAAA2'
+              }}
             />
           ))
         }
         renderOption={(props, option) => {
-          if (value.some((valueData) => valueData.value === option.value))
-            return null;
           return (
             <MenuItem {...props} className="block">
               <p className="flex gap-2 font-medium items-center">{option.name}</p>
