@@ -55,7 +55,7 @@ interface Props {
   isShowHeader?: boolean;
   isShowActions?: boolean;
   index?: number;
-  onUpdateHashtagClick?: () => void;
+  onUpdateHashtagClick?: (hashtags: HashtagTabs[]) => void;
 }
 
 const EmailMess: React.FC<Props> = ({
@@ -74,6 +74,7 @@ const EmailMess: React.FC<Props> = ({
   const [valueApproveIn, setValueApproveIn] = useState<Dayjs>(dayjs('2022-04-07'));
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const queryClient = useQueryClient();
+  const [newHashtagList, setNewHashtagList] = useState<HashtagTabs[] | undefined>(undefined);
 
   const sentAt = new Date(emailData.send_at);
   const approveAt = new Date(emailData.approve_at);
@@ -92,7 +93,7 @@ const EmailMess: React.FC<Props> = ({
   const cloneSendTo = !!emailData.email.to ? [...emailData.email.to] : [];
 
   const remapPrivateHashtag = useMemo<HashtagTabs[]>(() => {
-    return emailData?.tags
+    return emailData.tags
       ? emailData.tags.map((val) => ({
           notiNumber: 0,
           status: 'hashtag',
@@ -534,9 +535,13 @@ const EmailMess: React.FC<Props> = ({
         {_renderAttachesFiles}
         {/* Email Private Hashtag */}
         <EmailPrivateHashtagContainer
-          defaultData={remapPrivateHashtag ?? []}
-          onChangeDefaultData={(data) => console.log(data)}
-          onCheckClick={onUpdateHashtagClick}
+          defaultData={newHashtagList ? newHashtagList : remapPrivateHashtag}
+          onChangeDefaultData={(data) => {setNewHashtagList([...data])}}
+          onCheckClick={() => {
+            if(onUpdateHashtagClick){
+              onUpdateHashtagClick(newHashtagList ? newHashtagList : remapPrivateHashtag);
+            }
+          }}
         />
         {/* Actions */}
         {_renderActionsPendingItems}

@@ -4,7 +4,7 @@ import React, { ReactNode, useCallback, useEffect, useState } from 'react';
 import avatarImg from '@assets/images/avatars/avatar-2.jpg';
 import { Email, UserInfo } from './Interface';
 import EmailMess from '../EmailMess';
-import { deleteEmail, EmailActions } from '@api/email';
+import { deleteEmail, EmailActions, updateEmailWithQuery } from '@api/email';
 
 import { isEmpty } from 'lodash';
 import EmailMessEmpty from '../EmailMessEmpty';
@@ -21,6 +21,8 @@ import ModalBase from '@components/atoms/ModalBase';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useMutation } from '@tanstack/react-query';
+import { number } from 'yup';
+import { EmailUpdateQuery } from '@api/email/interface';
 
 interface ModalForm {
   title: string;
@@ -156,6 +158,7 @@ const Email: React.FC<Props> = () => {
   console.log(`TODO: call update hashtags when have api`)
   const { mutate: updateHashtagMutate, isLoading: isUpdateHashtagLoading } = useMutation({
     mutationKey: ['email-update-hashtag'],
+    mutationFn: (params: {id: number; data: EmailUpdateQuery}) => updateEmailWithQuery(params.id, params.data)
   })
 
   useEffect(() => {
@@ -306,8 +309,9 @@ const Email: React.FC<Props> = () => {
             isShowActions={true}
             onChangeStatus={changeEmailStatus}
             index={index}
-            onUpdateHashtagClick={() => {
-
+            onUpdateHashtagClick={(hashtagsList) => {
+              const tags = hashtagsList.map(hashtag => hashtag.value)
+              updateHashtagMutate({id: email.id, data: {...email, tags}})
             }}
           />
         ))
