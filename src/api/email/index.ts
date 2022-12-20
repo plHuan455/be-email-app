@@ -2,6 +2,7 @@ import {
   EMAIL_API_MANAGER_UNDO,
   EMAIL_API_URL,
   EMAIL_CATALOG,
+  EMAIL_HASHTAG_API_URL,
   EMAIL_MANAGER_API_URL,
 } from './../../constants/EmailAPI/index';
 import { Receiver } from '@layouts/InformationBar';
@@ -25,6 +26,7 @@ export interface CreateEmailParam {
     cc: string[];
     bcc: string[];
     attachs: { path: string }[];
+    hashtags?: string[];
   };
   send_at?: string;
   tags?: string[];
@@ -265,3 +267,9 @@ export const undoEmail = async ({
   const res = await ApiClient.post(url, undefined, { user_email_id: emailId, note });
   return res.data;
 };
+
+export const getHashtags = async () => {
+    const url = EMAIL_HASHTAG_API_URL;
+    const res = await ApiClient.get(url, undefined, undefined);
+    return res.data;
+}

@@ -10,6 +10,7 @@ import { clone } from 'lodash';
 import { toast } from 'react-toastify';
 
 export const LOCAL_STORAGE_MINIMIZE_EMAILS = 'minimize_emails';
+export const LOCAL_STORAGE_PRIVATE_HASHTAG = 'private_hashtag';
 
 export interface HashtagTabs {
   title: string;
@@ -232,8 +233,6 @@ export interface EmailState {
   isLoading: boolean;
 }
 
-export const LOCAL_STORAGE_PRIVATE_HASHTAG = 'private_hashtag';
-
 const initialState: EmailState = {
   workingEmail: {},
   minimizeMailList: JSON.parse(
@@ -324,6 +323,10 @@ const EmailSlice = createSlice({
     removeEmailsList(state, action) {
       return action.payload;
     },
+    setHashtags(state, action: PayloadAction<HashtagTabs[]>){
+      state.privateHashtags = action.payload;
+      return state;
+    },
     addMinimizeAndSetShowMinimizeEmail(
       state,
       action: PayloadAction<MinimizeEmailTypes>,
@@ -395,6 +398,7 @@ export const {
   addUnreadEmail,
   addDeletedEmail,
   setEmailIsLoading,
+  setHashtags,
   setShowMinimizeEmail,
   addMinimizeEmail,
   removeMinimizeEmail,
