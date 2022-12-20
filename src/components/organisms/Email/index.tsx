@@ -292,12 +292,12 @@ const Email: React.FC<Props> = () => {
             status={email.status}
             type={checkIsReceiveEmail(email.id) ? 'receive' : 'send'}
             userInfo={
-              new UserInfo('', email.email.writer_id.toString(), email.email.from)
+              new UserInfo(``, email.email.writer_id.toString(), email.email.from)
             }
             emailData={email}
             onShowHistory={handleShowHistory}
             isShowHeader={showHistory === email.id}
-            isShowActions={checkIsReceiveEmail(email.id)}
+            isShowActions={true}
             onChangeStatus={changeEmailStatus}
             index={index}
           />

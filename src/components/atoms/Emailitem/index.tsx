@@ -65,7 +65,7 @@ const EmailItem: React.FC<Props> = ({
         }}>
         <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
           <Avatar
-            src={avatar}
+            src={`http://${avatar}`}
             alt={fullName}
             sx={{ width: '35px', height: '35px' }}
           />

@@ -13,9 +13,17 @@ interface Props {
   catalog: StatusOptions;
   type: string;
   index: number;
+  color?: string;
 }
 
-const EmailTab: React.FC<Props> = ({ title, notiNumber, catalog, type, index }) => {
+const EmailTab: React.FC<Props> = ({
+  title,
+  notiNumber,
+  catalog,
+  type,
+  index,
+  color = '#554CFF',
+}) => {
   // useState
   const [modalStatus, setModalStatus] = useState(false);
 
@@ -57,7 +65,7 @@ const EmailTab: React.FC<Props> = ({ title, notiNumber, catalog, type, index }) 
           justifyContent: 'space-between',
           padding: '5px 10px',
         }}>
-        <Typography component={'p'} sx={{ color: '#554CFF', fontWeight: 'bold' }}>
+        <Typography component={'p'} sx={{ color: color, fontWeight: 'bold' }}>
           {title}
         </Typography>
         {notiNumber > 0 && (

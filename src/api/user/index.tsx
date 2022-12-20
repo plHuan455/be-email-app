@@ -7,6 +7,7 @@ import {
   UPLOAD_FILE,
   USER_PROFILE,
   USER__API,
+  USER__API_ALL,
   USER__API__GET,
 } from '@constants/UserAPI';
 import {
@@ -74,7 +75,7 @@ export const getAllUser = async (query?: {
   page: number;
   limit: number;
 }): Promise<CuSAxiosResponse<UserResponse[]>> => {
-  const url = USER__API;
+  const url = USER__API_ALL;
   const res = await ApiClient.get(url, undefined, query);
   return res.data;
 };

@@ -72,17 +72,19 @@ const EmailActionsList = {
 
 interface Props {
   isActiveClick: boolean;
+  type: 'receive' | 'send';
   emailIndex?: number;
   handleChangeStatus?: (status, index) => void;
 }
 
 const EmailActions: React.FC<Props> = ({
   emailIndex = 0,
+  type,
   handleChangeStatus = (a, b) => {},
   isActiveClick = true,
 }) => {
   return (
-    <Box className="flex mb-4">
+    <Box className={`flex mb-4 ${type === 'send' && 'flex-row-reverse'}`}>
       {Object.keys(EmailActionsList).map((key, index) => {
         const currVal = EmailActionsList[key];
         return (
