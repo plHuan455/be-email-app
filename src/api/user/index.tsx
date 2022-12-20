@@ -45,10 +45,27 @@ export interface UserResponse {
   role: string;
 }
 
+export interface UserProfileResponse {
+  id: number;
+  avatar: string;
+  department_id: number;
+  email: string;
+  first_name: string;
+  last_name: string;
+  identity: string;
+  phone_number: string;
+  position: string;
+  role_id: number;
+  role: string;
+  contact_id: number;
+}
+
 //GET EMAIL WITH STATUS
-export const getUserWithEmail = async (): Promise<AxiosResponse<UserResponse>> => {
+export const getUserWithEmail = async (): Promise<
+  AxiosResponse<UserProfileResponse>
+> => {
   const url = `${USER_PROFILE}`;
-  const res = await ApiClient.put(url);
+  const res = await ApiClient.get(url);
   return res.data;
 };
 

@@ -4,7 +4,7 @@ import React, { ReactNode, useCallback, useEffect, useState } from 'react';
 import avatarImg from '@assets/images/avatars/avatar-2.jpg';
 import { Email, UserInfo } from './Interface';
 import EmailMess from '../EmailMess';
-import { deleteEmail } from '@api/email';
+import { deleteEmail, EmailActions } from '@api/email';
 
 import { isEmpty } from 'lodash';
 import EmailMessEmpty from '../EmailMessEmpty';
@@ -166,6 +166,35 @@ const Email: React.FC<Props> = () => {
     [EmailsList],
   );
 
+  const handleSubmitStatusActions = async (
+    index: number,
+    toastOnSuccess: string,
+    actionType: 'delete' | 'spam' | 'favorite' | 'unread',
+  ) => {
+    const cloneEmailsList = [...EmailsList];
+
+    const emailId = cloneEmailsList[index].id;
+
+    const res = await EmailActions({
+      user_email_id: emailId,
+      action: actionType,
+    });
+
+    if (res.message === 'success') {
+      const deletedEmail = cloneEmailsList.splice(index, 1);
+
+      dispatch(addDeletedEmail(deletedEmail));
+      dispatch(setEmailsList(cloneEmailsList));
+
+      handleCloseModal();
+
+      toast.success(toastOnSuccess);
+    } else {
+      handleCloseModal();
+      toast.error('Hệ thống xảy ra lỗi!');
+    }
+  };
+
   const changeEmailStatus = useCallback(
     (status, index) => {
       if (status === 'delete' || status === 'spam' || status === 'unread') {
@@ -176,26 +205,12 @@ const Email: React.FC<Props> = () => {
             content: (
               <p>Nếu bấm có, Email này sẽ bị xóa khỏi danh sách email của bạn.</p>
             ),
-            onSubmit: async () => {
-              const cloneEmailsList = [...EmailsList];
-
-              const emailId = `${cloneEmailsList[index].id}`;
-
-              const res = await deleteEmail(emailId);
-
-              if (res.message === 'success') {
-                const deletedEmail = cloneEmailsList.splice(index, 1);
-
-                dispatch(addDeletedEmail(deletedEmail));
-                dispatch(setEmailsList(cloneEmailsList));
-
-                handleCloseModal();
-
-                toast.success('Xóa thành công!');
-              } else {
-                toast.error('Hệ thống xảy ra lỗi!');
-              }
-            },
+            onSubmit: async () =>
+              await handleSubmitStatusActions(
+                index,
+                'Delete successfull!',
+                'delete',
+              ),
           }));
           setIsOpenModal(true);
         }

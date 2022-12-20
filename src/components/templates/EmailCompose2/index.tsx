@@ -32,6 +32,8 @@ import EmailPrivateHashtagContainer from '@containers/EmailPrivateHashtagContain
 import { useSelector } from 'react-redux';
 import { RootState } from '@redux/configureStore';
 import { backUpData } from '@containers/EmailComposeContainer';
+import { HashtagTabs } from '@redux/Email/reducer';
+import HashtagInput, { HashtagOptionTypes } from '@components/atoms/Input/HashtagInput';
 
 export interface EmailComposeFields {
   to: InputContactBlock[];
@@ -40,14 +42,21 @@ export interface EmailComposeFields {
   attachFiles: { fileUrls: (string | undefined)[]; files: (File | undefined)[] };
   subject: string;
   content: any;
+  hashtags: {name: string; value: string}[];
   sendAt?: string | null;
 }
+
+// export interface HashTagTypes {
+//   id: number;
+//   name: string;
+// }
 
 interface EmailComposeProps {
   method: UseFormReturn<EmailComposeFields>;
   isFullScreen?: boolean;
   isShowCCForm?: boolean;
   attachFiles: (File | undefined)[];
+  hashtagOptions: HashtagOptionTypes[];
   selectedDate?: Dayjs | null;
   isShowCalendarModal?: boolean;
   calendarValue: Dayjs | null;
@@ -72,6 +81,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
   calendarValue,
   tabBarColor,
   onMinimizeClick,
+  hashtagOptions,
   onMaximizeClick,
   onCCButtonClick,
   onChangeCalendarValue,
@@ -232,13 +242,25 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                     )}
                   />
                   <Box>
-                    {/* Private Hashtag */}
-                    <EmailPrivateHashtagContainer defaultData={[]} />
                     {/* Greeting */}
                     <EmailGreeting
                       greetingLabel="Thanks and Best regards, ------"
                       isHaveLogo={true}
                       logo={<LogoWithLabel />}
+                    />
+                    {/* Private Hashtag */}
+                    <Controller 
+                      name="hashtags"
+                      render={({field: {value, onChange}}) => (
+                        <HashtagInput 
+                          label="Hashtags: " 
+                          optionList={hashtagOptions} 
+                          value={value} 
+                          onChange={onChange}
+                          placeholder='Enter hashtags'
+                          optionRegex={new RegExp(/([a-zA-Z0-9]+\b)/)}
+                        />
+                      )}
                     />
                     {/* Files List */}
                     <Box>

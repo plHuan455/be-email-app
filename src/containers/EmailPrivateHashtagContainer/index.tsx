@@ -30,7 +30,7 @@ const EmailPrivateHashtagContainer: React.FC<Props> = ({ defaultData }) => {
   };
 
   return (
-    <div className="flex items-center py-4 flex-wrap">
+    <div className="flex items-center py-4 flex-wrap relative">
       <span className="font-semibold">Hashtag:</span>
       <Box>
         {defaultData.map((val, index) => (

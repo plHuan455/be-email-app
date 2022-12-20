@@ -37,16 +37,11 @@ const EmailMainWrapper = () => {
 
   // Get Emails List
   const { isLoading: isLoadingGetEmailsList } = useQuery({
-    queryKey: ['get-emails-list'],
+    queryKey: ['get-emails-list', params.catalog, params.user_id],
     queryFn: () => getAllEmailByCatalog(params),
     onSuccess: (res) => {
-      dispatch(
-        setEmailsList(
-          params.catalog?.toLowerCase() === 'pending'
-            ? res.data.reverse()
-            : res.data,
-        ),
-      );
+      console.log(res.data);
+      dispatch(setEmailsList(res.data));
       return res.data;
     },
     onError: (res) => {
