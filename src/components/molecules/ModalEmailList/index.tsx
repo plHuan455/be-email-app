@@ -6,7 +6,7 @@ import Box from '@mui/material/Box';
 import { styled } from '@mui/material/styles';
 import { render } from '@testing-library/react';
 import './index.scss';
-import { ButtonBase } from '@mui/material';
+import { ButtonBase, Skeleton } from '@mui/material';
 import ArrowLeft from '@assets/icon/ArrowLeft';
 import EmailItem from '@components/atoms/Emailitem';
 import {
@@ -328,14 +328,94 @@ const ModalEmailList: React.FC<Props> = ({
       </Box>
       <TabPanel value={value} index={0}>
         {isLoadingGetEmailData ? (
-          <Loading isLoading={isLoadingGetEmailData} size={'xs'} />
+          <Box className="flex flex-col gap-2">
+            <Box className="flex w-full gap-2">
+              <Skeleton
+                variant="circular"
+                width={40}
+                height={40}
+                className="inline-block"
+              />
+              <Skeleton
+                variant="rounded"
+                height={40}
+                className="flex-1 inline-block"
+              />
+            </Box>
+            <Box className="flex w-full gap-2">
+              <Skeleton
+                variant="circular"
+                width={40}
+                height={40}
+                className="inline-block"
+              />
+              <Skeleton
+                variant="rounded"
+                height={40}
+                className="flex-1 inline-block"
+              />
+            </Box>
+            <Box className="flex w-full gap-2">
+              <Skeleton
+                variant="circular"
+                width={40}
+                height={40}
+                className="inline-block"
+              />
+              <Skeleton
+                variant="rounded"
+                height={40}
+                className="flex-1 inline-block"
+              />
+            </Box>
+          </Box>
         ) : (
           _renderEmtailItems(userEmails)
         )}
       </TabPanel>
       <TabPanel value={value} index={1}>
         {isLoadingGetEmailData ? (
-          <Loading isLoading={isLoadingGetEmailData} size={'xs'} />
+          <Box className="flex flex-col gap-2">
+            <Box className="flex w-full gap-2">
+              <Skeleton
+                variant="circular"
+                width={40}
+                height={40}
+                className="inline-block"
+              />
+              <Skeleton
+                variant="rounded"
+                height={40}
+                className="flex-1 inline-block"
+              />
+            </Box>
+            <Box className="flex w-full gap-2">
+              <Skeleton
+                variant="circular"
+                width={40}
+                height={40}
+                className="inline-block"
+              />
+              <Skeleton
+                variant="rounded"
+                height={40}
+                className="flex-1 inline-block"
+              />
+            </Box>
+            <Box className="flex w-full gap-2">
+              <Skeleton
+                variant="circular"
+                width={40}
+                height={40}
+                className="inline-block"
+              />
+              <Skeleton
+                variant="rounded"
+                height={40}
+                className="flex-1 inline-block"
+              />
+            </Box>
+          </Box>
         ) : (
           _renderEmtailItems(userEmails)
         )}
