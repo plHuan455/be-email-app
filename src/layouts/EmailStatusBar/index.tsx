@@ -170,6 +170,7 @@ const EmailStatusBar = (props: Props) => {
           value: hashTag.value,
           status: 'hashtag',
           notiNumber: hashTag.amount,
+          color: '#4BAAA2',
         }));
 
         setHashtagTabs(privHashTagData);
@@ -237,6 +238,7 @@ const EmailStatusBar = (props: Props) => {
         value: newHashTagValue,
         status: 'hashtag',
         notiNumber: 0,
+        color: '#4BAAA2',
       };
 
       setHashtagTabs((prevState) => [...prevState, newValue]);
@@ -318,6 +320,7 @@ const EmailStatusBar = (props: Props) => {
           hashtagTabs.map((item, index) => {
             return (
               <Hashtag
+                color={item.color}
                 title={item.title}
                 catalog={item.value}
                 status={item.status}

@@ -79,6 +79,7 @@ export type StatusOptions =
   | 'sent';
 
 type Props = {
+  titleColor: string;
   title: string;
   catalog: string;
   isActive: boolean;
@@ -91,6 +92,7 @@ const ModalEmailList: React.FC<Props> = ({
   catalog,
   isActive,
   handleChangeModalStatus,
+  titleColor,
   title,
   index,
   handleChangeEmailTabNotiNumber,
@@ -185,102 +187,6 @@ const ModalEmailList: React.FC<Props> = ({
     [dataGetEmailManagerByStatus],
   );
 
-  const ModalEmailPending = useMemo(() => {
-    return (
-      <Box
-        className={isActive ? 'modal__active' : 'modal__inactive'}
-        sx={{
-          width: '100%',
-          height: 'calc(100vh - 165px)',
-          position: 'absolute',
-          transition: '.3s ease-in-out',
-          backgroundColor: '#f7f7fc',
-          zIndex: 10,
-        }}>
-        <ButtonBase
-          onClick={() => handleChangeModalStatus(false)}
-          sx={{
-            color: '#554CFF',
-            padding: '0 10px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}>
-          <ArrowLeft width={12} height={12} />
-          <Typography
-            component={'p'}
-            sx={{ fontWeight: 'bold', marginLeft: '10px' }}>
-            {title}
-          </Typography>
-        </ButtonBase>
-        <Box>
-          <Tabs
-            className={`cover__tabs`}
-            value={value}
-            onChange={handleChange}
-            aria-label="basic tabs example">
-            <Tab className="tab" label="Me" {...a11yProps(0)} />
-            <Tab className="tab" label="All" {...a11yProps(1)} />
-          </Tabs>
-        </Box>
-        <TabPanel value={value} index={0}>
-          Item Tab All
-        </TabPanel>
-        <TabPanel value={value} index={1}>
-          {userEmails && _renderEmtailItems(userEmails)}
-        </TabPanel>
-      </Box>
-    );
-  }, [value]);
-
-  const ModalHashtag = useMemo(() => {
-    return (
-      <Box
-        className={isActive ? 'modal__active' : 'modal__inactive'}
-        sx={{
-          width: '100%',
-          height: 'calc(100vh - 165px)',
-          position: 'absolute',
-          transition: '.3s ease-in-out',
-          backgroundColor: '#f7f7fc',
-          zIndex: 10,
-        }}>
-        <ButtonBase
-          onClick={() => handleChangeModalStatus(false)}
-          sx={{
-            color: '#554CFF',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            padding: '0 10px',
-          }}>
-          <ArrowLeft width={12} height={12} />
-          <Typography
-            component={'p'}
-            sx={{ fontWeight: 'bold', marginLeft: '10px' }}>
-            {title}
-          </Typography>
-        </ButtonBase>
-        <Box sx={{}}>
-          <Tabs
-            className="cover__tabs"
-            value={value}
-            onChange={handleChange}
-            aria-label="basic tabs example">
-            <Tab className="tab" label="Me" {...a11yProps(0)} />
-            <Tab className="tab" label="All" {...a11yProps(1)} />
-          </Tabs>
-        </Box>
-        <TabPanel value={value} index={0}>
-          props
-        </TabPanel>
-        <TabPanel value={value} index={1}>
-          Item Two
-        </TabPanel>
-      </Box>
-    );
-  }, [value]);
-
   const navigate = useNavigate();
 
   return (
@@ -299,24 +205,25 @@ const ModalEmailList: React.FC<Props> = ({
           handleChangeModalStatus(false);
         }}
         sx={{
-          color: `${status === 'hashtag' ? '#4BAAA2' : '#554CFF'}`,
+          color: `${titleColor}`,
           padding: '0 10px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
         }}>
-        <ArrowLeft
-          width={12}
-          height={12}
-          color={`${status === 'hashtag' ? '#4BAAA2' : '#554CFF'}`}
-        />
+        <ArrowLeft width={12} height={12} color={titleColor} />
         <Typography component={'p'} sx={{ fontWeight: 'bold', marginLeft: '10px' }}>
           {title}
         </Typography>
       </ButtonBase>
       <Box>
         <Tabs
-          className={`cover__tabs  ${status === 'hashtag' && 'hashtag'}`}
+          className={`cover__tabs`}
+          style={
+            {
+              '--main-color': titleColor,
+            } as React.CSSProperties
+          }
           value={value}
           onChange={handleChange}
           aria-label="basic tabs example">

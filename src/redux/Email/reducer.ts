@@ -17,6 +17,7 @@ export interface HashtagTabs {
   value: string;
   status: StatusOptions;
   notiNumber: number;
+  color: string;
 }
 
 const userReadList: UserRead[] = [
@@ -323,7 +324,7 @@ const EmailSlice = createSlice({
     removeEmailsList(state, action) {
       return action.payload;
     },
-    setHashtags(state, action: PayloadAction<HashtagTabs[]>){
+    setHashtags(state, action: PayloadAction<HashtagTabs[]>) {
       state.privateHashtags = action.payload;
       return state;
     },
