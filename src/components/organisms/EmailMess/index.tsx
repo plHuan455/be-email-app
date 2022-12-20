@@ -98,6 +98,7 @@ const EmailMess: React.FC<Props> = ({
           status: 'hashtag',
           title: `#${val}`,
           value: val,
+          color: '#4BAAA2',
         }))
       : [];
   }, []);

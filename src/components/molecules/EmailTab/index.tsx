@@ -88,6 +88,7 @@ const EmailTab: React.FC<Props> = ({
         )}
       </ButtonBase>
       <ModalEmailList
+        titleColor={color}
         index={index}
         title={title}
         catalog={catalog}
