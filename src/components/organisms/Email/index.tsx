@@ -20,6 +20,7 @@ import {
 import ModalBase from '@components/atoms/ModalBase';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { useMutation } from '@tanstack/react-query';
 
 interface ModalForm {
   title: string;
@@ -151,6 +152,11 @@ const Email: React.FC<Props> = () => {
 
   const { EmailsList, isLoading } = useSelector((state: RootState) => state.email);
   const dispatch = useDispatch();
+
+  console.log(`TODO: call update hashtags when have api`)
+  const { mutate: updateHashtagMutate, isLoading: isUpdateHashtagLoading } = useMutation({
+    mutationKey: ['email-update-hashtag'],
+  })
 
   useEffect(() => {
     if (!isEmpty(EmailsList)) setShowHistory(EmailsList[0].id);
@@ -300,6 +306,9 @@ const Email: React.FC<Props> = () => {
             isShowActions={true}
             onChangeStatus={changeEmailStatus}
             index={index}
+            onUpdateHashtagClick={() => {
+
+            }}
           />
         ))
       )}

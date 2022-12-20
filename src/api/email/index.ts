@@ -52,6 +52,7 @@ export interface EmailResponse {
     attachFiles?: AttachFile[];
     tags: [];
   };
+  tags: string[];
   type: string;
   status: string;
   approve_at: string;

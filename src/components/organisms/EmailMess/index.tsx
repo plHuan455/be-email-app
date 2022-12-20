@@ -54,6 +54,7 @@ interface Props {
   isShowHeader?: boolean;
   isShowActions?: boolean;
   index?: number;
+  onUpdateHashtagClick?: () => void;
 }
 
 const EmailMess: React.FC<Props> = ({
@@ -66,7 +67,8 @@ const EmailMess: React.FC<Props> = ({
   isShowActions = false,
   index,
   onChangeStatus,
-}) => {
+  onUpdateHashtagClick
+}) => {  
   const defaultStatus = useMemo(() => status, []);
   const [valueApproveIn, setValueApproveIn] = useState<Dayjs>(dayjs('2022-04-07'));
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
@@ -101,16 +103,19 @@ const EmailMess: React.FC<Props> = ({
     desc: 'Are you sure?',
   });
 
+
   const cloneSendTo = !!emailData.email.to ? [...emailData.email.to] : [];
 
-  const remapPrivateHashtag: HashtagTabs[] = emailData.email.tags
-    ? emailData.email.tags.map((val) => ({
+  const remapPrivateHashtag = useMemo<HashtagTabs[]>(() => {
+    return emailData?.tags
+    ? emailData.tags.map((val) => ({
         notiNumber: 0,
         status: 'hashtag',
         title: `#${val}`,
         value: val,
       }))
-    : [];
+    : []
+  }, [])
 
   const renderSendTo = () => {
     const sendToLength = cloneSendTo.length;
@@ -521,7 +526,11 @@ const EmailMess: React.FC<Props> = ({
           <AttachFiles data={emailData.email.attachFiles} isUpload={false} />
         )}
         {/* Email Private Hashtag */}
-        <EmailPrivateHashtagContainer defaultData={remapPrivateHashtag ?? []} />
+        <EmailPrivateHashtagContainer 
+          defaultData={remapPrivateHashtag ?? []} 
+          onChangeDefaultData={(data) => console.log(data)} 
+          onCheckClick={onUpdateHashtagClick}
+        />
         {/* Actions */}
         {_renderActionsPendingItems}
         {/* {(status.toUpperCase() === 'PENDING' ||
