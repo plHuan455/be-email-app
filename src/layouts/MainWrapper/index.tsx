@@ -29,6 +29,7 @@ import { unShiftNotificationList } from '@redux/Notify/reducer';
 import { useQuery } from '@tanstack/react-query';
 import { getHashtags } from '@api/email';
 
+import { IS_EMPLOYEE_ROLE } from '@constants/localStore';
 
 const sideBarWidth = 75;
 const emailStatusWidth = 290;
@@ -76,22 +77,26 @@ function MainWrapper() {
 
   const [show, setShow] = useState(false);
   const [notification, setNotification] = useState({ title: '', body: '' });
-  
+
   // GET HASHTAGS
-  console.log(`[TODO]: Change this when hashtag api is done`)
+  console.log(`[TODO]: Change this when hashtag api is done`);
   const { data: hashtagData, isLoading: isHashtagLoading } = useQuery({
     queryKey: ['email-compose-get-hashtag'],
     queryFn: getHashtags,
-    onSuccess(res){
-      if(res?.data){
-        dispatch(setHashtags(res.data.map(value  => ({
-          notiNumber: 0,
-          status: 'hashtag',
-          title: value.name,
-          value: value.name
-        }))))
+    onSuccess(res) {
+      if (res?.data) {
+        dispatch(
+          setHashtags(
+            res.data.map((value) => ({
+              notiNumber: 0,
+              status: 'hashtag',
+              title: value.name,
+              value: value.name,
+            })),
+          ),
+        );
       }
-    }
+    },
   });
 
   onMessageListener()
@@ -147,7 +152,28 @@ function MainWrapper() {
     }
   };
 
-  const settings: Setting[] = [
+  const settingsEmployee: Setting[] = [
+    {
+      id: 0,
+      label: 'Profile',
+      path: '/profile',
+      handleClick: handleChangePage('/profile'),
+    },
+    {
+      id: 2,
+      label: 'Change Password',
+      path: '/change-password',
+      handleClick: handleChangePage('/change-password'),
+    },
+    {
+      id: 3,
+      label: 'Log out',
+      path: '/log-out',
+      handleClick: handleLogout,
+    },
+  ];
+
+  const settingManager: Setting[] = [
     {
       id: 0,
       label: 'Profile',
@@ -173,6 +199,8 @@ function MainWrapper() {
       handleClick: handleLogout,
     },
   ];
+
+  const settings: Setting[] = IS_EMPLOYEE_ROLE ? settingsEmployee : settingManager;
 
   const convertedMinimizeEmailList = useMemo(() => {
     return minimizeEmails.filter((value) => value.id !== showMinimizeEmailId);
