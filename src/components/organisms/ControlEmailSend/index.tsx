@@ -61,7 +61,7 @@ const ControlEmailSend: React.FC<ControlEmailSendProps> = ({
             fontSize: rem(10),
             lineHeight: rem(12),
           }}
-          onClick={onSend}
+          onClick={onUndo}
         >
           Undo
         </Button>
@@ -73,7 +73,7 @@ const ControlEmailSend: React.FC<ControlEmailSendProps> = ({
             fontSize: rem(10),
             lineHeight: rem(12),
           }}
-          onClick={onUndo}
+          onClick={onSend}
         >
           Send
         </Button>

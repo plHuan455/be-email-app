@@ -3,9 +3,9 @@ import MinimizeEmail from '@components/organisms/MinimizeEmail';
 import { Box } from '@mui/material';
 import { rem } from '@utils/functions';
 import { motion, usePresence, AnimatePresence } from 'framer-motion';
-import classNames from 'classnames';
 import { useLocation } from 'react-router-dom';
 import { InputContactBlock } from '@components/molecules/AutoCompleteReceive';
+import { HashtagTabs } from '@redux/Email/reducer';
 
 export interface MinimizeEmailTypes {
   id?: string;
@@ -18,6 +18,7 @@ export interface MinimizeEmailTypes {
   sendAt?: string | null;
   color?: string;
   fileUrls?: (string | undefined)[];
+  hashtags?: { name: string; value: string }[];
 }
 
 interface MinimizeEmailListProps {

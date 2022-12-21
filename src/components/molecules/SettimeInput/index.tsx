@@ -23,7 +23,7 @@ const SettimeInput: React.FC<Props> = ({ value, setValueCalendar }) => {
           views={['minutes', 'seconds']}
           inputFormat="mm:ss"
           mask="__:__"
-          label="Minutes and seconds"
+          label="Hours and minutes"
           value={value}
           onChange={(newValue) => {
             setValueCalendar(newValue);

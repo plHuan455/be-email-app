@@ -3,27 +3,48 @@ import ModalEmailList, {
   StatusOptions,
 } from '@components/molecules/ModalEmailList';
 import { Box, ButtonBase, Typography } from '@mui/material';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router';
 
 interface Props {
   title: string;
   status: StatusOptions;
   catalog: string;
+  color: string;
   index: number;
 }
 
-const Hashtag: React.FC<Props> = ({ title, status, index, catalog }) => {
+const Hashtag: React.FC<Props> = ({
+  title,
+  status,
+  index,
+  catalog,
+  color = '#4BAAA2',
+}) => {
   const [modalStatus, setModalStatus] = useState(false);
 
+  // useNavigate
+  const navigate = useNavigate();
+
   // Handler FNC
-  const handleClickPrivateTag = (e) => {
-    setModalStatus(true);
+  const handleClickPrivateTag = (catalog: string) => (e) => {
+    navigate(`/emails/catalog/${catalog.toUpperCase()}`);
   };
+
+  // useParams
+  const params = useParams();
+
+  // useEffect
+  useEffect(() => {
+    if (!params.catalog) return;
+
+    if (params.catalog.toLowerCase() === catalog.toLowerCase()) setModalStatus(true);
+  }, [params]);
 
   return (
     <Box key={index}>
       <ButtonBase
-        onClick={handleClickPrivateTag}
+        onClick={handleClickPrivateTag(catalog)}
         sx={{
           width: '100%',
           display: 'flex',
@@ -36,6 +57,7 @@ const Hashtag: React.FC<Props> = ({ title, status, index, catalog }) => {
         </Typography>
       </ButtonBase>
       <ModalEmailList
+        titleColor={color}
         title={title}
         catalog={catalog}
         isActive={modalStatus}

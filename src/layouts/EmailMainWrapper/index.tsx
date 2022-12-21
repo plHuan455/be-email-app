@@ -33,26 +33,32 @@ const EmailMainWrapper = () => {
 
   const isHaveParams = !isEmpty(params);
 
+  // useSelector
+
+  const { notificationList } = useSelector((state: RootState) => state.notify);
+
   const queryClient = useQueryClient();
 
   // Get Emails List
+
   const { isLoading: isLoadingGetEmailsList } = useQuery({
-    queryKey: ['get-emails-list'],
+    queryKey: ['get-emails-list', params.catalog, params.user_id],
     queryFn: () => getAllEmailByCatalog(params),
     onSuccess: (res) => {
-      dispatch(
-        setEmailsList(
-          params.catalog?.toLowerCase() === 'pending'
-            ? res.data.reverse()
-            : res.data,
-        ),
-      );
+      console.log(res.data);
+      dispatch(setEmailsList(res.data.reverse()));
       return res.data;
     },
     onError: (res) => {
       toast.error('Có lỗi xảy ra');
     },
   });
+
+  useEffect(() => {
+    if (!isEmpty(notificationList)) {
+      queryClient.invalidateQueries({ queryKey: ['get-emails-list'] });
+    }
+  }, [notificationList]);
 
   // Get Emails Block
   // const { isLoading: isLoadingGetEmailsBlock } = useQuery({

@@ -28,9 +28,10 @@ import {
 } from '@api/email';
 import EmailTab from '@components/molecules/EmailTab';
 import { HashtagTabs, setPrivateHashtag } from '@redux/Email/reducer';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { isEmpty } from 'lodash';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from '@redux/configureStore';
 
 type Props = {};
 
@@ -43,8 +44,9 @@ export interface EmailItem {
 
 interface EmailTabs extends TabItem {
   status: StatusOptions;
-  notiNumber?: number;
   emailData: EmailList[];
+  notiNumber?: number;
+  color?: string;
 }
 
 export const emailData: EmailList[] = [
@@ -110,24 +112,28 @@ const EmailTabsSecData: EmailTabs[] = [
     title: '#sent',
     notiNumber: 0,
     emailData: emailData,
+    color: '#f9a825',
   },
   {
     status: 'draft',
     title: '#draft',
     notiNumber: 0,
     emailData: emailData,
+    color: '#607d8b',
   },
   {
     status: 'trash',
     title: '#trash',
     notiNumber: 0,
     emailData: emailData,
+    color: '#ff6d00',
   },
   {
     status: 'spam',
     title: '#spam',
     notiNumber: 0,
     emailData: emailData,
+    color: '#dd2c00',
   },
 ];
 
@@ -147,7 +153,12 @@ const EmailStatusBar = (props: Props) => {
   // useDispatch
   const dispatch = useDispatch();
 
+  // useSelector
+  const { notificationList } = useSelector((state: RootState) => state.notify);
+
   // useQuery
+
+  const queryClient = useQueryClient();
 
   useQuery({
     queryKey: ['get-all-email-status'],
@@ -159,6 +170,7 @@ const EmailStatusBar = (props: Props) => {
           value: hashTag.value,
           status: 'hashtag',
           notiNumber: hashTag.amount,
+          color: '#4BAAA2',
         }));
 
         setHashtagTabs(privHashTagData);
@@ -204,30 +216,10 @@ const EmailStatusBar = (props: Props) => {
     },
   });
 
-  const handleChangeEmailTabsNotiNumber = useCallback(
-    (index, number) => {
-      setEmailTabs((prevState) => {
-        const cloneState = [...prevState];
-
-        cloneState[index].notiNumber = number;
-
-        return cloneState;
-      });
-    },
-    [emailTabs],
-  );
-  const handleChangeEmailSecTabsNotiNumber = useCallback(
-    (index, number) => {
-      setEmailSecTab((prevState) => {
-        const cloneState = [...prevState];
-
-        cloneState[index].notiNumber = number;
-
-        return cloneState;
-      });
-    },
-    [emailSecTabs],
-  );
+  useEffect(() => {
+    if (!isEmpty(notificationList))
+      queryClient.invalidateQueries({ queryKey: ['get-all-email-status'] });
+  }, [notificationList]);
 
   const handleClickCreateHashTag = (e) => {
     setIsCreateHashTag(true);
@@ -246,6 +238,7 @@ const EmailStatusBar = (props: Props) => {
         value: newHashTagValue,
         status: 'hashtag',
         notiNumber: 0,
+        color: '#4BAAA2',
       };
 
       setHashtagTabs((prevState) => [...prevState, newValue]);
@@ -311,6 +304,7 @@ const EmailStatusBar = (props: Props) => {
                   catalog={item.status}
                   title={item.title}
                   type={emailTabType}
+                  color={item.color ?? '#554CFF'}
                 />
               );
             }
@@ -326,6 +320,7 @@ const EmailStatusBar = (props: Props) => {
           hashtagTabs.map((item, index) => {
             return (
               <Hashtag
+                color={item.color}
                 title={item.title}
                 catalog={item.value}
                 status={item.status}

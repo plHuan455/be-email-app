@@ -1,23 +1,13 @@
-import { UserName } from '@components/molecules/InformationDetailBlock';
 import { Avatar, Box, Typography } from '@mui/material';
-import avt from '../../../assets/images/avatars/avatar-1.jpg';
 import React from 'react';
-import { EmailList } from '@components/molecules/ModalEmailList';
 import './index.scss';
 import { createSearchParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { useGetEmail } from '@hooks/Email/useGetEmail';
-import { setEmailsList } from '@redux/Email/reducer';
-import Icon from '../Icon';
-import { EmailResponse, UserTagResponse } from '@api/email';
 import { CatalogTabResponse } from '@api/email/interface';
 
 type Props = {
-  // firstEmailContent: string;
   data: CatalogTabResponse;
-  // dataEmail: EmailResponse[];
   isSelected: boolean;
-  // type: 'receive' | 'send';
   emailCatalog: string;
   onSelect: () => void;
 };
@@ -25,11 +15,8 @@ type Props = {
 const EmailItem: React.FC<Props> = ({
   data,
   emailCatalog,
-  // firstEmailContent,
   isSelected,
-  // type,
   onSelect,
-  // dataEmail,
 }) => {
   const { avatar, amount, user_id, user_email, first_name, last_name } = data;
 
@@ -78,8 +65,8 @@ const EmailItem: React.FC<Props> = ({
         }}>
         <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
           <Avatar
-            src={data.avatar}
-            alt={`${data.last_name} ${data.first_name}`}
+            src={`http://${avatar}`}
+            alt={fullName}
             sx={{ width: '35px', height: '35px' }}
           />
           <Box sx={{ width: '70%' }}>

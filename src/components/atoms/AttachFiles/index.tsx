@@ -62,6 +62,14 @@ export const renderFileIconByType = (file: AttachFile) => {
           alt="file"
         />
       );
+    case 'jpg':
+      return (
+        <img
+          className="w-[22px] h-full object-center object-contain"
+          src={file.url}
+          alt="file"
+        />
+      );
 
     default:
       return (
@@ -150,7 +158,7 @@ const AttachFiles: React.FC<Props> = ({
               onDeleteFile && onDeleteFile(index);
             }}
             onUploaded={(fileUrl) => {
-              if(onUploaded)  onUploaded(fileUrl, index);
+              if (onUploaded) onUploaded(fileUrl, index);
             }}
             onUploading={onUploading}
           />

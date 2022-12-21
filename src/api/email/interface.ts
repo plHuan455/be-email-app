@@ -9,7 +9,7 @@ export interface EmailUpdateQuery {
   html_string?: string;
   forward?: string;
   send_at?: string;
-  tags?: { name: string }[];
+  tags?: string[];
   status?: string;
 }
 

@@ -4,7 +4,7 @@ import React, { ReactNode, useCallback, useEffect, useState } from 'react';
 import avatarImg from '@assets/images/avatars/avatar-2.jpg';
 import { Email, UserInfo } from './Interface';
 import EmailMess from '../EmailMess';
-import { deleteEmail } from '@api/email';
+import { deleteEmail, EmailActions, updateEmailWithQuery } from '@api/email';
 
 import { isEmpty } from 'lodash';
 import EmailMessEmpty from '../EmailMessEmpty';
@@ -20,6 +20,9 @@ import {
 import ModalBase from '@components/atoms/ModalBase';
 import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
+import { useMutation } from '@tanstack/react-query';
+import { number } from 'yup';
+import { EmailUpdateQuery } from '@api/email/interface';
 
 interface ModalForm {
   title: string;
@@ -152,6 +155,12 @@ const Email: React.FC<Props> = () => {
   const { EmailsList, isLoading } = useSelector((state: RootState) => state.email);
   const dispatch = useDispatch();
 
+  console.log(`TODO: call update hashtags when have api`)
+  const { mutate: updateHashtagMutate, isLoading: isUpdateHashtagLoading } = useMutation({
+    mutationKey: ['email-update-hashtag'],
+    mutationFn: (params: {id: number; data: EmailUpdateQuery}) => updateEmailWithQuery(params.id, params.data)
+  })
+
   useEffect(() => {
     if (!isEmpty(EmailsList)) setShowHistory(EmailsList[0].id);
   }, [EmailsList]);
@@ -166,6 +175,35 @@ const Email: React.FC<Props> = () => {
     [EmailsList],
   );
 
+  const handleSubmitStatusActions = async (
+    index: number,
+    toastOnSuccess: string,
+    actionType: 'delete' | 'spam' | 'favorite' | 'unread',
+  ) => {
+    const cloneEmailsList = [...EmailsList];
+
+    const emailId = cloneEmailsList[index].id;
+
+    const res = await EmailActions({
+      user_email_id: emailId,
+      action: actionType,
+    });
+
+    if (res.message === 'success') {
+      const deletedEmail = cloneEmailsList.splice(index, 1);
+
+      dispatch(addDeletedEmail(deletedEmail));
+      dispatch(setEmailsList(cloneEmailsList));
+
+      handleCloseModal();
+
+      toast.success(toastOnSuccess);
+    } else {
+      handleCloseModal();
+      toast.error('Hệ thống xảy ra lỗi!');
+    }
+  };
+
   const changeEmailStatus = useCallback(
     (status, index) => {
       if (status === 'delete' || status === 'spam' || status === 'unread') {
@@ -176,26 +214,12 @@ const Email: React.FC<Props> = () => {
             content: (
               <p>Nếu bấm có, Email này sẽ bị xóa khỏi danh sách email của bạn.</p>
             ),
-            onSubmit: async () => {
-              const cloneEmailsList = [...EmailsList];
-
-              const emailId = `${cloneEmailsList[index].id}`;
-
-              const res = await deleteEmail(emailId);
-
-              if (res.message === 'success') {
-                const deletedEmail = cloneEmailsList.splice(index, 1);
-
-                dispatch(addDeletedEmail(deletedEmail));
-                dispatch(setEmailsList(cloneEmailsList));
-
-                handleCloseModal();
-
-                toast.success('Xóa thành công!');
-              } else {
-                toast.error('Hệ thống xảy ra lỗi!');
-              }
-            },
+            onSubmit: async () =>
+              await handleSubmitStatusActions(
+                index,
+                'Delete successfull!',
+                'delete',
+              ),
           }));
           setIsOpenModal(true);
         }
@@ -277,14 +301,18 @@ const Email: React.FC<Props> = () => {
             status={email.status}
             type={checkIsReceiveEmail(email.id) ? 'receive' : 'send'}
             userInfo={
-              new UserInfo('', email.email.writer_id.toString(), email.email.from)
+              new UserInfo(``, email.email.writer_id.toString(), email.email.from)
             }
             emailData={email}
             onShowHistory={handleShowHistory}
             isShowHeader={showHistory === email.id}
-            isShowActions={checkIsReceiveEmail(email.id)}
+            isShowActions={true}
             onChangeStatus={changeEmailStatus}
             index={index}
+            onUpdateHashtagClick={(hashtagsList) => {
+              const tags = hashtagsList.map(hashtag => hashtag.value)
+              updateHashtagMutate({id: email.id, data: {...email, tags}})
+            }}
           />
         ))
       )}

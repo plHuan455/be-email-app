@@ -18,7 +18,9 @@ export const createEmployeeSchema = yup
   .required();
 
 export const updateUserProfileSchema = yup.object({
-  user_name: yup.string().required(),
+  first_name: yup.string().required(),
+  last_name: yup.string().required(),
+  identity: yup.string().required(),
   email: yup.string().email().required(),
   phone_number: yup
     .string()

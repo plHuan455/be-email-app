@@ -165,11 +165,13 @@ const Listbox = styled('ul')(
 interface Props {
   privateHashtagData: HashtagTabs[];
   defaultValue: HashtagTabs[];
+  onChangeDefaultValue: (value: HashtagTabs[]) => void;
 }
 
 const EmailPrivateHashtag: React.FC<Props> = ({
   privateHashtagData,
   defaultValue,
+  onChangeDefaultValue,
 }) => {
   const [tempOption, setTempOption] = React.useState<HashtagTabs>();
 
@@ -187,6 +189,9 @@ const EmailPrivateHashtag: React.FC<Props> = ({
   } = useAutocomplete({
     id: 'customized-hook-demo',
     defaultValue: [...defaultValue],
+    onChange: (e, value) => {
+      onChangeDefaultValue(value);
+    },
     multiple: true,
     autoHighlight: true,
     options: tempOption
@@ -206,6 +211,7 @@ const EmailPrivateHashtag: React.FC<Props> = ({
         status: 'hashtag',
         title: `#${inputValue}`,
         value: inputValue,
+        color: '#4BAAA2',
       });
     } else setTempOption(undefined);
   };

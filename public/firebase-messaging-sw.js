@@ -1,3 +1,6 @@
+import { unShiftNotificationList } from '@redux/Notify/reducer';
+import { useDispatch } from 'react-redux';
+
 importScripts('https://www.gstatic.com/firebasejs/8.2.0/firebase-app.js');
 importScripts('https://www.gstatic.com/firebasejs/8.2.0/firebase-messaging.js');
 
@@ -15,15 +18,20 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const messaging = firebase.messaging();
 
-messaging.onBackgroundMessage(function (payload) {
-  console.log('Received background message ', payload);
+const dispatch = useDispatch();
 
-  const notificationTitle = payload.notification.title;
-  const notificationOptions = {
-    body: payload.notification.body,
-  };
-  self.ServiceWorkerRegistration.showNotification(
-    notificationTitle,
-    notificationOptions,
-  );
+messaging.onBackgroundMessage(function (payload) {
+  if (payload) {
+    console.log('Received background message ', payload);
+
+    dispatch(unShiftNotificationList(payload.data));
+
+    const notificationTitle = payload.data.title;
+    const notificationOptions = {
+      body: payload.data.body,
+    };
+    runtime.register().then((registration) => {
+      registration.showNotification(notificationTitle, notificationOptions);
+    });
+  }
 });

@@ -32,6 +32,10 @@ import EmailPrivateHashtagContainer from '@containers/EmailPrivateHashtagContain
 import { useSelector } from 'react-redux';
 import { RootState } from '@redux/configureStore';
 import { backUpData } from '@containers/EmailComposeContainer';
+import { HashtagTabs } from '@redux/Email/reducer';
+import HashtagInput, {
+  HashtagOptionTypes,
+} from '@components/atoms/Input/HashtagInput';
 
 export interface EmailComposeFields {
   to: InputContactBlock[];
@@ -40,16 +44,24 @@ export interface EmailComposeFields {
   attachFiles: { fileUrls: (string | undefined)[]; files: (File | undefined)[] };
   subject: string;
   content: any;
+  hashtags: { name: string; value: string }[];
   sendAt?: string | null;
 }
+
+// export interface HashTagTypes {
+//   id: number;
+//   name: string;
+// }
 
 interface EmailComposeProps {
   method: UseFormReturn<EmailComposeFields>;
   isFullScreen?: boolean;
   isShowCCForm?: boolean;
   attachFiles: (File | undefined)[];
+  hashtagOptions: HashtagOptionTypes[];
   selectedDate?: Dayjs | null;
   isShowCalendarModal?: boolean;
+  isOpenCalendarSelect?: boolean;
   calendarValue: Dayjs | null;
   tabBarColor?: string;
   onMaximizeClick?: () => void;
@@ -60,6 +72,8 @@ interface EmailComposeProps {
   onUnsetTimeClick: () => void;
   onSetTimeClick: () => void;
   onSendTimeClick: () => void;
+  onSetTimeAccept?: (date: Dayjs | null) => void;
+  onSetTimeCancel?: () => void;
   onSubmit: (values: EmailComposeFields) => void;
 }
 
@@ -69,9 +83,11 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
   selectedDate,
   isShowCCForm = false,
   isShowCalendarModal = false,
+  isOpenCalendarSelect = false,
   calendarValue,
   tabBarColor,
   onMinimizeClick,
+  hashtagOptions,
   onMaximizeClick,
   onCCButtonClick,
   onChangeCalendarValue,
@@ -80,6 +96,8 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
   onUnsetTimeClick,
   onSendTimeClick,
   onSubmit,
+  onSetTimeAccept,
+  onSetTimeCancel
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const composeScrollRef = useRef<HTMLDivElement>(null);
@@ -232,13 +250,25 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                     )}
                   />
                   <Box>
-                    {/* Private Hashtag */}
-                    <EmailPrivateHashtagContainer defaultData={[]} />
                     {/* Greeting */}
                     <EmailGreeting
                       greetingLabel="Thanks and Best regards, ------"
                       isHaveLogo={true}
                       logo={<LogoWithLabel />}
+                    />
+                    {/* Private Hashtag */}
+                    <Controller
+                      name="hashtags"
+                      render={({ field: { value, onChange } }) => (
+                        <HashtagInput
+                          label="Hashtags: "
+                          optionList={hashtagOptions}
+                          value={value}
+                          onChange={onChange}
+                          placeholder="Enter hashtags"
+                          optionRegex={new RegExp(/([a-zA-Z0-9]+\b)/)}
+                        />
+                      )}
                     />
                     {/* Files List */}
                     <Box>
@@ -392,7 +422,10 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
               onSubmit={() => onSubmit(method.getValues())}>
               <DateTimePicker
                 value={calendarValue}
+                isOpen={isOpenCalendarSelect}
                 setValueCalendar={onChangeCalendarValue}
+                onAccept={onSetTimeAccept}
+                onClose={onSetTimeCancel}
               />
               <Box className="" display="flex">
                 <Button
@@ -400,7 +433,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                   sx={{ flexBasis: '50%' }}
                   color={'error'}
                   onClick={onUnsetTimeClick}>
-                  SEND NOW
+                  NOW
                 </Button>
                 <Button
                   className="button-create-mui"

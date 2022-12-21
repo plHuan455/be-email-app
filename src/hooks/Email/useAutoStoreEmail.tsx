@@ -50,6 +50,7 @@ const useAutoStoreEmail = (delayTime: number = 5000) => {
     name: string | undefined,
     values: Partial<EmailComposeFields>,
   ) => {
+    return;
     if (handleTimeoutRef.current) clearTimeout(handleTimeoutRef.current);
     handleTimeoutRef.current = setTimeout(() => {
       dispatch(setWorkingEmail({ ...values }));
@@ -57,59 +58,60 @@ const useAutoStoreEmail = (delayTime: number = 5000) => {
   };
 
   useEffect(() => {
-    if (isFirstAccessRef.current) {
-      isFirstAccessRef.current = false;
-      return;
-    }
+    return;
+    // if (isFirstAccessRef.current) {
+    //   isFirstAccessRef.current = false;
+    //   return;
+    // }
 
-    const contentString = getHtmlStringFromEditorState(workingEmail.content);
-    if (
-      workingEmail.id === undefined &&
-      isEmpty(workingEmail.to) &&
-      isEmpty(workingEmail.cc) &&
-      isEmpty(workingEmail.bcc) &&
-      isEmpty(workingEmail.attachFiles?.fileUrls) &&
-      isEmpty(workingEmail.attachFiles?.files) &&
-      isEmpty(workingEmail.subject) &&
-      contentString === ''
-    ) {
-      console.log(`[DON'T STORE DRAFT BECAUSE EMPTY]`);
-      return;
-    }
+    // const contentString = getHtmlStringFromEditorState(workingEmail.content);
+    // if (
+    //   workingEmail.id === undefined &&
+    //   isEmpty(workingEmail.to) &&
+    //   isEmpty(workingEmail.cc) &&
+    //   isEmpty(workingEmail.bcc) &&
+    //   isEmpty(workingEmail.attachFiles?.fileUrls) &&
+    //   isEmpty(workingEmail.attachFiles?.files) &&
+    //   isEmpty(workingEmail.subject) &&
+    //   contentString === ''
+    // ) {
+    //   console.log(`[DON'T STORE DRAFT BECAUSE EMPTY]`);
+    //   return;
+    // }
 
-    const emailData = {
-      subject: workingEmail.subject ?? '',
-      to:
-        workingEmail.to?.reduce((curr: string[], next) => {
-          const mails = next.employeesList.map((employee) => employee.mail);
+    // const emailData = {
+    //   subject: workingEmail.subject ?? '',
+    //   to:
+    //     workingEmail.to?.reduce((curr: string[], next) => {
+    //       const mails = next.employeesList.map((employee) => employee.mail);
 
-          return [...curr, ...mails];
-        }, []) ?? [],
-      text_html: contentString,
-      bcc: workingEmail.bcc?.map((value) => value.mail) ?? [],
-      cc: workingEmail.cc?.map((value) => value.mail) ?? [],
-      attachs:
-        (
-          workingEmail.attachFiles?.fileUrls.filter(
-            (value) => value !== undefined,
-          ) as string[]
-        )?.map((value) => ({ path: value })) ?? [],
-      from: currentUserEmail ? currentUserEmail : '',
-    };
-    if (workingEmail.id === undefined) {
-      storeDraftMutate({
-        data: {
-          email: emailData,
-          send_at: dayjs.utc().toISOString(),
-        },
-        emailId: workingEmail.id !== undefined ? Number(workingEmail.id) : undefined,
-      });
-      return;
-    }
-    updateEmailMutate({
-      id: Number(workingEmail.id),
-      data: { ...emailData },
-    });
+    //       return [...curr, ...mails];
+    //     }, []) ?? [],
+    //   text_html: contentString,
+    //   bcc: workingEmail.bcc?.map((value) => value.mail) ?? [],
+    //   cc: workingEmail.cc?.map((value) => value.mail) ?? [],
+    //   attachs:
+    //     (
+    //       workingEmail.attachFiles?.fileUrls.filter(
+    //         (value) => value !== undefined,
+    //       ) as string[]
+    //     )?.map((value) => ({ path: value })) ?? [],
+    //   from: currentUserEmail ? currentUserEmail : '',
+    // };
+    // if (workingEmail.id === undefined) {
+    //   storeDraftMutate({
+    //     data: {
+    //       email: emailData,
+    //       send_at: dayjs.utc().toISOString(),
+    //     },
+    //     emailId: workingEmail.id !== undefined ? Number(workingEmail.id) : undefined,
+    //   });
+    //   return;
+    // }
+    // updateEmailMutate({
+    //   id: Number(workingEmail.id),
+    //   data: { ...emailData },
+    // });
   }, [workingEmail]);
 
   return { onFieldsChange };

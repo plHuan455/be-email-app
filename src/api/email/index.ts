@@ -1,6 +1,8 @@
 import {
+  EMAIL_API_MANAGER_UNDO,
   EMAIL_API_URL,
   EMAIL_CATALOG,
+  EMAIL_HASHTAG_API_URL,
   EMAIL_MANAGER_API_URL,
 } from './../../constants/EmailAPI/index';
 import { Receiver } from '@layouts/InformationBar';
@@ -24,6 +26,7 @@ export interface CreateEmailParam {
     cc: string[];
     bcc: string[];
     attachs: { path: string }[];
+    hashtags?: string[];
   };
   send_at?: string;
   tags?: string[];
@@ -44,11 +47,17 @@ export interface EmailResponse {
     subject: string;
     type: string;
     writer_id: number;
-    html_string: string;
+    text_html: string;
     content: string;
     attachFiles?: AttachFile[];
+    attachs?: {
+      id: number;
+      email_id: number;
+      path: string;
+    }[];
     tags: [];
   };
+  tags: string[];
   type: string;
   status: string;
   approve_at: string;
@@ -77,6 +86,21 @@ export interface EmailDeleteResponse {
   data?: null;
   message?: string;
 }
+
+const API_EMAIL_USER = '/v1/api/email/user';
+
+// Email Action
+
+export const EmailActions = async (params: {
+  user_email_id: number;
+  action: 'delete' | 'spam' | 'favorite' | 'unread';
+}): Promise<CuSAxiosResponse<any>> => {
+  const url = `${API_EMAIL_USER}/action`;
+
+  const res = await ApiClient.post(url, undefined, params);
+
+  return res.data;
+};
 
 // GET ALL CUR EMAIL TAG
 export const getAllEmailTag = async (): Promise<AxiosResponse<any[]>> => {
@@ -227,7 +251,7 @@ export const updateEmailWithQuery = async (
 // Approve Email
 export const approveEmail = async (queryParam: {
   user_email_id: number;
-  status: 'PENDING' | 'APPROVED' | 'DECLINED' | 'DRAFT';
+  status: 'PENDING' | 'approved' | 'DECLINED' | 'DRAFT';
   note?: string;
   approve_after?: number;
 }): Promise<AxiosResponse<EmailResponse>> => {
@@ -245,7 +269,13 @@ export const undoEmail = async ({
   emailId: number;
   note?: string;
 }) => {
-  const url = `${EMAIL_API_URL}/undo`;
-  const res = await ApiClient.post(url, undefined, { email_id: emailId, note });
+  const url = `${EMAIL_API_MANAGER_UNDO}`;
+  const res = await ApiClient.post(url, undefined, { user_email_id: emailId, note });
+  return res.data;
+};
+
+export const getHashtags = async () => {
+  const url = EMAIL_HASHTAG_API_URL;
+  const res = await ApiClient.get(url, undefined, undefined);
   return res.data;
 };
