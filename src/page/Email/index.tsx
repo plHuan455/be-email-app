@@ -4,17 +4,26 @@ import EmailMainWrapper from '@layouts/EmailMainWrapper';
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import EmailLayout from '@layouts/EmailLayout';
+import Layout from '@layouts/Layout';
 
 const Email = () => {
   return (
-    <div className="w-full flex content-around">
-      <EmailStatusBar />
-
-      <EmailLayout>
+    <Layout.Content>
+      <Layout.ASide>
+        <EmailStatusBar />
+      </Layout.ASide>
+      <Layout.MainHaveActions>
         <Outlet />
-      </EmailLayout>
-      {/* <EmailMainWrapper /> */}
-    </div>
+      </Layout.MainHaveActions>
+    </Layout.Content>
+    // <div className="w-full flex content-around">
+    //   <EmailStatusBar />
+
+    //   <EmailLayout>
+    //     <Outlet />
+    //   </EmailLayout>
+    //   {/* <EmailMainWrapper /> */}
+    // </div>
   );
 };
 

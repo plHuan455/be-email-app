@@ -516,16 +516,18 @@ const EmailMess: React.FC<Props> = ({
         } pb-4 ${styles.emailWrap} mb-8`}>
         {/* Header */}
         <Box
-          className={`cursor-pointer pb-6 bg-violet-200 py-4 ${
+          className={`flex items-center justify-between cursor-pointer pb-6 bg-violet-200 py-4 ${
             type === 'send'
               ? 'rounded-br-[36px] rounded-tl-[36px]'
               : 'rounded-bl-[36px] rounded-tr-[36px]'
           }  relative`}
           onClick={() => onShowHistory(emailData, emailData.id)}>
-          <h1 className="text-stone-700 font-bold text-base mb-2">
-            {emailData.email.subject}
-          </h1>
-          {renderSendTo()}
+          <div className="flex items-center gap-2">
+            <h1 className="text-stone-700 font-bold text-base">
+              {emailData.email.subject}
+            </h1>
+            {renderSendTo()}
+          </div>
           {status.toLowerCase() !== 'null' && <EmailStatus emailStatus={status} />}
         </Box>
         {/* Email Content */}

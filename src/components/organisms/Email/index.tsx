@@ -155,11 +155,13 @@ const Email: React.FC<Props> = () => {
   const { EmailsList, isLoading } = useSelector((state: RootState) => state.email);
   const dispatch = useDispatch();
 
-  console.log(`TODO: call update hashtags when have api`)
-  const { mutate: updateHashtagMutate, isLoading: isUpdateHashtagLoading } = useMutation({
-    mutationKey: ['email-update-hashtag'],
-    mutationFn: (params: {id: number; data: EmailUpdateQuery}) => updateEmailWithQuery(params.id, params.data)
-  })
+  console.log(`TODO: call update hashtags when have api`);
+  const { mutate: updateHashtagMutate, isLoading: isUpdateHashtagLoading } =
+    useMutation({
+      mutationKey: ['email-update-hashtag'],
+      mutationFn: (params: { id: number; data: EmailUpdateQuery }) =>
+        updateEmailWithQuery(params.id, params.data),
+    });
 
   useEffect(() => {
     if (!isEmpty(EmailsList)) setShowHistory(EmailsList[0].id);
@@ -291,7 +293,7 @@ const Email: React.FC<Props> = () => {
   );
 
   return (
-    <Box className="flex flex-wrap flex-col">
+    <Box className="w-full flex flex-wrap flex-col">
       {isLoading ? (
         <EmailMessEmpty isLoading={isLoading} />
       ) : (
@@ -310,8 +312,8 @@ const Email: React.FC<Props> = () => {
             onChangeStatus={changeEmailStatus}
             index={index}
             onUpdateHashtagClick={(hashtagsList) => {
-              const tags = hashtagsList.map(hashtag => hashtag.value)
-              updateHashtagMutate({id: email.id, data: {...email, tags}})
+              const tags = hashtagsList.map((hashtag) => hashtag.value);
+              updateHashtagMutate({ id: email.id, data: { ...email, tags } });
             }}
           />
         ))

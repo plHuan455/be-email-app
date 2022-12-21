@@ -90,7 +90,7 @@ const InformationBar = (props: Props) => {
   const currEmail = EmailsList[0];
 
   // useSelector
-  const { isShowEmailInfo } = useSelector((state: RootState) => state.global);
+  const { sidebarRight } = useSelector((state: RootState) => state.global);
 
   const handleClickShowMore = useCallback(
     (value) => () => {
@@ -159,27 +159,7 @@ const InformationBar = (props: Props) => {
   };
 
   return (
-    <Box
-      className={`ease-in duration-200 relative bg-white shadow-lg border-l ${
-        isShowEmailInfo && styles.activeShowMoreInformation
-      }`}
-      sx={{
-        maxWidth: 0,
-        width: '100%',
-        height: '100%',
-        padding: '30px 0',
-        overflow: 'scroll',
-      }}>
-      <Typography
-        component={'p'}
-        sx={{
-          borderBottom: `${props.isBorderBottom ? '1px solid #DEDEDE' : 'none'}`,
-          fontSize: '16px',
-          color: '#5724C5',
-          fontWeight: 'bold',
-        }}>
-        {props.title}
-      </Typography>
+    <Box>
       <InformationDetailBlock
         title="Manager"
         isBorderBottom={true}

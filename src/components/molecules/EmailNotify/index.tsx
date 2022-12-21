@@ -4,7 +4,11 @@ import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import { useSelector } from 'react-redux';
 import { RootState } from '@redux/configureStore';
 
-const EmailNotify = () => {
+interface Props {
+  navigateNotify: () => void;
+}
+
+const EmailNotify: React.FC<Props> = ({ navigateNotify }) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -12,10 +16,10 @@ const EmailNotify = () => {
 
   // Handler FNC
   const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    setAnchorEl(event.currentTarget);
+    navigateNotify();
   };
   const handleClose = () => {
-    setAnchorEl(null);
+    navigateNotify();
   };
 
   // Render FNC
@@ -43,26 +47,6 @@ const EmailNotify = () => {
           </IconButton>
         </Badge>
       </Tooltip>
-      <Menu
-        id="basic-menu"
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        MenuListProps={{
-          'aria-labelledby': 'basic-button',
-        }}
-        sx={{
-          '& .MuiPaper-root': {
-            minWidth: '180px',
-            borderRadius: '8px',
-            border: '1px solid #e5e7eb',
-            paddingInline: 0,
-            maxHeight: '100vh',
-            overflow: 'scroll',
-          },
-        }}>
-        {_renderNotificationItem}
-      </Menu>
     </Box>
   );
 };

@@ -1,5 +1,8 @@
 import Icon from '@components/atoms/Icon';
 import IconButton from '@components/atoms/IconButton';
+import EmailsListActionsContainer from '@containers/EmailsListActionsContainer';
+import SidebarRightContainer from '@containers/SideBarRightContainer';
+import InformationBarEmpty from '@layouts/InformationBarEmpty';
 import {
   Box,
   Button,
@@ -30,7 +33,17 @@ const Main: React.FC<
 > = ({ children, onClickAdd, headTitle }) => {
   return (
     <Grid item flex={1} className="w-full">
-      <Paper className="h-full pt-22.5 px-4 pl-8">
+      <Paper
+        sx={{
+          padding: 0,
+          flex: 1,
+          height: '100vh',
+          backgroundColor: '#EDEDF3',
+          borderTopLeftRadius: '65px',
+          overflow: 'hidden',
+          position: 'relative',
+          display: 'flex',
+        }}>
         <Box
           sx={(theme) => ({
             display: 'flex',
@@ -56,6 +69,37 @@ const Main: React.FC<
           )}
         </Box>
         {children}
+      </Paper>
+    </Grid>
+  );
+};
+
+const MainHaveActions: React.FC<PropsWithChildren & {}> = ({ children }) => {
+  return (
+    <Grid item flex={1} className="w-full">
+      <Paper
+        sx={{
+          padding: 0,
+          flex: 1,
+          backgroundColor: '#EDEDF3',
+          borderTopLeftRadius: '65px',
+          overflow: 'hidden',
+          position: 'relative',
+          display: 'flex',
+        }}>
+        <Box
+          sx={{
+            flex: 1,
+            height: '100vh',
+            overflow: 'scroll',
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column',
+          }}>
+          <EmailsListActionsContainer />
+          <Box>{children}</Box>
+        </Box>
+        <SidebarRightContainer title="Information" isBorderBottom={true} />
       </Paper>
     </Grid>
   );
@@ -184,6 +228,7 @@ const GroupButton: React.FC<GroupButtonProps> = ({
 const Layout = {
   Content,
   Main,
+  MainHaveActions,
   ASide,
   Report,
   Chart,

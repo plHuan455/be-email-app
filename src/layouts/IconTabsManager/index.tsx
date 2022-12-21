@@ -40,27 +40,39 @@ const TabsDataEmployee: TabItem[] = [
 const TabsDataManager: TabItem[] = [
   {
     title: 'Email',
-    icon: <Icon icon="email" />,
+    icon: <Icon rawColor="#999999" icon="email" />,
     url: '/emails',
   },
   {
     title: 'Contact',
-    icon: <PermContactCalendarIcon />,
+    icon: (
+      <PermContactCalendarIcon
+        sx={{
+          color: '#999999',
+        }}
+      />
+    ),
     url: '/contact',
   },
   {
     title: 'Department',
-    icon: <Department />,
+    icon: <Department color="#999999" />,
     url: '/manager/department',
   },
   {
     title: 'Template',
-    icon: <ArticleIcon />,
+    icon: (
+      <ArticleIcon
+        sx={{
+          color: '#999999',
+        }}
+      />
+    ),
     url: '/emails',
   },
 ];
 
-const TabsData: TabItem[] = IS_EMPLOYEE_ROLE ? TabsDataEmployee : TabsDataManager;
+const TabsData: TabItem[] = TabsDataManager;
 
 const iconsList: {
   [key: string]: SVGIconProps['icon'];

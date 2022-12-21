@@ -61,26 +61,6 @@ const EmailMainWrapper = () => {
     }
   }, [notificationList]);
 
-  // Get Emails Block
-  // const { isLoading: isLoadingGetEmailsBlock } = useQuery({
-  //   queryKey: ['get-block-emails', params],
-  //   queryFn: () => getEmailManagerWithQueryParams(params),
-  //   onSuccess: (res) => {
-  //     dispatch(
-  //       setEmailsList(
-  //         params.status?.toLowerCase() === 'pending'
-  //           ? res.data[0].emails.reverse()
-  //           : res.data[0].emails,
-  //       ),
-  //     );
-  //     return res.data;
-  //   },
-  //   onError: (res) => {
-  //     toast.error('Có lỗi xảy ra');
-  //   },
-  //   enabled: !!params.status || !!params.tag,
-  // });
-
   useEffect(() => {
     if (!isHaveParams) {
       dispatch(setEmailsList([]));
@@ -99,7 +79,7 @@ const EmailMainWrapper = () => {
     <>
       <EmailContainer />
 
-      {isEmpty(EmailsList) ? (
+      {/* {isEmpty(EmailsList) ? (
         <InformationBarEmpty
           isLoading={isLoadingGetEmailsList}
           title="Information"
@@ -114,7 +94,7 @@ const EmailMainWrapper = () => {
           sender={1}
           // receiver={receiverData}
         />
-      )}
+      )} */}
     </>
   );
 };

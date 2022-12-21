@@ -353,10 +353,10 @@ const EmailStatusBar = (props: Props) => {
       sx={{
         height: '100%',
         minWidth: '290px',
-        width: '15%',
         padding: '24px',
         overflowX: 'hidden',
         overflowY: 'scroll',
+        borderRight: '1px solid #e5e7eb',
       }}>
       <EmailStatusHeader
         title="Email"

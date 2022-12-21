@@ -111,7 +111,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
   };
 
   return (
-    <Box className="t-emailCompose w-full h-full">
+    <Box className="t-emailCompose w-full h-full py-10 mt-4">
       <FormProvider {...method}>
         <form
           className="p-8 flex items-center justify-center w-full h-full"
