@@ -383,20 +383,6 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                   />
                   <AttachFileIcon className="text-[#7D7E80]" />
                 </Button>
-                {/* </Tooltip> */}
-                {/* <Button
-                  sx={{
-                    color: "#ffffff",
-                    backgroundColor: "#554CFF",
-                    padding: `${rem(8)} ${rem(10)}`,
-                    fontSize: rem(15),
-                    lineHeight: rem(15),
-                  }}
-                  endIcon=
-                  type="submit"
-                >
-                  {selectedDate ? 'SEND' : 'SEND NOW'}
-                </Button> */}
                 <CustomButton
                   padding="8px 10px"
                   classNameLabel="pr-1"

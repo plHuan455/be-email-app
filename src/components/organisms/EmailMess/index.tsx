@@ -29,6 +29,8 @@ import ModalBase from '@components/atoms/ModalBase';
 import SettimeInput from '@components/molecules/SettimeInput';
 import ControlEmailSend from '../ControlEmailSend';
 import { isEmpty } from 'lodash';
+import EmailGreeting from '@components/molecules/EmailGreeting';
+import LogoWithLabel from '@components/atoms/LogoWithLabel';
 export interface UserRead {
   name: string;
   time: string;
@@ -532,6 +534,12 @@ const EmailMess: React.FC<Props> = ({
             <p dangerouslySetInnerHTML={createMarkup(emailData.email.text_html)} />
           </Box>
         </Box>
+        {/* Greeting */}
+        <EmailGreeting
+          greetingLabel="Thanks and Best regards, ------"
+          isHaveLogo={true}
+          logo={<LogoWithLabel />}
+        />
         {/* Files List If have */}
         {_renderAttachesFiles}
         {/* Email Private Hashtag */}
