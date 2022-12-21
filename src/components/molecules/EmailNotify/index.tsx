@@ -24,7 +24,8 @@ const EmailNotify = () => {
 
     return notificationList.map((notify, index) => (
       <MenuItem onClick={handleClose} key={index}>
-        <b>{notify.title}</b>: <span>{notify.body}</span>
+        {/* <b>{notify.title}</b>:  */}
+        <span>{notify.body}</span>
       </MenuItem>
     ));
   }, [notificationList]);
