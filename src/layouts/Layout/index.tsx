@@ -74,9 +74,15 @@ const Main: React.FC<
   );
 };
 
-const MainHaveActions: React.FC<PropsWithChildren & {}> = ({ children }) => {
+const MainHaveActions: React.FC<
+  PropsWithChildren & {
+    isFull?: boolean;
+    headTitle?: string;
+    onClickAdd?: React.MouseEventHandler<HTMLButtonElement>;
+  }
+> = ({ children, isFull = false, headTitle, onClickAdd }) => {
   return (
-    <Grid item flex={1} xs={12} md={10} className="w-full">
+    <Grid item flex={1} xs={12} md={isFull ? 12 : 10} className="w-full">
       <Paper
         sx={{
           padding: 0,
@@ -97,6 +103,33 @@ const MainHaveActions: React.FC<PropsWithChildren & {}> = ({ children }) => {
             flexDirection: 'column',
           }}>
           <EmailsListActionsContainer />
+          {headTitle && (
+            <Box
+              className=" mt-[100px]"
+              sx={(theme) => ({
+                display: 'flex',
+                alignItems: 'center',
+                gap: theme.spacing(2),
+                marginBottom: theme.spacing(4),
+              })}>
+              {headTitle && (
+                <Typography
+                  className="text-[#B2B0EE]"
+                  variant="h4"
+                  sx={{ fontWeight: 700 }}>
+                  {headTitle}
+                </Typography>
+              )}
+              {onClickAdd && (
+                <IconButton
+                  className="bg-transparent hover:bg-transparent"
+                  size="small"
+                  onClick={onClickAdd}>
+                  <Icon icon={'plus'} rawColor={'#827CFF'} width={16} height={16} />
+                </IconButton>
+              )}
+            </Box>
+          )}
           {children}
         </Box>
         <SidebarRightContainer isBorderBottom={true} />
@@ -116,14 +149,15 @@ const queryClient = new QueryClient({
 
 const MainQueryClient: React.FC<
   PropsWithChildren & {
+    isFull?: boolean;
     headTitle?: string;
     onClickAdd?: React.MouseEventHandler<HTMLButtonElement>;
   }
-> = ({ children, onClickAdd, headTitle }) => {
+> = ({ children, isFull = false, onClickAdd, headTitle }) => {
   return (
-    <Main headTitle={headTitle} onClickAdd={onClickAdd}>
+    <MainHaveActions isFull={isFull} headTitle={headTitle} onClickAdd={onClickAdd}>
       <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    </Main>
+    </MainHaveActions>
   );
 };
 

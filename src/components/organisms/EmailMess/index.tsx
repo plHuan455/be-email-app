@@ -9,7 +9,7 @@ dayjs.extend(utc);
 import EmailActions from '@components/molecules/EmailActions';
 import { useCallback, useMemo, useState } from 'react';
 import EmailForward from '../EmailForward';
-import { EmailResponse } from '@api/email';
+import { attachs, EmailResponse } from '@api/email';
 import { UserInfo } from '../Email/Interface';
 import EmailPrivateHashtagContainer from '@containers/EmailPrivateHashtagContainer';
 import { HashtagTabs } from '@redux/Email/reducer';
@@ -51,6 +51,25 @@ interface Props {
   onApproveNow: () => void;
   onSendEmail: () => void;
 }
+
+export const attachsToAttachFiles: (attachs: attachs[]) => AttachFile[] = (
+  attachs,
+) =>
+  attachs.map((file) => {
+    const clonePath = file.path;
+
+    const fileName = clonePath.replace(/^.*[\\\/]/, '');
+
+    const fileType = /[.]/.exec(fileName)
+      ? /[^.]+$/.exec(fileName)?.toString()
+      : undefined;
+
+    return {
+      name: fileName,
+      type: fileType ? fileType : 'file',
+      url: file.path,
+    };
+  });
 
 const EmailMess: React.FC<Props> = ({
   type,
@@ -96,21 +115,9 @@ const EmailMess: React.FC<Props> = ({
   const _renderAttachesFiles = useMemo(() => {
     if (!emailData.email.attachs) return null;
 
-    const newAttachesFile: AttachFile[] = emailData.email.attachs.map((file) => {
-      const clonePath = file.path;
-
-      const fileName = clonePath.replace(/^.*[\\\/]/, '');
-
-      const fileType = /[.]/.exec(fileName)
-        ? /[^.]+$/.exec(fileName)?.toString()
-        : undefined;
-
-      return {
-        name: fileName,
-        type: fileType ? fileType : 'file',
-        url: file.path,
-      };
-    });
+    const newAttachesFile: AttachFile[] = attachsToAttachFiles(
+      emailData.email.attachs,
+    );
 
     return <AttachFiles data={newAttachesFile} isUpload={false} />;
   }, [emailData]);

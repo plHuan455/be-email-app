@@ -43,7 +43,7 @@ const SidebarRightContainer: React.FC<Props> = ({ isBorderBottom }) => {
         isLoading={isLoading}
       />
     );
-  }, [EmailsList]);
+  }, [EmailsList, sidebarRight, isBorderBottom, isLoading]);
 
   const _renderSidebarRight = useMemo(() => {
     switch (sidebarRight.type) {
@@ -56,7 +56,7 @@ const SidebarRightContainer: React.FC<Props> = ({ isBorderBottom }) => {
       default:
         return _renderEmailsInformation;
     }
-  }, [sidebarRight]);
+  }, [sidebarRight, EmailsList]);
 
   return (
     <Box

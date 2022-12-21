@@ -329,7 +329,7 @@ const EmailStatusBar = (props: Props) => {
               />
             );
           })}
-        {!isCreateHashTag ? (
+        {/* {!isCreateHashTag ? (
           <CustomButton
             className="m-2"
             onClick={handleClickCreateHashTag}
@@ -343,7 +343,7 @@ const EmailStatusBar = (props: Props) => {
           />
         ) : (
           CreateHashTag()
-        )}
+        )} */}
       </Box>
     );
   }, [hashtagTabs]);
