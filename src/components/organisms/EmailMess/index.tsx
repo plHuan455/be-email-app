@@ -74,7 +74,9 @@ const EmailMess: React.FC<Props> = ({
   const [valueApproveIn, setValueApproveIn] = useState<Dayjs>(dayjs('2022-04-07'));
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const queryClient = useQueryClient();
-  const [newHashtagList, setNewHashtagList] = useState<HashtagTabs[] | undefined>(undefined);
+  const [newHashtagList, setNewHashtagList] = useState<HashtagTabs[] | undefined>(
+    undefined,
+  );
 
   const sentAt = new Date(emailData.send_at);
   const approveAt = new Date(emailData.approve_at);
@@ -122,7 +124,6 @@ const EmailMess: React.FC<Props> = ({
         url: file.path,
       };
     });
-    console.log(newAttachesFile);
 
     return <AttachFiles data={newAttachesFile} isUpload={false} />;
   }, [emailData]);
@@ -519,7 +520,7 @@ const EmailMess: React.FC<Props> = ({
               : 'rounded-bl-[36px] rounded-tr-[36px]'
           }  relative`}
           onClick={() => onShowHistory(emailData, emailData.id)}>
-          <h1 className="text-stone-700 font-bold text-base mb-2 mr-16">
+          <h1 className="text-stone-700 font-bold text-base mb-2">
             {emailData.email.subject}
           </h1>
           {renderSendTo()}
@@ -536,47 +537,19 @@ const EmailMess: React.FC<Props> = ({
         {/* Email Private Hashtag */}
         <EmailPrivateHashtagContainer
           defaultData={newHashtagList ? newHashtagList : remapPrivateHashtag}
-          onChangeDefaultData={(data) => {setNewHashtagList([...data])}}
+          onChangeDefaultData={(data) => {
+            setNewHashtagList([...data]);
+          }}
           onCheckClick={() => {
-            if(onUpdateHashtagClick){
-              onUpdateHashtagClick(newHashtagList ? newHashtagList : remapPrivateHashtag);
+            if (onUpdateHashtagClick) {
+              onUpdateHashtagClick(
+                newHashtagList ? newHashtagList : remapPrivateHashtag,
+              );
             }
           }}
         />
         {/* Actions */}
         {_renderActionsPendingItems}
-        {/* {(status.toUpperCase() === 'PENDING' ||
-          status.toUpperCase() === 'SENDING') && (
-          <Box className="flex flex-wrap actions items-center py-4 justify-between">
-            <Box>
-              {currRole?.startsWith('EMPLOYEE') &&
-              emailData.type === 'send' &&
-              sentAt.getTime() > Date.now() ? (
-                <ControlEmailSend
-                  variant="cancel"
-                  remainMinutes={
-                    100 || Math.floor((sentAt.getTime() - Date.now()) / 1000 / 60)
-                  }
-                  onCancel={handleEmployeeCancel}
-                />
-              ) : null}
-            </Box>
-            <Box>
-              {!currRole?.startsWith('EMPLOYEE') &&
-              approveAt.getTime() > Date.now() ? (
-                <ControlEmailSend
-                  variant="undoSendNow"
-                  remainMinutes={Math.floor(
-                    (approveAt.getTime() - Date.now()) / 60000,
-                  )}
-                  onCancel={handleEmployeeCancel}
-                />
-              ) : (
-                _renderActionsPending
-              )}
-            </Box>
-          </Box>
-        )} */}
         {status === 'APPROVED' && sentAt.getTime() > Date.now() && (
           <ControlEmailSend
             remainMinutes={Math.floor(

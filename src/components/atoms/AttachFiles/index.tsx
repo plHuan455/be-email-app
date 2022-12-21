@@ -182,7 +182,7 @@ const AttachFiles: React.FC<Props> = ({
           </span>
         )}
       </Box>
-      <Box className={`max-h-[160px] overflow-scroll ${styles.files}`}>
+      <Box className={`${styles.files}`}>
         {isUpload ? _renderUploadFiles : _renderFiles}
       </Box>
     </Box>
