@@ -20,7 +20,7 @@ const Content: React.FC<PropsWithChildren & GridProps> = ({
   ...gridProps
 }) => {
   return (
-    <Grid container height={'100%'} gap={8} {...gridProps}>
+    <Grid container height={'100%'} {...gridProps}>
       {children}
     </Grid>
   );
@@ -76,7 +76,7 @@ const Main: React.FC<
 
 const MainHaveActions: React.FC<PropsWithChildren & {}> = ({ children }) => {
   return (
-    <Grid item flex={1} className="w-full">
+    <Grid item flex={1} xs={12} md={10} className="w-full">
       <Paper
         sx={{
           padding: 0,
@@ -97,9 +97,9 @@ const MainHaveActions: React.FC<PropsWithChildren & {}> = ({ children }) => {
             flexDirection: 'column',
           }}>
           <EmailsListActionsContainer />
-          <Box>{children}</Box>
+          {children}
         </Box>
-        <SidebarRightContainer title="Information" isBorderBottom={true} />
+        <SidebarRightContainer isBorderBottom={true} />
       </Paper>
     </Grid>
   );
@@ -129,7 +129,7 @@ const MainQueryClient: React.FC<
 
 const ASide: React.FC<PropsWithChildren> = ({ children }) => {
   return (
-    <Grid xs={12} md={3}>
+    <Grid xs={12} md={2}>
       {children}
     </Grid>
   );

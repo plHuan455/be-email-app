@@ -9,28 +9,15 @@ dayjs.extend(utc);
 import EmailActions from '@components/molecules/EmailActions';
 import { useCallback, useMemo, useState } from 'react';
 import EmailForward from '../EmailForward';
-import {
-  approveEmail,
-  EmailResponse,
-  undoEmail,
-  updateEmailWithQuery,
-} from '@api/email';
+import { EmailResponse } from '@api/email';
 import { UserInfo } from '../Email/Interface';
 import EmailPrivateHashtagContainer from '@containers/EmailPrivateHashtagContainer';
-import AlertDialog, { useAlertDialog } from '@components/molecules/AlertDialog';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { emailData } from '@layouts/EmailStatusBar';
-import { toast } from 'react-toastify';
-import { string } from 'yup';
-import { useDispatch } from 'react-redux';
-import { deleteIndexEmail, HashtagTabs } from '@redux/Email/reducer';
+import { HashtagTabs } from '@redux/Email/reducer';
 import dayjs, { Dayjs } from 'dayjs';
-import ModalBase from '@components/atoms/ModalBase';
-import SettimeInput from '@components/molecules/SettimeInput';
 import ControlEmailSend from '../ControlEmailSend';
-import { isEmpty } from 'lodash';
 import EmailGreeting from '@components/molecules/EmailGreeting';
 import LogoWithLabel from '@components/atoms/LogoWithLabel';
+import Icon from '@components/atoms/Icon';
 export interface UserRead {
   name: string;
   time: string;
@@ -49,19 +36,23 @@ function createMarkup(htmlString) {
 interface Props {
   emailData: EmailResponse;
   userInfo: UserInfo;
-  // isShowContent: boolean;
   onChangeStatus: (status: any, index: any) => void;
   onShowHistory: Function;
-  status: string;
   type: 'receive' | 'send';
   isShowHeader?: boolean;
   isShowActions?: boolean;
   index?: number;
   onUpdateHashtagClick?: (hashtags: HashtagTabs[]) => void;
+
+  onDecline: (data: EmailResponse) => (e: any) => void;
+  onApprove: (data: EmailResponse) => (e: any) => void;
+  onEmployeeCancel: () => void;
+  onUndoEmail: () => void;
+  onApproveNow: () => void;
+  onSendEmail: () => void;
 }
 
 const EmailMess: React.FC<Props> = ({
-  status,
   type,
   userInfo,
   emailData,
@@ -71,28 +62,22 @@ const EmailMess: React.FC<Props> = ({
   index,
   onChangeStatus,
   onUpdateHashtagClick,
+
+  onDecline,
+  onApprove,
+  onEmployeeCancel,
+  onUndoEmail,
+  onApproveNow,
+  onSendEmail,
 }) => {
-  const defaultStatus = useMemo(() => status, []);
-  const [valueApproveIn, setValueApproveIn] = useState<Dayjs>(dayjs('2022-04-07'));
-  const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
-  const queryClient = useQueryClient();
+  const defaultStatus = useMemo(() => emailData.status, []);
   const [newHashtagList, setNewHashtagList] = useState<HashtagTabs[] | undefined>(
     undefined,
   );
+  const [isShowLimitTitle, setIsShowLimitTitle] = useState<boolean>(false);
 
   const sentAt = new Date(emailData.send_at);
   const approveAt = new Date(emailData.approve_at);
-
-  const {
-    isOpen: isAlertDialogOpen,
-    isLoading: isAlertDialogLoading,
-    description: alertDialogDescription,
-    onClose: onAlertDialogClose,
-    callback: alertDialogCallback,
-    title: alertDialogTitle,
-    setIsLoading: setALertDialogLoading,
-    setAlertData: setAlertDialogData,
-  } = useAlertDialog();
 
   const cloneSendTo = !!emailData.email.to ? [...emailData.email.to] : [];
 
@@ -167,175 +152,17 @@ const EmailMess: React.FC<Props> = ({
     );
   };
 
-  // useMutation
-  const { mutate: updateEmailStatus, isLoading: isLoadingUpdateEmailStatus } =
-    useMutation({
-      mutationKey: ['update-email'],
-      mutationFn: (status: 'PENDING' | 'approved' | 'DECLINED') =>
-        approveEmail({ user_email_id: emailData.email.id, status: status }),
-      onSuccess() {
-        queryClient.invalidateQueries({ queryKey: ['get-email-manager'] });
-        dispatch(deleteIndexEmail(index));
-        toast.success('Decline Successful!');
-      },
-      onError(err: any, params) {
-        console.log(err);
-        toast.error(
-          `Can't ${params} email (${
-            err.response?.status ? `CODE: ${err.response?.status}` : ''
-          })`,
-        );
-      },
-      onSettled() {
-        onAlertDialogClose();
-      },
-    });
-
-  const { mutate: setApproveEmail, isLoading: isLoadingApprovedEmail } = useMutation(
-    {
-      mutationKey: ['Approve-email'],
-      mutationFn: async (query: {
-        user_email_id: number;
-        status: 'PENDING' | 'approved' | 'DECLINED' | 'DRAFT';
-        note: string;
-        approve_after: number;
-      }) => await approveEmail(query),
-      onSuccess(_, params) {
-        queryClient.invalidateQueries({ queryKey: ['get-emails-list'] });
-
-        switch (params.status) {
-          case 'DRAFT': {
-            toast.success('Email has been cancel');
-            break;
-          }
-          case 'approved': {
-            if (params.approve_after > 0) {
-              toast.success(`Email will be approved after ${params.approve_after}`);
-            } else {
-              dispatch(deleteIndexEmail(index));
-              toast.success('Email has been Approved');
-            }
-            break;
-          }
-        }
-      },
-      onError() {
-        toast.error("Can't approve email");
-      },
-      onSettled() {
-        onAlertDialogClose();
-      },
-    },
-  );
-
-  const { mutate: undoEmailMutate, isLoading: isUndoEmailLoading } = useMutation({
-    mutationKey: ['email-mess-undo-email'],
-    mutationFn: undoEmail,
-    onSuccess() {
-      queryClient.invalidateQueries({ queryKey: ['get-emails-list'] });
-      toast.success('Email have been undo');
-    },
-    onError() {
-      toast.error("Can't undo email");
-    },
-  });
-
   // localStore
   const currRole = localStorage.getItem('current_role')?.toUpperCase();
 
-  // useDispatch
-  const dispatch = useDispatch();
+  // Handle FNC
+  const handleNavigateShowLimitTitle = (e) => {
+    e.stopPropagation();
 
-  // Handle FUNC
-
-  const handleApproveNow = () => {
-    setApproveEmail({
-      user_email_id: emailData.id,
-      note: '',
-      approve_after: 0,
-      status: 'approved',
-    });
-    setIsOpenModal(false);
-  };
-
-  const handleApproveSettime = (e) => {
-    setApproveEmail({
-      user_email_id: emailData.id,
-      note: '',
-      approve_after: valueApproveIn.minute() * 60 + valueApproveIn.second(),
-      status: 'approved',
-    });
-    setIsOpenModal(false);
-  };
-
-  const handleOnDecline = (data: EmailResponse) => (e) => {
-    setAlertDialogData(
-      'Alert',
-      `Are you sure want to decline with title "${
-        data.email.subject ?? 'Empty'
-      }" from writer "${
-        data.email.from ?? data.email.cc[0] ?? data.email.bcc[0] ?? 'No one'
-      }"?`,
-      () => updateEmailStatus('DECLINED'),
-    );
-  };
-
-  const handleOnApprove = (data: EmailResponse) => (e) => {
-    // setAlertDialogData(
-    //   'Alert',
-    //   `Are you sure want to Approve with title "${
-    //     data.subject ?? 'Empty'
-    //   }" from writer "${data.from ?? data.cc[0] ?? data.bcc[0] ?? 'No one'}"?`,
-    //   () =>
-    //     setApproveEmail({
-    //       email_id: emailData.id,
-    //       note: '',
-    //       send_after: 15 * 60,
-    //       status: 'APPROVED',
-    //     }),
-    // );
-    setIsOpenModal(true);
-  };
-
-  const handleUndoEmail = () => {
-    undoEmailMutate({ emailId: emailData.id });
-  };
-
-  const handleSendEmail = () => {
-    setApproveEmail({
-      user_email_id: emailData.id,
-      note: '',
-      status: 'approved',
-      approve_after: 0,
-    });
-  };
-
-  const handleEmployeeCancel = () => {
-    setAlertDialogData('Alert', 'Are you sure to cancel this email', () =>
-      setApproveEmail({
-        user_email_id: emailData.id,
-        status: 'DRAFT',
-        approve_after: valueApproveIn.hour() * 60 + valueApproveIn.minute(),
-        note: '',
-      }),
-    );
+    setIsShowLimitTitle((prevState) => !prevState);
   };
 
   // Render FUNC
-  const _renderActionsPending = useMemo(() => {
-    return (
-      <>
-        <Button
-          onClick={handleOnDecline(emailData)}
-          className="mx-1 bg-rose-600 py-1.5 px-5 hover:bg-rose-500">
-          DECLINE
-        </Button>
-        <Button onClick={handleOnApprove(emailData)} className="mx-1 py-1.5 px-5">
-          APPROVE
-        </Button>
-      </>
-    );
-  }, []);
 
   const _renderActionsPendingItems = useMemo(() => {
     const _renderActionsPendingItem = () => {
@@ -348,7 +175,7 @@ const EmailMess: React.FC<Props> = ({
                 remainMinutes={Math.floor(
                   (sentAt.getTime() - Date.now()) / 1000 / 60,
                 )}
-                onCancel={handleEmployeeCancel}
+                onCancel={onEmployeeCancel}
               />
             </Box>
           );
@@ -362,8 +189,8 @@ const EmailMess: React.FC<Props> = ({
                 remainMinutes={Math.floor(
                   (approveAt.getTime() - Date.now()) / 60000,
                 )}
-                onUndo={handleUndoEmail}
-                onSend={handleApproveNow}
+                onUndo={onUndoEmail}
+                onSend={onApproveNow}
               />
             </Box>
           );
@@ -371,13 +198,11 @@ const EmailMess: React.FC<Props> = ({
           return (
             <Box className="flex flex-1 justify-end">
               <Button
-                onClick={handleOnDecline(emailData)}
+                onClick={onDecline(emailData)}
                 className="mx-1 bg-rose-600 py-1.5 px-5 hover:bg-rose-500">
                 DECLINE
               </Button>
-              <Button
-                onClick={handleOnApprove(emailData)}
-                className="mx-1 py-1.5 px-5">
+              <Button onClick={onApprove(emailData)} className="mx-1 py-1.5 px-5">
                 APPROVE
               </Button>
             </Box>
@@ -385,93 +210,70 @@ const EmailMess: React.FC<Props> = ({
       }
     };
 
-    if (status.toUpperCase() === 'PENDING' || status.toUpperCase() === 'SENDING')
+    if (
+      emailData.status.toUpperCase() === 'PENDING' ||
+      emailData.status.toUpperCase() === 'SENDING'
+    )
       return (
         <Box className="flex flex-wrap actions items-center py-4 justify-between">
           {_renderActionsPendingItem()}
         </Box>
       );
     else return null;
-  }, [sentAt, approveAt, status, currRole]);
-
-  const _renderActionsSending = useMemo(() => {
-    return (
-      <Box className="flex items-center bg-[#F6F3FD] rounded-[12px] py-1 px-2.5">
-        <Box className="pr-4">
-          <p className="text-[#181818] text-[14px] font-medium">
-            This email will be sent in:{' '}
-            <span className="text-[#554CFF]">13 minutes</span>
-          </p>
-        </Box>
-        <Box>
-          <Button className="bg-transparent text-[#181818] font-bold hover:bg-slate-200">
-            Undo
-          </Button>
-          <Button className="bg-transparent text-[#FFB800] font-bold hover:bg-slate-200">
-            Send
-          </Button>
-        </Box>
-      </Box>
-    );
-  }, []);
-
-  const _renderActionsApproved = ({
-    remainMinute,
-    onCancel,
-  }: {
-    remainMinute: number;
-    onCancel: () => void;
-  }) => {
-    return (
-      <Box className="flex actions justify-end py-4">
-        <Box className="flex items-center border border-[#9696C6] px-4 py-2 rounded-[16px]">
-          <Box className="pr-7">
-            <p className="text-[#181818] text-[14px] font-normal">
-              Your email will be sent in
-              <span className="text-[#554CFF] inline-block pl-1">
-                {remainMinute} minutes
-              </span>
-            </p>
-          </Box>
-          <Box>
-            <Button
-              className="bg-transparent hover:bg-slate-200 text-[#554CFF] font-bold"
-              onClick={onCancel}>
-              Cancel
-            </Button>
-          </Box>
-        </Box>
-      </Box>
-    );
-  };
+  }, [sentAt, approveAt, emailData.status, currRole]);
 
   const _renderStatusLayer = useMemo(() => {
     return (
       <EmailForward
-        status={status}
+        status={emailData.status}
         onChangeEmailStatus={() => {
           onChangeStatus(defaultStatus, index);
         }}
-        isReadOnlyReceivers={!(status === 'forward')}
+        isReadOnlyReceivers={!(emailData.status === 'forward')}
         classNameLayer="absolute top-0 left-0 w-full h-full"
         classNameContent="shadow-lg p-4 absolute z-10 top-1/2 right-[40px] w-[90%] -translate-y-1/2 bg-white rounded-[11px] border border-[#E3E3E3] "
         sendTo={
-          status === 'reply'
+          emailData.status === 'reply'
             ? [emailData.email.from]
-            : status === 'replyAll'
+            : emailData.status === 'replyAll'
             ? emailData.email.to
             : emailData.email.to
         }
         sendToDefault={
-          status === 'reply'
+          emailData.status === 'reply'
             ? [emailData.email.from]
-            : status === 'replyAll'
+            : emailData.status === 'replyAll'
             ? emailData.email.to
             : []
         }
       />
     );
-  }, [status]);
+  }, [emailData.status]);
+
+  const _renderEmailTitle = useMemo(() => {
+    const emailTitle = emailData.email.subject;
+    const limitShow = 250;
+    if (emailTitle.length < limitShow)
+      return (
+        <h1 className="text-stone-700 font-bold text-base">
+          {emailData.email.subject}
+        </h1>
+      );
+    return (
+      <h1 className="text-stone-700 font-bold text-base">
+        <span>{emailTitle.substring(0, limitShow)}...</span>
+        {isShowLimitTitle && <span>{emailTitle.substring(limitShow)}</span>}
+        <span
+          onClick={handleNavigateShowLimitTitle}
+          className="pl-2 inline-block text-[14px] hover:opacity-80"
+          style={{
+            color: '#304ffe',
+          }}>
+          {isShowLimitTitle ? 'Show Less' : 'Show More'}
+        </span>
+      </h1>
+    );
+  }, [emailData, isShowLimitTitle]);
 
   return (
     <Box
@@ -504,8 +306,16 @@ const EmailMess: React.FC<Props> = ({
         )}
       </Box>
 
-      <Box className={`w-[10%] flex ${type === 'send' && 'justify-end'}`}>
-        <Avatar alt={userInfo.name} src={userInfo.avatar} />
+      <Box className={`px-4 flex flex-col gap-2`}>
+        <Box>
+          <Avatar alt={userInfo.name} src={userInfo.avatar} />
+        </Box>
+        <Box>
+          <Icon
+            icon="reply"
+            className={`${emailData.type === 'send' && 'rotate-180'}`}
+          />
+        </Box>
       </Box>
       <Box
         sx={{ boxShadow: '0px 10px 23px -15px rgba(159,159,159,0.54)' }}
@@ -522,13 +332,13 @@ const EmailMess: React.FC<Props> = ({
               : 'rounded-bl-[36px] rounded-tr-[36px]'
           }  relative`}
           onClick={() => onShowHistory(emailData, emailData.id)}>
-          <div className="flex items-center gap-2">
-            <h1 className="text-stone-700 font-bold text-base">
-              {emailData.email.subject}
-            </h1>
+          <div className="flex flex-col gap-2">
+            {_renderEmailTitle}
             {renderSendTo()}
           </div>
-          {status.toLowerCase() !== 'null' && <EmailStatus emailStatus={status} />}
+          {emailData.status.toLowerCase() !== 'null' && (
+            <EmailStatus emailStatus={emailData.status.toLowerCase()} />
+          )}
         </Box>
         {/* Email Content */}
         <Box className="py-9">
@@ -560,46 +370,21 @@ const EmailMess: React.FC<Props> = ({
         />
         {/* Actions */}
         {_renderActionsPendingItems}
-        {status === 'APPROVED' && sentAt.getTime() > Date.now() && (
+        {emailData.status === 'APPROVED' && sentAt.getTime() > Date.now() && (
           <ControlEmailSend
             remainMinutes={Math.floor(
               (sentAt.getTime() - new Date().getTime()) / 1000 / 60,
             )}
-            onSend={handleUndoEmail}
-            onUndo={handleSendEmail}
+            onSend={onUndoEmail}
+            onUndo={onSendEmail}
           />
         )}
       </Box>
       {/* Layer if status === 'Reply || ReplyAll' */}
-      {(status === 'reply' || status === 'replyAll' || status === 'forward') &&
+      {(emailData.status === 'reply' ||
+        emailData.status === 'replyAll' ||
+        emailData.status === 'forward') &&
         _renderStatusLayer}
-      <AlertDialog
-        titleLabel={alertDialogTitle}
-        descriptionLabel={alertDialogDescription}
-        isLoading={isAlertDialogLoading}
-        isOpen={isAlertDialogOpen}
-        onClose={onAlertDialogClose}
-        onAgree={alertDialogCallback}
-        onDisagree={onAlertDialogClose}
-      />
-      <ModalBase
-        isOpen={isOpenModal}
-        title="Set time to Approve"
-        submitLabel=""
-        onClose={() => setIsOpenModal(false)}>
-        <SettimeInput
-          value={valueApproveIn}
-          setValueCalendar={(newValue: dayjs.Dayjs | null) =>
-            newValue && setValueApproveIn(newValue)
-          }
-        />
-        <Box className="flex gap-2">
-          <Button onClick={handleApproveNow} color="error">
-            Approve Now
-          </Button>
-          <Button onClick={handleApproveSettime}>Approve</Button>
-        </Box>
-      </ModalBase>
     </Box>
   );
 };

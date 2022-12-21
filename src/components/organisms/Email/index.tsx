@@ -23,6 +23,7 @@ import { toast } from 'react-toastify';
 import { useMutation } from '@tanstack/react-query';
 import { number } from 'yup';
 import { EmailUpdateQuery } from '@api/email/interface';
+import EmailMessContainer from '@containers/EmailMessContainer';
 
 interface ModalForm {
   title: string;
@@ -298,9 +299,8 @@ const Email: React.FC<Props> = () => {
         <EmailMessEmpty isLoading={isLoading} />
       ) : (
         EmailsList.map((email, index) => (
-          <EmailMess
+          <EmailMessContainer
             key={email.id}
-            status={email.status}
             type={checkIsReceiveEmail(email.id) ? 'receive' : 'send'}
             userInfo={
               new UserInfo(``, email.email.writer_id.toString(), email.email.from)

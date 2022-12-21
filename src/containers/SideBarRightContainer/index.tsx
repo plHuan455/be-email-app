@@ -4,21 +4,59 @@ import InformationBarEmpty from '@layouts/InformationBarEmpty';
 import { Box, Typography } from '@mui/material';
 import { RootState } from '@redux/configureStore';
 import { isEmpty } from 'lodash';
-import React, { PropsWithChildren } from 'react';
+import React, { PropsWithChildren, useMemo } from 'react';
 import { useSelector } from 'react-redux';
 
 import styles from './styles.module.scss';
 
 interface Props {
   isBorderBottom: boolean;
-  title: 'Notify' | 'Information';
 }
 
-const SidebarRightContainer: React.FC<Props> = ({ isBorderBottom, title }) => {
+const SidebarRightContainer: React.FC<Props> = ({ isBorderBottom }) => {
   // useSelector
 
   const { sidebarRight } = useSelector((state: RootState) => state.global);
+  const { notificationList } = useSelector((state: RootState) => state.notify);
   const { isLoading, EmailsList } = useSelector((state: RootState) => state.email);
+
+  const _renderNotify = useMemo(() => {
+    if (!isEmpty(notificationList))
+      return notificationList.map((notify) => <p>{notify.body}</p>);
+
+    return <p>No new announcements</p>;
+  }, [notificationList]);
+
+  const _renderEmailsInformation = useMemo(() => {
+    if (!isEmpty(EmailsList))
+      return (
+        <InformationBar
+          title={sidebarRight.title}
+          sender={1}
+          isBorderBottom={isBorderBottom}
+        />
+      );
+    return (
+      <InformationBarEmpty
+        sender={1}
+        isBorderBottom={isBorderBottom}
+        isLoading={isLoading}
+      />
+    );
+  }, [EmailsList]);
+
+  const _renderSidebarRight = useMemo(() => {
+    switch (sidebarRight.type) {
+      case 'information':
+        return _renderEmailsInformation;
+
+      case 'notify':
+        return _renderNotify;
+
+      default:
+        return _renderEmailsInformation;
+    }
+  }, [sidebarRight]);
 
   return (
     <Box
@@ -40,17 +78,9 @@ const SidebarRightContainer: React.FC<Props> = ({ isBorderBottom, title }) => {
           color: '#5724C5',
           fontWeight: 'bold',
         }}>
-        {title}
+        {sidebarRight.title}
       </Typography>
-      {!isEmpty(EmailsList) ? (
-        <InformationBar title={title} sender={1} isBorderBottom={isBorderBottom} />
-      ) : (
-        <InformationBarEmpty
-          sender={1}
-          isBorderBottom={isBorderBottom}
-          isLoading={isLoading}
-        />
-      )}
+      {_renderSidebarRight}
     </Box>
   );
 };
