@@ -90,9 +90,9 @@ const HashtagInput: React.FC<HashTagInputProps> = ({
               label={option.name}
               {...getTagProps({ index })}
               sx={{
-                color: '#4BAAA2',
+                color: '#7061e2',
                 fontWeight: 600,
-                borderColor: '#4BAAA2'
+                borderColor: '#7061e2'
               }}
             />
           ))
