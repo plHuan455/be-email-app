@@ -100,6 +100,8 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
 
   const workingEmail = useAppSelector((state) => state.email.workingEmail);
 
+  const [isOpenCalendarSelect, setIsOpenCalendarSelect] = useState(false);
+
   const queryClient = useQueryClient();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -297,6 +299,7 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
         isFullScreen={isFullScreen}
         isShowCCForm={isShowCCForm}
         isShowCalendarModal={isShowCalendarModal}
+        isOpenCalendarSelect={isOpenCalendarSelect}
         hashtagOptions={convertedHashtagOptions}
         selectedDate={selectedDate}
         tabBarColor={tabBarColor}
@@ -308,6 +311,7 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
         onChangeCalendarValue={(value) => setCalendarValue(value)}
         onSubmit={handleSubmit}
         onSendTimeClick={() => {
+          setIsOpenCalendarSelect(true);
           setIsShowCalendarModal(true);
           setCalendarValue(dayjs(Date.now()));
         }}
@@ -318,6 +322,9 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
         onSetTimeClick={() => {
           setSelectedDate(calendarValue?.clone());
           setIsShowCalendarModal(false);
+        }}
+        onSetTimeCancel={() => {
+          setIsOpenCalendarSelect(false);
         }}
       />
       <AlertDialog
