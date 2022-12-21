@@ -61,6 +61,7 @@ interface EmailComposeProps {
   hashtagOptions: HashtagOptionTypes[];
   selectedDate?: Dayjs | null;
   isShowCalendarModal?: boolean;
+  isOpenCalendarSelect?: boolean;
   calendarValue: Dayjs | null;
   tabBarColor?: string;
   onMaximizeClick?: () => void;
@@ -71,6 +72,8 @@ interface EmailComposeProps {
   onUnsetTimeClick: () => void;
   onSetTimeClick: () => void;
   onSendTimeClick: () => void;
+  onSetTimeAccept?: (date: Dayjs | null) => void;
+  onSetTimeCancel?: () => void;
   onSubmit: (values: EmailComposeFields) => void;
 }
 
@@ -80,6 +83,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
   selectedDate,
   isShowCCForm = false,
   isShowCalendarModal = false,
+  isOpenCalendarSelect = false,
   calendarValue,
   tabBarColor,
   onMinimizeClick,
@@ -92,6 +96,8 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
   onUnsetTimeClick,
   onSendTimeClick,
   onSubmit,
+  onSetTimeAccept,
+  onSetTimeCancel
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const composeScrollRef = useRef<HTMLDivElement>(null);
@@ -416,7 +422,10 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
               onSubmit={() => onSubmit(method.getValues())}>
               <DateTimePicker
                 value={calendarValue}
+                isOpen={isOpenCalendarSelect}
                 setValueCalendar={onChangeCalendarValue}
+                onAccept={onSetTimeAccept}
+                onClose={onSetTimeCancel}
               />
               <Box className="" display="flex">
                 <Button
@@ -424,7 +433,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                   sx={{ flexBasis: '50%' }}
                   color={'error'}
                   onClick={onUnsetTimeClick}>
-                  SEND NOW
+                  NOW
                 </Button>
                 <Button
                   className="button-create-mui"
