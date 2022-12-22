@@ -10,6 +10,7 @@ export interface GobalState {
   themeMode: string;
   activeBar: string;
   locations: TLocation[];
+  defaultSignId: number;
 }
 
 const initialState: GobalState = {
@@ -21,6 +22,7 @@ const initialState: GobalState = {
   themeMode: 'dark',
   activeBar: 'home',
   locations: [],
+  defaultSignId: 1,
 };
 
 const globalSlice = createSlice({
@@ -73,10 +75,14 @@ const globalSlice = createSlice({
     setLocation(state, action) {
       return { ...state, locations: action.payload };
     },
+    setDefaultSignId(state, action) {
+      return { ...state, defaultSignId: action.payload };
+    },
   },
 });
 
 export const {
+  setDefaultSignId,
   setThemeMode,
   setLocation,
   openInformationSidebarRight,

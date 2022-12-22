@@ -1,0 +1,85 @@
+.modal-sign-container {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+
+    .modal-sign-header {
+        width: 100%;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        font-weight: 700;
+        color: #000;
+        margin-bottom: 16px;
+
+        .modal-header-pencolor {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+
+
+            .pencolor-circle {
+                width: 24px;
+                height: 24px;
+                border-radius: 12px;
+                margin: 0 8px;
+
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .black {
+                background: black;
+            }
+
+            .green {
+                background: green;
+            }
+
+            .red {
+                background: red;
+            }
+        }
+
+        .modal-close-button {
+            margin-right: 16px;
+            cursor: pointer;
+        }
+    }
+
+    .modal-sign-content {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+
+        .modal-sign-content-scroll {
+            flex: 1;
+            display: flex;
+
+            .sigCanvas {
+                width: 100%;
+                height: 100%;
+                border-radius: 5px;
+                background-color: #ececec;
+                // cursor: url(http://www.javascriptkit.com/dhtmltutors/cursor-hand.gif), auto; 
+            }
+        }
+    }
+
+    .modal-sign-bottom {
+        width: 100%;
+        height: 44px;
+        display: flex;
+        justify-content: center;
+        margin-top: 32px;
+
+        .wrap-button {
+            width: 100px;
+            margin: 0 16px;
+        }
+    }
+}

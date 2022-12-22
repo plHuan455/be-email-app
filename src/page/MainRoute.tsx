@@ -27,6 +27,7 @@ import ContactLayout from '@layouts/Contact';
 import ContactSharing from './Contact/ContactSharing';
 import ContactGroups from './Contact/ContactGroup';
 import SignaturePage from './SignaturePage';
+import SignatureContainer from '@containers/SignatureContainer';
 
 export const managerRouter: RouteObject[] = [
   {
@@ -122,6 +123,18 @@ export const declareRouter: RouteObject[] = [
             element: <ContactGroups />,
           },
         ],
+      },
+      {
+        path: '/change-password',
+        element: <ChangePassword />,
+      },
+      {
+        path: '/profile',
+        element: <UserProfileContainer />,
+      },
+      {
+        path: '/signature',
+        element: <SignatureContainer />,
       },
       ...sideBarRouter,
       ...managerRouter,
