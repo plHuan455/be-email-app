@@ -303,7 +303,7 @@ const Email: React.FC<Props> = () => {
             key={email.id}
             type={checkIsReceiveEmail(email.id) ? 'receive' : 'send'}
             userInfo={
-              new UserInfo(``, email.email.writer_id.toString(), email.email.from)
+              new UserInfo(``, email.email.writer_id?.toString(), email.email.from)
             }
             emailData={email}
             onShowHistory={handleShowHistory}

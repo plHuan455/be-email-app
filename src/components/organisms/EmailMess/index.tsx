@@ -179,6 +179,7 @@ const EmailMess: React.FC<Props> = ({
             <Box>
               <ControlEmailSend
                 variant="cancel"
+                scheduleAt={dayjs(sentAt).format('MMMM, DD YYYY - HH:mm')}
                 remainMinutes={Math.floor(
                   (sentAt.getTime() - Date.now()) / 1000 / 60,
                 )}
@@ -190,9 +191,10 @@ const EmailMess: React.FC<Props> = ({
       } else {
         if (approveAt.getTime() > Date.now())
           return (
-            <Box>
+            <Box className="flex-1">
               <ControlEmailSend
                 variant="undoSendNow"
+                scheduleAt={dayjs(approveAt).format('MMMM, DD YYYY - HH:mm')}
                 remainMinutes={Math.floor(
                   (approveAt.getTime() - Date.now()) / 60000,
                 )}
