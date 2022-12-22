@@ -11,6 +11,7 @@ import Department from '@assets/icon/Department';
 import ArticleIcon from '@mui/icons-material/Article';
 import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
 import { IS_EMPLOYEE_ROLE } from '@constants/localStore';
+import { NavLink } from 'react-router-dom';
 
 export interface TabItem {
   title?: string;
@@ -68,7 +69,7 @@ const TabsDataManager: TabItem[] = [
         }}
       />
     ),
-    url: '/emails',
+    url: '/template',
   },
 ];
 
@@ -136,6 +137,7 @@ export default function IconTabsManager() {
   const navigate = useNavigate();
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
+    console.log(newValue);
     setValue(newValue);
     // navigate(TabsData[newValue - 1].url || '/');
   };
@@ -146,12 +148,21 @@ export default function IconTabsManager() {
     return TabsData.map((val, index) => {
       return (
         <Tooltip title={val.title} placement="right">
-          <Tab
-            key={index}
-            icon={val.icon}
-            aria-label={val.title}
-            onClick={() => navigate(val.url)}
-          />
+          <NavLink to={val.url}>
+            {({ isActive }) => {
+              if (isActive) setValue(index + 1);
+
+              return (
+                <Tab
+                  className={`${isActive && 'Mui-selected'}`}
+                  key={index}
+                  icon={val.icon}
+                  aria-label={val.title}
+                  // onClick={() => navigate(val.url)}
+                />
+              );
+            }}
+          </NavLink>
         </Tooltip>
       );
     });
