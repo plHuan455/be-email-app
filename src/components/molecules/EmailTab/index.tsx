@@ -65,7 +65,10 @@ const EmailTab: React.FC<Props> = ({
           justifyContent: 'space-between',
           padding: '5px 10px',
         }}>
-        <Typography component={'p'} sx={{ color: color, fontWeight: 'bold' }}>
+        <Typography
+          className="truncate"
+          component={'p'}
+          sx={{ color: color, fontWeight: 'bold' }}>
           {title}
         </Typography>
         {notiNumber > 0 && (

@@ -150,7 +150,7 @@ const UserProfileContainer = () => {
     //     overflow: 'scroll',
     //   }}>
     <Layout.MainHaveActions>
-      <Box className="flex flex-col rounded-xl bg-white h-full p-16 shadow-md">
+      <Box className="flex flex-col rounded-xl mt-8 h-full p-16 shadow-md">
         <Box className="flex-1">
           {dataGetUserProfile &&
             (isViewStatus ? (

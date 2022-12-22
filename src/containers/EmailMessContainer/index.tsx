@@ -1,6 +1,7 @@
 import { approveEmail, EmailResponse, undoEmail } from '@api/email';
 import ModalBase from '@components/atoms/ModalBase';
 import AlertDialog, { useAlertDialog } from '@components/molecules/AlertDialog';
+import AlertWithEmailAction from '@components/molecules/AlertWithEmailAction';
 import SettimeInput from '@components/molecules/SettimeInput';
 import { UserInfo } from '@components/organisms/Email/Interface';
 import EmailMess from '@components/organisms/EmailMess';
@@ -39,7 +40,9 @@ const EmailMessContainer: React.FC<Props> = ({
 }) => {
   // useState
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
-  const [valueApproveIn, setValueApproveIn] = useState<Dayjs>(dayjs('2022-04-07'));
+  const [valueApproveIn, setValueApproveIn] = useState<Dayjs>(
+    dayjs('Thu Apr 07 2022 00:15:00'),
+  );
 
   // useAlertDialog
   const {
@@ -131,33 +134,66 @@ const EmailMessContainer: React.FC<Props> = ({
 
   //   Handle FNC
   const handleApproveNow = () => {
-    setApproveEmail({
-      user_email_id: emailData.id,
-      note: '',
-      approve_after: 0,
-      status: 'approved',
-    });
+    setAlertDialogData(
+      '',
+      <AlertWithEmailAction
+        title='Are you sure want to "approve now" this mail?'
+        emailTitle={emailData.email.subject ?? 'Empty'}
+        writer={
+          emailData.email.from ??
+          emailData.email.cc[0] ??
+          emailData.email.bcc[0] ??
+          'No one'
+        }
+      />,
+      () =>
+        setApproveEmail({
+          user_email_id: emailData.id,
+          note: '',
+          approve_after: 0,
+          status: 'approved',
+        }),
+    );
     setIsOpenModal(false);
   };
 
   const handleApproveSettime = (e) => {
-    setApproveEmail({
-      user_email_id: emailData.id,
-      note: '',
-      approve_after: valueApproveIn.minute() * 60 + valueApproveIn.second(),
-      status: 'approved',
-    });
+    setAlertDialogData(
+      '',
+      <AlertWithEmailAction
+        title='Are you sure want to "approve" this mail?'
+        emailTitle={emailData.email.subject ?? 'Empty'}
+        writer={
+          emailData.email.from ??
+          emailData.email.cc[0] ??
+          emailData.email.bcc[0] ??
+          'No one'
+        }
+      />,
+      () =>
+        setApproveEmail({
+          user_email_id: emailData.id,
+          note: '',
+          approve_after: valueApproveIn.hour() * 60 + valueApproveIn.minute(),
+          status: 'approved',
+        }),
+    );
     setIsOpenModal(false);
   };
 
   const handleOnDecline = (data: EmailResponse) => (e) => {
     setAlertDialogData(
-      'Alert',
-      `Are you sure want to decline with title "${
-        data.email.subject ?? 'Empty'
-      }" from writer "${
-        data.email.from ?? data.email.cc[0] ?? data.email.bcc[0] ?? 'No one'
-      }"?`,
+      '',
+      <AlertWithEmailAction
+        title='Are you sure want to "decline" this mail?'
+        emailTitle={emailData.email.subject ?? 'Empty'}
+        writer={
+          emailData.email.from ??
+          emailData.email.cc[0] ??
+          emailData.email.bcc[0] ??
+          'No one'
+        }
+      />,
       () => updateEmailStatus('DECLINED'),
     );
   };
@@ -180,13 +216,25 @@ const EmailMessContainer: React.FC<Props> = ({
   };
 
   const handleEmployeeCancel = () => {
-    setAlertDialogData('Alert', 'Are you sure to cancel this email', () =>
-      setApproveEmail({
-        user_email_id: emailData.id,
-        status: 'DRAFT',
-        approve_after: valueApproveIn.hour() * 60 + valueApproveIn.minute(),
-        note: '',
-      }),
+    setAlertDialogData(
+      '',
+      <AlertWithEmailAction
+        title='Are you sure want to "cancel" this mail?'
+        emailTitle={emailData.email.subject ?? 'Empty'}
+        writer={
+          emailData.email.from ??
+          emailData.email.cc[0] ??
+          emailData.email.bcc[0] ??
+          'No one'
+        }
+      />,
+      () =>
+        setApproveEmail({
+          user_email_id: emailData.id,
+          status: 'DRAFT',
+          approve_after: valueApproveIn.hour() * 60 + valueApproveIn.minute(),
+          note: '',
+        }),
     );
   };
 

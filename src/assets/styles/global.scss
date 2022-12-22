@@ -254,8 +254,8 @@
     margin-top: 0.75rem;
 }
 
-.mt-\[120px\] {
-    margin-top: 120px;
+.mt-\[100px\] {
+    margin-top: 100px;
 }
 
 .mb-3 {
@@ -272,6 +272,10 @@
 
 .mb-8 {
     margin-bottom: 2rem;
+}
+
+.mt-8 {
+    margin-top: 2rem;
 }
 
 .mr-1 {
@@ -300,10 +304,6 @@
 
 .mt-6 {
     margin-top: 1.5rem;
-}
-
-.mt-\[100px\] {
-    margin-top: 100px;
 }
 
 .block {
@@ -358,6 +358,10 @@
     height: 100%;
 }
 
+.h-\[56px\] {
+    height: 56px;
+}
+
 .h-10 {
     height: 2.5rem;
 }
@@ -392,10 +396,6 @@
 
 .h-\[88px\] {
     height: 88px;
-}
-
-.h-\[56px\] {
-    height: 56px;
 }
 
 .min-h-11 {
@@ -508,6 +508,18 @@
 
 .min-w-\[35\%\] {
     min-width: 35%;
+}
+
+.min-w-\[100px\] {
+    min-width: 100px;
+}
+
+.min-w-\[6px\] {
+    min-width: 6px;
+}
+
+.min-w-\[60px\] {
+    min-width: 60px;
 }
 
 .flex-none {
@@ -1273,11 +1285,6 @@
     background-color: rgb(241 241 246 / var(--tw-bg-opacity));
 }
 
-.bg-\[red\] {
-    --tw-bg-opacity: 1;
-    background-color: rgb(255 0 0 / var(--tw-bg-opacity));
-}
-
 .bg-purple-linear {
     background-image: linear-gradient(267.74deg, #6359d9 -4.45%, #b147f8 105.31%);
 }
@@ -1413,6 +1420,11 @@
     padding-right: 0.5rem;
 }
 
+.px-6 {
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
 .py-6 {
     padding-top: 1.5rem;
     padding-bottom: 1.5rem;
@@ -1466,11 +1478,6 @@
 .px-9 {
     padding-left: 2.25rem;
     padding-right: 2.25rem;
-}
-
-.px-6 {
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
 }
 
 .pt-1 {

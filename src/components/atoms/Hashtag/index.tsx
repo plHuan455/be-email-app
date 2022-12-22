@@ -52,7 +52,10 @@ const Hashtag: React.FC<Props> = ({
           justifyContent: 'space-between',
           padding: '5px 10px',
         }}>
-        <Typography component={'p'} sx={{ color: '#4BAAA2', fontWeight: 'bold' }}>
+        <Typography
+          className="truncate"
+          component={'p'}
+          sx={{ color: '#4BAAA2', fontWeight: 'bold' }}>
           {title}
         </Typography>
       </ButtonBase>
