@@ -11,7 +11,8 @@ import styled from 'styled-components';
 export interface UpdateEmployeeFields {
   id: number;
   avatar?: File | string;
-  username?: string;
+  firstName?: string;
+  lastName?: string;
   email?: string;
   password?: string;
   phone?: string;
@@ -93,7 +94,7 @@ function UpdateEmployeeModal({
                   render={({ field: { value, onChange }, fieldState }) => (
                     <InputWrapper>
                       <ValidateInput
-                        id='update-employee-email'
+                        id="update-employee-email"
                         label="Email"
                         type="text"
                         fullWidth
@@ -113,7 +114,7 @@ function UpdateEmployeeModal({
                     <InputWrapper>
                       <ValidateInput
                         label="Phone number"
-                        id='update-employee-phone'
+                        id="update-employee-phone"
                         type="text"
                         fullWidth
                         value={value}
@@ -132,7 +133,7 @@ function UpdateEmployeeModal({
                     <InputWrapper>
                       <ValidateInput
                         label="Position"
-                        id='update-employee-position'
+                        id="update-employee-position"
                         fullWidth
                         type="text"
                         className="text-emerald-400"
@@ -150,7 +151,7 @@ function UpdateEmployeeModal({
                   name="role"
                   render={({ field: { value, onChange }, fieldState }) => (
                     <SelectInput
-                      id='update-employee-role'
+                      id="update-employee-role"
                       value={value}
                       onChange={onChange}
                       label="Role"
@@ -198,7 +199,7 @@ function UpdateEmployeeModal({
                     <InputWrapper>
                       <ValidateInput
                         label="Password"
-                        id='update-employee-password'
+                        id="update-employee-password"
                         className="text-sm"
                         type="password"
                         fullWidth
@@ -230,8 +231,7 @@ function UpdateEmployeeModal({
                     }}
                     className="button-create-mui"
                     fullWidth
-                    type="submit"
-                  >
+                    type="submit">
                     {submitLabel}
                   </LoadingButton>
                 </StyleButtonWrapper>
