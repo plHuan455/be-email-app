@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from 'react';
 import ProtectedRoute from '@layouts/Auth/ProtectedRoute';
 import AuthProvider from '@layouts/Auth/AuthProvider';
 import MainWrapper from '@layouts/MainWrapper';
@@ -8,31 +7,26 @@ import {
   RouteObject,
   createHashRouter,
 } from 'react-router-dom';
-import HomePage from './Home';
 import Login from './Login';
 import AboutPage from './About';
 import useInjectLocales from '@hooks/useInjectLocales';
-import { genCRUD } from '@utils/routerHelper';
 import ErrorBoundary from './ErrorBoudary';
 import ErrorPage from './ErrorPage';
-import EmailHashTag from './Email/EmailHashTag';
 import EmailWrap from './Email';
-import Email from '@components/organisms/Email';
 
 import ManagerEmployee from './Manager/ManagerEmployee';
 import ManagerDepartment from './Manager/ManagerDepartment';
 import SettingRoles from './Settings/SettingsRoles';
 import Manager from './Manager';
 import ChangePassword from './ChangePassword';
-import UserProfile from '../layouts/UserProfile';
 import UserProfileContainer from './UserProfileContainer';
 import EmailEmptyContainer from '@containers/EmailEmptyContainer';
 import EmailMainWrapper from '@layouts/EmailMainWrapper';
 import EmailComposePage from './Email/EmailComposePage';
-import ContactPage from './Contact';
 import ContactLayout from '@layouts/Contact';
 import ContactSharing from './Contact/ContactSharing';
 import ContactGroups from './Contact/ContactGroup';
+import SignaturePage from './SignaturePage';
 
 export const managerRouter: RouteObject[] = [
   {
@@ -48,6 +42,18 @@ export const managerRouter: RouteObject[] = [
           { path: '/manager/department/employee', element: <ManagerEmployee /> },
           { path: '/manager/department/department', element: <ManagerDepartment /> },
         ],
+      },
+      {
+        path: '/manager/profile',
+        element: <UserProfileContainer />,
+      },
+      {
+        path: '/manager/change-password',
+        element: <ChangePassword />,
+      },
+      {
+        path: '/manager/signature',
+        element: <SignaturePage />,
       },
     ],
   },
@@ -116,14 +122,6 @@ export const declareRouter: RouteObject[] = [
             element: <ContactGroups />,
           },
         ],
-      },
-      {
-        path: '/change-password',
-        element: <ChangePassword />,
-      },
-      {
-        path: '/profile',
-        element: <UserProfileContainer />,
       },
       ...sideBarRouter,
       ...managerRouter,

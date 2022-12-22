@@ -105,7 +105,7 @@ const MainHaveActions: React.FC<
           <EmailsListActionsContainer />
           {headTitle && (
             <Box
-              className=" mt-[100px]"
+              className="mt-[100px]"
               sx={(theme) => ({
                 display: 'flex',
                 alignItems: 'center',
@@ -114,7 +114,7 @@ const MainHaveActions: React.FC<
               })}>
               {headTitle && (
                 <Typography
-                  className="text-[#B2B0EE]"
+                  className="text-[#B2B0EE] px-6"
                   variant="h4"
                   sx={{ fontWeight: 700 }}>
                   {headTitle}

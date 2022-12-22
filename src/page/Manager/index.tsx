@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Box } from '@mui/material';
 import Layout from '@layouts/Layout';
+import SettingLeftContainer from '@containers/SettingLeftSideBarContainer';
 
 const Manager = () => {
   const queryClient = new QueryClient({
@@ -34,6 +35,9 @@ const Manager = () => {
           borderTopLeftRadius: '65px',
           overflow: 'scroll',
         }}> */}
+      <Layout.ASide>
+        <SettingLeftContainer />
+      </Layout.ASide>
       <Outlet />
       {/* </Box> */}
     </Layout.Content>

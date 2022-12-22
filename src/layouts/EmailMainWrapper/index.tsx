@@ -46,7 +46,11 @@ const EmailMainWrapper = () => {
     queryFn: () => getAllEmailByCatalog(params),
     onSuccess: (res) => {
       dispatch(
-        setEmailsList(params.catalog === 'PENDING' ? res.data.reverse() : res.data),
+        setEmailsList(
+          params.catalog?.toUpperCase() === 'PENDING'
+            ? res.data.reverse()
+            : res.data,
+        ),
       );
       return res.data;
     },

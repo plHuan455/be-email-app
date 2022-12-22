@@ -62,15 +62,17 @@ const EmailStatusHeader = ({
         </Box>
       </Box>
 
-      <Box className="py-2">
-        <Input
-          type="text"
-          inputMode="search"
-          placeHolder="Search email, name, department, keywords..."
-          isAccessControlInput={true}
-          fullWidth={true}
-        />
-      </Box>
+      {isSearch && (
+        <Box className="py-2">
+          <Input
+            type="text"
+            inputMode="search"
+            placeHolder="Search email, name, department, keywords..."
+            isAccessControlInput={true}
+            fullWidth={true}
+          />
+        </Box>
+      )}
     </Box>
   );
 };

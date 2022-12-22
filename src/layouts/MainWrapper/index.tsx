@@ -167,20 +167,20 @@ function MainWrapper() {
     {
       id: 0,
       label: 'Profile',
-      path: '/profile',
-      handleClick: handleChangePage('/profile'),
+      path: '/manager/profile',
+      handleClick: handleChangePage('/manager/profile'),
     },
     {
       id: 1,
       label: 'Setting',
       path: '/setting',
-      handleClick: handleChangePage('/manager/setting'),
+      handleClick: handleChangePage('/manager/profile'),
     },
     {
       id: 2,
       label: 'Change Password',
       path: '/change-password',
-      handleClick: handleChangePage('/change-password'),
+      handleClick: handleChangePage('/manager/change-password'),
     },
     {
       id: 3,
