@@ -33,6 +33,7 @@ import ContactPage from './Contact';
 import ContactLayout from '@layouts/Contact';
 import ContactSharing from './Contact/ContactSharing';
 import ContactGroups from './Contact/ContactGroup';
+import SignatureContainer from '@containers/SignatureContainer';
 
 export const managerRouter: RouteObject[] = [
   {
@@ -124,6 +125,10 @@ export const declareRouter: RouteObject[] = [
       {
         path: '/profile',
         element: <UserProfileContainer />,
+      },
+      {
+        path: '/signature',
+        element: <SignatureContainer />,
       },
       ...sideBarRouter,
       ...managerRouter,

@@ -142,7 +142,9 @@ export const IconFactory: React.FC<SVGIconProps> = ({
       )}
       onClick={onClick}>
       <Suspense fallback={<div>...</div>}>
-        {Component && <Component color={rawColor || AppColors[color]} {...props} />}
+        {Component && (
+          <Component color={rawColor || AppColors[color] || color} {...props} />
+        )}
       </Suspense>
     </div>
   );

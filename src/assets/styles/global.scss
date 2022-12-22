@@ -1,6 +1,6 @@
-/* @import "./_mixin.scss"; */
+/* @import "./_mixin.scss"; */
 
-/*must import above this line recommended by postcss */
+/*must import above this line recommended by postcss */
 
 *, ::before, ::after {
     --tw-border-spacing-x: 0;
@@ -296,6 +296,10 @@
 
 .mr-16 {
     margin-right: 4rem;
+}
+
+.ml-4 {
+    margin-left: 1rem;
 }
 
 .mr-4 {

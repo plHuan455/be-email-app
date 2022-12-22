@@ -35,6 +35,11 @@ const TabsDataEmployee: TabItem[] = [
     icon: <ArticleIcon />,
     url: '/emails',
   },
+  // {
+  //   title: 'Sign Test',
+  //   icon: <ArticleIcon />,
+  //   url: '/sign',
+  // },
 ];
 
 const TabsDataManager: TabItem[] = [
