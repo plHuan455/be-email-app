@@ -7,7 +7,6 @@ import { useQuery } from '@tanstack/react-query';
 import React, { useEffect, useMemo, useState } from 'react';
 import styles from './styles.module.scss';
 import CloseIcon from '@mui/icons-material/Close';
-import useMinimizedUpload from '@zustand/useMinimizedUpload';
 
 interface Props {
   data: any;

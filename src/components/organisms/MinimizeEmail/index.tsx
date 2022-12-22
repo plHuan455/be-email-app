@@ -3,7 +3,6 @@ import WindowActions from '@components/molecules/WindowActions';
 import { Box, Typography } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
 import { rem } from '@utils/functions';
-import useMinimizedUpload from '@zustand/useMinimizedUpload';
 import { useEffect } from 'react';
 
 interface MinimizeEmailProps {

@@ -1,7 +1,6 @@
 import { CustomFile } from '@components/templates/EmailCompose2';
 import { Box, Button, Typography } from '@mui/material';
 import { addHttp } from '@utils/functions';
-import useMinimizedUpload from '@zustand/useMinimizedUpload';
 import { useEffect } from 'react';
 
 import UploadFile from '../UploadFile';
