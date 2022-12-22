@@ -11,50 +11,57 @@ import useMinimizedUpload from '@zustand/useMinimizedUpload';
 
 interface Props {
   data: any;
-  uploadedData?: {name: string; type: string; url: string};
+  uploadedData?: { name: string; type: string; url: string };
   onUploaded?: (uploadUrl: string) => void;
-  onUpload?: (customData: any) => void;
   onDeleteFile: () => void;
   onUploading?: (isUploading: boolean) => void;
-  percent?: number; // to get the percentage of uploading file outside of the component
 }
 
-const UploadFile: React.FC<Props> = ({ 
+const UploadFile: React.FC<Props> = ({
   data,
   uploadedData,
-  onUploading = () => {} ,
-  onDeleteFile, 
+  onUploading = () => {},
+  onDeleteFile,
   onUploaded,
-  onUpload,
 }) => {
-  const [progressPercent, setProgressPercent] = useState<number>(data?.percentage ?? 10);
+  const [progressPercent, setProgressPercent] = useState<number>(
+    data.percentage ?? 10,
+  );
   const [customData, setCustomData] = useState(() => {
     // data.preview = URL.createObjectURL(data);
 
     const res = {
       ...data,
-      percentage: data?.percentage ?? 0 
-    }
+      percentage: data?.percentage ?? 0,
+    };
 
     return res;
   });
 
-  // console.log(customData);
+  console.log('upload file', progressPercent);
 
   const { isLoading: isUploadingFile } = useQuery({
     queryKey: [`upload-file-${data.name}`, data],
     queryFn: async () => {
       onUploading(true);
-      return await uploadFile(data)
+      return await uploadFile(data);
     },
     onSuccess(res) {
-      setCustomData((prevState) => ({ ...prevState, url: `http://${res.data}` }));
+      setCustomData((prevState) => ({
+        ...prevState,
+        url: `http://${res.data}`,
+        percentage: 100,
+      }));
       setProgressPercent(100);
-      if(onUploaded) onUploaded(res.data);
+      if (onUploaded) onUploaded(res.data);
       onUploading(false);
     },
     onError(err) {
-      setCustomData((prevState) => ({ ...prevState, type: `error` }));
+      setCustomData((prevState) => ({
+        ...prevState,
+        type: `error`,
+        percentage: 100,
+      }));
       setProgressPercent(100);
       onUploading(false);
     },
@@ -74,7 +81,6 @@ const UploadFile: React.FC<Props> = ({
         setCustomData((prevState) => ({ ...prevState, type: `pdf` }));
       else setCustomData((prevState) => ({ ...prevState, type: `file` }));
     }
-    onUpload?.(customData)
   }, []);
 
   useEffect(() => {
@@ -90,7 +96,7 @@ const UploadFile: React.FC<Props> = ({
     }
   }, [isUploadingFile]);
 
-  const { name, url, type } = customData;
+  const { name, url, type, percentage } = customData;
 
   const _renderIconFile = useMemo(() => {
     return (
@@ -124,7 +130,7 @@ const UploadFile: React.FC<Props> = ({
         </Box>
       </Box>
       <button
-        type='button'
+        type="button"
         className="flex items-center justify-center shadow-md absolute top-0 right-0 -translate-x-1/2 translate-y-1/2 rounded-full"
         onClick={() => onDeleteFile()}>
         <CloseIcon sx={{ fontSize: 14 }} />

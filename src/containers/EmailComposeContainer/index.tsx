@@ -20,7 +20,6 @@ import { useNavigate } from 'react-router-dom';
 import useAutoStoreEmail from '../../hooks/Email/useAutoStoreEmail';
 import { UserInfo } from '@components/organisms/Email/Interface';
 import { InputContactBlock } from '@components/molecules/AutoCompleteReceive';
-dayjs.extend(utc);
 
 export const backUpData: InputContactBlock[] = [
   {

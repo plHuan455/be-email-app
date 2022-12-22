@@ -37,11 +37,18 @@ import HashtagInput, {
   HashtagOptionTypes,
 } from '@components/atoms/Input/HashtagInput';
 
+export interface CustomFile extends File {
+  percentage: number;
+}
+
 export interface EmailComposeFields {
   to: InputContactBlock[];
   cc: UserInfo[];
   bcc: UserInfo[];
-  attachFiles: { fileUrls: (string | undefined)[]; files: (File | undefined)[] };
+  attachFiles: {
+    fileUrls: (string | undefined)[];
+    files: (CustomFile | undefined)[];
+  };
   subject: string;
   content: any;
   hashtags: { name: string; value: string }[];
@@ -286,6 +293,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                               onUploaded={(index, url) => {
                                 const cloneAttachFiles = { ...value };
                                 cloneAttachFiles.fileUrls[index] = url;
+                                cloneAttachFiles.files[index].percentage = 100;
                                 onChange(cloneAttachFiles);
                               }}
                               onDelete={(index) => {
