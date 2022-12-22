@@ -10,6 +10,7 @@ import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import Department from '@assets/icon/Department';
 import ArticleIcon from '@mui/icons-material/Article';
 import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
+import { IS_EMPLOYEE_ROLE } from '@constants/localStore';
 
 export interface TabItem {
   title?: string;
@@ -18,7 +19,7 @@ export interface TabItem {
   icon?: React.ReactElement;
 }
 
-const TabsData: TabItem[] = [
+const TabsDataEmployee: TabItem[] = [
   {
     title: 'Email',
     icon: <Icon icon="email" />,
@@ -27,7 +28,25 @@ const TabsData: TabItem[] = [
   {
     title: 'Contact',
     icon: <PermContactCalendarIcon />,
+    url: '/contact',
+  },
+  {
+    title: 'Template',
+    icon: <ArticleIcon />,
     url: '/emails',
+  },
+];
+
+const TabsDataManager: TabItem[] = [
+  {
+    title: 'Email',
+    icon: <Icon icon="email" />,
+    url: '/emails',
+  },
+  {
+    title: 'Contact',
+    icon: <PermContactCalendarIcon />,
+    url: '/contact',
   },
   {
     title: 'Department',
@@ -40,6 +59,8 @@ const TabsData: TabItem[] = [
     url: '/emails',
   },
 ];
+
+const TabsData: TabItem[] = IS_EMPLOYEE_ROLE ? TabsDataEmployee : TabsDataManager;
 
 const iconsList: {
   [key: string]: SVGIconProps['icon'];

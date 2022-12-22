@@ -42,7 +42,7 @@ const responsePermissionsData: PermissionResponse[] = [
   },
 ];
 
-const createPermissionSchema   = yup.object({
+const createPermissionSchema = yup.object({
   name: yup.string().required(),
 }).required();
 
@@ -54,7 +54,7 @@ const SettingRolesContainer = () => {
   const [value, setValue] = useState(0);
   const [isAddPermission, setIsAddPermission] = useState<boolean>(false);
 
-  const {data: headerTabData} = useQuery({
+  const { data: headerTabData } = useQuery({
     queryKey: ['setting-role-get-header-tabs'],
     queryFn: getRole,
     onSuccess: (res) => {
@@ -64,26 +64,26 @@ const SettingRolesContainer = () => {
     },
   })
 
-  const {data: rolePermissionData, isLoading: isRolePermissionGetting} = useQuery({
+  const { data: rolePermissionData, isLoading: isRolePermissionGetting } = useQuery({
     queryKey: ['setting-role-get-permission', value],
     queryFn: () => getRoleHavePermissionsById(`${value}`),
     onSuccess: (res) => {
-        const activePermissionHash: ActivePermissionTypes = {};
-        res?.data?.permissions?.forEach(value => {
-          activePermissionHash[value.id] = value.name;
-        });
-        setActivePermissionsHash(activePermissionHash);
+      const activePermissionHash: ActivePermissionTypes = {};
+      res?.data?.permissions?.forEach(value => {
+        activePermissionHash[value.id] = value.name;
+      });
+      setActivePermissionsHash(activePermissionHash);
     },
     enabled: value !== 0
   });
 
-  const {data: permissionListData} = useQuery({
+  const { data: permissionListData } = useQuery({
     queryKey: ['setting-role-get-permission-list', isAddPermission],
     queryFn: getPermissions,
     enabled: isAddPermission && value !== 0,
   })
 
-  const {mutate: updatePermissionMutate, isLoading: isPermissionUpdating} = useMutation({
+  const { mutate: updatePermissionMutate, isLoading: isPermissionUpdating } = useMutation({
     mutationKey: ['setting-role-update-permission', value],
     mutationFn: (query: PermissionQuery) => setRolePermissionWithQueryById(`${value}`, query),
     onSuccess: (res) => {
@@ -93,7 +93,7 @@ const SettingRolesContainer = () => {
       );
       toast.success('Update Permission Success');
       setIsAddPermission(false);
-      queryClient.invalidateQueries({queryKey: ['setting-role-get-permission']});
+      queryClient.invalidateQueries({ queryKey: ['setting-role-get-permission'] });
     },
     onError: (err: any) => {
       toast.error('Permission Updating is failed')
@@ -105,27 +105,27 @@ const SettingRolesContainer = () => {
   }, [value]);
 
   const convertedPermissionList = useMemo(() => {
-    if(!permissionListData?.data){
+    if (!permissionListData?.data) {
       return undefined;
     }
     return [...permissionListData.data].sort((a) => activePermissionsHash.hasOwnProperty(a.id) ? -1 : 1)
   }, [permissionListData]);
- 
+
   const handleChange = (e, newValue) => {
     setValue(newValue)
   };
 
   const handleUpdatePermission = () => {
-     const convertedPermissionParams = Object.keys(activePermissionsHash).map(key => ({
+    const convertedPermissionParams = Object.keys(activePermissionsHash).map(key => ({
       id: Number(key),
-     }))
+    }))
 
-     updatePermissionMutate({permissions: convertedPermissionParams});
+    updatePermissionMutate({ permissions: convertedPermissionParams });
   }
 
   const handleChangePermissionState = (id: number, name?: string) => {
-    const cloneActivePermissionHash = {...activePermissionsHash};
-    if(name === undefined)
+    const cloneActivePermissionHash = { ...activePermissionsHash };
+    if (name === undefined)
       delete cloneActivePermissionHash[id];
     else {
       cloneActivePermissionHash[id] = name;
@@ -145,12 +145,16 @@ const SettingRolesContainer = () => {
           value={value}
           variant="scrollable"
           scrollButtons="auto"
-          sx={{maxWidth: `calc(100% - ${rem(342)})`, minHeight: 'auto'}}
+          sx={{ maxWidth: `calc(100% - ${rem(342)})`, minHeight: 'auto' }}
           onChange={handleChange}
           aria-label="disabled tabs example">
           {!isEmpty(headerTabData?.data) &&
             headerTabData?.data.map((item) => (
-              <Tab value={item.id} key={item.id} label={item.name} />
+              <Tab
+                value={item.id}
+                key={item.id}
+                label={item.name}
+              />
             ))}
         </Tabs>
       </TableHeader>

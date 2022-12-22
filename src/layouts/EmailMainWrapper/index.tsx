@@ -8,8 +8,8 @@ import { isEmpty } from 'lodash';
 import { useParams } from 'react-router-dom';
 import { useEffect } from 'react';
 import { setEmailIsLoading, setEmailsList } from '@redux/Email/reducer';
-import { useMutation } from '@tanstack/react-query';
-import { getEmailManagerWithQueryParams, getEmailWithQueryParam } from '@api/email';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { getAllEmailByCatalog, getEmailsListWithQueryParams } from '@api/email';
 import { toast } from 'react-toastify';
 
 const receiverData: Receiver[] = [
@@ -33,17 +33,20 @@ const EmailMainWrapper = () => {
 
   const isHaveParams = !isEmpty(params);
 
-  const mutationData = useMutation({
-    mutationKey: ['get-emails', params],
-    mutationFn: () => getEmailManagerWithQueryParams(params),
+  // useSelector
+
+  const { notificationList } = useSelector((state: RootState) => state.notify);
+
+  const queryClient = useQueryClient();
+
+  // Get Emails List
+
+  const { isLoading: isLoadingGetEmailsList } = useQuery({
+    queryKey: ['get-emails-list', params.catalog, params.user_id],
+    queryFn: () => getAllEmailByCatalog(params),
     onSuccess: (res) => {
-      dispatch(
-        setEmailsList(
-          params.status === 'pending'
-            ? res.data[0].emails.reverse()
-            : res.data[0].emails,
-        ),
-      );
+      console.log(res.data);
+      dispatch(setEmailsList(res.data.reverse()));
       return res.data;
     },
     onError: (res) => {
@@ -51,7 +54,31 @@ const EmailMainWrapper = () => {
     },
   });
 
-  const { mutate: getEmailList, isLoading } = mutationData;
+  useEffect(() => {
+    if (!isEmpty(notificationList)) {
+      queryClient.invalidateQueries({ queryKey: ['get-emails-list'] });
+    }
+  }, [notificationList]);
+
+  // Get Emails Block
+  // const { isLoading: isLoadingGetEmailsBlock } = useQuery({
+  //   queryKey: ['get-block-emails', params],
+  //   queryFn: () => getEmailManagerWithQueryParams(params),
+  //   onSuccess: (res) => {
+  //     dispatch(
+  //       setEmailsList(
+  //         params.status?.toLowerCase() === 'pending'
+  //           ? res.data[0].emails.reverse()
+  //           : res.data[0].emails,
+  //       ),
+  //     );
+  //     return res.data;
+  //   },
+  //   onError: (res) => {
+  //     toast.error('Có lỗi xảy ra');
+  //   },
+  //   enabled: !!params.status || !!params.tag,
+  // });
 
   useEffect(() => {
     if (!isHaveParams) {
@@ -59,12 +86,13 @@ const EmailMainWrapper = () => {
       return;
     }
 
-    getEmailList();
+    // queryClient.invalidateQueries({ queryKey: ['get-block-emails'] });
+    queryClient.invalidateQueries({ queryKey: ['get-emails-list'] });
   }, [isHaveParams, params]);
 
   useEffect(() => {
-    dispatch(setEmailIsLoading(isLoading));
-  }, [isLoading]);
+    dispatch(setEmailIsLoading(isLoadingGetEmailsList));
+  }, [isLoadingGetEmailsList]);
 
   return (
     <>
@@ -72,7 +100,7 @@ const EmailMainWrapper = () => {
 
       {isEmpty(EmailsList) ? (
         <InformationBarEmpty
-          isLoading={isLoading}
+          isLoading={isLoadingGetEmailsList}
           title="Information"
           isBorderBottom={true}
           sender={1}

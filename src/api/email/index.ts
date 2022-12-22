@@ -1,5 +1,8 @@
 import {
+  EMAIL_API_MANAGER_UNDO,
   EMAIL_API_URL,
+  EMAIL_CATALOG,
+  EMAIL_HASHTAG_API_URL,
   EMAIL_MANAGER_API_URL,
 } from './../../constants/EmailAPI/index';
 import { Receiver } from '@layouts/InformationBar';
@@ -7,45 +10,57 @@ import ApiClient, { ApiResponse, CuSAxiosResponse } from '@api/ApiClient';
 import { AxiosResponse } from 'axios';
 import { AttachFile } from '@components/organisms/EmailMess';
 import { async } from '@firebase/util';
-import { EmailUpdateQuery } from './interface';
-
-// export interface Receiver {}
-
-// interface FileType {
-//   path: string;
-// }
-
+import {
+  CatalogTabResponse,
+  EmailCatalogResponse,
+  EmailUpdateQuery,
+} from './interface';
+import { number } from 'yup';
 export interface CreateEmailParam {
   email: {
     subject: string;
     to: string[];
     from: string;
     content?: string;
-    html_string: string;
+    text_html: string;
     cc: string[];
     bcc: string[];
-    files: { path: string }[];
+    attachs: { path: string }[];
+    hashtags?: string[];
   };
   send_at?: string;
+  tags?: string[];
 }
 
 export interface EmailResponse {
   id: number;
-  to: string[];
-  subject: string;
-  from: string;
-  content: string;
-  cc: string[];
-  bcc: string[];
-  status: string;
-  writer_name: string;
-  writer_id: number;
-  attachFiles?: AttachFile[];
-  created_at: string;
-  forward: string;
-  html_string: string;
+  user_id: string;
+  email_id: string;
   send_at: string;
-  tags: [];
+  created_at: string;
+  email: {
+    id: number;
+    from: string;
+    to: string[];
+    cc: string[];
+    bcc: string[];
+    subject: string;
+    type: string;
+    writer_id: number;
+    text_html: string;
+    content: string;
+    attachFiles?: AttachFile[];
+    attachs?: {
+      id: number;
+      email_id: number;
+      path: string;
+    }[];
+    tags: [];
+  };
+  tags: string[];
+  type: string;
+  status: string;
+  approve_at: string;
 }
 
 export interface UserTagResponse {
@@ -72,9 +87,47 @@ export interface EmailDeleteResponse {
   message?: string;
 }
 
+const API_EMAIL_USER = '/v1/api/email/user';
+
+// Email Action
+
+export const EmailActions = async (params: {
+  user_email_id: number;
+  action: 'delete' | 'spam' | 'favorite' | 'unread';
+}): Promise<CuSAxiosResponse<any>> => {
+  const url = `${API_EMAIL_USER}/action`;
+
+  const res = await ApiClient.post(url, undefined, params);
+
+  return res.data;
+};
+
 // GET ALL CUR EMAIL TAG
 export const getAllEmailTag = async (): Promise<AxiosResponse<any[]>> => {
   const url = `/api/hashtag`;
+  const res = await ApiClient.get(url);
+
+  return res.data;
+};
+
+// GET ALL EMAILS WITH CATALOG
+export const getAllEmailByCatalog = async (params?: {
+  user_id?: string;
+  catalog?: string;
+}): Promise<AxiosResponse<EmailResponse[]>> => {
+  const url = `${EMAIL_CATALOG}/detail`;
+
+  const res = await ApiClient.get(url, undefined, params);
+
+  return res.data;
+};
+
+// Get All Catalog Tab
+export const getAllCatalogTab = async (): Promise<
+  AxiosResponse<EmailCatalogResponse[]>
+> => {
+  const url = `${EMAIL_CATALOG}`;
+
   const res = await ApiClient.get(url);
 
   return res.data;
@@ -90,6 +143,16 @@ export const getAllEmailStatus = async (): Promise<
   return res.data;
 };
 
+// GET LIST CATALOG
+export const getListCatalogWithQueryParam = async (params: {
+  catalog: string;
+  subject: string;
+}): Promise<CuSAxiosResponse<CatalogTabResponse[]>> => {
+  const url = `${EMAIL_CATALOG}/info`;
+  const res = await ApiClient.get(url, {}, params);
+  return res.data;
+};
+
 //GET EMAIL WITH STATUS
 export const getEmailWithQueryParam = async (params?: {
   status?: string;
@@ -102,6 +165,18 @@ export const getEmailWithQueryParam = async (params?: {
     {},
     { status: params?.status, mail: params?.mail, hashtag: params?.hashtag },
   );
+  return res.data;
+};
+
+// Get Emails List
+export const getEmailsListWithQueryParams = async (params?: {
+  status?: string;
+  email?: string;
+  tag?: string;
+}): Promise<AxiosResponse<EmailManagerResponse[]>> => {
+  const url = `${EMAIL_MANAGER_API_URL}`;
+  const res = await ApiClient.get(url, undefined, params);
+
   return res.data;
 };
 
@@ -149,7 +224,7 @@ export const sendEmail = async (
 ): Promise<AxiosResponse<EmailResponse>> => {
   const url = EMAIL_API_URL;
   const res = await ApiClient.post(url, undefined, params);
-  return res;
+  return res.data;
 };
 
 //DELETE EMAIL
@@ -175,14 +250,32 @@ export const updateEmailWithQuery = async (
 
 // Approve Email
 export const approveEmail = async (queryParam: {
-  email_id: number;
-  status: 'PENDING' | 'APPROVED' | 'DECLINED';
+  user_email_id: number;
+  status: 'PENDING' | 'approved' | 'DECLINED' | 'DRAFT';
   note?: string;
-  send_after?: number;
+  approve_after?: number;
 }): Promise<AxiosResponse<EmailResponse>> => {
   const url = `${EMAIL_MANAGER_API_URL}`;
 
   const res = await ApiClient.post(url, undefined, queryParam);
 
+  return res.data;
+};
+
+export const undoEmail = async ({
+  emailId,
+  note,
+}: {
+  emailId: number;
+  note?: string;
+}) => {
+  const url = `${EMAIL_API_MANAGER_UNDO}`;
+  const res = await ApiClient.post(url, undefined, { user_email_id: emailId, note });
+  return res.data;
+};
+
+export const getHashtags = async () => {
+  const url = EMAIL_HASHTAG_API_URL;
+  const res = await ApiClient.get(url, undefined, undefined);
   return res.data;
 };

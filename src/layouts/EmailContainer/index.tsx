@@ -1,5 +1,4 @@
 import Email from '@components/organisms/Email';
-import EmailCompose from '@components/organisms/EmailCompose';
 import EmailsListActionsContainer from '@containers/EmailsListActionsContainer';
 import { Box } from '@mui/material';
 import React from 'react';

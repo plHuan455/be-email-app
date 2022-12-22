@@ -8,6 +8,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { styled } from '@mui/material/styles';
 import { autocompleteClasses } from '@mui/material/Autocomplete';
 import { HashtagTabs } from '@redux/Email/reducer';
+import { isEmpty } from 'lodash';
 
 const Root = styled('div')(
   ({ theme }) => `
@@ -15,6 +16,7 @@ const Root = styled('div')(
     theme.palette.mode === 'dark' ? 'rgba(255,255,255,0.65)' : 'rgba(0,0,0,.85)'
   };
   font-size: 14px;
+  flex: 1;
 `,
 );
 
@@ -163,12 +165,16 @@ const Listbox = styled('ul')(
 interface Props {
   privateHashtagData: HashtagTabs[];
   defaultValue: HashtagTabs[];
+  onChangeDefaultValue: (value: HashtagTabs[]) => void;
 }
 
 const EmailPrivateHashtag: React.FC<Props> = ({
   privateHashtagData,
   defaultValue,
+  onChangeDefaultValue,
 }) => {
+  const [tempOption, setTempOption] = React.useState<HashtagTabs>();
+
   const {
     getRootProps,
     getInputLabelProps,
@@ -183,20 +189,44 @@ const EmailPrivateHashtag: React.FC<Props> = ({
   } = useAutocomplete({
     id: 'customized-hook-demo',
     defaultValue: [...defaultValue],
+    onChange: (e, value) => {
+      onChangeDefaultValue(value);
+    },
     multiple: true,
-    options: [...privateHashtagData],
+    autoHighlight: true,
+    options: tempOption
+      ? [...privateHashtagData, tempOption]
+      : [...privateHashtagData],
     getOptionLabel: (option) => option.title,
   });
+
+  // Handler FNC
+  const handleInputHashtag = (e) => {
+    const inputValue = e.target.value;
+    const isMatchHashtagType = inputValue.match(/([a-zA-Z]+\b)/);
+
+    if (isMatchHashtagType) {
+      setTempOption({
+        notiNumber: 0,
+        status: 'hashtag',
+        title: `#${inputValue}`,
+        value: inputValue,
+        color: '#4BAAA2',
+      });
+    } else setTempOption(undefined);
+  };
 
   return (
     <Root>
       <div {...getRootProps()} className="flex items-center">
         <Label {...getInputLabelProps()}></Label>
-        <InputWrapper ref={setAnchorEl} className={focused ? 'focused' : ''}>
+        <InputWrapper
+          ref={setAnchorEl}
+          className={`${focused ? 'focused' : ''} flex-1`}>
           {value.map((option: HashtagTabs, index: number) => (
             <StyledTag label={option.title} {...getTagProps({ index })} />
           ))}
-          <input {...getInputProps()} />
+          <input {...getInputProps()} onInput={handleInputHashtag} />
         </InputWrapper>
       </div>
       {groupedOptions.length > 0 ? (

@@ -5,7 +5,9 @@ import { AxiosResponse } from 'axios';
 import {
   GET__USER__API,
   UPLOAD_FILE,
+  USER_PROFILE,
   USER__API,
+  USER__API_ALL,
   USER__API__GET,
 } from '@constants/UserAPI';
 import {
@@ -44,12 +46,27 @@ export interface UserResponse {
   role: string;
 }
 
+export interface UserProfileResponse {
+  id: number;
+  avatar: string;
+  department_id: number;
+  email: string;
+  first_name: string;
+  last_name: string;
+  identity: string;
+  phone_number: string;
+  position: string;
+  role_id: number;
+  role: string;
+  contact_id: number;
+}
+
 //GET EMAIL WITH STATUS
-export const getUserWithEmail = async (
-  email: string,
-): Promise<AxiosResponse<UserResponse>> => {
-  const url = GET__USER__API;
-  const res = await ApiClient.get(url, { value: email }, {});
+export const getUserWithEmail = async (): Promise<
+  AxiosResponse<UserProfileResponse>
+> => {
+  const url = `${USER_PROFILE}`;
+  const res = await ApiClient.get(url);
   return res.data;
 };
 
@@ -58,7 +75,7 @@ export const getAllUser = async (query?: {
   page: number;
   limit: number;
 }): Promise<CuSAxiosResponse<UserResponse[]>> => {
-  const url = USER__API;
+  const url = USER__API_ALL;
   const res = await ApiClient.get(url, undefined, query);
   return res.data;
 };

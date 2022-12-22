@@ -1,5 +1,3 @@
-import { EmailResponse } from '@api/email';
-
 export interface AuthResponse {
   user_name: string;
   position: string;
@@ -12,10 +10,12 @@ export interface AuthResponse {
 
 export interface AuthUpdate {
   avatar?: File | string;
-  user_name: string;
+  first_name: string;
+  last_name: string;
+  identity: string;
+  phone_number: string;
   position: string;
   email: string;
-  phone_number: string;
   department: string;
   role: string;
 }

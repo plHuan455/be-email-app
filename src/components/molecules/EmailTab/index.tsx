@@ -2,22 +2,40 @@ import { getEmailManagerWithQueryParams } from '@api/email';
 import { ButtonBase, Typography } from '@mui/material';
 import { setEmailsList } from '@redux/Email/reducer';
 import { useMutation } from '@tanstack/react-query';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import ModalEmailList, { StatusOptions } from '../ModalEmailList';
 
 interface Props {
   title: string;
   notiNumber: number;
-  status: StatusOptions;
+  catalog: StatusOptions;
   type: string;
   index: number;
+  color?: string;
 }
 
-const EmailTab: React.FC<Props> = ({ title, notiNumber, status, type, index }) => {
+const EmailTab: React.FC<Props> = ({
+  title,
+  notiNumber,
+  catalog,
+  type,
+  index,
+  color = '#554CFF',
+}) => {
   // useState
   const [modalStatus, setModalStatus] = useState(false);
+
+  // useParams
+  const params = useParams();
+
+  // useEffect
+  useEffect(() => {
+    if (!params.catalog) return;
+
+    if (params.catalog.toLowerCase() === catalog.toLowerCase()) setModalStatus(true);
+  }, [params]);
 
   // useNavigate
   const navigate = useNavigate();
@@ -27,7 +45,7 @@ const EmailTab: React.FC<Props> = ({ title, notiNumber, status, type, index }) =
 
   // Handler FUNC
   const handleOpenEmailTab = (e) => {
-    setModalStatus(true);
+    navigate(`/emails/catalog/${catalog.toUpperCase()}`);
   };
 
   const handleChangeModalStatus = () => {
@@ -47,7 +65,7 @@ const EmailTab: React.FC<Props> = ({ title, notiNumber, status, type, index }) =
           justifyContent: 'space-between',
           padding: '5px 10px',
         }}>
-        <Typography component={'p'} sx={{ color: '#554CFF', fontWeight: 'bold' }}>
+        <Typography component={'p'} sx={{ color: color, fontWeight: 'bold' }}>
           {title}
         </Typography>
         {notiNumber > 0 && (
@@ -58,6 +76,7 @@ const EmailTab: React.FC<Props> = ({ title, notiNumber, status, type, index }) =
               width: '14px',
               height: '18px',
               fontSize: '10px',
+              fontWeight: 700,
               borderRadius: '3px',
               display: 'flex',
               alignItems: 'center',
@@ -69,9 +88,10 @@ const EmailTab: React.FC<Props> = ({ title, notiNumber, status, type, index }) =
         )}
       </ButtonBase>
       <ModalEmailList
+        titleColor={color}
         index={index}
         title={title}
-        status={status}
+        catalog={catalog}
         isActive={modalStatus}
         handleChangeModalStatus={handleChangeModalStatus}
       />

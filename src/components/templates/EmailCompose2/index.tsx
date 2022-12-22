@@ -4,7 +4,9 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { SingleOTPInputComponent } from '@components/atoms/Input/PinInput/SingleInput';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
-import AutoCompleteReceive from '@components/molecules/AutoCompleteReceive';
+import AutoCompleteReceive, {
+  InputContactBlock,
+} from '@components/molecules/AutoCompleteReceive';
 import EmailComposeFormGroup from '@components/molecules/EmailComposeFormGroup';
 import WindowComposeActions from '@components/molecules/WindowComposeActions';
 import { Editor } from 'react-draft-wysiwyg';
@@ -29,17 +31,27 @@ import AttachFiles2, { FileInfoTypes } from '@components/molecules/AttachFiles2'
 import EmailPrivateHashtagContainer from '@containers/EmailPrivateHashtagContainer';
 import { useSelector } from 'react-redux';
 import { RootState } from '@redux/configureStore';
-import useMinimizedUpload from '@zustand/useMinimizedUpload';
+import { backUpData } from '@containers/EmailComposeContainer';
+import { HashtagTabs } from '@redux/Email/reducer';
+import HashtagInput, {
+  HashtagOptionTypes,
+} from '@components/atoms/Input/HashtagInput';
 
 export interface EmailComposeFields {
-  to: UserInfo[];
+  to: InputContactBlock[];
   cc: UserInfo[];
   bcc: UserInfo[];
   attachFiles: { fileUrls: (string | undefined)[]; files: (File | undefined)[] };
   subject: string;
   content: any;
+  hashtags: { name: string; value: string }[];
   sendAt?: string | null;
 }
+
+// export interface HashTagTypes {
+//   id: number;
+//   name: string;
+// }
 
 interface EmailComposeProps {
   method: UseFormReturn<EmailComposeFields>;
@@ -47,8 +59,10 @@ interface EmailComposeProps {
   isFullScreen?: boolean;
   isShowCCForm?: boolean;
   attachFiles: (File | undefined)[];
+  hashtagOptions: HashtagOptionTypes[];
   selectedDate?: Dayjs | null;
   isShowCalendarModal?: boolean;
+  isOpenCalendarSelect?: boolean;
   calendarValue: Dayjs | null;
   tabBarColor?: string;
   onMaximizeClick?: () => void;
@@ -59,6 +73,8 @@ interface EmailComposeProps {
   onUnsetTimeClick: () => void;
   onSetTimeClick: () => void;
   onSendTimeClick: () => void;
+  onSetTimeAccept?: (date: Dayjs | null) => void;
+  onSetTimeCancel?: () => void;
   onSubmit: (values: EmailComposeFields) => void;
 }
 
@@ -69,9 +85,11 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
   selectedDate,
   isShowCCForm = false,
   isShowCalendarModal = false,
+  isOpenCalendarSelect = false,
   calendarValue,
   tabBarColor,
   onMinimizeClick,
+  hashtagOptions,
   onMaximizeClick,
   onCCButtonClick,
   onChangeCalendarValue,
@@ -80,10 +98,11 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
   onUnsetTimeClick,
   onSendTimeClick,
   onSubmit,
+  onSetTimeAccept,
+  onSetTimeCancel,
 }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const composeScrollRef = useRef<HTMLDivElement>(null);
-  const { emails, setEmail, setFiles } = useMinimizedUpload() 
   const { privateHashtags } = useSelector((state: RootState) => state.email);
 
   const handleAttachFileClick = () => {
@@ -92,29 +111,16 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
     }
   };
 
-  const handleOnUploadFile = (fileList, emailIndex) => {
-    if(typeof emailIndex === 'undefined')
-      return setEmail({ files: [...fileList.map(file => ({ ...file }))] })
-    setFiles(emailIndex, [...fileList.map(file => ({ ...file }))] )
-  }
-
-  useEffect(() => {
-    console.log("upload", emails)
-  }, [emails])
-
   return (
     <Box className="t-emailCompose w-full h-full">
       <FormProvider {...method}>
         <form
           className="p-8 flex items-center justify-center w-full h-full"
-          onSubmit={(e) => {
-            e.preventDefault();
-            method.handleSubmit(onSubmit)
-          }}
-        >
+          onSubmit={method.handleSubmit(onSubmit)}>
           <Box
-            className={`flex flex-col h-full w-full mx-auto shadow-xl bg-white rounded-3xl overflow-hidden z-5 transition-all ${isFullScreen && 'fixed top-0 left-0 bottom-0'
-              }`}>
+            className={`flex flex-col h-full w-full mx-auto shadow-xl bg-white rounded-3xl overflow-hidden z-5 transition-all ${
+              isFullScreen && 'fixed top-0 left-0 bottom-0'
+            }`}>
             <WindowComposeActions
               className="p-3 pr-3pt-3 pr-3"
               sx={{
@@ -124,7 +130,9 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
               onMinimizeClick={onMinimizeClick}
               onMaximizeClick={onMaximizeClick}
             />
-            <Box className="bg-white flex-1 flex flex-col overflow-scroll" ref={composeScrollRef}>
+            <Box
+              className="bg-white flex-1 flex flex-col overflow-scroll"
+              ref={composeScrollRef}>
               <Box className="px-9 py-10 pt-2 flex-1 flex flex-col">
                 <Controller
                   name="to"
@@ -134,8 +142,9 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                         <AutoCompleteReceive
                           isActiveCcFrom={isShowCCForm}
                           onClickCcFromLabel={onCCButtonClick}
-                          defaultValue={value}
-                          data={value}
+                          defaultValue={[]}
+                          data={backUpData}
+                          value={value}
                           onChange={(_, value) => {
                             onChange(value);
                           }}
@@ -155,7 +164,8 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                         render={({ field: { value, onChange } }) => (
                           <AutoCompleteReceive
                             isShowCcFromLabel={false}
-                            data={value}
+                            value={value}
+                            data={backUpData}
                             defaultValue={value}
                             onChange={(_, value) => {
                               onChange(value);
@@ -173,7 +183,8 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                         render={({ field: { value, onChange } }) => (
                           <AutoCompleteReceive
                             isShowCcFromLabel={false}
-                            data={value}
+                            value={value}
+                            data={backUpData}
                             defaultValue={value}
                             onChange={(_, value) => onChange(value)}
                           />
@@ -185,7 +196,8 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                       label="From:"
                       isHaveBorderBottom={true}>
                       <AutoCompleteReceive
-                        data={[]}
+                        value={[]}
+                        data={backUpData}
                         defaultValue={[]}
                         isShowCcFromLabel={false}
                         isReadOnly={true}
@@ -239,13 +251,25 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                     )}
                   />
                   <Box>
-                    {/* Private Hashtag */}
-                    <EmailPrivateHashtagContainer defaultData={[]} />
                     {/* Greeting */}
                     <EmailGreeting
                       greetingLabel="Thanks and Best regards, ------"
                       isHaveLogo={true}
                       logo={<LogoWithLabel />}
+                    />
+                    {/* Private Hashtag */}
+                    <Controller
+                      name="hashtags"
+                      render={({ field: { value, onChange } }) => (
+                        <HashtagInput
+                          label="Hashtags: "
+                          optionList={hashtagOptions}
+                          value={value}
+                          onChange={onChange}
+                          placeholder="Enter hashtags"
+                          optionRegex={new RegExp(/([a-zA-Z0-9]+\b)/)}
+                        />
+                      )}
                     />
                     {/* Files List */}
                     <Box>
@@ -264,7 +288,6 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                                 cloneAttachFiles.fileUrls[index] = url;
                                 onChange(cloneAttachFiles);
                               }}
-                              onUpload={(fileList, emailIndex) => handleOnUploadFile(fileList, emailIndex)}
                               onDelete={(index) => {
                                 const cloneAttachFile = { ...value };
                                 cloneAttachFile.files.splice(index, 1);
@@ -302,7 +325,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                 {Boolean(selectedDate) && (
                   <Box display="flex" alignItems="center">
                     <Typography variant="body1" sx={{ ml: rem(8) }}>
-                      {dayjs(selectedDate).format('hh:mm DD/MM/YYYY')}
+                      {dayjs(selectedDate).format('lll')}
                     </Typography>
                     <Button
                       variant="text"
@@ -346,10 +369,12 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                         //   attachFileRef.current.scrollIntoView({ behavior: "smooth", block: "end", inline: "end" });
                         // }
                         setTimeout(() => {
-                          if(composeScrollRef.current){
-                            composeScrollRef.current.scrollTo({top: composeScrollRef.current.scrollHeight});
+                          if (composeScrollRef.current) {
+                            composeScrollRef.current.scrollTo({
+                              top: composeScrollRef.current.scrollHeight,
+                            });
                           }
-                        }, 300)
+                        }, 300);
                         // onChangeAttachFile([
                         //   ...method.getValues('attachFiles'),
                         //   ...Object.keys(e.target.files).map((key) => e.target.files?.[key])
@@ -376,7 +401,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                 </Button> */}
                 <CustomButton
                   padding="8px 10px"
-                  classNameLabel='pr-1'
+                  classNameLabel="pr-1"
                   label={selectedDate ? 'SEND' : 'SEND NOW'}
                   type="submit"
                   bgButtonColor="#554CFF"
@@ -399,7 +424,10 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
               onSubmit={() => onSubmit(method.getValues())}>
               <DateTimePicker
                 value={calendarValue}
+                isOpen={isOpenCalendarSelect}
                 setValueCalendar={onChangeCalendarValue}
+                onAccept={onSetTimeAccept}
+                onClose={onSetTimeCancel}
               />
               <Box className="" display="flex">
                 <Button
@@ -407,7 +435,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                   sx={{ flexBasis: '50%' }}
                   color={'error'}
                   onClick={onUnsetTimeClick}>
-                  SEND NOW
+                  NOW
                 </Button>
                 <Button
                   className="button-create-mui"

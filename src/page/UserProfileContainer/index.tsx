@@ -55,7 +55,8 @@ const UserProfileContainer = () => {
       phone_number: '',
       position: '',
       role: '',
-      user_name: '',
+      first_name: '',
+      last_name: '',
     },
     resolver: yupResolver(updateUserProfileSchema),
   });
@@ -68,13 +69,13 @@ const UserProfileContainer = () => {
     useMutation({
       mutationKey: ['update-user-profile', currentId],
       mutationFn: async (query: AuthUpdate) => {
-        return await updateAuthProfile(currentId, query);
+        return await updateAuthProfile(query);
       },
       onSuccess: (res) => {
         toast.success('Update Profile Success!');
         localStorage.setItem(
           'current_user_avt',
-          res.data.avatar ? JSON.stringify(res.data.avatar) : '',
+          res.data.avatar ? JSON.stringify(`http://${res.data.avatar}`) : '',
         );
         onBackUserProfile();
       },
@@ -107,7 +108,9 @@ const UserProfileContainer = () => {
       method.setValue('phone_number', res.data.phone_number);
       method.setValue('position', res.data.position);
       method.setValue('role', res.data.role);
-      method.setValue('user_name', res.data.user_name);
+      method.setValue('first_name', res.data.first_name);
+      method.setValue('last_name', res.data.last_name);
+      method.setValue('identity', res.data.identity);
     },
   });
 

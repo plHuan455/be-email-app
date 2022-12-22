@@ -10,12 +10,14 @@ import { clone } from 'lodash';
 import { toast } from 'react-toastify';
 
 export const LOCAL_STORAGE_MINIMIZE_EMAILS = 'minimize_emails';
+export const LOCAL_STORAGE_PRIVATE_HASHTAG = 'private_hashtag';
 
 export interface HashtagTabs {
   title: string;
   value: string;
   status: StatusOptions;
   notiNumber: number;
+  color: string;
 }
 
 const userReadList: UserRead[] = [
@@ -223,6 +225,7 @@ const emailsList: Email[] = [
 export interface EmailState {
   showMinimizeEmailId?: string;
   minimizeMailList: MinimizeEmailTypes[];
+  workingEmail: MinimizeEmailTypes;
   EmailsList: EmailResponse[];
   privateHashtags: HashtagTabs[];
   deletedEmailsList: EmailResponse[];
@@ -231,9 +234,8 @@ export interface EmailState {
   isLoading: boolean;
 }
 
-export const LOCAL_STORAGE_PRIVATE_HASHTAG = 'private_hashtag';
-
 const initialState: EmailState = {
+  workingEmail: {},
   minimizeMailList: JSON.parse(
     localStorage.getItem(LOCAL_STORAGE_MINIMIZE_EMAILS) ?? '[]',
   ).map((value) => ({
@@ -322,6 +324,10 @@ const EmailSlice = createSlice({
     removeEmailsList(state, action) {
       return action.payload;
     },
+    setHashtags(state, action: PayloadAction<HashtagTabs[]>) {
+      state.privateHashtags = action.payload;
+      return state;
+    },
     addMinimizeAndSetShowMinimizeEmail(
       state,
       action: PayloadAction<MinimizeEmailTypes>,
@@ -361,9 +367,10 @@ const EmailSlice = createSlice({
       return state;
     },
     removeMinimizeEmail(state, action: PayloadAction<string>) {
-      state.minimizeMailList = state.minimizeMailList.filter(
-        (value) => value.id !== action.payload,
-      );
+      state.minimizeMailList = state.minimizeMailList.filter((value) => {
+        if (value.id !== action.payload) return true;
+        MinimizeEmailColor.provideColor(value.color);
+      });
       localStorage.setItem(
         LOCAL_STORAGE_MINIMIZE_EMAILS,
         JSON.stringify(state.minimizeMailList),
@@ -371,13 +378,19 @@ const EmailSlice = createSlice({
       return state;
     },
     resetEmailState(state) {
-      localStorage.removeItem(LOCAL_STORAGE_MINIMIZE_EMAILS)
+      localStorage.removeItem(LOCAL_STORAGE_MINIMIZE_EMAILS);
+      MinimizeEmailColor.reset();
       state = initialState;
-    }
+    },
+    setWorkingEmail(state, action: PayloadAction<MinimizeEmailTypes>) {
+      state.workingEmail = action.payload;
+      return state;
+    },
   },
 });
 
 export const {
+  setWorkingEmail,
   setPrivateHashtag,
   setEmailStatus,
   setEmailsList,
@@ -386,6 +399,7 @@ export const {
   addUnreadEmail,
   addDeletedEmail,
   setEmailIsLoading,
+  setHashtags,
   setShowMinimizeEmail,
   addMinimizeEmail,
   removeMinimizeEmail,

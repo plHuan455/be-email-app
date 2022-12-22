@@ -14,7 +14,6 @@ interface AttachFiles2Props {
   fileList: (File | undefined)[];
   fileUrls: (string | undefined)[];
   emailIndex?: number;
-  onUpload: (customData: any, emailIndex?: number) => void;
   onUploaded: (index: number, url: string) => void;
   onDelete: (index: number) => void;
   onDeleteAll: () => void;
@@ -25,16 +24,15 @@ const AttachFiles2: React.FC<AttachFiles2Props> = ({
   fileList,
   fileUrls,
   onUploaded,
-  onUpload,
   onDelete,
   onDeleteAll,
 }) => {
   console.log(fileList);
-  const { emails, deleteEmail, setPercentage, setFiles } = useMinimizedUpload()
+  const { emails, deleteEmail, setPercentage, setFiles } = useMinimizedUpload();
   const handleDeleteAll = () => {
-    emailIndex ? deleteEmail(emailIndex) : null
-    onDeleteAll()
-  }
+    emailIndex ? deleteEmail(emailIndex) : null;
+    onDeleteAll();
+  };
 
   return (
     <Box className="m-attachFile2">
@@ -50,32 +48,37 @@ const AttachFiles2: React.FC<AttachFiles2Props> = ({
       </Box>
 
       <Box>
-        { emails.length > 0 ? 
-          emails[emailIndex ?? 0].files.map((file, index) => {
-            if(!file) return null
-            return (
-              <UploadFile
-                key={index}
-                data={file}
-                onDeleteFile={() => onDelete(index)}
-              />
-            )
-          })
-        : fileList.map((value, index) => {
-          if (value === undefined) return null;
-          return (
-            <UploadFile
-              key={value.name}
-              data={value}
-              onUploaded={(url) => {
-                onUploaded(index, addHttp(url));
-                setPercentage(100, emailIndex ?? 0, index, undefined, addHttp(url))
-              }}
-              onUpload={(customData) => onUpload([customData], emailIndex)}
-              onDeleteFile={() => onDelete(index)}
-            />
-          );
-        })}
+        {emails.length > 0
+          ? emails[emailIndex ?? 0].files.map((file, index) => {
+              if (!file) return null;
+              return (
+                <UploadFile
+                  key={index}
+                  data={file}
+                  onDeleteFile={() => onDelete(index)}
+                />
+              );
+            })
+          : fileList.map((value, index) => {
+              if (value === undefined) return null;
+              return (
+                <UploadFile
+                  key={value.name}
+                  data={value}
+                  onUploaded={(url) => {
+                    onUploaded(index, addHttp(url));
+                    setPercentage(
+                      100,
+                      emailIndex ?? 0,
+                      index,
+                      undefined,
+                      addHttp(url),
+                    );
+                  }}
+                  onDeleteFile={() => onDelete(index)}
+                />
+              );
+            })}
       </Box>
     </Box>
   );

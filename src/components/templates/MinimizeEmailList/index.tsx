@@ -2,22 +2,23 @@ import { UserInfo } from '@components/organisms/Email/Interface';
 import MinimizeEmail from '@components/organisms/MinimizeEmail';
 import { Box } from '@mui/material';
 import { rem } from '@utils/functions';
-import { motion, usePresence, AnimatePresence } from "framer-motion";
-import classNames from 'classnames';
+import { motion, usePresence, AnimatePresence } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
-import useMinimizedUpload from '@zustand/useMinimizedUpload';
+import { InputContactBlock } from '@components/molecules/AutoCompleteReceive';
+import { HashtagTabs } from '@redux/Email/reducer';
 
 export interface MinimizeEmailTypes {
   id?: string;
-  to?: UserInfo[];
+  to?: InputContactBlock[];
   cc?: UserInfo[];
   bcc?: UserInfo[];
-  attachFiles?: {files: (File|undefined)[]; fileUrls: (string|undefined)[]}
+  attachFiles?: { files: (File | undefined)[]; fileUrls: (string | undefined)[] };
   subject?: string;
   content?: string;
   sendAt?: string | null;
   color?: string;
-  fileUrls: (string | undefined)[];
+  fileUrls?: (string | undefined)[];
+  hashtags?: { name: string; value: string }[];
 }
 
 interface MinimizeEmailListProps {
@@ -32,18 +33,14 @@ const MinimizeEmailList: React.FC<MinimizeEmailListProps> = ({
   onCloseClick,
 }) => {
   const location = useLocation();
-  const { deleteEmail } = useMinimizedUpload();
   console.log(data)
 
   const handleCloseMiniMail = (index: number, value) => {
-    deleteEmail(index)
     onCloseClick(value)
   }
 
   return (
-    <div
-      className="t-minimizeEmailList"
-    >
+    <div className="t-minimizeEmailList">
       <AnimatePresence>
         {data.map((value, index) => (
           <motion.div
@@ -53,20 +50,45 @@ const MinimizeEmailList: React.FC<MinimizeEmailListProps> = ({
             initial={{ width: 0, marginLeft: 0 }}
             animate={{ width: rem(260), marginLeft: rem(5) }}
             exit={{ width: 0, marginLeft: 0 }}
-            transition={{ type: "spring", stiffness: 500, damping: 50, mass: 1, duration: 5 }}
-          >
+            transition={{
+              type: 'spring',
+              stiffness: 500,
+              damping: 50,
+              mass: 1,
+              duration: 5,
+            }}>
             <motion.div
               className="t-minimizeEmailList_item"
               initial={
                 location.pathname === '/emails/compose'
-                  ? { translateY: '-800px', translateX: '-100px', opacity: 0, width: rem(500) }
+                  ? {
+                      translateY: '-800px',
+                      translateX: '-100px',
+                      opacity: 0,
+                      width: rem(500),
+                    }
                   : {}
               }
               animate={{ translateY: 0, translateX: 0, opacity: 1, width: rem(260) }}
-              exit={{ translateY: '-800px', translateX: '-100px', opacity: 0, width: rem(500) }}
-              transition={{ type: "spring", stiffness: 500, damping: 50, mass: 1, duration: 5 }}
-              style={{ width: rem(260), height: rem(46), position: 'absolute',  backgroundColor: value.color ? value.color : '#f2f6fc'}}
-            >
+              exit={{
+                translateY: '-800px',
+                translateX: '-100px',
+                opacity: 0,
+                width: rem(500),
+              }}
+              transition={{
+                type: 'spring',
+                stiffness: 500,
+                damping: 50,
+                mass: 1,
+                duration: 5,
+              }}
+              style={{
+                width: rem(260),
+                height: rem(46),
+                position: 'absolute',
+                backgroundColor: value.color ? value.color : '#f2f6fc',
+              }}>
               <MinimizeEmail
                 key={`minimize-email-list-${index}`}
                 index={index}
@@ -79,7 +101,7 @@ const MinimizeEmailList: React.FC<MinimizeEmailListProps> = ({
         ))}
       </AnimatePresence>
     </div>
-  )
-}
+  );
+};
 
-export default MinimizeEmailList
+export default MinimizeEmailList;

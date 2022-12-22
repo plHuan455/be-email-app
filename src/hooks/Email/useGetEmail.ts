@@ -14,10 +14,10 @@ export const useGetEmail = (status: string, mail?: string) => {
   const filterResData = (resData: EmailResponse[]) => {
     const cloneResData = [...resData];
 
-    const newSetResData = new Set(cloneResData.map((val) => val.from));
+    const newSetResData = new Set(cloneResData.map((val) => val.email.from));
 
     const filterResult = Array.from(newSetResData).map((val) => {
-      const filter = cloneResData.filter((item) => item.from === val);
+      const filter = cloneResData.filter((item) => item.email.from === val);
 
       const res = {
         total: filter.length,

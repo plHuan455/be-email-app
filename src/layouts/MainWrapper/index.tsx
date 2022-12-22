@@ -16,12 +16,26 @@ import MinimizeEmailList, {
   MinimizeEmailTypes,
 } from '@components/templates/MinimizeEmailList';
 import { Email } from '@components/organisms/Email/Interface';
-import { removeMinimizeEmail, resetEmailState, setShowMinimizeEmail } from '@redux/Email/reducer';
+import {
+  removeMinimizeEmail,
+  resetEmailState,
+  setHashtags,
+  setShowMinimizeEmail,
+} from '@redux/Email/reducer';
 import { fetchToken, onMessageListener } from '../../messaging_init_in_sw';
 import { setIsShowEmailInfo } from '@redux/Global/reducer';
+import { deleteDeviceKey } from '@api/deviceKey';
+import { unShiftNotificationList } from '@redux/Notify/reducer';
+import { IS_EMPLOYEE_ROLE } from '@constants/localStore';
+import { useQuery } from '@tanstack/react-query';
+import { getHashtags } from '@api/email';
 
 const sideBarWidth = 75;
 const emailStatusWidth = 290;
+
+const DEVICE_KEY_ID: number = JSON.parse(
+  localStorage.getItem('device_key_id') || '0',
+);
 
 const useStyles = makeStyles()((theme) => ({
   body: {
@@ -63,13 +77,35 @@ function MainWrapper() {
   const [show, setShow] = useState(false);
   const [notification, setNotification] = useState({ title: '', body: '' });
 
+  // GET HASHTAGS
+  console.log(`[TODO]: Change this when hashtag api is done`);
+  const { data: hashtagData, isLoading: isHashtagLoading } = useQuery({
+    queryKey: ['email-compose-get-hashtag'],
+    queryFn: getHashtags,
+    onSuccess(res) {
+      if (res?.data) {
+        dispatch(
+          setHashtags(
+            res.data.map((value) => ({
+              notiNumber: 0,
+              status: 'hashtag',
+              title: value.name,
+              value: value.name,
+            })),
+          ),
+        );
+      }
+    },
+  });
+
   onMessageListener()
     .then((payload) => {
       setNotification({
-        title: payload.notification.title,
-        body: payload.notification.body,
+        title: payload.data.title,
+        body: payload.data.body,
       });
       setShow(true);
+      dispatch(unShiftNotificationList(payload.data));
     })
     .catch((err) => console.log('failed', err));
 
@@ -98,6 +134,7 @@ function MainWrapper() {
     auth.signout(() => {
       toast.success('Bái bai!');
     });
+    deleteDeviceKey(DEVICE_KEY_ID);
   };
 
   const handleChangePage = (url: string) => () => {
@@ -114,7 +151,28 @@ function MainWrapper() {
     }
   };
 
-  const settings: Setting[] = [
+  const settingsEmployee: Setting[] = [
+    {
+      id: 0,
+      label: 'Profile',
+      path: '/profile',
+      handleClick: handleChangePage('/profile'),
+    },
+    {
+      id: 2,
+      label: 'Change Password',
+      path: '/change-password',
+      handleClick: handleChangePage('/change-password'),
+    },
+    {
+      id: 3,
+      label: 'Log out',
+      path: '/log-out',
+      handleClick: handleLogout,
+    },
+  ];
+
+  const settingManager: Setting[] = [
     {
       id: 0,
       label: 'Profile',
@@ -140,6 +198,8 @@ function MainWrapper() {
       handleClick: handleLogout,
     },
   ];
+
+  const settings: Setting[] = IS_EMPLOYEE_ROLE ? settingsEmployee : settingManager;
 
   const convertedMinimizeEmailList = useMemo(() => {
     return minimizeEmails.filter((value) => value.id !== showMinimizeEmailId);

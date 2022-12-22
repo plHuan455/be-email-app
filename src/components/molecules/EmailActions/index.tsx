@@ -63,21 +63,28 @@ const EmailActionsList = {
     label: 'Unread',
     color: '#8E8E91',
   },
+  star: {
+    icon: 'star',
+    label: 'Add favorites',
+    color: 'rgb(250, 175, 0)',
+  },
 };
 
 interface Props {
   isActiveClick: boolean;
+  type: 'receive' | 'send';
   emailIndex?: number;
   handleChangeStatus?: (status, index) => void;
 }
 
 const EmailActions: React.FC<Props> = ({
   emailIndex = 0,
+  type,
   handleChangeStatus = (a, b) => {},
   isActiveClick = true,
 }) => {
   return (
-    <Box className="flex mb-4">
+    <Box className={`flex mb-4 ${type === 'send' && 'flex-row-reverse'}`}>
       {Object.keys(EmailActionsList).map((key, index) => {
         const currVal = EmailActionsList[key];
         return (

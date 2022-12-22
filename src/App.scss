@@ -2,6 +2,8 @@
 @import 'assets/styles/_colors.scss';
 @import 'assets/styles/app-women-icons.scss';
 @import 'assets/styles/_font.scss';
+@import 'react-phone-input-2/lib/style.css';
+
 // @import "assets/styles/tailwind.scss";
 
 // Atoms
@@ -10,6 +12,7 @@
 
 @import 'components/atoms/Selectbox/index.scss';
 @import 'components/atoms/UploadArea/index.scss';
+@import 'components/atoms/Input/BasePhoneInput/index.scss';
 @import 'components/atoms/ModalBase/index.scss';
 @import 'components/atoms/Input/index.scss';
 @import 'components/atoms/UploadVideo/index.scss';
@@ -22,6 +25,7 @@
 
 // organisms
 @import 'components/organisms/MinimizeEmail/index.scss';
+@import 'components/organisms/ContactSlideBar/index.scss';
 
 // templates
 @import 'components/templates/MinimizeEmailList/index.scss';

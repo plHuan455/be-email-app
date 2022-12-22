@@ -22,8 +22,6 @@ import Email from '@components/organisms/Email';
 import ManagerEmployee from './Manager/ManagerEmployee';
 import ManagerDepartment from './Manager/ManagerDepartment';
 import SettingRoles from './Settings/SettingsRoles';
-import EmailMessEmpty from '@components/organisms/EmailMessEmpty';
-import EmailCompose from '@components/organisms/EmailCompose';
 import Manager from './Manager';
 import ChangePassword from './ChangePassword';
 import UserProfile from '../layouts/UserProfile';
@@ -31,6 +29,10 @@ import UserProfileContainer from './UserProfileContainer';
 import EmailEmptyContainer from '@containers/EmailEmptyContainer';
 import EmailMainWrapper from '@layouts/EmailMainWrapper';
 import EmailComposePage from './Email/EmailComposePage';
+import ContactPage from './Contact';
+import ContactLayout from '@layouts/Contact';
+import ContactSharing from './Contact/ContactSharing';
+import ContactGroups from './Contact/ContactGroup';
 
 export const managerRouter: RouteObject[] = [
   {
@@ -65,16 +67,16 @@ export const sideBarRouter: RouteObject[] = [
         element: <EmailComposePage />,
       },
       {
-        path: '/emails/status/:status/:email',
+        path: '/emails/catalog/:catalog/:user_id',
         element: <EmailMainWrapper />,
       },
       {
-        path: '/emails/tag/:tag/:email',
+        path: '/emails/catalog/tag/:catalog',
         element: <EmailMainWrapper />,
       },
       {
-        path: '/emails/tag/:tag',
-        element: <EmailMainWrapper />,
+        path: '/emails/catalog/:catalog',
+        element: <EmailEmptyContainer />,
       },
     ],
   },
@@ -101,6 +103,20 @@ export const declareRouter: RouteObject[] = [
         element: <Navigate to={'/emails'} replace={true} />,
       },
       { path: '/about', element: <AboutPage /> },
+      {
+        path: '/contact',
+        element: <ContactLayout />,
+        children: [
+          {
+            path: '/contact/sharing',
+            element: <ContactSharing />,
+          },
+          {
+            path: '/contact/groups',
+            element: <ContactGroups />,
+          },
+        ],
+      },
       {
         path: '/change-password',
         element: <ChangePassword />,
