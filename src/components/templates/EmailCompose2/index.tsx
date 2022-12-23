@@ -272,22 +272,22 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                       />
                     )}
                   />
-                  {signatureImage && (
-                    <Box className="mt-4 mb-4">
-                      <img
-                        style={{ width: 120, height: 40, objectFit: 'contain' }}
-                        src={signatureImage}
-                      />
-                    </Box>
-                  )}
 
                   <Box>
                     {/* Greeting */}
-                    <EmailGreeting
+                    {signatureImage && (
+                      <Box className="mt-4 mb-4">
+                        <img
+                          style={{ width: 120, height: 40, objectFit: 'contain' }}
+                          src={signatureImage}
+                        />
+                      </Box>
+                    )}
+                    {/* <EmailGreeting
                       greetingLabel="Thanks and Best regards, ------"
                       isHaveLogo={true}
                       logo={<LogoWithLabel />}
-                    />
+                    /> */}
                     {/* Private Hashtag */}
                     <Controller
                       name="hashtags"

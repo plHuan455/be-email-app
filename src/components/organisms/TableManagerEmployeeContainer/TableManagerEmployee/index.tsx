@@ -91,6 +91,7 @@ interface Props {
   page: number;
   limit: number;
   total: number;
+  maxHeight?: number;
   isLoading?: boolean;
   data: Manager[];
   onDelete?: (id: number) => void;
@@ -105,6 +106,7 @@ const TableManagerEmployee: React.FC<Props> = ({
   limit,
   total,
   isLoading = false,
+  maxHeight,
   onDelete,
   onUpdate,
   onChangePage,
@@ -137,130 +139,136 @@ const TableManagerEmployee: React.FC<Props> = ({
   };
 
   return (
-    <>
-      <TableContainer className="managerTable" component={Paper}>
-        <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
-          <TableHead>
+    <TableContainer
+      className="managerTable flex-1 overflow-scroll mb-4 p-0"
+      sx={{
+        maxHeight: maxHeight ? maxHeight + 'px' : 'auto',
+      }}
+      component={Paper}>
+      <Table
+        stickyHeader
+        sx={{ minWidth: 500 }}
+        aria-label="custom pagination table">
+        <TableHead>
+          <TableRow>
+            <TableCell
+              colSpan={8}
+              style={{
+                color: '#778397',
+                fontSize: 14,
+              }}>{`${data.length} employees in total`}</TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell align="left">Avatar</TableCell>
+            <TableCell align="left">First Name</TableCell>
+            <TableCell align="left">Last Name</TableCell>
+            <TableCell align="left">Identity</TableCell>
+            <TableCell align="left">Email</TableCell>
+            <TableCell align="left">Position</TableCell>
+            <TableCell align="left">Role</TableCell>
+            <TableCell align="center">Actions</TableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {isLoading && (
+            <TableRow>
+              <TableCell align="center" colSpan={6} height={53 * limit}>
+                <Loading isLoading size="xs" />
+              </TableCell>
+            </TableRow>
+          )}
+          {data.length === 0 && !isLoading && (
             <TableRow>
               <TableCell
-                colSpan={5}
-                style={{
-                  color: '#778397',
-                  fontSize: 14,
-                }}>{`${data.length} employees in total`}</TableCell>
+                align="center"
+                colSpan={6}
+                height={53 * limit}
+                sx={{ color: 'rgb(148 148 148 / 87%)' }}>
+                There is no employee
+              </TableCell>
             </TableRow>
-            <TableRow>
-              <TableCell align="left">Avatar</TableCell>
-              <TableCell align="left">First Name</TableCell>
-              <TableCell align="left">Last Name</TableCell>
-              <TableCell align="left">Identity</TableCell>
-              <TableCell align="left">Email</TableCell>
-              <TableCell align="left">Position</TableCell>
-              <TableCell align="left">Role</TableCell>
-              <TableCell align="center">Actions</TableCell>
+          )}
+          {!isLoading &&
+            data.map((row, index) => {
+              return (
+                <TableRow
+                  className={`managerRow ${row.role === 'Blocked' && 'blocked'}`}
+                  key={index}>
+                  <TableCell
+                    className="managerAvatar"
+                    style={{ width: 50 }}
+                    component="th"
+                    scope="row">
+                    <SingleAvatar
+                      src={row.avatar}
+                      abbreviations={row.getAbbreviations()}
+                      isAdminRole={row.role.toUpperCase() === 'ADMIN'}
+                    />
+                  </TableCell>
+                  <TableCell className="managerName" align="left">
+                    {row.firstName}
+                  </TableCell>
+                  <TableCell className="managerName" align="left">
+                    {row.lastName}
+                  </TableCell>
+                  <TableCell className="managerName" align="left">
+                    {row.identity}
+                  </TableCell>
+                  <TableCell style={{ color: '#778397' }} align="left">
+                    {row.dissectionMail()}
+                  </TableCell>
+                  <TableCell align="left">{row.position}</TableCell>
+                  <TableCell style={{ width: 100 }} align="left">
+                    {row.role}
+                  </TableCell>
+                  <TableCell align="center">
+                    <TableActionsMenu
+                      sx={{ maxWidth: rem(52), minWidth: rem(52) }}
+                      options={[
+                        { value: 0, label: 'Update', icon: <UpdateIcon /> },
+                        { value: 1, label: 'Delete', icon: <DeleteIcon /> },
+                      ]}
+                      onItemClick={(value) => {
+                        if (value === 0) {
+                          handleUpdate(row.id);
+                        }
+                        if (value === 1) {
+                          handleDelete(row.id);
+                        }
+                      }}
+                    />
+                  </TableCell>
+                </TableRow>
+              );
+            })}
+          {!isLoading && data.length !== 0 && emptyRows > 0 && (
+            <TableRow style={{ height: 53 * emptyRows }}>
+              <TableCell colSpan={6} />
             </TableRow>
-          </TableHead>
-          <TableBody>
-            {isLoading && (
-              <TableRow>
-                <TableCell align="center" colSpan={6} height={53 * limit}>
-                  <Loading isLoading size="xs" />
-                </TableCell>
-              </TableRow>
-            )}
-            {data.length === 0 && !isLoading && (
-              <TableRow>
-                <TableCell
-                  align="center"
-                  colSpan={6}
-                  height={53 * limit}
-                  sx={{ color: 'rgb(148 148 148 / 87%)' }}>
-                  There is no employee
-                </TableCell>
-              </TableRow>
-            )}
-            {!isLoading &&
-              data.map((row, index) => {
-                return (
-                  <TableRow
-                    className={`managerRow ${row.role === 'Blocked' && 'blocked'}`}
-                    key={index}>
-                    <TableCell
-                      className="managerAvatar"
-                      style={{ width: 50 }}
-                      component="th"
-                      scope="row">
-                      <SingleAvatar
-                        src={row.avatar}
-                        abbreviations={row.getAbbreviations()}
-                        isAdminRole={row.role.toUpperCase() === 'ADMIN'}
-                      />
-                    </TableCell>
-                    <TableCell className="managerName" align="left">
-                      {row.firstName}
-                    </TableCell>
-                    <TableCell className="managerName" align="left">
-                      {row.lastName}
-                    </TableCell>
-                    <TableCell className="managerName" align="left">
-                      {row.identity}
-                    </TableCell>
-                    <TableCell style={{ color: '#778397' }} align="left">
-                      {row.dissectionMail()}
-                    </TableCell>
-                    <TableCell align="left">{row.position}</TableCell>
-                    <TableCell style={{ width: 100 }} align="left">
-                      {row.role}
-                    </TableCell>
-                    <TableCell align="center">
-                      <TableActionsMenu
-                        sx={{ maxWidth: rem(52), minWidth: rem(52) }}
-                        options={[
-                          { value: 0, label: 'Update', icon: <UpdateIcon /> },
-                          { value: 1, label: 'Delete', icon: <DeleteIcon /> },
-                        ]}
-                        onItemClick={(value) => {
-                          if (value === 0) {
-                            handleUpdate(row.id);
-                          }
-                          if (value === 1) {
-                            handleDelete(row.id);
-                          }
-                        }}
-                      />
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-            {!isLoading && data.length !== 0 && emptyRows > 0 && (
-              <TableRow style={{ height: 53 * emptyRows }}>
-                <TableCell colSpan={6} />
-              </TableRow>
-            )}
-          </TableBody>
-          <TableFooter>
-            <TableRow>
-              <TablePagination
-                rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
-                colSpan={5}
-                count={total}
-                rowsPerPage={limit}
-                page={page}
-                SelectProps={{
-                  inputProps: {
-                    'aria-label': 'rows per page',
-                  },
-                  native: true,
-                }}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-                ActionsComponent={TablePaginationActions}
-              />
-            </TableRow>
-          </TableFooter>
-        </Table>
-      </TableContainer>
-    </>
+          )}
+        </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TablePagination
+              rowsPerPageOptions={[5, 10, 25, { label: 'All', value: -1 }]}
+              colSpan={5}
+              count={total}
+              rowsPerPage={limit}
+              page={page}
+              SelectProps={{
+                inputProps: {
+                  'aria-label': 'rows per page',
+                },
+                native: true,
+              }}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+              ActionsComponent={TablePaginationActions}
+            />
+          </TableRow>
+        </TableFooter>
+      </Table>
+    </TableContainer>
   );
 };
 

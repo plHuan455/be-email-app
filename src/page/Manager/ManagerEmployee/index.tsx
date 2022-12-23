@@ -13,8 +13,10 @@ const ManagerEmployee = () => {
     <Layout.MainQueryClient
       headTitle={t('Employee')}
       onClickAdd={() => navigate('add')}>
-      <SearchStartWithIcon />
-      <TableManagerEmployeeContainer />
+      <div className="px-6 flex flex-col flex-1 overflow-hidden">
+        <SearchStartWithIcon />
+        <TableManagerEmployeeContainer />
+      </div>
     </Layout.MainQueryClient>
   );
 };

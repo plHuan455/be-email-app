@@ -18,6 +18,7 @@ import { uploadFile } from '@api/uploadFile';
 import { toast } from 'react-toastify';
 import { AddEmployeeField } from '@components/organisms/TableManagerEmployeeContainer/AddEmployeeModal';
 import Layout from '@layouts/Layout';
+import { getUserWithEmail } from '@api/user';
 
 const staticData: {
   avatar: string;
@@ -100,8 +101,8 @@ const UserProfileContainer = () => {
 
   //   useQuery
   const queryData = useQuery({
-    queryKey: ['get-user-profile', isUpdateUserProfileSuccess],
-    queryFn: getUserInfo,
+    queryKey: ['get-user-profile', isUpdateUserProfileSuccess, currentId],
+    queryFn: () => getUserWithEmail(currentId ? +currentId : 0),
     onSuccess(res) {
       method.setValue('avatar', res.data.avatar);
       method.setValue('department', res.data.department);

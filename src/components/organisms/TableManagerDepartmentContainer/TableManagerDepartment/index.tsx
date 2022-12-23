@@ -22,6 +22,7 @@ import { rem } from '@utils/functions';
 import TableActionsMenu from '@components/molecules/TableActionsMenu';
 import TableManagerEmployeeContainer from '@containers/TableManagerEmployeeContainer';
 import Loading from '@components/atoms/Loading';
+import TableManagerPositionsContainer from '@containers/TableManagerPositionsContainer';
 
 interface TableManagerDepartmentProps {
   isLoading?: boolean;
@@ -55,13 +56,20 @@ function Row({
 }: RowProps) {
   return (
     <React.Fragment>
-      <TableRow className={className} sx={{ '& > *': { borderBottom: 'unset' } }}>
+      <TableRow
+        hover
+        className={`${className} cursor-pointer`}
+        sx={{ '& > *': { borderBottom: 'unset' } }}
+        onClick={() => onChangeIsShow()}>
         <TableCell component="th" scope="row">
-          <IconButton
-            aria-label="expand row"
-            size="small"
-            onClick={() => onChangeIsShow()}>
-            {isShow ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          <IconButton aria-label="expand row" size="small">
+            {/* {isShow ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />} */}
+            <KeyboardArrowUpIcon
+              sx={{
+                transform: `rotate(${!isShow && '180deg'})`,
+                transition: '.4s',
+              }}
+            />
           </IconButton>
           {row.name}
         </TableCell>
@@ -99,7 +107,25 @@ function Row({
                 Employees
               </Typography>
               <TableManagerEmployeeContainer
+                maxHeight={600}
                 data={row.employees}
+                onUpdate={onEmployeeUpdateClick}
+                onDelete={onEmployeeDeleteClick}
+              />
+            </Box>
+          </Collapse>
+        </TableCell>
+      </TableRow>
+      <TableRow>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+          <Collapse in={isShow} timeout="auto" unmountOnExit>
+            <Box sx={{ margin: 1 }}>
+              <Typography variant="h6" gutterBottom component="div">
+                Position
+              </Typography>
+              <TableManagerPositionsContainer
+                maxHeight={600}
+                data={row.positions}
                 onUpdate={onEmployeeUpdateClick}
                 onDelete={onEmployeeDeleteClick}
               />

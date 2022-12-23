@@ -145,7 +145,7 @@ const SignatureContainer = () => {
   }, [listSign, signDefault]);
 
   return (
-    <div className="w-full h-full">
+    <div className="w-full h-full px-6">
       <div style={{ height: '80%', width: '100%' }}>
         <DataGrid
           rows={listSign}

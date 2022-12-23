@@ -60,7 +60,7 @@ function LoginContainer() {
       // Change 'asdasd to res.data
       auth.signin({}, res.data, async () => {
         if (res.message === 'Login successful') {
-          const currentUser = await getUserWithEmail();
+          const currentUser = await getUserWithEmail(8);
           localStorage.setItem(
             'current_user_name',
             `${currentUser.data.first_name} ${currentUser.data.last_name}`,
