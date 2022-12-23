@@ -218,6 +218,7 @@ const TableManagerDepartmentContainer: React.FC<
     mutationFn: getUser,
     onSuccess: (res) => {
       const data = res.data;
+      console.log(data);
       if (data) {
         updateEmployeeMethod.setValue('id', data.user_id);
         updateEmployeeMethod.setValue('avatar', data.avatar);
@@ -261,7 +262,7 @@ const TableManagerDepartmentContainer: React.FC<
           value?.users?.map(
             (user) =>
               new Manager(
-                user.user_id,
+                user.id,
                 user.avatar,
                 user.first_name,
                 user.last_name,

@@ -180,56 +180,58 @@ const TableManagerEmployee: React.FC<Props> = ({
               </TableRow>
             )}
             {!isLoading &&
-              data.map((row, index) => (
-                <TableRow
-                  className={`managerRow ${row.role === 'Blocked' && 'blocked'}`}
-                  key={index}>
-                  <TableCell
-                    className="managerAvatar"
-                    style={{ width: 50 }}
-                    component="th"
-                    scope="row">
-                    <SingleAvatar
-                      src={row.avatar}
-                      abbreviations={row.getAbbreviations()}
-                      isAdminRole={row.role.toUpperCase() === 'ADMIN'}
-                    />
-                  </TableCell>
-                  <TableCell className="managerName" align="left">
-                    {row.firstName}
-                  </TableCell>
-                  <TableCell className="managerName" align="left">
-                    {row.lastName}
-                  </TableCell>
-                  <TableCell className="managerName" align="left">
-                    {row.identity}
-                  </TableCell>
-                  <TableCell style={{ color: '#778397' }} align="left">
-                    {row.dissectionMail()}
-                  </TableCell>
-                  <TableCell align="left">{row.position}</TableCell>
-                  <TableCell style={{ width: 100 }} align="left">
-                    {row.role}
-                  </TableCell>
-                  <TableCell align="center">
-                    <TableActionsMenu
-                      sx={{ maxWidth: rem(52), minWidth: rem(52) }}
-                      options={[
-                        { value: 0, label: 'Update', icon: <UpdateIcon /> },
-                        { value: 1, label: 'Delete', icon: <DeleteIcon /> },
-                      ]}
-                      onItemClick={(value) => {
-                        if (value === 0) {
-                          handleUpdate(row.id);
-                        }
-                        if (value === 1) {
-                          handleDelete(row.id);
-                        }
-                      }}
-                    />
-                  </TableCell>
-                </TableRow>
-              ))}
+              data.map((row, index) => {
+                return (
+                  <TableRow
+                    className={`managerRow ${row.role === 'Blocked' && 'blocked'}`}
+                    key={index}>
+                    <TableCell
+                      className="managerAvatar"
+                      style={{ width: 50 }}
+                      component="th"
+                      scope="row">
+                      <SingleAvatar
+                        src={row.avatar}
+                        abbreviations={row.getAbbreviations()}
+                        isAdminRole={row.role.toUpperCase() === 'ADMIN'}
+                      />
+                    </TableCell>
+                    <TableCell className="managerName" align="left">
+                      {row.firstName}
+                    </TableCell>
+                    <TableCell className="managerName" align="left">
+                      {row.lastName}
+                    </TableCell>
+                    <TableCell className="managerName" align="left">
+                      {row.identity}
+                    </TableCell>
+                    <TableCell style={{ color: '#778397' }} align="left">
+                      {row.dissectionMail()}
+                    </TableCell>
+                    <TableCell align="left">{row.position}</TableCell>
+                    <TableCell style={{ width: 100 }} align="left">
+                      {row.role}
+                    </TableCell>
+                    <TableCell align="center">
+                      <TableActionsMenu
+                        sx={{ maxWidth: rem(52), minWidth: rem(52) }}
+                        options={[
+                          { value: 0, label: 'Update', icon: <UpdateIcon /> },
+                          { value: 1, label: 'Delete', icon: <DeleteIcon /> },
+                        ]}
+                        onItemClick={(value) => {
+                          if (value === 0) {
+                            handleUpdate(row.id);
+                          }
+                          if (value === 1) {
+                            handleDelete(row.id);
+                          }
+                        }}
+                      />
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
             {!isLoading && data.length !== 0 && emptyRows > 0 && (
               <TableRow style={{ height: 53 * emptyRows }}>
                 <TableCell colSpan={6} />

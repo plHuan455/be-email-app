@@ -29,7 +29,7 @@ const Hashtag: React.FC<Props> = ({
 
   // Handler FNC
   const handleClickPrivateTag = (catalog: string) => (e) => {
-    navigate(`/emails/catalog/${catalog.toUpperCase()}`);
+    navigate(`/emails/catalog/${catalog}`);
   };
 
   // useParams
@@ -53,7 +53,7 @@ const Hashtag: React.FC<Props> = ({
           justifyContent: 'space-between',
           padding: '5px 10px',
         }}>
-        <NavLink to={`/emails/catalog/${catalog.toUpperCase()}`}>
+        <NavLink to={`/emails/catalog/${catalog}`}>
           {({ isActive }) => {
             setModalStatus(isActive);
             return (

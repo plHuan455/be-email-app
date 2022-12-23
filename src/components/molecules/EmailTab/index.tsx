@@ -38,7 +38,8 @@ const EmailTab: React.FC<Props> = ({
       return;
     }
 
-    if (params.catalog.toLowerCase() === catalog.toUpperCase()) setModalStatus(true);
+    if (params.catalog.toLowerCase() === catalog.toLocaleLowerCase())
+      setModalStatus(true);
   }, [params]);
 
   // useNavigate
@@ -49,7 +50,7 @@ const EmailTab: React.FC<Props> = ({
 
   // Handler FUNC
   const handleOpenEmailTab = (e) => {
-    navigate(`/emails/catalog/${catalog.toUpperCase()}`);
+    navigate(`/emails/catalog/${catalog}`);
   };
 
   const handleChangeModalStatus = () => {
@@ -70,7 +71,7 @@ const EmailTab: React.FC<Props> = ({
         }}>
         <NavLink
           className="flex flex-1 items-center justify-between py-1.5 px-1"
-          to={`/emails/catalog/${catalog.toUpperCase()}`}>
+          to={`/emails/catalog/${catalog}`}>
           {({ isActive }) => {
             setModalStatus(isActive);
             return (

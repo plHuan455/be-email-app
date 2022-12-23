@@ -84,8 +84,8 @@ export const getAllUser = async (query?: {
 
 // GET USER BY ID
 export const getUser = async (id: number): Promise<AxiosResponse<UserResponse>> => {
-  const url = USER__API__GET;
-  const res = await ApiClient.get(url, { value: id });
+  const url = `${USER__API__GET}/${id}`;
+  const res = await ApiClient.get(url);
   return res.data;
 };
 // CREATE EMPLOYEE
