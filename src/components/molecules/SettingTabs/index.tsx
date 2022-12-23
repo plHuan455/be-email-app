@@ -15,7 +15,7 @@ const SettingTabs = () => {
   return (
     <div>
       <Tabs
-        className="settingRolesTabs pr-6 pt-16 border-transparent"
+        className="settingRolesTabs pr-4 border-transparent"
         orientation="vertical"
         variant="scrollable"
         value={value}

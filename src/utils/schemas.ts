@@ -4,7 +4,8 @@ const phoneRegExp = /^(\+\d{1,3}[- ]?)?\d{10}$/;
 
 export const createEmployeeSchema = yup
   .object({
-    username: yup.string().required(),
+    firstName: yup.string().required(),
+    lastName: yup.string().required(),
     email: yup.string().email().required(),
     phone: yup
       .string()

@@ -18,10 +18,10 @@ const SettimeInput: React.FC<Props> = ({ value, setValueCalendar }) => {
     <Box className="py-2">
       <LocalizationProvider dateAdapter={AdapterDayjs}>
         <MobileTimePicker
-          ampmInClock
+          ampm={false}
           openTo={'minutes'}
-          views={['minutes', 'seconds']}
-          inputFormat="mm:ss"
+          views={['hours', 'minutes']}
+          inputFormat="HH:mm"
           mask="__:__"
           label="Hours and minutes"
           value={value}

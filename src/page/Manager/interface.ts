@@ -6,7 +6,9 @@ export class Manager implements ManagerFunctions {
   constructor(
     public id: number,
     public avatar: string,
-    public name: string,
+    public firstName: string,
+    public lastName: string,
+    public identity: string,
     public mail: string,
     public position: string,
     public role: string,
@@ -14,15 +16,22 @@ export class Manager implements ManagerFunctions {
   ) {}
 
   getAbbreviations() {
-    const cloneName = this.name;
+    const cloneName =
+      this.firstName || this.lastName
+        ? `${this.firstName} ${this.lastName}`.trim()
+        : '';
+    const cloneNameSave = cloneName;
 
     const splitName = cloneName.split(' ');
     const nameLength = splitName.length;
 
     if (nameLength >= 2) {
-      return splitName[0][0].toUpperCase() + splitName[1][0].toUpperCase();
+      return (
+        splitName[0][0].toUpperCase() + splitName[nameLength - 1][0].toUpperCase()
+      );
     }
-    return splitName[0][0].toUpperCase();
+
+    return cloneNameSave ? splitName[0][0].toUpperCase() : '';
   }
 
   dissectionMail() {
@@ -31,7 +40,7 @@ export class Manager implements ManagerFunctions {
 
     if (cloneMail) return splitMail[0];
 
-    return this.name;
+    return `${this.firstName} ${this.lastName}`;
   }
 }
 

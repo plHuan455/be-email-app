@@ -329,7 +329,7 @@ const EmailStatusBar = (props: Props) => {
               />
             );
           })}
-        {!isCreateHashTag ? (
+        {/* {!isCreateHashTag ? (
           <CustomButton
             className="m-2"
             onClick={handleClickCreateHashTag}
@@ -343,7 +343,7 @@ const EmailStatusBar = (props: Props) => {
           />
         ) : (
           CreateHashTag()
-        )}
+        )} */}
       </Box>
     );
   }, [hashtagTabs]);
@@ -352,11 +352,11 @@ const EmailStatusBar = (props: Props) => {
     <Box
       sx={{
         height: '100%',
-        minWidth: '290px',
-        width: '15%',
+        width: '100%',
         padding: '24px',
         overflowX: 'hidden',
         overflowY: 'scroll',
+        // borderRight: '1px solid #e5e7eb',
       }}>
       <EmailStatusHeader
         title="Email"

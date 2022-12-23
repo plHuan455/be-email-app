@@ -4,6 +4,7 @@ import { setEmailsList } from '@redux/Email/reducer';
 import { useMutation } from '@tanstack/react-query';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { NavLink } from 'react-router-dom';
 import { useNavigate, useParams } from 'react-router-dom';
 import ModalEmailList, { StatusOptions } from '../ModalEmailList';
 
@@ -32,9 +33,12 @@ const EmailTab: React.FC<Props> = ({
 
   // useEffect
   useEffect(() => {
-    if (!params.catalog) return;
+    if (!params.catalog) {
+      setModalStatus(false);
+      return;
+    }
 
-    if (params.catalog.toLowerCase() === catalog.toLowerCase()) setModalStatus(true);
+    if (params.catalog.toLowerCase() === catalog.toUpperCase()) setModalStatus(true);
   }, [params]);
 
   // useNavigate
@@ -57,35 +61,49 @@ const EmailTab: React.FC<Props> = ({
   return (
     <span key={title}>
       <ButtonBase
-        onClick={handleOpenEmailTab}
+        // onClick={handleOpenEmailTab}
         sx={{
           width: '100%',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '5px 10px',
         }}>
-        <Typography component={'p'} sx={{ color: color, fontWeight: 'bold' }}>
-          {title}
-        </Typography>
-        {notiNumber > 0 && (
-          <Typography
-            component={'p'}
-            sx={{
-              backgroundColor: '#ABA8D4',
-              width: '14px',
-              height: '18px',
-              fontSize: '10px',
-              fontWeight: 700,
-              borderRadius: '3px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#fff',
-            }}>
-            {notiNumber}
-          </Typography>
-        )}
+        <NavLink
+          className="flex flex-1 items-center justify-between py-1.5 px-1"
+          to={`/emails/catalog/${catalog.toUpperCase()}`}>
+          {({ isActive }) => {
+            setModalStatus(isActive);
+            return (
+              <>
+                {' '}
+                <Typography
+                  className="truncate"
+                  component={'p'}
+                  sx={{ color: color, fontWeight: 'bold' }}>
+                  {title}
+                </Typography>
+                {notiNumber > 0 && (
+                  <Typography
+                    component={'p'}
+                    sx={{
+                      backgroundColor: '#ABA8D4',
+                      width: '14px',
+                      height: '18px',
+                      fontSize: '10px',
+                      fontWeight: 700,
+                      borderRadius: '3px',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: '#fff',
+                    }}>
+                    {notiNumber}
+                  </Typography>
+                )}
+              </>
+            );
+          }}
+        </NavLink>
       </ButtonBase>
       <ModalEmailList
         titleColor={color}

@@ -111,7 +111,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
   };
 
   return (
-    <Box className="t-emailCompose w-full h-full">
+    <Box className="t-emailCompose w-full h-full py-10 mt-4">
       <FormProvider {...method}>
         <form
           className="p-8 flex items-center justify-center w-full h-full"
@@ -383,20 +383,6 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                   />
                   <AttachFileIcon className="text-[#7D7E80]" />
                 </Button>
-                {/* </Tooltip> */}
-                {/* <Button
-                  sx={{
-                    color: "#ffffff",
-                    backgroundColor: "#554CFF",
-                    padding: `${rem(8)} ${rem(10)}`,
-                    fontSize: rem(15),
-                    lineHeight: rem(15),
-                  }}
-                  endIcon=
-                  type="submit"
-                >
-                  {selectedDate ? 'SEND' : 'SEND NOW'}
-                </Button> */}
                 <CustomButton
                   padding="8px 10px"
                   classNameLabel="pr-1"

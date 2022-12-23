@@ -5,6 +5,7 @@ import ModalEmailList, {
 import { Box, ButtonBase, Typography } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router';
+import { NavLink } from 'react-router-dom';
 
 interface Props {
   title: string;
@@ -44,7 +45,7 @@ const Hashtag: React.FC<Props> = ({
   return (
     <Box key={index}>
       <ButtonBase
-        onClick={handleClickPrivateTag(catalog)}
+        // onClick={handleClickPrivateTag(catalog)}
         sx={{
           width: '100%',
           display: 'flex',
@@ -52,9 +53,19 @@ const Hashtag: React.FC<Props> = ({
           justifyContent: 'space-between',
           padding: '5px 10px',
         }}>
-        <Typography component={'p'} sx={{ color: '#4BAAA2', fontWeight: 'bold' }}>
-          {title}
-        </Typography>
+        <NavLink to={`/emails/catalog/${catalog.toUpperCase()}`}>
+          {({ isActive }) => {
+            setModalStatus(isActive);
+            return (
+              <Typography
+                className="truncate"
+                component={'p'}
+                sx={{ color: '#4BAAA2', fontWeight: 'bold' }}>
+                {title}
+              </Typography>
+            );
+          }}
+        </NavLink>
       </ButtonBase>
       <ModalEmailList
         titleColor={color}

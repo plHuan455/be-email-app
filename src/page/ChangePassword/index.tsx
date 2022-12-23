@@ -23,6 +23,8 @@ import { useTranslation } from '@@packages/localization/src';
 import { changePassword } from '@api/auth';
 import { toast } from 'react-toastify';
 import { useNavigate } from 'react-router-dom';
+import Layout from '@layouts/Layout';
+import ArrowLeft from '@assets/icon/ArrowLeft';
 
 const ChangePassword = () => {
   const { t } = useTranslation();
@@ -41,10 +43,6 @@ const ChangePassword = () => {
         ),
     })
     .required();
-
-  const currentEmail = localStorage.getItem('current_email')
-    ? localStorage.getItem('current_email')
-    : '';
 
   const {
     control,
@@ -74,68 +72,77 @@ const ChangePassword = () => {
   };
 
   return (
-    <WrapContent className="bg-transparent">
-      <Box className=" bg-white p-10 py-16 rounded-xl w-[400px]">
-        <h3 className="text-center font-bold text-[28px] mb-8">Change Password</h3>
-        <form onSubmit={handleSubmit(onSubmit)} className="grid grid-rows-2 gap-4">
-          <Controller
-            name="currPassword"
-            control={control}
-            render={({ field }) => (
-              <WrapInput>
-                <label>Current Password</label>
-                <TextField
-                  {...field}
-                  type={'password'}
-                  placeholder={t('Enter Current Password')}
-                  error={!!errors.currPassword?.message}
-                  helperText={errors.currPassword?.message}
-                />
-              </WrapInput>
-            )}
-          />
-          <Controller
-            name="newPassword"
-            control={control}
-            render={({ field }) => (
-              <WrapInput>
-                <label>New Password</label>
-                <TextField
-                  {...field}
-                  type={'password'}
-                  placeholder={t('Enter New Password')}
-                  error={!!errors.newPassword?.message}
-                  helperText={errors.newPassword?.message}
-                />
-              </WrapInput>
-            )}
-          />
-          <Controller
-            name="confirmPassword"
-            control={control}
-            render={({ field }) => (
-              <WrapInput>
-                <label>Confirm Password</label>
-                <TextField
-                  {...field}
-                  type={'password'}
-                  placeholder={t('Enter Confirm Password')}
-                  error={!!errors.confirmPassword?.message}
-                  helperText={errors.confirmPassword?.message}
-                />
-              </WrapInput>
-            )}
-          />
+    <Layout.MainHaveActions>
+      <WrapContent className="bg-transparent">
+        <Box className=" bg-white p-10 py-16 rounded-xl w-[400px]">
+          <Box className="flex items-center mb-8">
+            <Box className="cursor-pointer h-[56px]">
+              <span className="inline-block p-4" onClick={() => navigate(-1)}>
+                <ArrowLeft width={24} height={24} color="#554CFF" />
+              </span>
+            </Box>
+            <h3 className="text-center font-bold text-[28px]">Change Password</h3>
+          </Box>
+          <form onSubmit={handleSubmit(onSubmit)} className="grid grid-rows-2 gap-4">
+            <Controller
+              name="currPassword"
+              control={control}
+              render={({ field }) => (
+                <WrapInput>
+                  <label>Current Password</label>
+                  <TextField
+                    {...field}
+                    type={'password'}
+                    placeholder={t('Enter Current Password')}
+                    error={!!errors.currPassword?.message}
+                    helperText={errors.currPassword?.message}
+                  />
+                </WrapInput>
+              )}
+            />
+            <Controller
+              name="newPassword"
+              control={control}
+              render={({ field }) => (
+                <WrapInput>
+                  <label>New Password</label>
+                  <TextField
+                    {...field}
+                    type={'password'}
+                    placeholder={t('Enter New Password')}
+                    error={!!errors.newPassword?.message}
+                    helperText={errors.newPassword?.message}
+                  />
+                </WrapInput>
+              )}
+            />
+            <Controller
+              name="confirmPassword"
+              control={control}
+              render={({ field }) => (
+                <WrapInput>
+                  <label>Confirm Password</label>
+                  <TextField
+                    {...field}
+                    type={'password'}
+                    placeholder={t('Enter Confirm Password')}
+                    error={!!errors.confirmPassword?.message}
+                    helperText={errors.confirmPassword?.message}
+                  />
+                </WrapInput>
+              )}
+            />
 
-          <WrapActions>
-            <Button size="large" type="submit">
-              {t('Change Password')}
-            </Button>
-          </WrapActions>
-        </form>
-      </Box>
-      <p>2022 Metanode, Inc</p>
-    </WrapContent>
+            <WrapActions>
+              <Button size="large" type="submit">
+                {t('Change Password')}
+              </Button>
+            </WrapActions>
+          </form>
+        </Box>
+        <p>2022 Metanode, Inc</p>
+      </WrapContent>
+    </Layout.MainHaveActions>
   );
 };
 

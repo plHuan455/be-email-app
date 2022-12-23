@@ -42,7 +42,9 @@ export interface UserResponse {
   phone_number: string;
   position: string;
   role_id: number;
-  user_name: string;
+  first_name: string;
+  last_name: string;
+  identity: string;
   role: string;
 }
 
