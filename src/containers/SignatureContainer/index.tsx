@@ -145,24 +145,20 @@ const SignatureContainer = () => {
   }, [listSign, signDefault]);
 
   return (
-    <Layout.Content>
-      <Layout.MainQueryClient
-        headTitle={t('Signatures')}
-        onClickAdd={() => setModalSignByIdNumber(-1)}>
-        <div style={{ height: '80%', width: '100%' }}>
-          <DataGrid
-            rows={listSign}
-            columns={columns}
-            pageSize={5}
-            rowsPerPageOptions={[5]}
-          />
-        </div>
-        <ModalDrawSignature
-          isOpen={modalSignByIdNumber !== 0}
-          onSubmit={hanleSubmitSign}
+    <div className="w-full h-full">
+      <div style={{ height: '80%', width: '100%' }}>
+        <DataGrid
+          rows={listSign}
+          columns={columns}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
         />
-      </Layout.MainQueryClient>
-    </Layout.Content>
+      </div>
+      <ModalDrawSignature
+        isOpen={modalSignByIdNumber !== 0}
+        onSubmit={hanleSubmitSign}
+      />
+    </div>
   );
 };
 
