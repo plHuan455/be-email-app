@@ -15,7 +15,7 @@ import React, { useCallback, useRef, useState } from 'react';
 export interface AlertDialogProps {
   isLoading?: boolean;
   titleLabel: string;
-  descriptionLabel: string;
+  descriptionLabel: React.ReactNode;
   isOpen: boolean;
   isShowDisagreeBtn?: boolean;
   onAgree?: () => void;
@@ -38,17 +38,17 @@ export const useAlertDialog = (isOpenDefault: boolean = false) => {
 
   const alertDataRef = useRef<{
     title: string;
-    description: string;
+    description: React.ReactNode;
     callback: () => void;
   }>({
     title: '',
     description: '',
-    callback: () => { },
+    callback: () => {},
   });
 
   const setAlertData = (
     title: string,
-    description: string,
+    description: React.ReactNode,
     callback: () => void,
   ) => {
     alertDataRef.current = {
@@ -63,7 +63,7 @@ export const useAlertDialog = (isOpenDefault: boolean = false) => {
     alertDataRef.current = {
       title: '',
       description: '',
-      callback: () => { },
+      callback: () => {},
     };
 
     setIsOpen(false);
@@ -107,20 +107,21 @@ const AlertDialog: React.FC<AlertDialogProps> = ({
           </DialogContentText>
         </DialogContent>
         <DialogActions>
-          {isShowDisagreeBtn && <Button
-            sx={{
-              color: '#dc3545',
-              fontWeight: 'bold',
-              backgroundColor: 'transparent',
-              '&:hover': {
-                color: 'white',
-                backgroundColor: '#554cff',
-              },
-            }}
-            onClick={onDisagree}>
-            Cancel
-          </Button>
-          }
+          {isShowDisagreeBtn && (
+            <Button
+              sx={{
+                color: '#dc3545',
+                fontWeight: 'bold',
+                backgroundColor: 'transparent',
+                '&:hover': {
+                  color: 'white',
+                  backgroundColor: '#554cff',
+                },
+              }}
+              onClick={onDisagree}>
+              Cancel
+            </Button>
+          )}
           <LoadingButton
             loading={isLoading}
             sx={{

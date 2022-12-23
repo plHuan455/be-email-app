@@ -13,21 +13,22 @@ const SettingRoles = () => {
 
   const handleCloseModal = () => {
     setIsShowModal(false);
-  }
-  
+  };
+
   return (
-    <Layout.Content>
-      <Layout.MainQueryClient
-        headTitle={t('User roles')}
-        onClickAdd={() => setIsShowModal(true)}>
-        <SettingRolesContainer />
-        <CreateRoleFormModalContainer
-          title="Create role"
-          isOpen={isShowModal}
-          onClose={handleCloseModal}
-        />
-      </Layout.MainQueryClient>
-    </Layout.Content>
+    // <Layout.Content>
+    <Layout.MainQueryClient
+      isFull={false}
+      headTitle={t('User roles')}
+      onClickAdd={() => setIsShowModal(true)}>
+      <SettingRolesContainer />
+      <CreateRoleFormModalContainer
+        title="Create role"
+        isOpen={isShowModal}
+        onClose={handleCloseModal}
+      />
+    </Layout.MainQueryClient>
+    // </Layout.Content>
   );
 };
 

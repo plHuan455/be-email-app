@@ -9,29 +9,27 @@ const EmailContainer = () => {
   const isCompose = useEmailCompose((state) => state.isCompose);
 
   return (
+    // <Box
+    //   sx={{
+    //     flex: 1,
+    //     height: '100vh',
+    //     overflow: 'scroll',
+    //     position: 'relative',
+    //     display: 'flex',
+    //     flexDirection: 'column',
+    //   }}>
+    //   <EmailsListActionsContainer />
+
     <Box
       sx={{
         flex: 1,
-        height: '100vh',
-        backgroundColor: '#EDEDF3',
-        borderTopLeftRadius: '65px',
         overflow: 'scroll',
-        position: 'relative',
-        display: 'flex',
-        flexDirection: 'column',
+        padding: '120px 28px 28px 28px',
       }}>
-      <EmailsListActionsContainer />
-
-      <Box
-        sx={{
-          flex: 1,
-          overflow: 'scroll',
-          padding: '120px 28px 28px 28px',
-        }}>
-        <Email />
-      </Box>
-      {/* {isCompose ? <EmailCompose /> : <Email />} */}
+      <Email />
     </Box>
+    //   {/* {isCompose ? <EmailCompose /> : <Email />} */}
+    // </Box>
   );
 };
 

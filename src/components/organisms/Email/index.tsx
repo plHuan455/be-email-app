@@ -23,6 +23,7 @@ import { toast } from 'react-toastify';
 import { useMutation } from '@tanstack/react-query';
 import { number } from 'yup';
 import { EmailUpdateQuery } from '@api/email/interface';
+import EmailMessContainer from '@containers/EmailMessContainer';
 
 interface ModalForm {
   title: string;
@@ -155,11 +156,13 @@ const Email: React.FC<Props> = () => {
   const { EmailsList, isLoading } = useSelector((state: RootState) => state.email);
   const dispatch = useDispatch();
 
-  console.log(`TODO: call update hashtags when have api`)
-  const { mutate: updateHashtagMutate, isLoading: isUpdateHashtagLoading } = useMutation({
-    mutationKey: ['email-update-hashtag'],
-    mutationFn: (params: {id: number; data: EmailUpdateQuery}) => updateEmailWithQuery(params.id, params.data)
-  })
+  console.log(`TODO: call update hashtags when have api`);
+  const { mutate: updateHashtagMutate, isLoading: isUpdateHashtagLoading } =
+    useMutation({
+      mutationKey: ['email-update-hashtag'],
+      mutationFn: (params: { id: number; data: EmailUpdateQuery }) =>
+        updateEmailWithQuery(params.id, params.data),
+    });
 
   useEffect(() => {
     if (!isEmpty(EmailsList)) setShowHistory(EmailsList[0].id);
@@ -291,17 +294,16 @@ const Email: React.FC<Props> = () => {
   );
 
   return (
-    <Box className="flex flex-wrap flex-col">
+    <Box className="w-full flex flex-wrap flex-col">
       {isLoading ? (
         <EmailMessEmpty isLoading={isLoading} />
       ) : (
         EmailsList.map((email, index) => (
-          <EmailMess
+          <EmailMessContainer
             key={email.id}
-            status={email.status}
             type={checkIsReceiveEmail(email.id) ? 'receive' : 'send'}
             userInfo={
-              new UserInfo(``, email.email.writer_id.toString(), email.email.from)
+              new UserInfo(``, email.email.writer_id?.toString(), email.email.from)
             }
             emailData={email}
             onShowHistory={handleShowHistory}
@@ -310,8 +312,8 @@ const Email: React.FC<Props> = () => {
             onChangeStatus={changeEmailStatus}
             index={index}
             onUpdateHashtagClick={(hashtagsList) => {
-              const tags = hashtagsList.map(hashtag => hashtag.value)
-              updateHashtagMutate({id: email.id, data: {...email, tags}})
+              const tags = hashtagsList.map((hashtag) => hashtag.value);
+              updateHashtagMutate({ id: email.id, data: { ...email, tags } });
             }}
           />
         ))

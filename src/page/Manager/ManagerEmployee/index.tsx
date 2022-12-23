@@ -10,14 +10,12 @@ const ManagerEmployee = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   return (
-    <Layout.Content>
-      <Layout.MainQueryClient
-        headTitle={t('Employee')}
-        onClickAdd={() => navigate('add')}>
-        <SearchStartWithIcon />
-        <TableManagerEmployeeContainer />
-      </Layout.MainQueryClient>
-    </Layout.Content>
+    <Layout.MainQueryClient
+      headTitle={t('Employee')}
+      onClickAdd={() => navigate('add')}>
+      <SearchStartWithIcon />
+      <TableManagerEmployeeContainer />
+    </Layout.MainQueryClient>
   );
 };
 

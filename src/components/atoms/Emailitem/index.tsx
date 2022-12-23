@@ -30,14 +30,14 @@ const EmailItem: React.FC<Props> = ({
     onSelect();
     if (!emailCatalog)
       navigate({
-        pathname: `/emails/catalog/${emailCatalog}/${user_id}`,
+        pathname: `/emails/catalog/${emailCatalog.toUpperCase()}/${user_id}`,
         search: createSearchParams({
           tab: searchParams.get('tab') || 'me',
         }).toString(),
       });
     else
       navigate({
-        pathname: `/emails/catalog/${emailCatalog}/${user_id}`,
+        pathname: `/emails/catalog/${emailCatalog.toUpperCase()}/${user_id}`,
         search: createSearchParams({
           tab: searchParams.get('tab') || 'me',
         }).toString(),

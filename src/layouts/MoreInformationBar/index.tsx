@@ -41,7 +41,12 @@ const MoreInfomationBar: React.FC<Props> = ({
           fontWeight: 'bold',
         }}
         onClick={onClose}>
-        <ArrowLeft className="cursor-pointer" width={12} height={12} />
+        <ArrowLeft
+          className="cursor-pointer"
+          width={12}
+          height={12}
+          color="#554CFF"
+        />
         {title}
       </Typography>
       {children}
