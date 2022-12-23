@@ -31,6 +31,7 @@ interface TableManagerDepartmentProps {
   onEmployeeUpdateClick: (id: number) => void;
   onDepartmentDeleteClick: (id: number) => void;
   onDepartmentUpdateClick: (id: number) => void;
+  onAddPositionClick: () => void;
 }
 
 interface RowProps {
@@ -42,6 +43,7 @@ interface RowProps {
   onEmployeeDeleteClick: (id: number) => void;
   onDepartmentUpdateClick: (id: number) => void;
   onDepartmentDeleteClick: (id: number) => void;
+  onAddPositionClick: () => void;
 }
 
 function Row({
@@ -53,6 +55,7 @@ function Row({
   onEmployeeDeleteClick,
   onDepartmentDeleteClick,
   onDepartmentUpdateClick,
+  onAddPositionClick,
 }: RowProps) {
   return (
     <React.Fragment>
@@ -106,6 +109,7 @@ function Row({
               <Typography variant="h6" gutterBottom component="div">
                 Employees
               </Typography>
+
               <TableManagerEmployeeContainer
                 maxHeight={600}
                 data={row.employees}
@@ -120,9 +124,22 @@ function Row({
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
           <Collapse in={isShow} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
-              <Typography variant="h6" gutterBottom component="div">
-                Position
-              </Typography>
+              <Box className="flex items-center">
+                <Typography
+                  sx={{ marginBottom: 0 }}
+                  variant="h6"
+                  gutterBottom
+                  component="div">
+                  Position
+                </Typography>
+                <IconButton
+                  className="bg-transparent hover:bg-transparent"
+                  size="small"
+                  onClick={() => onAddPositionClick()}>
+                  <Icon icon={'plus'} rawColor={'#827CFF'} width={16} height={16} />
+                </IconButton>
+              </Box>
+
               <TableManagerPositionsContainer
                 maxHeight={600}
                 data={row.positions}
@@ -144,6 +161,7 @@ export default function TableManagerDepartment({
   onEmployeeDeleteClick,
   onDepartmentUpdateClick,
   onDepartmentDeleteClick,
+  onAddPositionClick,
 }: TableManagerDepartmentProps) {
   const [indexShow, setIndexShow] = React.useState<number>();
 
@@ -153,7 +171,7 @@ export default function TableManagerDepartment({
   };
 
   return (
-    <TableContainer className="tableDepartment" component={Paper}>
+    <TableContainer className="tableDepartment flex-1 mb-6" component={Paper}>
       <Table aria-label="collapsible table">
         <TableHead>
           <TableRow>
@@ -197,6 +215,7 @@ export default function TableManagerDepartment({
                 onEmployeeDeleteClick={onEmployeeDeleteClick}
                 onDepartmentUpdateClick={onDepartmentUpdateClick}
                 onDepartmentDeleteClick={onDepartmentDeleteClick}
+                onAddPositionClick={onAddPositionClick}
               />
             ))}
         </TableBody>

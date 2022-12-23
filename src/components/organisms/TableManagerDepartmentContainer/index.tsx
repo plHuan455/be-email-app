@@ -37,6 +37,7 @@ const headerTabData = [
 
 interface TableManagerDepartmentContainerProps {
   onCloseAddDepartmentModal: () => void;
+  onClickAddDepartmentModal: () => void;
   isShowAddDepartmentModal?: boolean;
 }
 
@@ -50,7 +51,11 @@ const createDepartmentSchema = yup
 
 const TableManagerDepartmentContainer: React.FC<
   TableManagerDepartmentContainerProps
-> = ({ isShowAddDepartmentModal, onCloseAddDepartmentModal }) => {
+> = ({
+  isShowAddDepartmentModal,
+  onCloseAddDepartmentModal,
+  onClickAddDepartmentModal,
+}) => {
   const queryClient = useQueryClient();
   const location = useLocation();
   const navigate = useNavigate();
@@ -361,7 +366,7 @@ const TableManagerDepartmentContainer: React.FC<
   };
 
   return (
-    <div className="px-6">
+    <div className="px-6 flex flex-col flex-1 overflow-hidden">
       <TableHeader isHaveActions={false}>
         <Tabs className="tableManagerTabs" value={value} onChange={handleChange}>
           {headerTabData.map((item) => (
@@ -381,6 +386,7 @@ const TableManagerDepartmentContainer: React.FC<
         onEmployeeDeleteClick={handleEmployeeDeleteClick}
         onDepartmentUpdateClick={handleDepartmentUpdateClick}
         onDepartmentDeleteClick={handleDepartmentDeleteClick}
+        onAddPositionClick={onClickAddDepartmentModal}
       />
 
       <AddDepartmentModal
