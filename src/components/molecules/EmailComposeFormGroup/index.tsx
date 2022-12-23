@@ -1,4 +1,5 @@
 import { Box } from '@mui/material';
+import classNames from 'classnames';
 import React from 'react';
 
 interface EmailComposeFormGroupProps {
@@ -6,6 +7,7 @@ interface EmailComposeFormGroupProps {
   htmlFor?: string;
   isHaveBorderBottom?: boolean;
   className?: string;
+  classNameContent?: string;
   children?: React.ReactNode;
 }
 
@@ -14,6 +16,7 @@ const EmailComposeFormGroup: React.FC<EmailComposeFormGroupProps> = ({
   htmlFor,
   isHaveBorderBottom = true,
   className,
+  classNameContent,
   children,
 }) => {
   return (
@@ -26,7 +29,7 @@ const EmailComposeFormGroup: React.FC<EmailComposeFormGroupProps> = ({
         className="inline-block text-[#7E7E7E] first-letter:uppercase font-medium text-[14px] leading-[38px]">
         {label}
       </label>
-      <Box className="flex-1 pl-2">{children}</Box>
+      <Box className={classNames("flex-1 pl-2", classNameContent)}>{children}</Box>
     </Box>
   );
 };
