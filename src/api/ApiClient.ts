@@ -21,7 +21,7 @@ const url = process.env.EMAIL_APP_API_BASE_URL
 const local = 'http://10.0.1.176:8000/';
 
 const axiosInstance = axios.create({
-  baseURL: local,
+  baseURL: 'http://61.28.238.162:8000/',
   timeout: 5001,
 });
 

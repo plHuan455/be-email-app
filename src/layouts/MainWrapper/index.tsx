@@ -150,6 +150,12 @@ function MainWrapper() {
       handleClick: handleChangePage('/profile'),
     },
     {
+      id: 1,
+      label: 'Signature',
+      path: '/signature',
+      handleClick: handleChangePage('/signature'),
+    },
+    {
       id: 2,
       label: 'Change Password',
       path: '/change-password',
