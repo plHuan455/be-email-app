@@ -33,6 +33,8 @@ interface TableManagerDepartmentProps {
 }
 
 interface RowProps {
+  isShow: boolean;
+  onChangeIsShow: () => void;
   row: Department;
   className: string;
   onEmployeeUpdateClick: (id: number) => void;
@@ -42,6 +44,8 @@ interface RowProps {
 }
 
 function Row({
+  isShow,
+  onChangeIsShow,
   row,
   className,
   onEmployeeUpdateClick,
@@ -49,8 +53,6 @@ function Row({
   onDepartmentDeleteClick,
   onDepartmentUpdateClick,
 }: RowProps) {
-  const [open, setOpen] = React.useState(false);
-
   return (
     <React.Fragment>
       <TableRow className={className} sx={{ '& > *': { borderBottom: 'unset' } }}>
@@ -58,8 +60,8 @@ function Row({
           <IconButton
             aria-label="expand row"
             size="small"
-            onClick={() => setOpen(!open)}>
-            {open ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+            onClick={() => onChangeIsShow()}>
+            {isShow ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
           </IconButton>
           {row.name}
         </TableCell>
@@ -73,13 +75,16 @@ function Row({
         <TableCell align="left">{row.address}</TableCell>
         <TableCell align="center">
           <TableActionsMenu
-            sx={{maxWidth: rem(52), minWidth: rem(52)}}
-            options={[{value: 0, label: 'Update', icon: <UpdateIcon />}, {value: 1, label: 'Delete', icon: <DeleteIcon />}]}
+            sx={{ maxWidth: rem(52), minWidth: rem(52) }}
+            options={[
+              { value: 0, label: 'Update', icon: <UpdateIcon /> },
+              { value: 1, label: 'Delete', icon: <DeleteIcon /> },
+            ]}
             onItemClick={(value) => {
-              if(value === 0) {
+              if (value === 0) {
                 onDepartmentUpdateClick(row.id);
               }
-              if(value === 1) {
+              if (value === 1) {
                 onDepartmentDeleteClick(row.id);
               }
             }}
@@ -88,7 +93,7 @@ function Row({
       </TableRow>
       <TableRow>
         <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
-          <Collapse in={open} timeout="auto" unmountOnExit>
+          <Collapse in={isShow} timeout="auto" unmountOnExit>
             <Box sx={{ margin: 1 }}>
               <Typography variant="h6" gutterBottom component="div">
                 Employees
@@ -112,8 +117,15 @@ export default function TableManagerDepartment({
   onEmployeeUpdateClick,
   onEmployeeDeleteClick,
   onDepartmentUpdateClick,
-  onDepartmentDeleteClick
+  onDepartmentDeleteClick,
 }: TableManagerDepartmentProps) {
+  const [indexShow, setIndexShow] = React.useState<number>();
+
+  const handleOnChangeIsShow = (index: number) => {
+    if (index === indexShow) setIndexShow(undefined);
+    else setIndexShow(index);
+  };
+
   return (
     <TableContainer className="tableDepartment" component={Paper}>
       <Table aria-label="collapsible table">
@@ -135,28 +147,32 @@ export default function TableManagerDepartment({
           </TableRow>
           {isLoading && (
             <TableRow>
-              <TableCell align='center' colSpan={5}>
-                <Loading isLoading={isLoading} size='xs' />
+              <TableCell align="center" colSpan={5}>
+                <Loading isLoading={isLoading} size="xs" />
               </TableCell>
             </TableRow>
           )}
           {!isLoading && departmentList.length === 0 && (
             <TableRow>
-              <TableCell colSpan={5} align='center'>
+              <TableCell colSpan={5} align="center">
                 There is no department
               </TableCell>
-          </TableRow>
+            </TableRow>
           )}
-          {!isLoading && departmentList.map((row) => (
-            <Row
-              className="managerDepartmentRow"
-              key={row.name} row={row}
-              onEmployeeUpdateClick={onEmployeeUpdateClick}
-              onEmployeeDeleteClick={onEmployeeDeleteClick}
-              onDepartmentUpdateClick={onDepartmentUpdateClick}
-              onDepartmentDeleteClick={onDepartmentDeleteClick}
-            />
-          ))}
+          {!isLoading &&
+            departmentList.map((row, index) => (
+              <Row
+                isShow={indexShow === index}
+                onChangeIsShow={() => handleOnChangeIsShow(index)}
+                className="managerDepartmentRow"
+                key={row.name}
+                row={row}
+                onEmployeeUpdateClick={onEmployeeUpdateClick}
+                onEmployeeDeleteClick={onEmployeeDeleteClick}
+                onDepartmentUpdateClick={onDepartmentUpdateClick}
+                onDepartmentDeleteClick={onDepartmentDeleteClick}
+              />
+            ))}
         </TableBody>
       </Table>
     </TableContainer>

@@ -45,8 +45,13 @@ const EmailMainWrapper = () => {
     queryKey: ['get-emails-list', params.catalog, params.user_id],
     queryFn: () => getAllEmailByCatalog(params),
     onSuccess: (res) => {
-      console.log(res.data);
-      dispatch(setEmailsList(res.data.reverse()));
+      dispatch(
+        setEmailsList(
+          params.catalog?.toUpperCase() === 'PENDING'
+            ? res.data.reverse()
+            : res.data,
+        ),
+      );
       return res.data;
     },
     onError: (res) => {
@@ -59,26 +64,6 @@ const EmailMainWrapper = () => {
       queryClient.invalidateQueries({ queryKey: ['get-emails-list'] });
     }
   }, [notificationList]);
-
-  // Get Emails Block
-  // const { isLoading: isLoadingGetEmailsBlock } = useQuery({
-  //   queryKey: ['get-block-emails', params],
-  //   queryFn: () => getEmailManagerWithQueryParams(params),
-  //   onSuccess: (res) => {
-  //     dispatch(
-  //       setEmailsList(
-  //         params.status?.toLowerCase() === 'pending'
-  //           ? res.data[0].emails.reverse()
-  //           : res.data[0].emails,
-  //       ),
-  //     );
-  //     return res.data;
-  //   },
-  //   onError: (res) => {
-  //     toast.error('Có lỗi xảy ra');
-  //   },
-  //   enabled: !!params.status || !!params.tag,
-  // });
 
   useEffect(() => {
     if (!isHaveParams) {
@@ -98,7 +83,7 @@ const EmailMainWrapper = () => {
     <>
       <EmailContainer />
 
-      {isEmpty(EmailsList) ? (
+      {/* {isEmpty(EmailsList) ? (
         <InformationBarEmpty
           isLoading={isLoadingGetEmailsList}
           title="Information"
@@ -113,7 +98,7 @@ const EmailMainWrapper = () => {
           sender={1}
           // receiver={receiverData}
         />
-      )}
+      )} */}
     </>
   );
 };

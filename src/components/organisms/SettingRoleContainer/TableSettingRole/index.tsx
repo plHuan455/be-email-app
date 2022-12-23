@@ -21,7 +21,7 @@ interface Props {
   isLoading?: boolean;
   isButtonLoading?: boolean;
   data?: PermissionResponse[];
-  dataStates: {[key: number]: string};
+  dataStates: { [key: number]: string };
   buttonLabel?: string;
   onChangeRow: (id: number, name?: string) => void;
   updatePermission: Function;
@@ -36,15 +36,12 @@ const TableSettingRole: React.FC<Props> = ({
   onChangeRow,
   updatePermission,
 }) => {
-  console.log(
-    '🚀 ~ file: TableSettingRole/index.ts ~ line 87 ~ TableSettingRole',
-    data,
-  );
-
   return (
-    <Box className="flex-1">
-      <TableContainer className="tableSettingRole" component={Paper}>
-        <Table aria-label="collapsible table">
+    <Box className="flex-1 flex flex-col pb-6">
+      <TableContainer
+        className="tableSettingRole flex-1 p-0 border-2 border-[#e5e7eb]"
+        component={Paper}>
+        <Table stickyHeader aria-label="collapsible table">
           <TableHead>
             <TableRow>
               <TableCell>Name</TableCell>
@@ -61,21 +58,22 @@ const TableSettingRole: React.FC<Props> = ({
           <TableBody>
             {isLoading && (
               <TableRow>
-                <TableCell sx={{borderBottom: 0}} align='center' colSpan={5}>
-                  <Loading size='xs' isLoading/>
+                <TableCell sx={{ borderBottom: 0 }} align="center" colSpan={5}>
+                  <Loading size="xs" isLoading />
                 </TableCell>
               </TableRow>
             )}
-            {!isLoading && data.map((row, index) => (
-              <Row
-                isActive={dataStates.hasOwnProperty(row.id)}
-                className="managerSettingRoleRow"
-                key={row.name}
-                row={row}
-                index={index}
-                onChangeRow={onChangeRow}
-              />
-            ))}
+            {!isLoading &&
+              data.map((row, index) => (
+                <Row
+                  isActive={dataStates.hasOwnProperty(row.id)}
+                  className="managerSettingRoleRow"
+                  key={row.name}
+                  row={row}
+                  index={index}
+                  onChangeRow={onChangeRow}
+                />
+              ))}
           </TableBody>
         </Table>
       </TableContainer>
@@ -89,30 +87,31 @@ const TableSettingRole: React.FC<Props> = ({
             label={buttonLabel}
           />
         </Box> */}
-        { data.length !== 0 && <Box className="flex justify-end items-end my-6">
+      {data.length !== 0 && (
+        <Box className="flex justify-end items-end mt-6">
           <LoadingButton
-            variant='outlined'
+            variant="outlined"
             loading={isButtonLoading}
-            loadingPosition='end'
+            loadingPosition="end"
             endIcon={<SyncAltIcon />}
             sx={{
               backgroundColor: '#554CFF',
-              px: rem(12), 
-              py: rem(4), 
+              px: rem(12),
+              py: rem(4),
               color: '#ffffff',
               '&:hover': {
-                color: '#554CFF'
+                color: '#554CFF',
               },
               '&.MuiLoadingButton-loading': {
                 backgroundColor: '#7e77f8',
-                color: '#ffffff'
-              }
+                color: '#ffffff',
+              },
             }}
-            onClick={() => updatePermission()}
-          >
+            onClick={() => updatePermission()}>
             {buttonLabel}
           </LoadingButton>
-        </Box>}
+        </Box>
+      )}
     </Box>
   );
 };

@@ -75,7 +75,8 @@ const TableManagerEmployeeContainer = () => {
     defaultValues: {
       id: -1,
       avatar: undefined,
-      username: '',
+      firstName: '',
+      lastName: '',
       password: '',
       phone: '',
       department: '',
@@ -164,7 +165,6 @@ const TableManagerEmployeeContainer = () => {
     queryFn: () =>
       getAllUser({ ...tablePageParams, page: tablePageParams.page + 1 }),
     onSuccess: (res) => {
-      console.log(res);
       setTablePageParams((preState) => {
         if (res?.total !== undefined) return { ...preState, total: res.total };
         return preState;
@@ -239,7 +239,9 @@ const TableManagerEmployeeContainer = () => {
         return new Manager(
           value.id,
           value.avatar,
-          value.user_name,
+          value.first_name,
+          value.last_name,
+          value.identity,
           value.email,
           value.position,
           roleHash[value.role_id] ?? '',
@@ -289,7 +291,8 @@ const TableManagerEmployeeContainer = () => {
     if (updateEmployee) {
       updateEmployeeMethod.setValue('id', updateEmployee.id);
       updateEmployeeMethod.setValue('avatar', updateEmployee.avatar);
-      updateEmployeeMethod.setValue('username', updateEmployee.user_name);
+      updateEmployeeMethod.setValue('firstName', updateEmployee.first_name);
+      updateEmployeeMethod.setValue('lastName', updateEmployee.last_name);
       updateEmployeeMethod.setValue(
         'department',
         String(updateEmployee.department_id),

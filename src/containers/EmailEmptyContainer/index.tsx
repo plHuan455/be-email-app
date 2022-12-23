@@ -8,7 +8,7 @@ import React from 'react';
 const EmailEmptyContainer = () => {
   return (
     <>
-      <Box
+      {/* <Box
         sx={{
           flex: 1,
           height: '100%',
@@ -17,23 +17,23 @@ const EmailEmptyContainer = () => {
           display: 'flex',
           flexDirection: 'column',
         }}>
-        <EmailsListActionsContainer />
+        <EmailsListActionsContainer /> */}
 
-        <Box
-          sx={{
-            flex: 1,
-            overflow: 'scroll',
-            padding: '120px 28px 28px 28px',
-          }}>
-          <EmailMessEmpty />
-        </Box>
+      <Box
+        sx={{
+          flex: 1,
+          overflow: 'scroll',
+          padding: '120px 28px 28px 28px',
+        }}>
+        <EmailMessEmpty />
       </Box>
+      {/* </Box>
       <InformationBarEmpty
         isLoading={false}
         title="Information"
         isBorderBottom={true}
         sender={1}
-      />
+      /> */}
     </>
   );
 };

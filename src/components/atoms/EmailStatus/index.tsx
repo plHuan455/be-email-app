@@ -90,7 +90,7 @@ const EmailStatus: React.FC<EmailStatusProps> = ({ emailStatus, time }) => {
   if (emailStatus === 'reply' || emailStatus === 'replyAll')
     return (
       <Box
-        className={`p-1 absolute top-0 right-[20px] translate-y-3 text-white rounded-full text-[14px] font-medium flex items-center`}
+        className={`p-1 text-white rounded-full text-[14px] font-medium flex items-center self-start`}
         sx={{
           backgroundColor: mainEmailStatus.bgColor,
         }}>
@@ -102,7 +102,7 @@ const EmailStatus: React.FC<EmailStatusProps> = ({ emailStatus, time }) => {
   if (emailStatus !== 'sending')
     return (
       <Box
-        className={`absolute top-0 right-[20px] translate-y-3 text-white rounded-full py-1.5 px-3 text-[14px] font-medium flex items-center`}
+        className={`text-white rounded-full py-1.5 px-3 text-[14px] font-medium flex items-center self-start`}
         sx={{
           backgroundColor: mainEmailStatus.bgColor,
         }}>
@@ -115,7 +115,7 @@ const EmailStatus: React.FC<EmailStatusProps> = ({ emailStatus, time }) => {
 
   return (
     <Box
-      className={`absolute top-0 right-[20px] translate-y-3 text-white rounded-full py-1.5 px-3 text-[14px] font-medium flex items-center`}
+      className={`text-white rounded-full py-1.5 px-3 text-[14px] font-medium flex items-center self-start`}
       sx={{
         background: mainEmailStatus.bgColor,
       }}>

@@ -1,5 +1,8 @@
 import Icon from '@components/atoms/Icon';
 import IconButton from '@components/atoms/IconButton';
+import EmailsListActionsContainer from '@containers/EmailsListActionsContainer';
+import SidebarRightContainer from '@containers/SideBarRightContainer';
+import InformationBarEmpty from '@layouts/InformationBarEmpty';
 import {
   Box,
   Button,
@@ -17,7 +20,7 @@ const Content: React.FC<PropsWithChildren & GridProps> = ({
   ...gridProps
 }) => {
   return (
-    <Grid container height={'100%'} gap={8} {...gridProps}>
+    <Grid container height={'100%'} {...gridProps}>
       {children}
     </Grid>
   );
@@ -30,7 +33,17 @@ const Main: React.FC<
 > = ({ children, onClickAdd, headTitle }) => {
   return (
     <Grid item flex={1} className="w-full">
-      <Paper className="h-full pt-22.5 px-4 pl-8">
+      <Paper
+        sx={{
+          padding: 0,
+          flex: 1,
+          height: '100vh',
+          backgroundColor: '#EDEDF3',
+          borderTopLeftRadius: '65px',
+          overflow: 'hidden',
+          position: 'relative',
+          display: 'flex',
+        }}>
         <Box
           sx={(theme) => ({
             display: 'flex',
@@ -61,6 +74,70 @@ const Main: React.FC<
   );
 };
 
+const MainHaveActions: React.FC<
+  PropsWithChildren & {
+    isFull?: boolean;
+    headTitle?: string;
+    onClickAdd?: React.MouseEventHandler<HTMLButtonElement>;
+  }
+> = ({ children, isFull = false, headTitle, onClickAdd }) => {
+  return (
+    <Grid item flex={1} xs={12} md={isFull ? 12 : 10} className="w-full">
+      <Paper
+        sx={{
+          padding: 0,
+          flex: 1,
+          backgroundColor: '#EDEDF3',
+          borderTopLeftRadius: '65px',
+          overflow: 'hidden',
+          position: 'relative',
+          display: 'flex',
+        }}>
+        <Box
+          sx={{
+            flex: 1,
+            height: '100vh',
+            overflow: 'scroll',
+            position: 'relative',
+            display: 'flex',
+            flexDirection: 'column',
+          }}>
+          <EmailsListActionsContainer />
+          {headTitle && (
+            <Box
+              className="mt-[100px]"
+              sx={(theme) => ({
+                display: 'flex',
+                alignItems: 'center',
+                gap: theme.spacing(2),
+                marginBottom: theme.spacing(4),
+              })}>
+              {headTitle && (
+                <Typography
+                  className="text-[#B2B0EE] px-6"
+                  variant="h4"
+                  sx={{ fontWeight: 700 }}>
+                  {headTitle}
+                </Typography>
+              )}
+              {onClickAdd && (
+                <IconButton
+                  className="bg-transparent hover:bg-transparent"
+                  size="small"
+                  onClick={onClickAdd}>
+                  <Icon icon={'plus'} rawColor={'#827CFF'} width={16} height={16} />
+                </IconButton>
+              )}
+            </Box>
+          )}
+          {children}
+        </Box>
+        <SidebarRightContainer isBorderBottom={true} />
+      </Paper>
+    </Grid>
+  );
+};
+
 // Require query client to use react-query
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -72,20 +149,21 @@ const queryClient = new QueryClient({
 
 const MainQueryClient: React.FC<
   PropsWithChildren & {
+    isFull?: boolean;
     headTitle?: string;
     onClickAdd?: React.MouseEventHandler<HTMLButtonElement>;
   }
-> = ({ children, onClickAdd, headTitle }) => {
+> = ({ children, isFull = false, onClickAdd, headTitle }) => {
   return (
-    <Main headTitle={headTitle} onClickAdd={onClickAdd}>
+    <MainHaveActions isFull={isFull} headTitle={headTitle} onClickAdd={onClickAdd}>
       <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    </Main>
+    </MainHaveActions>
   );
 };
 
 const ASide: React.FC<PropsWithChildren> = ({ children }) => {
   return (
-    <Grid xs={12} md={3}>
+    <Grid xs={12} md={2}>
       {children}
     </Grid>
   );
@@ -184,6 +262,7 @@ const GroupButton: React.FC<GroupButtonProps> = ({
 const Layout = {
   Content,
   Main,
+  MainHaveActions,
   ASide,
   Report,
   Chart,

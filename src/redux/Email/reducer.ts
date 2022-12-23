@@ -318,6 +318,9 @@ const EmailSlice = createSlice({
 
       return { ...state, EmailsList: [...state.EmailsList] };
     },
+    clearEmailsList(state) {
+      return { ...state, EmailsList: [] };
+    },
     setEmailsList(state, action) {
       return { ...state, EmailsList: action.payload };
     },
@@ -390,6 +393,7 @@ const EmailSlice = createSlice({
 });
 
 export const {
+  clearEmailsList,
   setWorkingEmail,
   setPrivateHashtag,
   setEmailStatus,

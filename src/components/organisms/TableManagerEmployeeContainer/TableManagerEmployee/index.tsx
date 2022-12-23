@@ -99,8 +99,8 @@ interface Props {
   onChangeLimit: (limit: number) => void;
 }
 
-const TableManagerEmployee: React.FC<Props> = ({ 
-  data, 
+const TableManagerEmployee: React.FC<Props> = ({
+  data,
   page,
   limit,
   total,
@@ -108,7 +108,7 @@ const TableManagerEmployee: React.FC<Props> = ({
   onDelete,
   onUpdate,
   onChangePage,
-  onChangeLimit 
+  onChangeLimit,
 }) => {
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows = limit - data.length;
@@ -128,13 +128,13 @@ const TableManagerEmployee: React.FC<Props> = ({
 
   const handleDelete = (id: number) => {
     if (onDelete) {
-      onDelete(id)
+      onDelete(id);
     }
-  }
+  };
 
   const handleUpdate = (id: number) => {
     if (onUpdate) onUpdate(id);
-  }
+  };
 
   return (
     <>
@@ -151,7 +151,9 @@ const TableManagerEmployee: React.FC<Props> = ({
             </TableRow>
             <TableRow>
               <TableCell align="left">Avatar</TableCell>
-              <TableCell align="left">Name</TableCell>
+              <TableCell align="left">First Name</TableCell>
+              <TableCell align="left">Last Name</TableCell>
+              <TableCell align="left">Identity</TableCell>
               <TableCell align="left">Email</TableCell>
               <TableCell align="left">Position</TableCell>
               <TableCell align="left">Role</TableCell>
@@ -162,61 +164,72 @@ const TableManagerEmployee: React.FC<Props> = ({
             {isLoading && (
               <TableRow>
                 <TableCell align="center" colSpan={6} height={53 * limit}>
-                  <Loading isLoading size='xs'/>
+                  <Loading isLoading size="xs" />
                 </TableCell>
               </TableRow>
             )}
-            {
-              data.length === 0 && !isLoading && (
+            {data.length === 0 && !isLoading && (
               <TableRow>
-                <TableCell align="center" colSpan={6} height={53 * limit} sx={{color: 'rgb(148 148 148 / 87%)'}}>
+                <TableCell
+                  align="center"
+                  colSpan={6}
+                  height={53 * limit}
+                  sx={{ color: 'rgb(148 148 148 / 87%)' }}>
                   There is no employee
                 </TableCell>
               </TableRow>
             )}
-            {!isLoading && data.map((row, index) => (
-              <TableRow
-                className={`managerRow ${row.role === 'Blocked' && 'blocked'}`}
-                key={index}>
-                <TableCell
-                  className="managerAvatar"
-                  style={{ width: 50 }}
-                  component="th"
-                  scope="row">
-                  <SingleAvatar
-                    src={row.avatar}
-                    abbreviations={row.getAbbreviations()}
-                    isAdminRole={row.role === 'ADMIN'}
-                  />
-                </TableCell>
-                <TableCell className="managerName" align="left">
-                  {row.name}
-                </TableCell>
-                <TableCell style={{ width: 400, color: '#778397' }} align="left">
-                  {row.dissectionMail()}
-                </TableCell>
-                <TableCell style={{ width: 200 }} align="left">
-                  {row.position}
-                </TableCell>
-                <TableCell style={{ width: 100 }} align="left">
-                  {row.role}
-                </TableCell>
-                <TableCell align="center">
-                  <TableActionsMenu
-                    sx={{ maxWidth: rem(52), minWidth: rem(52) }}
-                    options={[{ value: 0, label: 'Update', icon: <UpdateIcon /> }, { value: 1, label: 'Delete', icon: <DeleteIcon /> }]}
-                    onItemClick={(value) => {
-                      if (value === 0) {
-                        handleUpdate(row.id);
-                      }
-                      if (value === 1) {
-                        handleDelete(row.id);
-                      }
-                    }}
-                  />
-                </TableCell>
-              </TableRow>
-            ))}
+            {!isLoading &&
+              data.map((row, index) => (
+                <TableRow
+                  className={`managerRow ${row.role === 'Blocked' && 'blocked'}`}
+                  key={index}>
+                  <TableCell
+                    className="managerAvatar"
+                    style={{ width: 50 }}
+                    component="th"
+                    scope="row">
+                    <SingleAvatar
+                      src={row.avatar}
+                      abbreviations={row.getAbbreviations()}
+                      isAdminRole={row.role.toUpperCase() === 'ADMIN'}
+                    />
+                  </TableCell>
+                  <TableCell className="managerName" align="left">
+                    {row.firstName}
+                  </TableCell>
+                  <TableCell className="managerName" align="left">
+                    {row.lastName}
+                  </TableCell>
+                  <TableCell className="managerName" align="left">
+                    {row.identity}
+                  </TableCell>
+                  <TableCell style={{ color: '#778397' }} align="left">
+                    {row.dissectionMail()}
+                  </TableCell>
+                  <TableCell align="left">{row.position}</TableCell>
+                  <TableCell style={{ width: 100 }} align="left">
+                    {row.role}
+                  </TableCell>
+                  <TableCell align="center">
+                    <TableActionsMenu
+                      sx={{ maxWidth: rem(52), minWidth: rem(52) }}
+                      options={[
+                        { value: 0, label: 'Update', icon: <UpdateIcon /> },
+                        { value: 1, label: 'Delete', icon: <DeleteIcon /> },
+                      ]}
+                      onItemClick={(value) => {
+                        if (value === 0) {
+                          handleUpdate(row.id);
+                        }
+                        if (value === 1) {
+                          handleDelete(row.id);
+                        }
+                      }}
+                    />
+                  </TableCell>
+                </TableRow>
+              ))}
             {!isLoading && data.length !== 0 && emptyRows > 0 && (
               <TableRow style={{ height: 53 * emptyRows }}>
                 <TableCell colSpan={6} />

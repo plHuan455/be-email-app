@@ -37,7 +37,7 @@ const UserProfileUpdate: React.FC<Props> = ({
     <Box className="h-full relative userUpdateProfile">
       <Box className="absolute top-0 left-0 cursor-pointer">
         <span className="inline-block p-4" onClick={() => onBackToView()}>
-          <ArrowLeft width={24} height={24} />
+          <ArrowLeft width={24} height={24} color="#554CFF" />
         </span>
       </Box>
       <FormProvider {...method}>
