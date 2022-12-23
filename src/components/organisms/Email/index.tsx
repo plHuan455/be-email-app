@@ -1,5 +1,5 @@
 import { Box, Button } from '@mui/material';
-import React, { ReactNode, useCallback, useEffect, useState } from 'react';
+import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 
 import avatarImg from '@assets/images/avatars/avatar-2.jpg';
 import { Email, UserInfo } from './Interface';
@@ -142,6 +142,8 @@ const saveEmailList = [
 interface Props {}
 
 const Email: React.FC<Props> = () => {
+  const lastEmailMessRef = useRef<HTMLDivElement>(null);
+
   const [showHistory, setShowHistory] = useState<number | null>(null);
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [modal, setModal] = useState<ModalForm>({
@@ -156,7 +158,6 @@ const Email: React.FC<Props> = () => {
   const { EmailsList, isLoading } = useSelector((state: RootState) => state.email);
   const dispatch = useDispatch();
 
-  console.log(`TODO: call update hashtags when have api`);
   const { mutate: updateHashtagMutate, isLoading: isUpdateHashtagLoading } =
     useMutation({
       mutationKey: ['email-update-hashtag'],
@@ -167,6 +168,12 @@ const Email: React.FC<Props> = () => {
   useEffect(() => {
     if (!isEmpty(EmailsList)) setShowHistory(EmailsList[0].id);
   }, [EmailsList]);
+
+  useEffect(() => {
+    if(lastEmailMessRef.current) {
+      lastEmailMessRef.current.scrollIntoView()
+    }
+  }, [EmailsList])
 
   const checkIsReceiveEmail = useCallback(
     (id) => {
@@ -300,6 +307,7 @@ const Email: React.FC<Props> = () => {
       ) : (
         EmailsList.map((email, index) => (
           <EmailMessContainer
+            ref={EmailsList.length - 1 === index ? lastEmailMessRef : undefined}
             key={email.id}
             type={checkIsReceiveEmail(email.id) ? 'receive' : 'send'}
             userInfo={
