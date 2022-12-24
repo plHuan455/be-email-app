@@ -3,7 +3,7 @@ import EmailCompose2, {
   EmailComposeFields,
 } from '@components/templates/EmailCompose2';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import utc from 'dayjs/plugin/utc';
@@ -11,7 +11,6 @@ import draftToHtml from 'draftjs-to-html';
 import { convertToRaw } from 'draft-js';
 import dayjs, { Dayjs } from 'dayjs';
 import { useAppDispatch, useAppSelector } from '@redux/configureStore';
-import { addMinimizeEmail, HashtagTabs } from '@redux/Email/reducer';
 import { getEditorStateFormHtmlString } from '@utils/functions';
 import AlertDialog, { useAlertDialog } from '@components/molecules/AlertDialog';
 dayjs.extend(utc);
@@ -20,6 +19,7 @@ import { useNavigate } from 'react-router-dom';
 import useAutoStoreEmail from '../../hooks/Email/useAutoStoreEmail';
 import { UserInfo } from '@components/organisms/Email/Interface';
 import { InputContactBlock } from '@components/molecules/AutoCompleteReceive';
+import { EmailComposeContext } from '@containers/MainWrapperContainer';
 dayjs.extend(utc);
 
 export const backUpData: InputContactBlock[] = [
@@ -105,27 +105,14 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
   const queryClient = useQueryClient();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const minimizeEmailList = useAppSelector((state) => state.email.minimizeMailList);
-  const showMinimizeEmailId = useAppSelector(
-    (state) => state.email.showMinimizeEmailId,
-  );
 
-  const { onFieldsChange } = useAutoStoreEmail(5000);
+  const { onFieldsChange } = useAutoStoreEmail(3000);
 
   const [attachFiles, setAttachFiles] = useState<(File | undefined)[]>([]);
 
-  const method = useForm<EmailComposeFields>({
-    defaultValues: {
-      to: [],
-      cc: [],
-      bcc: [],
-      subject: '',
-      content: '',
-      attachFiles: { fileUrls: [], files: [] },
-      sendAt: null,
-      hashtags: [],
-    },
-  });
+  const {method, tabColor, onMinimizeEmailClick, onSendEmail} = useContext(EmailComposeContext);
+
+  if(!method) return null;
 
   const [calendarValue, setCalendarValue] = useState<Dayjs | null>(
     dayjs(Date.now()),
@@ -137,159 +124,185 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
 
   const [isShowCalendarModal, setIsShowCalendarModal] = useState<boolean>(false);
 
-  const [tabBarColor, setTabBarColor] = useState<string>();
+  // const { mutate: deleteEmailMutate } = useMutation({
+  //   mutationKey: ['email-compose-delete-email'],
+  //   mutationFn: deleteEmail,
+  // });
 
-  const { mutate: deleteEmailMutate } = useMutation({
-    mutationKey: ['email-compose-delete-email'],
-    mutationFn: deleteEmail,
-  });
+  // const { mutate: submitEmailComposeMutate, isLoading: isEmailComposeSubmitting } =
+  //   useMutation({
+  //     mutationKey: ['email-compose-submit'],
+  //     mutationFn: sendEmail,
+  //     onSuccess: (res) => {
+  //       toast.success('Email have been sent');
+  //       if (workingEmail?.id !== undefined) {
+  //         deleteEmailMutate(String(workingEmail?.id));
+  //       }
+  //       if (res?.data?.user_id)
+  //         navigate(`/emails/catalog/pending/${res.data.user_id}`);
+  //       queryClient.invalidateQueries({ queryKey: ['get-all-email-status'] });
+  //       method.reset();
+  //     },
+  //   });
 
-  const { mutate: submitEmailComposeMutate, isLoading: isEmailComposeSubmitting } =
-    useMutation({
-      mutationKey: ['email-compose-submit'],
-      mutationFn: sendEmail,
-      onSuccess: (res) => {
-        toast.success('Email have been sent');
-        if (workingEmail.id !== undefined) {
-          deleteEmailMutate(workingEmail.id);
-        }
-        if (res?.data?.user_id)
-          navigate(`/emails/catalog/pending/${res.data.user_id}`);
-        queryClient.invalidateQueries({ queryKey: ['get-all-email-status'] });
-        method.reset();
-      },
-    });
+  // // AUTO CREATE OR UPDATE DRAFT
+  // method.watch((values, { name, type }) => {
+  //   onFieldsChange(values as EmailComposeFields, workingEmail?.id, workingEmail?.cacheId ?? Date.now());
+  // });
 
-  method.watch((values, { name, type }) => {
-    onFieldsChange(name, values as EmailComposeFields);
-  });
+  // useEffect(() => {
+  //   if (!showMinimizeEmailId) return;
+  //   const foundMinimizeEmail = minimizeEmailList.find(
+  //     (value) => value.id === showMinimizeEmailId,
+  //   );
+  //   if (foundMinimizeEmail) {
+  //     method.setValue('to', foundMinimizeEmail.to ?? []);
+  //     method.setValue('cc', foundMinimizeEmail.cc ?? []);
+  //     method.setValue('bcc', foundMinimizeEmail.bcc ?? []);
+  //     method.setValue('subject', foundMinimizeEmail.subject ?? '');
+  //     method.setValue(
+  //       'content',
+  //       foundMinimizeEmail.content
+  //         ? getEditorStateFormHtmlString(foundMinimizeEmail.content ?? '')
+  //         : '',
+  //     );
+  //     method.setValue('sendAt', foundMinimizeEmail.sendAt ?? '');
+  //     method.setValue(
+  //       'attachFiles',
+  //       foundMinimizeEmail.attachFiles ?? { files: [], fileUrls: [] },
+  //     );
+  //     method.setValue('hashtags', foundMinimizeEmail?.hashtags ?? []);
+  //     setTabBarColor(foundMinimizeEmail?.color);
+  //   }
+  // }, [showMinimizeEmailId, minimizeEmailList, method]);
 
-  useEffect(() => {
-    if (!showMinimizeEmailId) return;
-    const foundMinimizeEmail = minimizeEmailList.find(
-      (value) => value.id === showMinimizeEmailId,
-    );
-    if (foundMinimizeEmail) {
-      method.setValue('to', foundMinimizeEmail.to ?? []);
-      method.setValue('cc', foundMinimizeEmail.cc ?? []);
-      method.setValue('bcc', foundMinimizeEmail.bcc ?? []);
-      method.setValue('subject', foundMinimizeEmail.subject ?? '');
-      method.setValue(
-        'content',
-        foundMinimizeEmail.content
-          ? getEditorStateFormHtmlString(foundMinimizeEmail.content ?? '')
-          : '',
-      );
-      method.setValue('sendAt', foundMinimizeEmail.sendAt ?? '');
-      method.setValue(
-        'attachFiles',
-        foundMinimizeEmail.attachFiles ?? { files: [], fileUrls: [] },
-      );
-      method.setValue('hashtags', foundMinimizeEmail?.hashtags ?? []);
-      setTabBarColor(foundMinimizeEmail?.color);
-    }
-  }, [showMinimizeEmailId, minimizeEmailList, method]);
+  // useEffect(() => {
+  //   if (showMinimizeEmailId === undefined) {
+  //     method.reset();
+  //     setTabBarColor(undefined);
+  //   }
+  // }, [showMinimizeEmailId, method]);
 
-  useEffect(() => {
-    if (showMinimizeEmailId === undefined) {
-      method.reset();
-      setTabBarColor(undefined);
-    }
-  }, [showMinimizeEmailId, method]);
-
-  // Convert data
+  // // Convert data
   const convertedHashtagOptions = useMemo(() => {
     return privateHashtags.map(value => ({name: value.title, value: value.value}))
   }, [privateHashtags])
 
-  // Handle functions
-  const handleMinimizeClick = (id?: string) => {
-    const values = method.getValues();
-    method.reset();
-    dispatch(
-      addMinimizeEmail({
-        ...values,
-        id: id ?? showMinimizeEmailId,
-        content: values.content
-          ? draftToHtml(convertToRaw(values.content.getCurrentContent()))
-          : '',
-        color: tabBarColor ? tabBarColor : MinimizeEmailColor.getColor(),
-        attachFiles: values.attachFiles,
-        fileUrls: values.attachFiles.fileUrls,
-      }),
-    );
-    setIsFullScreen(false);
-    setTabBarColor(undefined);
-  };
+  // // Handle functions
+  // const handleMinimizeClick = (id?: string) => {
+  //   if(minimizeEmailList.length > 2) {
+  //     toast.error('The minimized email limit is two');
+  //     return;
+  //   }
+
+  //   const values = method.getValues();
+  //   const cacheId = Date.now();
+  //   method.reset();
+
+  //   const newValue = {
+  //     ...values,
+  //     id: showMinimizeEmailId === undefined ? cacheId : showMinimizeEmailId,
+  //     content: values.content
+  //       ? draftToHtml(convertToRaw(values.content.getCurrentContent()))
+  //       : '',
+  //     color: tabBarColor ? tabBarColor : MinimizeEmailColor.getColor(),
+  //     attachFiles: values.attachFiles,
+  //     fileUrls: values.attachFiles.fileUrls,
+  //     cacheId: showMinimizeEmailId === undefined ? cacheId : showMinimizeEmailId
+  //   }
+  //   if(showMinimizeEmailId === undefined) {
+  //     dispatch(addMinimizeEmail(newValue));
+  //   }
+  //   else {
+  //     dispatch(updateMinimizeEmail({id: showMinimizeEmailId, value: newValue}))
+  //   }
+
+  //   onFieldsChange(values, showMinimizeEmailId, showMinimizeEmailId === undefined ? cacheId : undefined );
+
+  //   setIsFullScreen(false);
+  //   setTabBarColor(undefined);
+
+  //   dispatch(setShowMinimizeEmail(undefined));
+  //   dispatch(setWorkingEmail(undefined))
+
+  // };
+
+  // const handleSubmit = (values: EmailComposeFields) => {
+
+  //   if (
+  //     values.to.length === 0 &&
+  //     values.cc.length === 0 &&
+  //     values.bcc.length === 0
+  //   ) {
+  //     setAlertData("Can't send email", "Can't send email without receiver", () => {
+  //       onAlertDialogClose();
+  //     });
+  //     return;
+  //   }
+
+  //   console.log({
+  //     email: {
+  //       subject: values.subject,
+  //       to: values.to.reduce((curr: string[], next) => {
+  //         const mails = next.employeesList.map((employee) => employee.mail);
+
+  //         return [...curr, ...mails];
+  //       }, []),
+  //       text_html:
+  //         values.content === ''
+  //           ? ''
+  //           : draftToHtml(convertToRaw(values.content.getCurrentContent())),
+  //       bcc: values.bcc.map((value) => value.mail),
+  //       cc: values.cc.map((value) => value.mail),
+  //       attachs: (
+  //         values.attachFiles.fileUrls.filter(
+  //           (value) => value !== undefined,
+  //         ) as string[]
+  //       ).map((value) => ({ path: value })),
+  //       from: currentUserEmail ? currentUserEmail : '',
+  //     },
+  //     send_at: selectedDate
+  //       ? dayjs.utc(selectedDate).toISOString() ?? dayjs.utc().toISOString()
+  //       : dayjs.utc(selectedDate).toISOString(),
+  //     tags: values.hashtags.map(value => value.value)
+  //   });
+
+  //   submitEmailComposeMutate({
+  //     email: {
+  //       subject: values.subject,
+  //       to: values.to.reduce((curr: string[], next) => {
+  //         const mails = next.employeesList.map((employee) => employee.mail);
+
+  //         return [...curr, ...mails];
+  //       }, []),
+  //       text_html:
+  //         values.content === ''
+  //           ? ''
+  //           : draftToHtml(convertToRaw(values.content.getCurrentContent())),
+  //       bcc: values.bcc.map((value) => value.mail),
+  //       cc: values.cc.map((value) => value.mail),
+  //       attachs: (
+  //         values.attachFiles.fileUrls.filter(
+  //           (value) => value !== undefined,
+  //         ) as string[]
+  //       ).map((value) => ({ path: value })),
+  //       from: currentUserEmail ? currentUserEmail : '',
+  //     },
+  //     send_at: selectedDate
+  //       ? dayjs.utc(selectedDate).toISOString() ?? dayjs.utc().toISOString()
+  //       : dayjs.utc(selectedDate).toISOString(),
+  //     tags: values.hashtags.map(value => value.value)
+  //   });
+  // };
+
+
+  const handleMinimizeEmailClick = () => {
+    onMinimizeEmailClick();
+  }
 
   const handleSubmit = (values: EmailComposeFields) => {
-
-    if (
-      values.to.length === 0 &&
-      values.cc.length === 0 &&
-      values.bcc.length === 0
-    ) {
-      setAlertData("Can't send email", "Can't send email without receiver", () => {
-        onAlertDialogClose();
-      });
-      return;
-    }
-
-    console.log({
-      email: {
-        subject: values.subject,
-        to: values.to.reduce((curr: string[], next) => {
-          const mails = next.employeesList.map((employee) => employee.mail);
-
-          return [...curr, ...mails];
-        }, []),
-        text_html:
-          values.content === ''
-            ? ''
-            : draftToHtml(convertToRaw(values.content.getCurrentContent())),
-        bcc: values.bcc.map((value) => value.mail),
-        cc: values.cc.map((value) => value.mail),
-        attachs: (
-          values.attachFiles.fileUrls.filter(
-            (value) => value !== undefined,
-          ) as string[]
-        ).map((value) => ({ path: value })),
-        from: currentUserEmail ? currentUserEmail : '',
-      },
-      send_at: selectedDate
-        ? dayjs.utc(selectedDate).toISOString() ?? dayjs.utc().toISOString()
-        : dayjs.utc(selectedDate).toISOString(),
-      tags: values.hashtags.map(value => value.value)
-    });
-
-    submitEmailComposeMutate({
-      email: {
-        subject: values.subject,
-        to: values.to.reduce((curr: string[], next) => {
-          const mails = next.employeesList.map((employee) => employee.mail);
-
-          return [...curr, ...mails];
-        }, []),
-        text_html:
-          values.content === ''
-            ? ''
-            : draftToHtml(convertToRaw(values.content.getCurrentContent())),
-        bcc: values.bcc.map((value) => value.mail),
-        cc: values.cc.map((value) => value.mail),
-        attachs: (
-          values.attachFiles.fileUrls.filter(
-            (value) => value !== undefined,
-          ) as string[]
-        ).map((value) => ({ path: value })),
-        from: currentUserEmail ? currentUserEmail : '',
-        hashtags: values.hashtags.map((value) => value.value),
-      },
-      send_at: selectedDate
-        ? dayjs.utc(selectedDate).toISOString() ?? dayjs.utc().toISOString()
-        : dayjs.utc(selectedDate).toISOString(),
-      tags: values.hashtags.map(value => value.value)
-    });
-  };
+    onSendEmail({...values, sendAt: selectedDate})
+  }
 
   return (
     <>
@@ -302,10 +315,10 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
         isOpenCalendarSelect={isOpenCalendarSelect}
         hashtagOptions={convertedHashtagOptions}
         selectedDate={selectedDate}
-        tabBarColor={tabBarColor}
+        tabBarColor={tabColor}
         calendarValue={calendarValue}
         onMaximizeClick={() => setIsFullScreen((preState) => !preState)}
-        onMinimizeClick={handleMinimizeClick}
+        onMinimizeClick={handleMinimizeEmailClick}
         onCCButtonClick={() => setIsShowCCForm((preState) => !preState)}
         onCloseCalendarModal={() => setIsShowCalendarModal(false)}
         onChangeCalendarValue={(value) => setCalendarValue(value)}

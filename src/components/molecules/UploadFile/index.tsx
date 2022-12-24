@@ -37,8 +37,6 @@ const UploadFile: React.FC<Props> = ({
     return res;
   });
 
-  console.log(customData);
-
   const { isLoading: isUploadingFile } = useQuery({
     queryKey: [`upload-file-${data.name}`, data],
     queryFn: async () => {

@@ -8,7 +8,8 @@ import { InputContactBlock } from '@components/molecules/AutoCompleteReceive';
 import { HashtagTabs } from '@redux/Email/reducer';
 
 export interface MinimizeEmailTypes {
-  id?: string;
+  id?: number;
+  cacheId?: number;
   to?: InputContactBlock[];
   cc?: UserInfo[];
   bcc?: UserInfo[];
@@ -38,7 +39,7 @@ const MinimizeEmailList: React.FC<MinimizeEmailListProps> = ({
       <AnimatePresence>
         {data.map((value, index) => (
           <motion.div
-            key={`minimize-email-list-${value.id}`}
+            key={`minimize-email-list-${value.id || value.cacheId}`}
             className="t-minimizeEmailList_itemWrapper"
             style={{ position: 'relative', marginLeft: rem(5), height: rem(46) }}
             initial={{ width: 0, marginLeft: 0 }}

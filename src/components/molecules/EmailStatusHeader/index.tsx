@@ -1,10 +1,20 @@
 import Plus from '@assets/icon/Plus';
 import CustomButton from '@components/atoms/CustomButton';
 import Input from '@components/atoms/Input';
-import { Box, Typography } from '@mui/material';
+import { EmailComposeContext } from '@containers/MainWrapperContainer';
+import {
+  Badge,
+  Box,
+  ButtonBase,
+  colors,
+  Grid,
+  Menu,
+  MenuItem,
+  Tooltip,
+  Typography,
+} from '@mui/material';
 import { useAppDispatch } from '@redux/configureStore';
-import { setShowMinimizeEmail } from '@redux/Email/reducer';
-import React, { useCallback } from 'react';
+import React, { useCallback, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 type Props = {
@@ -22,13 +32,12 @@ const EmailStatusHeader = ({
   color,
   bgButtonColor,
 }: Props) => {
-  const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const {onNewComposeClick} = useContext(EmailComposeContext);
 
   const handleComposeEmail = useCallback(() => {
-    dispatch(setShowMinimizeEmail(undefined));
-    navigate('/emails/compose');
-  }, []);
+    onNewComposeClick();
+  }, [onNewComposeClick]);
 
   return (
     <Box sx={{ width: '100%' }}>

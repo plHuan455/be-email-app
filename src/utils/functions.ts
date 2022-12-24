@@ -8,11 +8,12 @@ export const convertPathImage = (image?: string) => {
 };
 
 export const getHtmlStringFromEditorState = (data: any) => {
-  if(data === '' || data === undefined) return '';
+  if(data === '' || data === undefined) return '<p></p>';
   return draftToHtml(convertToRaw(data.getCurrentContent()))
 }
 
-export const getEditorStateFormHtmlString = (data: string) => {
+export const getEditorStateFormHtmlString = (data?: string) => {
+  if(!data) return EditorState.createEmpty();
   const blocksFromHTML = convertFromHTML(data);
   const state = ContentState.createFromBlockArray(
     blocksFromHTML.contentBlocks,
@@ -20,7 +21,6 @@ export const getEditorStateFormHtmlString = (data: string) => {
   );
   return EditorState.createWithContent(state)
 }
-
 export const addHttp = (url: string) => {
   if (url.match(/^https:\/\/|^http:\/\//g)) 
      return url;
