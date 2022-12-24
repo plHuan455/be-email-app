@@ -4,6 +4,8 @@ import EmailMainWrapper from '@layouts/EmailMainWrapper';
 import { useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { Box } from '@mui/material';
+import Layout from '@layouts/Layout';
+import SettingLeftContainer from '@containers/SettingLeftSideBarContainer';
 
 const Manager = () => {
   const queryClient = new QueryClient({
@@ -23,23 +25,22 @@ const Manager = () => {
   const [getFcmToken, setFcmToken] = useState<string>('');
 
   return (
-    <div className="w-full flex items-center content-around">
-      <QueryClientProvider client={queryClient}>
-        <Box
-          sx={{
-            flex: 1,
-            height: '100vh',
-            padding: '40px 28px 28px 28px',
-            backgroundColor: '#EDEDF3',
-            borderTopLeftRadius: '65px',
-            overflow: 'scroll',
-          }}>
-          <Outlet />
-        </Box>
-
-        {/* <EmailMainWrapper /> */}
-      </QueryClientProvider>
-    </div>
+    <Layout.Content>
+      {/* <Box
+        sx={{
+          flex: 1,
+          height: '100vh',
+          padding: '40px 28px 28px 28px',
+          backgroundColor: '#EDEDF3',
+          borderTopLeftRadius: '65px',
+          overflow: 'scroll',
+        }}> */}
+      <Layout.ASide>
+        <SettingLeftContainer />
+      </Layout.ASide>
+      <Outlet />
+      {/* </Box> */}
+    </Layout.Content>
   );
 };
 

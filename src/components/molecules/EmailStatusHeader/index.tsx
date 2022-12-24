@@ -1,23 +1,11 @@
 import Plus from '@assets/icon/Plus';
-import Search from '@assets/icon/Search';
 import CustomButton from '@components/atoms/CustomButton';
 import Input from '@components/atoms/Input';
-import {
-  Badge,
-  Box,
-  ButtonBase,
-  colors,
-  Grid,
-  Menu,
-  MenuItem,
-  Tooltip,
-  Typography,
-} from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { useAppDispatch } from '@redux/configureStore';
 import { setShowMinimizeEmail } from '@redux/Email/reducer';
 import React, { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import EmailNotify from '../EmailNotify';
 
 type Props = {
   title: string;
@@ -74,15 +62,17 @@ const EmailStatusHeader = ({
         </Box>
       </Box>
 
-      <Box className="py-2">
-        <Input
-          type="text"
-          inputMode="search"
-          placeHolder="Search email, name, department, keywords..."
-          isAccessControlInput={true}
-          fullWidth={true}
-        />
-      </Box>
+      {isSearch && (
+        <Box className="py-2">
+          <Input
+            type="text"
+            inputMode="search"
+            placeHolder="Search email, name, department, keywords..."
+            isAccessControlInput={true}
+            fullWidth={true}
+          />
+        </Box>
+      )}
     </Box>
   );
 };
