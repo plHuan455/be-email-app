@@ -1,4 +1,4 @@
-import { Avatar, Box, Button } from '@mui/material';
+import { Avatar, Box, Button, Skeleton } from '@mui/material';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import styles from './styles.module.scss';
 import AttachFiles from '@components/atoms/AttachFiles';
@@ -57,27 +57,35 @@ const EmailMessEmpty: React.FC<Props> = ({ isLoading = false }) => {
         {/* Header */}
         <Box
           className={`cursor-pointer pb-6 bg-violet-200 py-4 rounded-bl-[36px] rounded-tr-[36px] relative`}>
-          <AnimationTimeline
-            isActiveAnimation={isLoading}
+          <Skeleton
+            animation={isLoading ? 'pulse' : false}
+            variant="rounded"
             className="rounded-md my-2 h-[28px]"
           />
           {/* Email Send To */}
-          <AnimationTimeline
-            isActiveAnimation={isLoading}
+          <Skeleton
+            animation={isLoading ? 'pulse' : false}
+            variant="rounded"
             className="rounded-md my-2 h-[28px]"
           />
           {/* <EmailStatus emailStatus={'pending'} /> */}
         </Box>
         {/* Email Content */}
         <Box className="py-9">
-          <AnimationTimeline
-            isActiveAnimation={isLoading}
+          <Skeleton
+            animation={isLoading ? 'pulse' : false}
+            variant="rounded"
             className="rounded-md h-[200px]"
           />
           <Box>
-            <h3 className="my-4 font-semibold">Files</h3>
-            <AnimationTimeline
-              isActiveAnimation={isLoading}
+            <Skeleton
+              animation={isLoading ? 'pulse' : false}
+              variant="text"
+              className="text-[26px]"
+            />
+            <Skeleton
+              animation={isLoading ? 'pulse' : false}
+              variant="rounded"
               className="rounded-md h-[120px]"
             />
           </Box>

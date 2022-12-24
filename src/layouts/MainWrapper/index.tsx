@@ -23,7 +23,6 @@ import {
   setShowMinimizeEmail,
 } from '@redux/Email/reducer';
 import { fetchToken, onMessageListener } from '../../messaging_init_in_sw';
-import { setIsShowEmailInfo } from '@redux/Global/reducer';
 import { deleteDeviceKey } from '@api/deviceKey';
 import { unShiftNotificationList } from '@redux/Notify/reducer';
 import { IS_EMPLOYEE_ROLE } from '@constants/localStore';
@@ -121,14 +120,6 @@ function MainWrapper() {
     return () => setOpenMobileSideBar(value);
   };
 
-  useEffect(() => {
-    const isShowEmailInfomation = JSON.parse(
-      localStorage.getItem('isShow_Email_Information_Bar') || 'false',
-    );
-
-    dispatch(setIsShowEmailInfo(isShowEmailInfomation));
-  }, []);
-
   const handleLogout = () => {
     localStorage.removeItem('token');
     auth.signout(() => {
@@ -159,6 +150,12 @@ function MainWrapper() {
       handleClick: handleChangePage('/profile'),
     },
     {
+      id: 1,
+      label: 'Signature',
+      path: '/signature',
+      handleClick: handleChangePage('/signature'),
+    },
+    {
       id: 2,
       label: 'Change Password',
       path: '/change-password',
@@ -176,20 +173,20 @@ function MainWrapper() {
     {
       id: 0,
       label: 'Profile',
-      path: '/profile',
-      handleClick: handleChangePage('/profile'),
+      path: '/manager/profile',
+      handleClick: handleChangePage('/manager/profile'),
     },
     {
       id: 1,
       label: 'Setting',
       path: '/setting',
-      handleClick: handleChangePage('/manager/setting'),
+      handleClick: handleChangePage('/manager/profile'),
     },
     {
       id: 2,
       label: 'Change Password',
       path: '/change-password',
-      handleClick: handleChangePage('/change-password'),
+      handleClick: handleChangePage('/manager/change-password'),
     },
     {
       id: 3,
@@ -199,7 +196,7 @@ function MainWrapper() {
     },
   ];
 
-  const settings: Setting[] = IS_EMPLOYEE_ROLE ? settingsEmployee : settingManager;
+  const settings: Setting[] = settingManager;
 
   const convertedMinimizeEmailList = useMemo(() => {
     return minimizeEmails.filter((value) => value.id !== showMinimizeEmailId);

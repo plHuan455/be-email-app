@@ -17,6 +17,7 @@ import { updateUserProfileSchema } from '@utils/schemas';
 import { uploadFile } from '@api/uploadFile';
 import { toast } from 'react-toastify';
 import { AddEmployeeField } from '@components/organisms/TableManagerEmployeeContainer/AddEmployeeModal';
+import Layout from '@layouts/Layout';
 
 const staticData: {
   avatar: string;
@@ -127,7 +128,7 @@ const UserProfileContainer = () => {
   };
 
   const onChangePassword = (e) => {
-    navigate('/change-password');
+    navigate('/manager/change-password');
   };
 
   const handleSubmitUpdateForm = (values: AuthUpdate) => {
@@ -140,15 +141,16 @@ const UserProfileContainer = () => {
   if (isLoadingUserProfile) return <Loading isLoading={true} />;
 
   return (
-    <Box
-      sx={{
-        height: '100vh',
-        padding: '80px 28px 28px 28px',
-        backgroundColor: '#EDEDF3',
-        borderTopLeftRadius: '65px',
-        overflow: 'scroll',
-      }}>
-      <Box className="flex flex-col rounded-xl bg-white h-full p-16 shadow-md">
+    // <Box
+    //   sx={{
+    //     height: '100vh',
+    //     padding: '80px 28px 28px 28px',
+    //     backgroundColor: '#EDEDF3',
+    //     borderTopLeftRadius: '65px',
+    //     overflow: 'scroll',
+    //   }}>
+    <Layout.MainHaveActions>
+      <Box className="flex flex-col rounded-xl mt-8 h-full p-16 shadow-md">
         <Box className="flex-1">
           {dataGetUserProfile &&
             (isViewStatus ? (
@@ -171,7 +173,8 @@ const UserProfileContainer = () => {
           </Box>
         )}
       </Box>
-    </Box>
+    </Layout.MainHaveActions>
+    // </Box>
   );
 };
 

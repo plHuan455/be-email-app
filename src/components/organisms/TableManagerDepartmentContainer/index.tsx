@@ -36,8 +36,8 @@ const headerTabData = [
 ];
 
 interface TableManagerDepartmentContainerProps {
+  onCloseAddDepartmentModal: () => void;
   isShowAddDepartmentModal?: boolean;
-  onCloseAddDepartmentModal?: () => void;
 }
 
 const createDepartmentSchema = yup
@@ -98,7 +98,8 @@ const TableManagerDepartmentContainer: React.FC<
     defaultValues: {
       id: -1,
       avatar: undefined,
-      username: '',
+      firstName: '',
+      lastName: '',
       password: '',
       phone: '',
       department: '',
@@ -118,6 +119,7 @@ const TableManagerDepartmentContainer: React.FC<
           queryKey: ['table-manager-department-get-departments'],
         });
         toast.success('Department is created');
+        onCloseAddDepartmentModal();
       },
       onError: () => {
         toast.error('Create department failed');
@@ -130,10 +132,12 @@ const TableManagerDepartmentContainer: React.FC<
       mutationFn: ({ id, params }: { id: number; params: UpdateDepartmentFields }) =>
         updateDepartment(id, params),
       onSuccess: (res) => {
+        console.log('test');
         queryClient.invalidateQueries({
           queryKey: ['table-manager-department-get-departments'],
         });
         toast.success('Department is updated');
+        setIsShowUpdateDepartment(false);
       },
       onError: (err: any) => {
         toast.error(err?.data?.message ?? 'Update department failed');
@@ -217,7 +221,8 @@ const TableManagerDepartmentContainer: React.FC<
       if (data) {
         updateEmployeeMethod.setValue('id', data.user_id);
         updateEmployeeMethod.setValue('avatar', data.avatar);
-        updateEmployeeMethod.setValue('username', data.user_name);
+        updateEmployeeMethod.setValue('firstName', data.first_name);
+        updateEmployeeMethod.setValue('lastName', data.last_name);
         updateEmployeeMethod.setValue('password', data.password);
         updateEmployeeMethod.setValue('phone', data.phone_number);
         updateEmployeeMethod.setValue('department', String(data.department_id));
@@ -258,7 +263,9 @@ const TableManagerDepartmentContainer: React.FC<
               new Manager(
                 user.user_id,
                 user.avatar,
-                user.user_name,
+                user.first_name,
+                user.last_name,
+                user.identity,
                 user.email,
                 user.position,
                 roleHash[user.role_id] ?? '',
@@ -349,7 +356,7 @@ const TableManagerDepartmentContainer: React.FC<
   };
 
   return (
-    <div>
+    <div className="px-6">
       <TableHeader isHaveActions={false}>
         <Tabs className="tableManagerTabs" value={value} onChange={handleChange}>
           {headerTabData.map((item) => (

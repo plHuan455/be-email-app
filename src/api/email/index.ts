@@ -32,6 +32,12 @@ export interface CreateEmailParam {
   tags?: string[];
 }
 
+export interface attachs {
+  id: number;
+  email_id: number;
+  path: string;
+}
+
 export interface EmailResponse {
   id: number;
   user_id: string;
@@ -50,11 +56,7 @@ export interface EmailResponse {
     text_html: string;
     content: string;
     attachFiles?: AttachFile[];
-    attachs?: {
-      id: number;
-      email_id: number;
-      path: string;
-    }[];
+    attachs?: attachs[];
     tags: [];
   };
   tags: string[];
