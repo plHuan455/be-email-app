@@ -60,7 +60,9 @@ function LoginContainer() {
       // Change 'asdasd to res.data
       auth.signin({}, res.data, async () => {
         if (res.message === 'Login successful') {
-          const currentUser = await getUserWithEmail(8);
+          const { user_id } = res;
+          localStorage.setItem('current_id', `${user_id}`);
+          const currentUser = await getUserWithEmail(user_id ? user_id : 0);
           localStorage.setItem(
             'current_user_name',
             `${currentUser.data.first_name} ${currentUser.data.last_name}`,
@@ -68,7 +70,6 @@ function LoginContainer() {
           localStorage.setItem('current_user_avt', currentUser.data.avatar);
           // set current_email to 'email
           localStorage.setItem('current_email', email);
-          localStorage.setItem('current_id', `${currentUser.data.id}`);
           localStorage.setItem('current_role', currentUser.data.role);
           toast.success('Đăng nhập thành công!');
 

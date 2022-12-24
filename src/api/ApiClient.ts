@@ -13,6 +13,7 @@ export interface ApiResponse<T = any> {
 export interface CuSAxiosResponse<T> extends AxiosResponse {
   message?: string;
   total?: number;
+  user_id?: number;
 }
 
 const url = process.env.EMAIL_APP_API_BASE_URL
