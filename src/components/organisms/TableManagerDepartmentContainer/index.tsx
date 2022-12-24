@@ -29,7 +29,7 @@ import AlertDialog, { useAlertDialog } from '@components/molecules/AlertDialog';
 import UpdateDepartmentModal, {
   UpdateDepartmentFields,
 } from './UpdateDepartmentModal';
-import { AddPositionField } from './AddPositionModal';
+import AddPositionModal, { AddPositionField } from './AddPositionModal';
 
 const headerTabData = [
   { id: 0, name: 'Department', url: '/manager/department/department' },
@@ -412,6 +412,13 @@ const TableManagerDepartmentContainer: React.FC<
           createDepartmentMethod.reset();
         }}
       />
+
+      {/* <AddPositionModal
+        isFormLoading={true}
+        isOpen={false}
+        method={createPositionMethod}
+        title=""
+      /> */}
 
       <UpdateDepartmentModal
         isOpen={isShowUpdateDepartment}
