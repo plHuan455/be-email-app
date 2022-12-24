@@ -29,6 +29,7 @@ import AlertDialog, { useAlertDialog } from '@components/molecules/AlertDialog';
 import UpdateDepartmentModal, {
   UpdateDepartmentFields,
 } from './UpdateDepartmentModal';
+import { AddPositionField } from './AddPositionModal';
 
 const headerTabData = [
   { id: 0, name: 'Department', url: '/manager/department/department' },
@@ -48,6 +49,10 @@ const createDepartmentSchema = yup
     address: yup.string(),
   })
   .required();
+
+const createPositionSchema = yup.object({
+  name: yup.string().required(),
+});
 
 const TableManagerDepartmentContainer: React.FC<
   TableManagerDepartmentContainerProps
@@ -87,6 +92,13 @@ const TableManagerDepartmentContainer: React.FC<
       address: '',
     },
     resolver: yupResolver(createDepartmentSchema),
+  });
+
+  const createPositionMethod = useForm<AddPositionField>({
+    defaultValues: {
+      name: '',
+    },
+    resolver: yupResolver(createPositionSchema),
   });
 
   const updateDepartmentMethod = useForm<UpdateDepartmentFields>({

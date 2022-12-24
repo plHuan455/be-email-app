@@ -11,10 +11,10 @@ const ManagerEmployee = () => {
   const navigate = useNavigate();
   return (
     <Layout.MainQueryClient
+      isHaveSearch={true}
       headTitle={t('Employee')}
       onClickAdd={() => navigate('add')}>
       <div className="px-6 flex flex-col flex-1 overflow-hidden">
-        <SearchStartWithIcon />
         <TableManagerEmployeeContainer />
       </div>
     </Layout.MainQueryClient>
