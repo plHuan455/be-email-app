@@ -72,8 +72,6 @@ const AutoCompleteReceive: React.FC<Props> = ({
     }
   };
 
-  console.log(tempNewUserInfo);
-
   const handleDeleteReceiver = (cb, index) => {
     return (e) => {
       if (!isReadOnly) {

@@ -6,14 +6,8 @@ import {
 } from '@api/email';
 import utc from 'dayjs/plugin/utc';
 import { EmailComposeFields } from '@components/templates/EmailCompose2';
-import { MinimizeEmailTypes } from '@components/templates/MinimizeEmailList';
-import { emailData } from '@layouts/EmailStatusBar';
 import { useAppDispatch, useAppSelector } from '@redux/configureStore';
-import { setWorkingEmail } from '@redux/Email/reducer';
 import { useMutation } from '@tanstack/react-query';
-import { getHtmlStringFromEditorState } from '@utils/functions';
-import dayjs from 'dayjs';
-import { isEmpty } from 'lodash';
 import { useEffect, useRef, useState } from 'react';
 import { EmailUpdateQuery } from '@api/email/interface';
 
@@ -41,7 +35,7 @@ const useAutoStoreEmail = (delayTime: number = 5000) => {
   const { mutate: updateEmailMutate, isLoading: isUpdateEmailLoading } = useMutation(
     {
       mutationKey: ['use-auto-store-email-update-draft'],
-      mutationFn: (params: { id: number; data: EmailUpdateQuery }) =>
+      mutationFn: (params: { id: number; data: CreateEmailParam }) =>
         updateEmailWithQuery(params.id, params.data),
     },
   );
@@ -51,10 +45,6 @@ const useAutoStoreEmail = (delayTime: number = 5000) => {
     values: Partial<EmailComposeFields>,
   ) => {
     return;
-    if (handleTimeoutRef.current) clearTimeout(handleTimeoutRef.current);
-    handleTimeoutRef.current = setTimeout(() => {
-      dispatch(setWorkingEmail({ ...values }));
-    }, delayTime);
   };
 
   useEffect(() => {
