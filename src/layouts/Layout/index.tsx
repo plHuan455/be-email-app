@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { PropsWithChildren } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const Content: React.FC<PropsWithChildren & GridProps> = ({
   children,
@@ -81,6 +82,13 @@ const MainHaveActions: React.FC<
     onClickAdd?: React.MouseEventHandler<HTMLButtonElement>;
   }
 > = ({ children, isFull = false, headTitle, onClickAdd }) => {
+  // useLocation
+  const location = useLocation();
+  const pathName = location.pathname.toLowerCase();
+
+  const isShowInformationBtn =
+    pathName === '/emails' || pathName.startsWith('/emails/catalog');
+
   return (
     <Grid item flex={1} xs={12} md={isFull ? 12 : 10} className="w-full">
       <Paper
@@ -102,7 +110,7 @@ const MainHaveActions: React.FC<
             display: 'flex',
             flexDirection: 'column',
           }}>
-          <EmailsListActionsContainer />
+          <EmailsListActionsContainer isShowInformationBtn={isShowInformationBtn} />
           {headTitle && (
             <Box
               className="mt-[100px]"
@@ -132,7 +140,10 @@ const MainHaveActions: React.FC<
           )}
           {children}
         </Box>
-        <SidebarRightContainer isBorderBottom={true} />
+        <SidebarRightContainer
+          isShowInformationBtn={isShowInformationBtn}
+          isBorderBottom={true}
+        />
       </Paper>
     </Grid>
   );

@@ -54,7 +54,7 @@ const EmailTab: React.FC<Props> = ({
   };
 
   const handleChangeModalStatus = () => {
-    setModalStatus(false);
+    // setModalStatus(false);
     dispatch(setEmailsList([]));
     navigate('/');
   };
