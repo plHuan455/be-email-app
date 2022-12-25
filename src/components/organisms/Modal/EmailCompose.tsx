@@ -38,7 +38,8 @@ const EmailComposeModal: React.FC<EmailComposeModalProps> = ({
   };
 
   const handleDelete =
-    (userReceiveInfo: UserReceiveInfo) => (e: React.MouseEvent<Element, MouseEvent>) => {
+    (userReceiveInfo: UserReceiveInfo) =>
+    (e: React.MouseEvent<Element, MouseEvent>) => {
       userReceiveInfo.isChecked = false;
       userReceiveInfo.field = undefined;
       onChange && onChange(inputContactBlock);

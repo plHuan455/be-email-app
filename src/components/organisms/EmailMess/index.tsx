@@ -224,7 +224,7 @@ const EmailMess: React.FC<Props> = ({
       emailData.status.toUpperCase() === 'SENDING'
     )
       return (
-        <Box className="flex flex-wrap actions items-center py-4 justify-between">
+        <Box className="flex flex-wrap actions items-center py-4 justify-between bg-[#F1F1F6]">
           {_renderActionsPendingItem()}
         </Box>
       );
@@ -328,11 +328,11 @@ const EmailMess: React.FC<Props> = ({
       </Box>
       <Box
         sx={{ boxShadow: '0px 10px 23px -15px rgba(159,159,159,0.54)' }}
-        className={`flex-1 bg-white ${
+        className={`overflow-hidden flex-1 bg-white ${
           type === 'send'
             ? 'rounded-tl-[36px] rounded-br-[36px]'
             : 'rounded-tr-[36px] rounded-bl-[36px]'
-        } pb-4 ${styles.emailWrap} mb-8`}>
+        } ${styles.emailWrap} mb-8`}>
         {/* Header */}
         <Box
           className={`flex items-center justify-between cursor-pointer pb-6 bg-violet-200 py-4 ${
