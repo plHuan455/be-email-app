@@ -113,8 +113,15 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
       onSuccess: (res) => {
         navigate(`/emails/catalog/pending/${res.data.user_id}`);
         queryClient.invalidateQueries({ queryKey: ['get-all-email-status'] });
-        setShowMinimizeEmailId(undefined);
+        setShowMinimizeEmailId(preState => {
+          if(preState?.id !== undefined) {
+            deleteEmailMutate(String(preState.id));
+            dispatch(deleteMinimizeEmail({id: preState.id}));
+          }
+          return undefined
+        });
         method.reset();
+        setTabColor(undefined);
         clearTimeout(storeDraftTimeOutFunc.current);
         toast.success('Email has been sent')
       },
