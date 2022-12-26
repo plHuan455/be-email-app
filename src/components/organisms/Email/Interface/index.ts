@@ -24,6 +24,17 @@ export class UserInfo {
   }
 }
 
+export class UserReceiveInfo extends UserInfo {
+  isChecked: boolean;
+  field?: 'to' | 'cc' | 'bcc';
+
+  constructor(avatar: string, name: string, mail: string, isChecked: boolean) {
+    super(avatar, name, mail);
+    this.isChecked = isChecked;
+    // this.field = isChecked;
+  }
+}
+
 export interface File {
   name: string;
   type: string;

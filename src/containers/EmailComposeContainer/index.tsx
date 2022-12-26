@@ -17,42 +17,43 @@ dayjs.extend(utc);
 import { MinimizeEmailColor } from '@components/organisms/MinimizeEmail/interface';
 import { useNavigate } from 'react-router-dom';
 import useAutoStoreEmail from '../../hooks/Email/useAutoStoreEmail';
-import { UserInfo } from '@components/organisms/Email/Interface';
+import { UserInfo, UserReceiveInfo } from '@components/organisms/Email/Interface';
 import { InputContactBlock } from '@components/molecules/AutoCompleteReceive';
 import { EmailComposeContext } from '@containers/MainWrapperContainer';
+import { getDepartments } from '@api/deparment';
 dayjs.extend(utc);
 
 export const backUpData: InputContactBlock[] = [
   {
     contact_name: 'Phòng IT',
     employeesList: [
-      new UserInfo('', 'giang', 'giangz0009@gmail.com'),
-      new UserInfo('', 'huan', 'giangemployee2@notification.trade'),
-      new UserInfo('', 'quan', 'quan@mail.mail'),
+      new UserReceiveInfo('', 'giang', 'giangz0009@gmail.com', false),
+      new UserReceiveInfo('', 'huan', 'giangemployee2@notification.trade', false),
+      new UserReceiveInfo('', 'quan', 'quan@mail.mail', false),
     ],
   },
   {
     contact_name: 'Phòng FE',
     employeesList: [
-      new UserInfo('', 'giang', 'giang@mail.mail'),
-      new UserInfo('', 'huan', 'huan@mail.mail'),
-      new UserInfo('', 'quan', 'quan@mail.mail'),
+      new UserReceiveInfo('', 'giangFE', 'giangFE@mail.mail', false),
+      new UserReceiveInfo('', 'huanFE', 'huanFE@mail.mail', false),
+      new UserReceiveInfo('', 'quanFE', 'quanFE@mail.mail', false),
     ],
   },
   {
     contact_name: 'Phòng BE',
     employeesList: [
-      new UserInfo('', 'giang', 'giang@mail.mail'),
-      new UserInfo('', 'huan', 'huan@mail.mail'),
-      new UserInfo('', 'quan', 'quan@mail.mail'),
+      new UserReceiveInfo('', 'giangBE', 'giangBE@mail.mail', false),
+      new UserReceiveInfo('', 'huanBE', 'huanBE@mail.mail', false),
+      new UserReceiveInfo('', 'quanBE', 'quanBE@mail.mail', false),
     ],
   },
   {
     contact_name: 'Contact 1',
     employeesList: [
-      new UserInfo('', 'giang', 'giang@mail.mail'),
-      new UserInfo('', 'huan', 'huan@mail.mail'),
-      new UserInfo('', 'quan', 'quan@mail.mail'),
+      new UserReceiveInfo('', 'giangCT', 'giangCT@mail.mail', false),
+      new UserReceiveInfo('', 'huanCT', 'huanCT@mail.mail', false),
+      new UserReceiveInfo('', 'quanCT', 'quanCT@mail.mail', false),
     ],
   },
 ];
@@ -129,14 +130,45 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
   //   mutationFn: deleteEmail,
   // });
 
+  const [inputContactBlocks, setInputContactBlocks] = useState<InputContactBlock[]>(
+    [],
+  );
+
+  const { mutate: deleteEmailMutate } = useMutation({
+    mutationKey: ['email-compose-delete-email'],
+    mutationFn: deleteEmail,
+  });
+
+  useQuery(['getDepartments'], getDepartments, {
+    onSuccess: (res) => {
+      const inputContactBlocks: InputContactBlock[] = res.data.map((dept) => ({
+        contact_name: dept.name,
+        employeesList: (dept.users || []).map(
+          (user) =>
+            new UserReceiveInfo(
+              user.avatar,
+              `${user.first_name} ${user.last_name}`,
+              user.email,
+              false,
+            ),
+        ),
+      }));
+
+      setInputContactBlocks(inputContactBlocks)
+    },
+    onError: (error) => {
+      console.log(error)
+    }
+  });
+
   // const { mutate: submitEmailComposeMutate, isLoading: isEmailComposeSubmitting } =
   //   useMutation({
   //     mutationKey: ['email-compose-submit'],
   //     mutationFn: sendEmail,
   //     onSuccess: (res) => {
   //       toast.success('Email have been sent');
-  //       if (workingEmail?.id !== undefined) {
-  //         deleteEmailMutate(String(workingEmail?.id));
+  //       if (workingEmail.id !== undefined) {
+  //         deleteEmailMutate(workingEmail.id);
   //       }
   //       if (res?.data?.user_id)
   //         navigate(`/emails/catalog/pending/${res.data.user_id}`);
@@ -144,11 +176,6 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
   //       method.reset();
   //     },
   //   });
-
-  // // AUTO CREATE OR UPDATE DRAFT
-  // method.watch((values, { name, type }) => {
-  //   onFieldsChange(values as EmailComposeFields, workingEmail?.id, workingEmail?.cacheId ?? Date.now());
-  // });
 
   // useEffect(() => {
   //   if (!showMinimizeEmailId) return;
@@ -185,8 +212,11 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
 
   // // Convert data
   const convertedHashtagOptions = useMemo(() => {
-    return privateHashtags.map(value => ({name: value.title, value: value.value}))
-  }, [privateHashtags])
+    return privateHashtags.map((value) => ({
+      name: value.title,
+      value: value.value,
+    }));
+  }, [privateHashtags]);
 
   // // Handle functions
   // const handleMinimizeClick = (id?: string) => {
@@ -307,6 +337,7 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
   return (
     <>
       <EmailCompose2
+        inputContactBlocks={inputContactBlocks}
         method={method}
         attachFiles={attachFiles}
         isFullScreen={isFullScreen}

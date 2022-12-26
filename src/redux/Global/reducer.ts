@@ -29,6 +29,38 @@ const globalSlice = createSlice({
   name: 'global',
   initialState,
   reducers: {
+    changeSidebarRight(state, action) {
+      switch (action.payload) {
+        case 'information':
+          return {
+            ...state,
+            sidebarRight: {
+              isShow: state.sidebarRight.isShow,
+              title: 'Information',
+              type: 'information',
+            },
+          };
+
+        case 'notify':
+          return {
+            ...state,
+            sidebarRight: {
+              isShow: state.sidebarRight.isShow,
+              title: 'Notify',
+              type: 'notify',
+            },
+          };
+        default:
+          return {
+            ...state,
+            sidebarRight: {
+              isShow: state.sidebarRight.isShow,
+              title: 'Information',
+              type: 'information',
+            },
+          };
+      }
+    },
     closeNotifySidebarRight(state) {
       return {
         ...state,
@@ -82,6 +114,7 @@ const globalSlice = createSlice({
 });
 
 export const {
+  changeSidebarRight,
   setDefaultSignId,
   setThemeMode,
   setLocation,

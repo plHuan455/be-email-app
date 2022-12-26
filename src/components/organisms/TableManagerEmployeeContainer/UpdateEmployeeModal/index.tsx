@@ -13,6 +13,7 @@ export interface UpdateEmployeeFields {
   avatar?: File | string;
   firstName?: string;
   lastName?: string;
+  identity?: string;
   email?: string;
   password?: string;
   phone?: string;
@@ -175,16 +176,54 @@ function UpdateEmployeeModal({
               </Grid>
               <Grid item xs={12}>
                 <Controller
-                  name="username"
+                  name="firstName"
                   render={({ field: { value, onChange }, fieldState }) => (
                     <InputWrapper>
                       <ValidateInput
-                        label="Username"
+                        label="First Name:"
                         className="text-sm"
                         type="text"
                         fullWidth
                         value={value}
-                        placeHolder="Username"
+                        placeHolder="FirstName"
+                        errors={fieldState.error?.message}
+                        onChange={onChange}
+                      />
+                    </InputWrapper>
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Controller
+                  name="lastName"
+                  render={({ field: { value, onChange }, fieldState }) => (
+                    <InputWrapper>
+                      <ValidateInput
+                        label="Last Name:"
+                        className="text-sm"
+                        type="text"
+                        fullWidth
+                        value={value}
+                        placeHolder="Last Name"
+                        errors={fieldState.error?.message}
+                        onChange={onChange}
+                      />
+                    </InputWrapper>
+                  )}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <Controller
+                  name="identity"
+                  render={({ field: { value, onChange }, fieldState }) => (
+                    <InputWrapper>
+                      <ValidateInput
+                        label="Identity:"
+                        className="text-sm"
+                        type="text"
+                        fullWidth
+                        value={value}
+                        placeHolder="Identity"
                         errors={fieldState.error?.message}
                         onChange={onChange}
                       />

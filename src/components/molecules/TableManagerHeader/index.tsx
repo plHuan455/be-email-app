@@ -12,7 +12,12 @@ interface Props extends PropsWithChildren {
   onPlusClick?: () => void;
 }
 
-const TableHeader: React.FC<Props> = ({ plusButtonTitle = '', isHaveActions = true, onPlusClick, ...props }) => {
+const TableHeader: React.FC<Props> = ({
+  plusButtonTitle = '',
+  isHaveActions = true,
+  onPlusClick,
+  ...props
+}) => {
   const actionsList: {
     [key: string]: SVGIconProps['icon'];
   } = {

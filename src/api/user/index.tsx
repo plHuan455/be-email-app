@@ -51,7 +51,7 @@ export interface UserResponse {
 export interface UserProfileResponse {
   id: number;
   avatar: string;
-  department_id: number;
+  department: string;
   email: string;
   first_name: string;
   last_name: string;
@@ -64,10 +64,10 @@ export interface UserProfileResponse {
 }
 
 //GET EMAIL WITH STATUS
-export const getUserWithEmail = async (): Promise<
-  AxiosResponse<UserProfileResponse>
-> => {
-  const url = `${USER_PROFILE}`;
+export const getUserWithEmail = async (
+  id: number,
+): Promise<AxiosResponse<UserProfileResponse>> => {
+  const url = `${USER_PROFILE}/${id}`;
   const res = await ApiClient.get(url);
   return res.data;
 };
@@ -84,8 +84,8 @@ export const getAllUser = async (query?: {
 
 // GET USER BY ID
 export const getUser = async (id: number): Promise<AxiosResponse<UserResponse>> => {
-  const url = USER__API__GET;
-  const res = await ApiClient.get(url, { value: id });
+  const url = `${USER__API__GET}/${id}`;
+  const res = await ApiClient.get(url);
   return res.data;
 };
 // CREATE EMPLOYEE

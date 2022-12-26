@@ -168,6 +168,16 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
 
 
   const handleSendEmail = (values: EmailComposeFields & { sendAt?: Dayjs | null }) => {
+    if (
+      values.to.length === 0 &&
+      values.cc.length === 0 &&
+      values.bcc.length === 0
+    ) {
+      alertDialog.setAlertData("Can't send email", "Can't send email without receiver", () => {
+        alertDialog.onClose();
+      });
+      return;
+    }
     submitEmailComposeMutate(createApiData(values))
   }
 
