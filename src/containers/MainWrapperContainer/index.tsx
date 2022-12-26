@@ -154,8 +154,10 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
         cc: values.cc.map(value => value.mail),
         from: currentUserEmail ?? '',
         text_html: getHtmlStringFromEditorState(values.content),
-        subject: values.subject
+        subject: values.subject,
+        attachs: values.attachFiles.fileUrls.map(value => ({path: value}))
       },
+      tags: values.hashtags.map(value => value.value),
       send_at: values.sendAt?.toISOString() ?? dayjs().toISOString(),
     }
   }
