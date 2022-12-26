@@ -78,12 +78,20 @@ const Main: React.FC<
 
 const MainHaveActions: React.FC<
   PropsWithChildren & {
+    isHaveHeader?: boolean;
     isHaveSearch?: boolean;
     isFull?: boolean;
     headTitle?: string;
     onClickAdd?: React.MouseEventHandler<HTMLButtonElement>;
   }
-> = ({ children, isHaveSearch = false, isFull = false, headTitle, onClickAdd }) => {
+> = ({
+  children,
+  isHaveHeader = false,
+  isHaveSearch = false,
+  isFull = false,
+  headTitle,
+  onClickAdd,
+}) => {
   // useLocation
   const location = useLocation();
   const pathName = location.pathname.toLowerCase();
@@ -114,34 +122,41 @@ const MainHaveActions: React.FC<
           }}>
           <EmailsListActionsContainer isShowInformationBtn={isShowInformationBtn} />
 
-          <Box
-            className="mt-[100px] justify-between px-6"
-            sx={(theme) => ({
-              display: 'flex',
-              alignItems: 'center',
-              gap: theme.spacing(2),
-              marginBottom: theme.spacing(4),
-            })}>
-            <Box className="flex">
-              {headTitle && (
-                <Typography
-                  className="text-[#B2B0EE] pr-6"
-                  variant="h4"
-                  sx={{ fontWeight: 700 }}>
-                  {headTitle}
-                </Typography>
-              )}
-              {onClickAdd && (
-                <IconButton
-                  className="bg-transparent hover:bg-transparent"
-                  size="small"
-                  onClick={onClickAdd}>
-                  <Icon icon={'plus'} rawColor={'#827CFF'} width={16} height={16} />
-                </IconButton>
-              )}
+          {isHaveHeader && (
+            <Box
+              className="mt-[100px] justify-between px-6"
+              sx={(theme) => ({
+                display: 'flex',
+                alignItems: 'center',
+                gap: theme.spacing(2),
+                marginBottom: theme.spacing(4),
+              })}>
+              <Box className="flex">
+                {headTitle && (
+                  <Typography
+                    className="text-[#B2B0EE] pr-6"
+                    variant="h4"
+                    sx={{ fontWeight: 700 }}>
+                    {headTitle}
+                  </Typography>
+                )}
+                {onClickAdd && (
+                  <IconButton
+                    className="bg-transparent hover:bg-transparent"
+                    size="small"
+                    onClick={onClickAdd}>
+                    <Icon
+                      icon={'plus'}
+                      rawColor={'#827CFF'}
+                      width={16}
+                      height={16}
+                    />
+                  </IconButton>
+                )}
+              </Box>
+              {isHaveSearch && <SearchStartWithIcon />}
             </Box>
-            {isHaveSearch && <SearchStartWithIcon />}
-          </Box>
+          )}
           {children}
         </Box>
         <SidebarRightContainer
@@ -164,14 +179,23 @@ const queryClient = new QueryClient({
 
 const MainQueryClient: React.FC<
   PropsWithChildren & {
+    isHaveHeader?: boolean;
     isHaveSearch?: boolean;
     isFull?: boolean;
     headTitle?: string;
     onClickAdd?: React.MouseEventHandler<HTMLButtonElement>;
   }
-> = ({ children, isHaveSearch = false, isFull = false, onClickAdd, headTitle }) => {
+> = ({
+  children,
+  isHaveHeader = false,
+  isHaveSearch = false,
+  isFull = false,
+  onClickAdd,
+  headTitle,
+}) => {
   return (
     <MainHaveActions
+      isHaveHeader={isHaveHeader}
       isHaveSearch={isHaveSearch}
       isFull={isFull}
       headTitle={headTitle}
