@@ -19,6 +19,7 @@ import EmailGreeting from '@components/molecules/EmailGreeting';
 import LogoWithLabel from '@components/atoms/LogoWithLabel';
 import Icon from '@components/atoms/Icon';
 import { rem } from '@utils/functions';
+import { useParams, useSearchParams } from 'react-router-dom';
 export interface UserRead {
   name: string;
   time: string;
@@ -90,6 +91,8 @@ const EmailMess: React.FC<Props> = ({
   onApproveNow,
   onSendEmail,
 }) => {
+  const [searchParams] = useSearchParams();
+  
   const defaultStatus = useMemo(() => emailData.status, []);
   const [newHashtagList, setNewHashtagList] = useState<HashtagTabs[] | undefined>(
     undefined,
@@ -393,7 +396,7 @@ const EmailMess: React.FC<Props> = ({
           }}
         />
         {/* Actions */}
-        <Box sx={{backgroundColor: '#F1F1F6', minHeight: rem(104)}} display="flex" alignItems="center">
+        <Box sx={{backgroundColor: '#F1F1F6', minHeight: rem(86)}} display="flex" alignItems="center">
             {_renderActionsPendingItems}
             {emailData.status === 'APPROVED' && sentAt.getTime() > Date.now() && (
               <ControlEmailSend
