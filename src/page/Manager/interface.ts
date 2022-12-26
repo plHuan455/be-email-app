@@ -2,6 +2,10 @@ interface ManagerFunctions {
   getAbbreviations(): string;
 }
 
+export class Positions {
+  constructor(public id: number, public name: string) {}
+}
+
 export class Manager implements ManagerFunctions {
   constructor(
     public id: number,
@@ -51,6 +55,7 @@ export class Department {
     public number: number,
     public address: string,
     public employees: Manager[],
+    public positions: Positions[],
     public description: string | '',
   ) {}
 }

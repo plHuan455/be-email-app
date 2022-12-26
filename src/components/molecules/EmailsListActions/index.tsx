@@ -17,20 +17,14 @@ import { useLocation } from 'react-router-dom';
 
 interface Props {
   className?: string;
+  isShowInformationBtn?: Boolean;
 }
 
-const EmailsListActions: React.FC<Props> = ({ className }) => {
+const EmailsListActions: React.FC<Props> = ({ className, isShowInformationBtn }) => {
   // useDispatch
   const dispatch = useDispatch();
 
   const { notificationList } = useSelector((state: RootState) => state.notify);
-
-  // useLocation
-  const location = useLocation();
-  const pathName = location.pathname.toLowerCase();
-
-  const isShowInformationBtn =
-    pathName === '/emails' || pathName.startsWith('/emails/catalog');
 
   // useSelector
   const { sidebarRight } = useSelector((state: RootState) => state.global);

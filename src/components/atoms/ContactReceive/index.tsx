@@ -8,21 +8,28 @@ interface Props {
   contactName: string;
   onDelete?: React.MouseEventHandler | undefined;
   haveCloseIcon?: boolean;
+  endAnchor?: string
 }
 
 const ContactReceive: React.FC<Props> = ({
   contactName,
   onDelete,
   haveCloseIcon = true,
+  endAnchor,
 }) => {
   return (
     <Box className="flex">
       {/* Main Content */}
-      <Box className="flex bg-[#F6F5FE] relative p-2 py-1 rounded-xl mx-1 w-full gap-2">
+      <Box className="flex items-center bg-[#F6F5FE] relative p-2 py-1 rounded-xl mx-1 w-full gap-2">
         <Avatar alt={contactName} className="w-6 h-6" src={`${contactName}`} />
         <p className="flex-1 text-[14px] text-ellipsis overflow-hidden">
           {contactName}
         </p>
+        {endAnchor && (
+          <p className="text-[14px]">
+            {endAnchor}
+          </p>
+        )}
         {haveCloseIcon && (
           <RenderButtonIcon
             item={'close'}

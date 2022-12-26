@@ -19,6 +19,7 @@ const ManagerDepartment = () => {
       <TableManagerDepartmentContainer
         isShowAddDepartmentModal={isShowAddDepartmentModal}
         onCloseAddDepartmentModal={() => setIsAddDepartmentModal(false)}
+        onClickAddDepartmentModal={() => setIsAddDepartmentModal(true)}
       />
     </Layout.MainQueryClient>
   );
