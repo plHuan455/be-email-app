@@ -11,6 +11,7 @@ export interface EmailUpdateQuery {
   send_at?: string;
   tags?: string[];
   status?: string;
+  is_favorite?: boolean;
 }
 
 export interface EmailCatalogResponse {

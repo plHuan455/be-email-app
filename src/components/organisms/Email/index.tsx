@@ -20,10 +20,11 @@ import {
 import ModalBase from '@components/atoms/ModalBase';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { number } from 'yup';
 import { EmailUpdateQuery } from '@api/email/interface';
 import EmailMessContainer from '@containers/EmailMessContainer';
+import { emailData } from '@layouts/EmailStatusBar';
 
 interface ModalForm {
   title: string;
@@ -156,6 +157,9 @@ const Email: React.FC<Props> = () => {
     },
   });
 
+  // queryClient
+  const queryClient = useQueryClient();
+
   const { EmailsList, isLoading } = useSelector((state: RootState) => state.email);
   const dispatch = useDispatch();
 
@@ -167,6 +171,18 @@ const Email: React.FC<Props> = () => {
           email: params.data,
           send_at: params.data.send_at,
         }),
+    });
+  const { mutate: updateImportantMutate, isLoading: isUpdateImportantLoading } =
+    useMutation({
+      mutationKey: ['email-update-hashtag'],
+      mutationFn: (params: { id: number; data: EmailUpdateQuery }) =>
+        updateEmailWithQuery(params.id, {
+          email: { ...params.data, is_favorite: !params.data.is_favorite },
+          send_at: params.data.send_at,
+        }),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['get-emails-list'] });
+      },
     });
 
   useEffect(() => {
@@ -227,63 +243,81 @@ const Email: React.FC<Props> = () => {
         status === 'delete' ||
         status === 'spam' ||
         status === 'unread' ||
-        status === 'start'
+        status === 'star'
       ) {
-        if (status === 'delete') {
-          setModal((prevState) => ({
-            ...prevState,
-            title: 'Bạn có chắc muốn xóa Email này chứ?',
-            content: (
-              <p>Nếu bấm có, Email này sẽ bị xóa khỏi danh sách email của bạn.</p>
-            ),
-            onSubmit: async () =>
-              await handleSubmitStatusActions(
-                index,
-                'Delete successfull!',
-                'delete',
+        switch (status) {
+          case 'delete': {
+            setModal((prevState) => ({
+              ...prevState,
+              title: 'Bạn có chắc muốn xóa Email này chứ?',
+              content: (
+                <p>Nếu bấm có, Email này sẽ bị xóa khỏi danh sách email của bạn.</p>
               ),
-          }));
-          setIsOpenModal(true);
-        }
-        if (status === 'spam') {
-          setModal((prevState) => ({
-            ...prevState,
-            title: 'Bạn có chắc báo cáo người dùng này với hành vi làm phiền?',
-            content: (
-              <p>Nếu bấm có, Bạn sẽ thêm người dùng này vào danh sách chặn.</p>
-            ),
-            onSubmit() {
-              const cloneEmailsList = [...EmailsList];
+              onSubmit: async () =>
+                await handleSubmitStatusActions(
+                  index,
+                  'Delete successfull!',
+                  'delete',
+                ),
+            }));
+            setIsOpenModal(true);
+            break;
+          }
 
-              const spamEmail = cloneEmailsList.splice(index, 1);
+          case 'spam': {
+            setModal((prevState) => ({
+              ...prevState,
+              title: 'Bạn có chắc báo cáo người dùng này với hành vi làm phiền?',
+              content: (
+                <p>Nếu bấm có, Bạn sẽ thêm người dùng này vào danh sách chặn.</p>
+              ),
+              onSubmit() {
+                const cloneEmailsList = [...EmailsList];
 
-              dispatch(addSpamEmail(spamEmail));
-              dispatch(setEmailsList(cloneEmailsList));
+                const spamEmail = cloneEmailsList.splice(index, 1);
 
-              handleCloseModal();
-            },
-          }));
-          setIsOpenModal(true);
-        }
-        if (status === 'unread') {
-          setModal((prevState) => ({
-            ...prevState,
-            title: 'Bạn có chắc muốn bỏ qua Email này chứ?',
-            content: (
-              <p>Nếu bấm có, Email này sẽ được thêm vào danh sách xem sau.</p>
-            ),
-            onSubmit() {
-              const cloneEmailsList = [...EmailsList];
+                dispatch(addSpamEmail(spamEmail));
+                dispatch(setEmailsList(cloneEmailsList));
 
-              const unreadEmail = cloneEmailsList.splice(index, 1);
+                handleCloseModal();
+              },
+            }));
+            setIsOpenModal(true);
+            break;
+          }
+          case 'unread': {
+            setModal((prevState) => ({
+              ...prevState,
+              title: 'Bạn có chắc muốn bỏ qua Email này chứ?',
+              content: (
+                <p>Nếu bấm có, Email này sẽ được thêm vào danh sách xem sau.</p>
+              ),
+              onSubmit() {
+                const cloneEmailsList = [...EmailsList];
 
-              dispatch(addUnreadEmail(unreadEmail));
-              dispatch(setEmailsList(cloneEmailsList));
+                const unreadEmail = cloneEmailsList.splice(index, 1);
 
-              handleCloseModal();
-            },
-          }));
-          setIsOpenModal(true);
+                dispatch(addUnreadEmail(unreadEmail));
+                dispatch(setEmailsList(cloneEmailsList));
+
+                handleCloseModal();
+              },
+            }));
+            setIsOpenModal(true);
+            break;
+          }
+          case 'star': {
+            const cloneEmailsList = [...EmailsList];
+
+            const email = cloneEmailsList[index];
+
+            updateImportantMutate({ id: email.id, data: { ...email } });
+
+            break;
+          }
+
+          default:
+            break;
         }
       } else {
         const cloneEmailsList = [...EmailsList];

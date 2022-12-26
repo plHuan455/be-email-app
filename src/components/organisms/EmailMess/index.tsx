@@ -368,7 +368,7 @@ const EmailMess: React.FC<Props> = ({
           <Box className="w-full flex">
             <Box className="flex-1">
               <EmailActions
-                isImportant={emailData.is_important}
+                isImportant={!!emailData.is_favorite}
                 type={type}
                 isActiveClick={true}
                 emailIndex={index}
