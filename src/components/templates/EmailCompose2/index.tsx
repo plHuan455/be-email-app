@@ -35,10 +35,11 @@ import { HashtagTabs } from '@redux/Email/reducer';
 import HashtagInput, {
   HashtagOptionTypes,
 } from '@components/atoms/Input/HashtagInput';
-import { rowsSign } from '@containers/SignatureContainer';
 import { getDefaultSignId } from '@redux/selector';
 import ModalDrawSignature from '@components/atoms/ModalDrawSignature';
 import ModalChooseSignature from '@components/atoms/ModalChooseSignature';
+import { rowsSign } from '@containers/SignatureContainer/Main';
+import { parseSignToHtml } from '@utils/parseSignToHtml';
 import React from 'react';
 import classNames from 'classnames';
 import _ from 'lodash';
@@ -136,9 +137,9 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
   useEffect(() => {
     if (defaultSignId) {
       const r = rowsSign.find((e) => e.id === defaultSignId);
-      if (r != undefined) {
-        setSignatureImage(r.signature);
-      }
+      // if (r != undefined) {
+      //   setSignatureImage(r.signature);
+      // }
     }
   }, []);
 
@@ -374,7 +375,18 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                       />
                     )}
                   />
-
+                  {signatureImage && (
+                    <Box className="mt-4 mb-4">
+                      <img
+                        style={{ width: 120, height: 40, objectFit: 'contain' }}
+                        src={signatureImage}
+                      />
+                    </Box>
+                  )}
+                  {/* <div
+                    dangerouslySetInnerHTML={{
+                      __html: parseSignToHtml(signDataTest),
+                    }}></div> */}
                   <Box>
                     {/* Greeting */}
                     {signatureImage && (
@@ -598,3 +610,12 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
 };
 
 export default EmailCompose2;
+
+const signDataTest = {
+  avatar:
+    'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=2000',
+  name: 'Jame Mattow',
+  position: 'Frontend Developer',
+  phone: '0312456789',
+  email: 'jame@dev.com',
+};

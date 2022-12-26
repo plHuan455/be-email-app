@@ -57,7 +57,7 @@ function LoginContainer() {
   const submitLogin = async ({ email, password }) => {
     try {
       const res = await login({ email, password });
-      // Change 'asdasd to res.data
+      // Change to res.data
       auth.signin({}, res.data, async () => {
         if (res.message === 'Login successful') {
           const { user_id } = res;

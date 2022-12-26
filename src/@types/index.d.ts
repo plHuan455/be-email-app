@@ -44,6 +44,27 @@ declare global {
   interface String {
     capitalize(): string;
   }
+
+  interface CRUDComponentProps<T extends unknown> {
+    formData: T;
+    onChange?: (formData: T) => void;
+    files?: { [key: string]: FileList | undefined };
+    onChangeFile?: (files: { [key: string]: FileList | undefined }) => void;
+    editorState?: any;
+    onChangeEditorState?: (editorState: { [key: string]: any }) => void;
+
+    onClear?: () => void;
+    onCancel?: () => void;
+    onSubmit?: () => void;
+    labelSubmit?: string;
+    disabledClear?: boolean;
+    disabledSubmit?: boolean;
+
+    ableDelete?: boolean;
+    ableCreateOrUpdate?: boolean;
+
+    schema?: yup.ObjectSchema<any>;
+  }
 }
 
 window.lang = window.lang || {};

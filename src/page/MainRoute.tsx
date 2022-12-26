@@ -26,8 +26,14 @@ import EmailComposePage from './Email/EmailComposePage';
 import ContactLayout from '@layouts/Contact';
 import ContactSharing from './Contact/ContactSharing';
 import ContactGroups from './Contact/ContactGroup';
-import SignaturePage from './SignaturePage';
-import SignatureContainer from '@containers/SignatureContainer';
+import {
+  AddMailTemplatePage,
+  EditMailTemplatePage,
+  MainMailTemplatePage,
+} from './MailTemplatePage';
+import { AddSignaturePage, EditSignaturePage, SignaturePage } from './SignaturePage';
+// import MailTemplateContainer from '@containers/MailTemplateContainer';
+
 import MainWrapperContainer from '@containers/MainWrapperContainer';
 
 export const managerRouter: RouteObject[] = [
@@ -55,7 +61,22 @@ export const managerRouter: RouteObject[] = [
       },
       {
         path: '/manager/signature',
-        element: <SignaturePage />,
+        // element: <SignaturePage />,
+        children: [
+          {
+            index: true,
+            path: '/manager/signature',
+            element: <SignaturePage />,
+          },
+          {
+            path: '/manager/signature/add',
+            element: <AddSignaturePage />,
+          },
+          {
+            path: '/manager/signature/edit/:id',
+            element: <EditSignaturePage />,
+          },
+        ],
       },
     ],
   },
@@ -133,9 +154,24 @@ export const declareRouter: RouteObject[] = [
         path: '/profile',
         element: <UserProfileContainer />,
       },
+
       {
-        path: '/signature',
-        element: <SignatureContainer />,
+        path: '/template',
+        children: [
+          {
+            index: true,
+            path: '/template',
+            element: <MainMailTemplatePage />,
+          },
+          {
+            path: '/template/add',
+            element: <AddMailTemplatePage />,
+          },
+          {
+            path: '/template/edit',
+            element: <EditMailTemplatePage />,
+          },
+        ],
       },
       ...sideBarRouter,
       ...managerRouter,
