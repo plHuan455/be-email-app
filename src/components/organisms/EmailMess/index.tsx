@@ -24,7 +24,6 @@ import ScheduleSendIcon from '@mui/icons-material/ScheduleSend';
 import SendIcon from '@mui/icons-material/Send';
 import { color } from 'd3-color';
 import { data } from 'autoprefixer';
-import { useLocation, useSearchParams } from 'react-router-dom';
 export interface UserRead {
   name: string;
   time: string;
