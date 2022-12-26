@@ -23,6 +23,7 @@ import { useParams, useSearchParams } from 'react-router-dom';
 import ScheduleSendIcon from '@mui/icons-material/ScheduleSend';
 import SendIcon from '@mui/icons-material/Send';
 import { color } from 'd3-color';
+import { data } from 'autoprefixer';
 export interface UserRead {
   name: string;
   time: string;
@@ -367,6 +368,7 @@ const EmailMess: React.FC<Props> = ({
           <Box className="w-full flex">
             <Box className="flex-1">
               <EmailActions
+                isImportant={emailData.is_important}
                 type={type}
                 isActiveClick={true}
                 emailIndex={index}
