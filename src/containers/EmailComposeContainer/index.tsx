@@ -1,4 +1,5 @@
 import { sendEmail, deleteEmail, getHashtags } from '@api/email';
+import { motion, useAnimation, useAnimationControls } from 'framer-motion'
 import EmailCompose2, {
   EmailComposeFields,
 } from '@components/templates/EmailCompose2';
@@ -21,6 +22,7 @@ import { UserInfo, UserReceiveInfo } from '@components/organisms/Email/Interface
 import { InputContactBlock } from '@components/molecules/AutoCompleteReceive';
 import { EmailComposeContext } from '@containers/MainWrapperContainer';
 import { getDepartments } from '@api/deparment';
+import { Button } from '@mui/material';
 dayjs.extend(utc);
 
 export const backUpData: InputContactBlock[] = [
@@ -83,7 +85,7 @@ const hashtagList = [
 
 const currentUserEmail = localStorage.getItem('current_email');
 
-interface EmailComposeContainerProps {}
+interface EmailComposeContainerProps { }
 
 const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
   const {
@@ -111,9 +113,9 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
 
   const [attachFiles, setAttachFiles] = useState<(File | undefined)[]>([]);
 
-  const {method, tabColor, onMinimizeEmailClick, onSendEmail} = useContext(EmailComposeContext);
+  const { method, tabColor, triggerClearData, onMinimizeEmailClick, onSendEmail } = useContext(EmailComposeContext);
 
-  if(!method) return null;
+  if (!method) return null;
 
   const [calendarValue, setCalendarValue] = useState<Dayjs | null>(
     dayjs(Date.now()),
@@ -331,46 +333,58 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
   }
 
   const handleSubmit = (values: EmailComposeFields) => {
-    onSendEmail({...values, sendAt: selectedDate})
+    onSendEmail({ ...values, sendAt: selectedDate })
   }
+
+  const ringAnimationControl = useAnimationControls();
+
+  useEffect(() => {
+    if(triggerClearData){
+      ringAnimationControl.start({ 
+        translateX: ['5px', '-5px', '5px', '-5px', '0px'],
+     });
+    }
+  }, [triggerClearData])
 
   return (
     <>
-      <EmailCompose2
-        inputContactBlocks={inputContactBlocks}
-        method={method}
-        attachFiles={attachFiles}
-        isFullScreen={isFullScreen}
-        isShowCCForm={isShowCCForm}
-        isShowCalendarModal={isShowCalendarModal}
-        isOpenCalendarSelect={isOpenCalendarSelect}
-        hashtagOptions={convertedHashtagOptions}
-        selectedDate={selectedDate}
-        tabBarColor={tabColor}
-        calendarValue={calendarValue}
-        onMaximizeClick={() => setIsFullScreen((preState) => !preState)}
-        onMinimizeClick={handleMinimizeEmailClick}
-        onCCButtonClick={() => setIsShowCCForm((preState) => !preState)}
-        onCloseCalendarModal={() => setIsShowCalendarModal(false)}
-        onChangeCalendarValue={(value) => setCalendarValue(value)}
-        onSubmit={handleSubmit}
-        onSendTimeClick={() => {
-          setIsOpenCalendarSelect(true);
-          setIsShowCalendarModal(true);
-          setCalendarValue(dayjs(Date.now()));
-        }}
-        onUnsetTimeClick={() => {
-          setSelectedDate(undefined);
-          setIsShowCalendarModal(false);
-        }}
-        onSetTimeClick={() => {
-          setSelectedDate(calendarValue?.clone());
-          setIsShowCalendarModal(false);
-        }}
-        onSetTimeCancel={() => {
-          setIsOpenCalendarSelect(false);
-        }}
-      />
+      <motion.div animate={ringAnimationControl} transition={{duration: 0.2}}>
+        <EmailCompose2
+          inputContactBlocks={inputContactBlocks}
+          method={method}
+          attachFiles={attachFiles}
+          isFullScreen={isFullScreen}
+          isShowCCForm={isShowCCForm}
+          isShowCalendarModal={isShowCalendarModal}
+          isOpenCalendarSelect={isOpenCalendarSelect}
+          hashtagOptions={convertedHashtagOptions}
+          selectedDate={selectedDate}
+          tabBarColor={tabColor}
+          calendarValue={calendarValue}
+          onMaximizeClick={() => setIsFullScreen((preState) => !preState)}
+          onMinimizeClick={handleMinimizeEmailClick}
+          onCCButtonClick={() => setIsShowCCForm((preState) => !preState)}
+          onCloseCalendarModal={() => setIsShowCalendarModal(false)}
+          onChangeCalendarValue={(value) => setCalendarValue(value)}
+          onSubmit={handleSubmit}
+          onSendTimeClick={() => {
+            setIsOpenCalendarSelect(true);
+            setIsShowCalendarModal(true);
+            setCalendarValue(dayjs(Date.now()));
+          }}
+          onUnsetTimeClick={() => {
+            setSelectedDate(undefined);
+            setIsShowCalendarModal(false);
+          }}
+          onSetTimeClick={() => {
+            setSelectedDate(calendarValue?.clone());
+            setIsShowCalendarModal(false);
+          }}
+          onSetTimeCancel={() => {
+            setIsOpenCalendarSelect(false);
+          }}
+        />
+      </motion.div>
       <AlertDialog
         isShowDisagreeBtn={false}
         isOpen={isAlertDialogOpen}
