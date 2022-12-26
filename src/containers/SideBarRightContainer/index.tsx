@@ -30,9 +30,7 @@ const SidebarRightContainer: React.FC<Props> = ({
 
   const _renderNotify = useMemo(() => {
     if (!isEmpty(notificationList))
-      return notificationList.map((notify) => (
-        <p className="truncate">{notify.body}</p>
-      ));
+      return notificationList.map((notify) => <p>{notify.body}</p>);
 
     return <p>No new announcements</p>;
   }, [notificationList]);
