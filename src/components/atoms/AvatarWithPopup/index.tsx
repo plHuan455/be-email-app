@@ -1,17 +1,20 @@
 import {
   Avatar,
   Box,
+  ExtendButtonBase,
   IconButton,
+  IconButtonTypeMap,
   Menu,
   MenuItem,
   Tooltip,
   Typography,
 } from '@mui/material';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import CustomButton from '../CustomButton';
 import { SVGIconProps } from '../Icon';
 import avt from '../../../assets/images/avatars/avatar-2.jpg';
 import { RenderButtonIcon } from '@components/molecules/EmailActions';
+import styled from 'styled-components';
 
 const iconsList: {
   [key: string]: SVGIconProps['icon'];
@@ -55,12 +58,15 @@ const AvatarWithPopup: React.FC<Props> = ({
     return localStorage.getItem('current_user_avt')?.toString();
   }, [localStorage.getItem('current_user_avt')?.toString()]);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const ref = useRef<any>();
 
   const handleOpenUserMenu = (event) => {
+    ref.current.style.borderColor = '#554CFF';
     setAnchorElUser(event.currentTarget);
   };
 
   const handleCloseUserMenu = () => {
+    ref.current.style.borderColor = 'transparent';
     setAnchorElUser(null);
   };
 
@@ -68,8 +74,17 @@ const AvatarWithPopup: React.FC<Props> = ({
     <Box className={className} sx={{ flexGrow: 0 }}>
       <Tooltip placement={popupPlacement} title={currentUserName} arrow>
         <IconButton
+          ref={ref}
+          className="avt"
           onClick={handleOpenUserMenu}
-          sx={{ p: 0, border: '4px solid #554CFF' }}>
+          sx={[
+            {
+              '&:hover': {
+                borderColor: '#554CFF !important',
+              },
+            },
+            { p: 0, border: '4px solid transparent' },
+          ]}>
           <Avatar
             alt={currentUserName}
             src={`http://${currentUserAvt}`}
