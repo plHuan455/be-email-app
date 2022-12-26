@@ -1,5 +1,6 @@
 import Icon from '@components/atoms/Icon';
 import IconButton from '@components/atoms/IconButton';
+import SearchStartWithIcon from '@components/molecules/Search';
 import EmailsListActionsContainer from '@containers/EmailsListActionsContainer';
 import SidebarRightContainer from '@containers/SideBarRightContainer';
 import InformationBarEmpty from '@layouts/InformationBarEmpty';
@@ -14,6 +15,7 @@ import {
 } from '@mui/material';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { PropsWithChildren } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const Content: React.FC<PropsWithChildren & GridProps> = ({
   children,
@@ -75,11 +77,27 @@ const Main: React.FC<
 
 const MainHaveActions: React.FC<
   PropsWithChildren & {
+    isHaveHeader?: boolean;
+    isHaveSearch?: boolean;
     isFull?: boolean;
     headTitle?: string;
     onClickAdd?: React.MouseEventHandler<HTMLButtonElement>;
   }
-> = ({ children, isFull = false, headTitle, onClickAdd }) => {
+> = ({
+  children,
+  isHaveHeader = false,
+  isHaveSearch = false,
+  isFull = false,
+  headTitle,
+  onClickAdd,
+}) => {
+  // useLocation
+  const location = useLocation();
+  const pathName = location.pathname.toLowerCase();
+
+  const isShowInformationBtn =
+    pathName === '/emails' || pathName.startsWith('/emails/catalog');
+
   return (
     <Grid item flex={1} xs={12} md={isFull ? 12 : 10} className="w-full">
       <Paper
@@ -101,37 +119,49 @@ const MainHaveActions: React.FC<
             display: 'flex',
             flexDirection: 'column',
           }}>
-          <EmailsListActionsContainer />
-          {headTitle && (
+          <EmailsListActionsContainer isShowInformationBtn={isShowInformationBtn} />
+
+          {isHaveHeader && (
             <Box
-              className="mt-[100px]"
+              className="mt-[100px] justify-between px-6"
               sx={(theme) => ({
                 display: 'flex',
                 alignItems: 'center',
                 gap: theme.spacing(2),
                 marginBottom: theme.spacing(4),
               })}>
-              {headTitle && (
-                <Typography
-                  className="text-[#B2B0EE] px-6"
-                  variant="h4"
-                  sx={{ fontWeight: 700 }}>
-                  {headTitle}
-                </Typography>
-              )}
-              {onClickAdd && (
-                <IconButton
-                  className="bg-transparent hover:bg-transparent"
-                  size="small"
-                  onClick={onClickAdd}>
-                  <Icon icon={'plus'} rawColor={'#827CFF'} width={16} height={16} />
-                </IconButton>
-              )}
+              <Box className="flex">
+                {headTitle && (
+                  <Typography
+                    className="text-[#B2B0EE] pr-6"
+                    variant="h4"
+                    sx={{ fontWeight: 700 }}>
+                    {headTitle}
+                  </Typography>
+                )}
+                {onClickAdd && (
+                  <IconButton
+                    className="bg-transparent hover:bg-transparent"
+                    size="small"
+                    onClick={onClickAdd}>
+                    <Icon
+                      icon={'plus'}
+                      rawColor={'#827CFF'}
+                      width={16}
+                      height={16}
+                    />
+                  </IconButton>
+                )}
+              </Box>
+              {isHaveSearch && <SearchStartWithIcon />}
             </Box>
           )}
           {children}
         </Box>
-        <SidebarRightContainer isBorderBottom={true} />
+        <SidebarRightContainer
+          isShowInformationBtn={isShowInformationBtn}
+          isBorderBottom={true}
+        />
       </Paper>
     </Grid>
   );
@@ -148,13 +178,27 @@ const queryClient = new QueryClient({
 
 const MainQueryClient: React.FC<
   PropsWithChildren & {
+    isHaveHeader?: boolean;
+    isHaveSearch?: boolean;
     isFull?: boolean;
     headTitle?: string;
     onClickAdd?: React.MouseEventHandler<HTMLButtonElement>;
   }
-> = ({ children, isFull = false, onClickAdd, headTitle }) => {
+> = ({
+  children,
+  isHaveHeader = false,
+  isHaveSearch = false,
+  isFull = false,
+  onClickAdd,
+  headTitle,
+}) => {
   return (
-    <MainHaveActions isFull={isFull} headTitle={headTitle} onClickAdd={onClickAdd}>
+    <MainHaveActions
+      isHaveHeader={isHaveHeader}
+      isHaveSearch={isHaveSearch}
+      isFull={isFull}
+      headTitle={headTitle}
+      onClickAdd={onClickAdd}>
       <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     </MainHaveActions>
   );

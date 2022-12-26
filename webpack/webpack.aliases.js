@@ -25,6 +25,7 @@ module.exports = createWebpackAliases({
   '@locales': 'src/locales',
   '@domain': 'src/domain',
   '@themes': 'src/themes',
+  '@zustand': 'src/zustand',
   '@@packages/hooks': 'packages/hooks',
   '@@packages/localization': 'packages/localization',
   '@@packages/utils': 'packages/utils',

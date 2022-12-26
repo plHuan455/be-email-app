@@ -34,6 +34,8 @@ import {
 import { AddSignaturePage, EditSignaturePage, SignaturePage } from './SignaturePage';
 // import MailTemplateContainer from '@containers/MailTemplateContainer';
 
+import MainWrapperContainer from '@containers/MainWrapperContainer';
+
 export const managerRouter: RouteObject[] = [
   {
     path: '/manager',
@@ -119,7 +121,7 @@ export const sideBarRouter: RouteObject[] = [
 
 export const declareRouter: RouteObject[] = [
   {
-    element: <ProtectedRoute children={<MainWrapper />} />,
+    element: <ProtectedRoute children={<MainWrapperContainer />} />,
     children: [
       {
         path: '/',

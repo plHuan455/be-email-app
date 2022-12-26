@@ -62,9 +62,10 @@ const ModalChooseSignature: React.FC<Props> = ({ isOpen, onClose, onSubmit }) =>
           </div>
           <div className="modal-sign-content">
             <div className="modal-sign-content-scroll">
-              {rowsSign.map((e) => {
+              {rowsSign.map((e, index) => {
                 return (
                   <div
+                    key={index}
                     className="wrap-sign-img"
                     onClick={() => handleChangeSign(e.id)}>
                     <img className="img-sign" src={''} />

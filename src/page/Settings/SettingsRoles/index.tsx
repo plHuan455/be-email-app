@@ -18,6 +18,7 @@ const SettingRoles = () => {
   return (
     // <Layout.Content>
     <Layout.MainQueryClient
+      isHaveHeader
       isFull={false}
       headTitle={t('User roles')}
       onClickAdd={() => setIsShowModal(true)}>

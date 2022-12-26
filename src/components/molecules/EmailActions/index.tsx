@@ -65,12 +65,13 @@ const EmailActionsList = {
   },
   star: {
     icon: 'star',
-    label: 'Importance',
-    color: 'rgb(250, 175, 0)',
+    label: 'Important',
+    color: '#8E8E91',
   },
 };
 
 interface Props {
+  isImportant: boolean;
   isActiveClick: boolean;
   type: 'receive' | 'send';
   emailIndex?: number;
@@ -81,6 +82,7 @@ const EmailActions: React.FC<Props> = ({
   emailIndex = 0,
   type,
   handleChangeStatus = (a, b) => {},
+  isImportant = false,
   isActiveClick = true,
 }) => {
   return (
@@ -94,7 +96,14 @@ const EmailActions: React.FC<Props> = ({
             onClick={() =>
               isActiveClick && handleChangeStatus(currVal.icon, emailIndex)
             }>
-            <RenderButtonIcon item={currVal.icon} color={currVal.color} />
+            <RenderButtonIcon
+              item={currVal.icon}
+              color={
+                currVal.icon === 'star' && isImportant
+                  ? 'rgb(250, 175, 0)'
+                  : currVal.color
+              }
+            />
             <span className="inline-block pl-2">{`${currVal.label}`}</span>
           </Box>
         );

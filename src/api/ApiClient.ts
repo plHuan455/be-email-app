@@ -13,6 +13,7 @@ export interface ApiResponse<T = any> {
 export interface CuSAxiosResponse<T> extends AxiosResponse {
   message?: string;
   total?: number;
+  user_id?: number;
 }
 
 const url = process.env.EMAIL_APP_API_BASE_URL
@@ -21,7 +22,7 @@ const url = process.env.EMAIL_APP_API_BASE_URL
 const local = 'http://10.0.1.176:8000/';
 
 const axiosInstance = axios.create({
-  baseURL: 'http://61.28.238.162:8000/',
+  baseURL: url,
   timeout: 5001,
 });
 
@@ -87,7 +88,7 @@ export default class ApiClient {
   }
 
   static async delete(url: string, params: any): Promise<AxiosResponse> {
-    const requestUrl = `${url}?${stringify(params)}`;
+    const requestUrl = params ? `${url}?${stringify(params)}` : url;
 
     const config: AxiosRequestConfig = {
       headers: await this.getHeaders('multipart/form-data'),

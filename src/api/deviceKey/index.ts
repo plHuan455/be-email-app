@@ -34,12 +34,14 @@ export const getDeviceKey = async (
 };
 
 // Delete Device Key
-export const deleteDeviceKey = async (
-  deviceKeyId?: number,
-): Promise<AxiosResponse<DeviceKeyResponse>> => {
-  const url = `${API_DEVICE_KEY}`;
+export const deleteDeviceKey = async (): Promise<
+  AxiosResponse<DeviceKeyResponse>
+> => {
+  const deviceKeyId = localStorage.getItem('device_key_id');
 
-  const res = await ApiClient.delete(url, deviceKeyId);
+  const url = `${API_DEVICE_KEY}/${deviceKeyId}`;
+
+  const res = await ApiClient.delete(url, undefined);
 
   return res.data;
 };

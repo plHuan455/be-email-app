@@ -16,25 +16,17 @@ import MinimizeEmailList, {
   MinimizeEmailTypes,
 } from '@components/templates/MinimizeEmailList';
 import { Email } from '@components/organisms/Email/Interface';
-import {
-  removeMinimizeEmail,
-  resetEmailState,
-  setHashtags,
-  setShowMinimizeEmail,
-} from '@redux/Email/reducer';
+import { setHashtags } from '@redux/Email/reducer';
 import { fetchToken, onMessageListener } from '../../messaging_init_in_sw';
 import { deleteDeviceKey } from '@api/deviceKey';
 import { unShiftNotificationList } from '@redux/Notify/reducer';
 import { IS_EMPLOYEE_ROLE } from '@constants/localStore';
 import { useQuery } from '@tanstack/react-query';
 import { getHashtags } from '@api/email';
+import useLocalStorage from '@hooks/useLocalStorage';
 
 const sideBarWidth = 75;
 const emailStatusWidth = 290;
-
-const DEVICE_KEY_ID: number = JSON.parse(
-  localStorage.getItem('device_key_id') || '0',
-);
 
 const useStyles = makeStyles()((theme) => ({
   body: {
@@ -65,37 +57,12 @@ interface Setting {
   handleClick?: () => void;
 }
 
-function MainWrapper() {
+function MainWrapper({ children }: { children: React.ReactNode }) {
   const dispatch = useAppDispatch();
   const location = useLocation();
-  const minimizeEmails = useAppSelector((state) => state.email.minimizeMailList);
-  const showMinimizeEmailId = useAppSelector(
-    (state) => state.email.showMinimizeEmailId,
-  );
 
   const [show, setShow] = useState(false);
   const [notification, setNotification] = useState({ title: '', body: '' });
-
-  // GET HASHTAGS
-  console.log(`[TODO]: Change this when hashtag api is done`);
-  const { data: hashtagData, isLoading: isHashtagLoading } = useQuery({
-    queryKey: ['email-compose-get-hashtag'],
-    queryFn: getHashtags,
-    onSuccess(res) {
-      if (res?.data) {
-        dispatch(
-          setHashtags(
-            res.data.map((value) => ({
-              notiNumber: 0,
-              status: 'hashtag',
-              title: value.name,
-              value: value.name,
-            })),
-          ),
-        );
-      }
-    },
-  });
 
   onMessageListener()
     .then((payload) => {
@@ -121,25 +88,17 @@ function MainWrapper() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
     auth.signout(() => {
       toast.success('Bái bai!');
     });
-    deleteDeviceKey(DEVICE_KEY_ID);
+    deleteDeviceKey();
+    localStorage.removeItem('device_key_id');
+    localStorage.removeItem('token');
+    localStorage.removeItem('device_token');
   };
 
   const handleChangePage = (url: string) => () => {
     navigate(url);
-  };
-
-  const handleMaximizeEmailClick = (data: MinimizeEmailTypes) => {
-    dispatch(setShowMinimizeEmail(data.id));
-    navigate('/emails/compose');
-  };
-  const handleCloseEmailClick = (data: MinimizeEmailTypes) => {
-    if (data.id !== undefined) {
-      dispatch(removeMinimizeEmail(data.id));
-    }
   };
 
   const settingsEmployee: Setting[] = [
@@ -198,10 +157,6 @@ function MainWrapper() {
 
   const settings: Setting[] = settingManager;
 
-  const convertedMinimizeEmailList = useMemo(() => {
-    return minimizeEmails.filter((value) => value.id !== showMinimizeEmailId);
-  }, [minimizeEmails, showMinimizeEmailId]);
-
   return (
     <React.Fragment>
       {/* <Header
@@ -239,7 +194,7 @@ function MainWrapper() {
           {/* Breadcrumbs */}
           {/* <Breadcrumbs breadcrumbs={breadcrumbs} /> */}
           {/* Main content */}
-          <Outlet />
+          {children}
         </Box>
       </Box>
       <Drawer
@@ -252,11 +207,6 @@ function MainWrapper() {
         />
         <SideBar />
       </Drawer>
-      <MinimizeEmailList
-        data={convertedMinimizeEmailList}
-        onMaximizeClick={handleMaximizeEmailClick}
-        onCloseClick={handleCloseEmailClick}
-      />
     </React.Fragment>
   );
 }

@@ -3,7 +3,9 @@ import ModalEmailList, {
   StatusOptions,
 } from '@components/molecules/ModalEmailList';
 import { Box, ButtonBase, Typography } from '@mui/material';
+import { setEmailsList } from '@redux/Email/reducer';
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
 import { useNavigate, useParams } from 'react-router';
 import { NavLink } from 'react-router-dom';
 
@@ -27,9 +29,12 @@ const Hashtag: React.FC<Props> = ({
   // useNavigate
   const navigate = useNavigate();
 
+  // useDispatch
+  const dispatch = useDispatch();
+
   // Handler FNC
   const handleClickPrivateTag = (catalog: string) => (e) => {
-    navigate(`/emails/catalog/${catalog.toUpperCase()}`);
+    navigate(`/emails/catalog/${catalog}`);
   };
 
   // useParams
@@ -42,6 +47,12 @@ const Hashtag: React.FC<Props> = ({
     if (params.catalog.toLowerCase() === catalog.toLowerCase()) setModalStatus(true);
   }, [params]);
 
+  const handleChangeModalStatus = () => {
+    // setModalStatus(false);
+    dispatch(setEmailsList([]));
+    navigate('/');
+  };
+
   return (
     <Box key={index}>
       <ButtonBase
@@ -53,7 +64,7 @@ const Hashtag: React.FC<Props> = ({
           justifyContent: 'space-between',
           padding: '5px 10px',
         }}>
-        <NavLink to={`/emails/catalog/${catalog.toUpperCase()}`}>
+        <NavLink to={`/emails/catalog/${catalog}`}>
           {({ isActive }) => {
             setModalStatus(isActive);
             return (
@@ -72,7 +83,7 @@ const Hashtag: React.FC<Props> = ({
         title={title}
         catalog={catalog}
         isActive={modalStatus}
-        handleChangeModalStatus={setModalStatus}
+        handleChangeModalStatus={handleChangeModalStatus}
       />
     </Box>
   );

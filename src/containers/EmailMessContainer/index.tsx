@@ -11,7 +11,7 @@ import { deleteIndexEmail, HashtagTabs } from '@redux/Email/reducer';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import dayjs, { Dayjs } from 'dayjs';
 import { userInfo } from 'os';
-import React, { useState } from 'react';
+import React, { forwardRef, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 
@@ -27,17 +27,23 @@ interface Props {
   onUpdateHashtagClick?: (hashtags: HashtagTabs[]) => void;
 }
 
-const EmailMessContainer: React.FC<Props> = ({
-  userInfo,
-  emailData,
-  onChangeStatus,
-  onShowHistory,
-  type,
-  isShowHeader,
-  isShowActions,
-  index,
-  onUpdateHashtagClick,
-}) => {
+const EmailMessContainerRef: React.ForwardRefRenderFunction<
+  HTMLDivElement | undefined,
+  Props
+> = (
+  {
+    userInfo,
+    emailData,
+    onChangeStatus,
+    onShowHistory,
+    type,
+    isShowHeader,
+    isShowActions,
+    index,
+    onUpdateHashtagClick,
+  },
+  ref,
+) => {
   // useState
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [valueApproveIn, setValueApproveIn] = useState<Dayjs>(
@@ -239,7 +245,7 @@ const EmailMessContainer: React.FC<Props> = ({
   };
 
   return (
-    <>
+    <Box ref={ref}>
       <EmailMess
         emailData={emailData}
         onChangeStatus={onChangeStatus}
@@ -284,8 +290,10 @@ const EmailMessContainer: React.FC<Props> = ({
           <Button onClick={handleApproveSettime}>Approve</Button>
         </Box>
       </ModalBase>
-    </>
+    </Box>
   );
 };
+
+const EmailMessContainer = forwardRef(EmailMessContainerRef);
 
 export default EmailMessContainer;

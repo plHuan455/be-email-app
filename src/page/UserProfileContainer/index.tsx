@@ -18,6 +18,7 @@ import { uploadFile } from '@api/uploadFile';
 import { toast } from 'react-toastify';
 import { AddEmployeeField } from '@components/organisms/TableManagerEmployeeContainer/AddEmployeeModal';
 import Layout from '@layouts/Layout';
+import { getUserWithEmail } from '@api/user';
 
 const staticData: {
   avatar: string;
@@ -100,8 +101,8 @@ const UserProfileContainer = () => {
 
   //   useQuery
   const queryData = useQuery({
-    queryKey: ['get-user-profile', isUpdateUserProfileSuccess],
-    queryFn: getUserInfo,
+    queryKey: ['get-user-profile', isUpdateUserProfileSuccess, currentId],
+    queryFn: () => getUserWithEmail(currentId ? +currentId : 0),
     onSuccess(res) {
       method.setValue('avatar', res.data.avatar);
       method.setValue('department', res.data.department);
@@ -138,39 +139,35 @@ const UserProfileContainer = () => {
     }
   };
 
-  if (isLoadingUserProfile) return <Loading isLoading={true} />;
-
   return (
-    // <Box
-    //   sx={{
-    //     height: '100vh',
-    //     padding: '80px 28px 28px 28px',
-    //     backgroundColor: '#EDEDF3',
-    //     borderTopLeftRadius: '65px',
-    //     overflow: 'scroll',
-    //   }}>
     <Layout.MainHaveActions>
       <Box className="flex flex-col rounded-xl mt-8 h-full p-16 shadow-md">
-        <Box className="flex-1">
-          {dataGetUserProfile &&
-            (isViewStatus ? (
-              <UserProfile userInfoData={dataGetUserProfile.data} />
-            ) : (
-              <UserProfileUpdate
-                onSubmit={handleSubmitUpdateForm}
-                method={method}
-                userInfoData={dataGetUserProfile.data}
-                onBackToView={onBackUserProfile}
-              />
-            ))}
-        </Box>
-        {isViewStatus && (
-          <Box className="flex justify-center py-6 gap-2">
-            <Button onClick={handleChangeStatus} className="bg-[#4E24C5]">
-              Update
-            </Button>
-            <Button onClick={onChangePassword}>Change Password</Button>
-          </Box>
+        {isLoadingUserProfile ? (
+          <Loading isLoading={true} />
+        ) : (
+          <>
+            <Box className="flex-1">
+              {dataGetUserProfile &&
+                (isViewStatus ? (
+                  <UserProfile userInfoData={dataGetUserProfile.data} />
+                ) : (
+                  <UserProfileUpdate
+                    onSubmit={handleSubmitUpdateForm}
+                    method={method}
+                    userInfoData={dataGetUserProfile.data}
+                    onBackToView={onBackUserProfile}
+                  />
+                ))}
+            </Box>
+            {isViewStatus && (
+              <Box className="flex justify-center py-6 gap-2">
+                <Button onClick={handleChangeStatus} className="bg-[#4E24C5]">
+                  Update
+                </Button>
+                <Button onClick={onChangePassword}>Change Password</Button>
+              </Box>
+            )}
+          </>
         )}
       </Box>
     </Layout.MainHaveActions>
