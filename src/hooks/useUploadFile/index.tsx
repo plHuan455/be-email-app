@@ -9,7 +9,10 @@ interface UploadFileOptions {
    * Prop support for dragDrop
    */
   containerId?: string;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  accept?: ('image/*' | 'application/pdf' | undefined)[];
+  checkType?: boolean;
+  disabled?: boolean;
 }
 
 function useUploadFile(options: UploadFileOptions = {}) {
@@ -32,6 +35,22 @@ function useUploadFile(options: UploadFileOptions = {}) {
       try {
         if (!e.target.files) return;
         const files = e.target.files;
+
+        /** Note
+         * Làm tạm, sẽ check tiếp
+         */
+        if (options.checkType) {
+          if (options.accept?.includes(files[0].type as any)) {
+            setFileList(files);
+            setFile(e.target.value);
+            return;
+          }
+          setFileList(undefined);
+          setFile(undefined);
+          e.target.files = null;
+          return;
+        }
+
         setFileList(files);
         setFile(e.target.value);
 
@@ -48,6 +67,7 @@ function useUploadFile(options: UploadFileOptions = {}) {
           });
           return;
         }
+        console.log(files[0].type);
         setImages([URL.createObjectURL(files[0])]);
       } catch (error) {
         console.error(error);
@@ -57,7 +77,7 @@ function useUploadFile(options: UploadFileOptions = {}) {
 
   React.useEffect(() => {
     let upload = document.getElementById('upload-' + id);
-    const container = document.getElementById(options.containerId || 'root')!
+    const container = document.getElementById(options.containerId || 'root')!;
 
     if (!upload) {
       upload = document.createElement('div');
@@ -67,13 +87,12 @@ function useUploadFile(options: UploadFileOptions = {}) {
       if (options.dragDrop) {
         upload.className = 'absolute w-full h-full opacity-0';
 
-        // don't provide containerId
         if (!options.containerId) {
           console.error('Please provide "containerId" when flag "dragDrop" is true');
-          
+
           upload.className = 'hidden';
         } else {
-          container.classList.add('relative')
+          container.classList.add('relative');
         }
       }
       container?.append(upload);
@@ -88,9 +107,9 @@ function useUploadFile(options: UploadFileOptions = {}) {
 
   React.useEffect(() => {
     const _onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      onChange(options)(e)
-      options.onChange && options.onChange(e)
-    }
+      onChange(options)(e);
+      options.onChange && options.onChange(e);
+    };
     if (uploadRoot) {
       uploadRoot.render(
         <InputUploadFile
@@ -98,10 +117,19 @@ function useUploadFile(options: UploadFileOptions = {}) {
           multiple={options.multiple || false}
           onChange={_onChange}
           ref={inputFileRef}
+          accept={options.accept && options.accept.join(',')}
+          disabled={options.disabled}
         />,
       );
     }
-  }, [uploadRoot, onChange, inputFileRef, options.multiple, options.dragDrop, options.onChange]);
+  }, [
+    uploadRoot,
+    onChange,
+    inputFileRef,
+    options.multiple,
+    options.dragDrop,
+    options.onChange,
+  ]);
 
   return {
     onUpload,
@@ -109,19 +137,18 @@ function useUploadFile(options: UploadFileOptions = {}) {
   };
 }
 
-const InputUploadFile = React.forwardRef<HTMLInputElement, any>(
-  (props, ref) => {
-    return (
-      <input
-        onChange={props.onChange}
-        type={'file'}
-        ref={ref}
-        accept={'image/*'}
-        multiple={props.multiple}
-        {...props}
-      />
-    );
-  },
-);
+const InputUploadFile = React.forwardRef<HTMLInputElement, any>((props, ref) => {
+  return (
+    <input
+      className="input__file"
+      onChange={props.onChange}
+      type={'file'}
+      ref={ref}
+      accept={props.accept}
+      multiple={props.multiple}
+      {...props}
+    />
+  );
+});
 
 export default useUploadFile;

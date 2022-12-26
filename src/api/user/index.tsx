@@ -64,10 +64,10 @@ export interface UserProfileResponse {
 }
 
 //GET EMAIL WITH STATUS
-export const getUserWithEmail = async (): Promise<
-  AxiosResponse<UserProfileResponse>
-> => {
-  const url = `${USER_PROFILE}`;
+export const getUserWithEmail = async (
+  id: number,
+): Promise<AxiosResponse<UserProfileResponse>> => {
+  const url = `${USER_PROFILE}/${id}`;
   const res = await ApiClient.get(url);
   return res.data;
 };

@@ -57,10 +57,10 @@ function LoginContainer() {
   const submitLogin = async ({ email, password }) => {
     try {
       const res = await login({ email, password });
-      // Change 'asdasd to res.data
+      // Change to res.data
       auth.signin({}, res.data, async () => {
         if (res.message === 'Login successful') {
-          const currentUser = await getUserWithEmail();
+          const currentUser = await getUserWithEmail(8);
           localStorage.setItem(
             'current_user_name',
             `${currentUser.data.first_name} ${currentUser.data.last_name}`,

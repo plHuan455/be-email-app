@@ -7,10 +7,10 @@ import { Button } from '@mui/material';
 import SignatureCanvas from 'react-signature-canvas';
 import { toast } from 'react-toastify';
 import Icon from '../Icon';
-import { rowsSign } from '@containers/SignatureContainer';
 import { useSelector } from 'react-redux';
 import { getDefaultSignId } from '@redux/selector';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { rowsSign } from '@containers/SignatureContainer/Main';
 
 interface Props {
   isOpen: boolean;
@@ -41,7 +41,7 @@ const ModalChooseSignature: React.FC<Props> = ({ isOpen, onClose, onSubmit }) =>
   const handleSubmitSign = () => {
     const rItem = rowsSign.find((e) => e.id === signDefault);
     console.log('r item --->', rItem);
-    onSubmit && onSubmit(rItem?.signature);
+    // onSubmit && onSubmit(rItem?.signature);
     onClose && onClose();
   };
 
@@ -67,7 +67,7 @@ const ModalChooseSignature: React.FC<Props> = ({ isOpen, onClose, onSubmit }) =>
                   <div
                     className="wrap-sign-img"
                     onClick={() => handleChangeSign(e.id)}>
-                    <img className="img-sign" src={e.signature} />
+                    <img className="img-sign" src={''} />
                     {e.id === signDefault && (
                       <div className="circle-check">
                         <CheckCircleIcon />
