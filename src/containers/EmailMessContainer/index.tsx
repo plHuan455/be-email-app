@@ -27,17 +27,23 @@ interface Props {
   onUpdateHashtagClick?: (hashtags: HashtagTabs[]) => void;
 }
 
-const EmailMessContainerRef: React.ForwardRefRenderFunction<HTMLDivElement | undefined, Props> = ({
-  userInfo,
-  emailData,
-  onChangeStatus,
-  onShowHistory,
-  type,
-  isShowHeader,
-  isShowActions,
-  index,
-  onUpdateHashtagClick,
-}, ref) => {
+const EmailMessContainerRef: React.ForwardRefRenderFunction<
+  HTMLDivElement | undefined,
+  Props
+> = (
+  {
+    userInfo,
+    emailData,
+    onChangeStatus,
+    onShowHistory,
+    type,
+    isShowHeader,
+    isShowActions,
+    index,
+    onUpdateHashtagClick,
+  },
+  ref,
+) => {
   // useState
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [valueApproveIn, setValueApproveIn] = useState<Dayjs>(
