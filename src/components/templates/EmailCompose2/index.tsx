@@ -225,12 +225,12 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                           data={toData}
                           value={value}
                           onChange={(_, value) => {
-                            // onChange(value);
-                          }}
-                          onChangeValue={(v) => {
-                            onChange(v);
+                            onChange(value);
                             update();
                             method.setValue('contactBlock', inputContactBlocks);
+                          }}
+                          onChangeValue={(v) => {
+                            // onChange(v);
                           }}
                         />
                         <span
@@ -260,8 +260,12 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                             value={value}
                             data={ccData}
                             defaultValue={value}
-                            onChangeValue={(v) => {
+                            onChange={(v) => {
                               onChange(v);
+                              update();
+                              method.setValue('contactBlock', inputContactBlocks);
+                            }}
+                            onChangeValue={(v) => {
                               update();
                               method.setValue('contactBlock', inputContactBlocks);
                             }}
@@ -281,6 +285,11 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                             value={value}
                             data={bccData}
                             defaultValue={value}
+                            onChange={(e, v) => {
+                              onChange(v);
+                              update();
+                              method.setValue('contactBlock', inputContactBlocks);
+                            }}
                             onChangeValue={(v) => {
                               onChange(v);
                               update();
@@ -452,7 +461,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                 )}
               </Box>
 
-              <Box className="flex">
+              {/* <Box className="flex">
                 <Box className="ml-4">
                   <Button onClick={() => setShowModalSignature(true)}>
                     New signature
@@ -463,7 +472,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                     Choose signature
                   </Button>
                 </Box>
-              </Box>
+              </Box> */}
 
               {/* ACTIONS */}
               <Box className="flex justify-end items-center flex-1">

@@ -118,7 +118,7 @@ const AutoCompleteReceive: React.FC<Props> = ({
       options={[...data, ...tempNewUserInfo]}
       getOptionLabel={(option) => option.contact_name}
       defaultValue={defaultValue ? defaultValue : []}
-      // filterSelectedOptions
+      filterSelectedOptions
       autoHighlight
       renderOption={(props, option, state) => (
         <RenderOption
