@@ -223,7 +223,12 @@ const Email: React.FC<Props> = () => {
 
   const changeEmailStatus = useCallback(
     (status, index) => {
-      if (status === 'delete' || status === 'spam' || status === 'unread') {
+      if (
+        status === 'delete' ||
+        status === 'spam' ||
+        status === 'unread' ||
+        status === 'start'
+      ) {
         if (status === 'delete') {
           setModal((prevState) => ({
             ...prevState,

@@ -88,7 +88,7 @@ export default class ApiClient {
   }
 
   static async delete(url: string, params: any): Promise<AxiosResponse> {
-    const requestUrl = `${url}?${stringify(params)}`;
+    const requestUrl = params ? `${url}?${stringify(params)}` : url;
 
     const config: AxiosRequestConfig = {
       headers: await this.getHeaders('multipart/form-data'),

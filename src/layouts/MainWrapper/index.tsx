@@ -16,22 +16,17 @@ import MinimizeEmailList, {
   MinimizeEmailTypes,
 } from '@components/templates/MinimizeEmailList';
 import { Email } from '@components/organisms/Email/Interface';
-import {
-  setHashtags,
-} from '@redux/Email/reducer';
+import { setHashtags } from '@redux/Email/reducer';
 import { fetchToken, onMessageListener } from '../../messaging_init_in_sw';
 import { deleteDeviceKey } from '@api/deviceKey';
 import { unShiftNotificationList } from '@redux/Notify/reducer';
 import { IS_EMPLOYEE_ROLE } from '@constants/localStore';
 import { useQuery } from '@tanstack/react-query';
 import { getHashtags } from '@api/email';
+import useLocalStorage from '@hooks/useLocalStorage';
 
 const sideBarWidth = 75;
 const emailStatusWidth = 290;
-
-const DEVICE_KEY_ID: number = JSON.parse(
-  localStorage.getItem('device_key_id') || '0',
-);
 
 const useStyles = makeStyles()((theme) => ({
   body: {
@@ -65,7 +60,7 @@ interface Setting {
 function MainWrapper({ children }: { children: React.ReactNode }) {
   const dispatch = useAppDispatch();
   const location = useLocation();
- 
+
   const [show, setShow] = useState(false);
   const [notification, setNotification] = useState({ title: '', body: '' });
 
@@ -93,11 +88,13 @@ function MainWrapper({ children }: { children: React.ReactNode }) {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
     auth.signout(() => {
       toast.success('Bái bai!');
     });
-    deleteDeviceKey(DEVICE_KEY_ID);
+    deleteDeviceKey();
+    localStorage.removeItem('device_key_id');
+    localStorage.removeItem('token');
+    localStorage.removeItem('device_token');
   };
 
   const handleChangePage = (url: string) => () => {
