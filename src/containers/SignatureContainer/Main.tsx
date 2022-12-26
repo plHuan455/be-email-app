@@ -148,7 +148,8 @@ const SignatureContainer = () => {
 
   const handleRowClick = (rowData) => {
     console.log('row data --->', rowData);
-    navigate(`edit/${rowData.row.id}`);
+    if (rowData.field === 'setDefault') return;
+    navigate(`edit/${rowData.id}`);
   };
 
   return (
@@ -160,7 +161,8 @@ const SignatureContainer = () => {
           pageSize={5}
           rowsPerPageOptions={[5]}
           style={{ backgroundColor: '#fff', borderRadius: 15 }}
-          onRowClick={(params) => handleRowClick(params)}
+          // onRowClick={(params) => handleRowClick(params)}
+          onCellClick={(params) => handleRowClick(params)}
         />
       </div>
       {/* <ModalDrawSignature

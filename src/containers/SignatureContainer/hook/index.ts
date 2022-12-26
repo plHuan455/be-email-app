@@ -83,24 +83,24 @@ export const useEditStoreManagement = () => {
   const hook = useCreateSignManagement();
   const { param, navigate, signature, setSignature, files, uploadImage } = hook;
 
-  useQuery(
-    ['getSignById', param.id],
-    () => {
-      //  getSignById(param.id!)s
-    },
-    {
-      onError: (error: any) => {
-        navigate('..');
-        console.error(new Error(error));
-        toast.error('Không thể tìm thấy sign này!');
-      },
-      onSuccess(data) {
-        console.log('getSignById --->', data);
-        // setSignature
-      },
-      enabled: !!param.id,
-    },
-  );
+  // useQuery(
+  //   ['getSignById', param.id],
+  //   () => {
+  //     //  getSignById(param.id!)
+  //   },
+  //   {
+  //     onError: (error: any) => {
+  //       navigate('..');
+  //       console.error(new Error(error));
+  //       toast.error('Không thể tìm thấy sign này!');
+  //     },
+  //     onSuccess(data) {
+  //       console.log('getSignById --->', data);
+  //       // setSignature
+  //     },
+  //     enabled: !!param.id,
+  //   },
+  // );
 
   const handleEdit = async () => {
     try {

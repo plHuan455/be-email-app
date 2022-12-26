@@ -152,7 +152,6 @@ const SignatureTemplate: React.FC<SignatureTemplateProps> = ({
         onCancel={onCancel}
         onSubmit={_handleSubmit(onSubmit as any)}
         disabledClear={disabledClear}
-        disabledSticky
       />
     </div>
   );

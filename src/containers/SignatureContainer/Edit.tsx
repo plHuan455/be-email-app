@@ -15,13 +15,15 @@ const UpdateSignContainer = () => {
     handleCancel,
   } = useEditStoreManagement();
 
-  if (signature.id === -1) return <div>Loading...</div>;
+  console.log('signature -->', signature);
+
+  // if (signature.id === -1) return <div>Loading...</div>;
 
   return (
     <SignatureTemplate
       schema={schema}
       formData={signature}
-      onChange={() => {}}
+      onChange={(formData) => setSignature(formData)}
       files={files}
       onChangeFile={setFiles}
       onSubmit={handleEdit}
