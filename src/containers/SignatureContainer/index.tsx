@@ -163,6 +163,7 @@ const SignatureContainer: React.FC<SignatureContainerProps> = ({isOpenAddSignatu
         isOpen={modalSignByIdNumber !== 0 || isOpenAddSignature}
         onSubmit={hanleSubmitSign}
         onClose={() => {
+          setModalSignByIdNumber(0);
           onCloseAddSignature && onCloseAddSignature();
         }}
       />
