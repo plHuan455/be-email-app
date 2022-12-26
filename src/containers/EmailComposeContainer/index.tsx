@@ -1,5 +1,5 @@
 import { sendEmail, deleteEmail, getHashtags } from '@api/email';
-import { motion, useAnimation, useAnimationControls } from 'framer-motion'
+import { motion, useAnimation, useAnimationControls } from 'framer-motion';
 import EmailCompose2, {
   EmailComposeFields,
 } from '@components/templates/EmailCompose2';
@@ -85,7 +85,7 @@ const hashtagList = [
 
 const currentUserEmail = localStorage.getItem('current_email');
 
-interface EmailComposeContainerProps { }
+interface EmailComposeContainerProps {}
 
 const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
   const {
@@ -113,7 +113,8 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
 
   const [attachFiles, setAttachFiles] = useState<(File | undefined)[]>([]);
 
-  const { method, tabColor, triggerClearData, onMinimizeEmailClick, onSendEmail } = useContext(EmailComposeContext);
+  const { method, tabColor, triggerClearData, onMinimizeEmailClick, onSendEmail } =
+    useContext(EmailComposeContext);
 
   if (!method) return null;
 
@@ -156,11 +157,11 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
         ),
       }));
 
-      setInputContactBlocks(inputContactBlocks)
+      setInputContactBlocks(inputContactBlocks);
     },
     onError: (error) => {
-      console.log(error)
-    }
+      console.log(error);
+    },
   });
 
   // const { mutate: submitEmailComposeMutate, isLoading: isEmailComposeSubmitting } =
@@ -327,28 +328,27 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
   //   });
   // };
 
-
   const handleMinimizeEmailClick = () => {
     onMinimizeEmailClick();
-  }
+  };
 
   const handleSubmit = (values: EmailComposeFields) => {
-    onSendEmail({ ...values, sendAt: selectedDate })
-  }
+    onSendEmail({ ...values, sendAt: selectedDate });
+  };
 
   const ringAnimationControl = useAnimationControls();
 
   useEffect(() => {
-    if(triggerClearData){
-      ringAnimationControl.start({ 
+    if (triggerClearData) {
+      ringAnimationControl.start({
         translateX: ['5px', '-5px', '5px', '-5px', '0px'],
-     });
+      });
     }
-  }, [triggerClearData])
+  }, [triggerClearData]);
 
   return (
     <>
-      <motion.div animate={ringAnimationControl} transition={{duration: 0.2}}>
+      <motion.div animate={ringAnimationControl} transition={{ duration: 0.2 }}>
         <EmailCompose2
           inputContactBlocks={inputContactBlocks}
           method={method}

@@ -6,6 +6,7 @@ import { motion, usePresence, AnimatePresence } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
 import { InputContactBlock } from '@components/molecules/AutoCompleteReceive';
 import { HashtagTabs } from '@redux/Email/reducer';
+import { CustomFile } from '../EmailCompose2';
 
 export interface MinimizeEmailTypes {
   id?: number;
@@ -13,7 +14,10 @@ export interface MinimizeEmailTypes {
   to?: InputContactBlock[];
   cc?: UserInfo[];
   bcc?: UserInfo[];
-  attachFiles?: { files: (File | undefined)[]; fileUrls: (string | undefined)[] };
+  attachFiles?: {
+    files: (CustomFile | undefined)[];
+    fileUrls: (string | undefined)[];
+  };
   subject?: string;
   content?: string;
   sendAt?: string | null;
@@ -34,6 +38,12 @@ const MinimizeEmailList: React.FC<MinimizeEmailListProps> = ({
   onCloseClick,
 }) => {
   const location = useLocation();
+  console.log(data);
+
+  const handleCloseMiniMail = (index: number, value) => {
+    onCloseClick(value);
+  };
+
   return (
     <div className="t-minimizeEmailList">
       <AnimatePresence>
@@ -86,9 +96,10 @@ const MinimizeEmailList: React.FC<MinimizeEmailListProps> = ({
               }}>
               <MinimizeEmail
                 key={`minimize-email-list-${index}`}
+                data={value}
                 title={value.subject || 'New Message'}
                 onMaximizeClick={() => onMaximizeClick(value)}
-                onCloseClick={() => onCloseClick(value)}
+                onCloseClick={() => handleCloseMiniMail(index, value)}
               />
             </motion.div>
           </motion.div>

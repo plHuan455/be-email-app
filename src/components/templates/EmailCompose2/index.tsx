@@ -43,12 +43,19 @@ import React from 'react';
 import classNames from 'classnames';
 import _ from 'lodash';
 
+export interface CustomFile extends File {
+  percentage: number;
+}
+
 export interface EmailComposeFields {
   to: InputContactBlock[];
   cc: UserInfo[];
   bcc: UserInfo[];
   contactBlock: InputContactBlock[];
-  attachFiles: { fileUrls: (string | undefined)[]; files: (File | undefined)[] };
+  attachFiles: {
+    fileUrls: (string | undefined)[];
+    files: (CustomFile | undefined)[];
+  };
   subject: string;
   content: any;
   hashtags: { name: string; value: string }[];
@@ -63,6 +70,7 @@ export interface EmailComposeFields {
 interface EmailComposeProps {
   inputContactBlocks: InputContactBlock[];
   method: UseFormReturn<EmailComposeFields>;
+  index?: number;
   isFullScreen?: boolean;
   isShowCCForm?: boolean;
   attachFiles: (File | undefined)[];
@@ -88,6 +96,7 @@ interface EmailComposeProps {
 const EmailCompose2: React.FC<EmailComposeProps> = ({
   inputContactBlocks,
   method,
+  index,
   isFullScreen = false,
   selectedDate,
   isShowCCForm = false,
@@ -403,18 +412,20 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                           if (value.files.length === 0) return <></>;
                           return (
                             <AttachFiles2
+                              emailIndex={index}
                               fileUrls={value.fileUrls}
                               fileList={value.files}
                               inputId="react-compose-file-input"
                               onUploaded={(index, url) => {
                                 const cloneAttachFiles = { ...value };
                                 cloneAttachFiles.fileUrls[index] = url;
+                                cloneAttachFiles.files[index].percentage = 100;
                                 onChange(cloneAttachFiles);
                               }}
                               onDelete={(index) => {
                                 const cloneAttachFile = { ...value };
-                                cloneAttachFile.files[index] = undefined;
-                                cloneAttachFile.fileUrls[index] = undefined;
+                                cloneAttachFile.files.splice(index, 1);
+                                cloneAttachFile.fileUrls.splice(index, 1);
                                 onChange(cloneAttachFile);
                               }}
                               onDeleteAll={() => {
