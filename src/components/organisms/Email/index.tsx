@@ -1,5 +1,12 @@
 import { Box, Button } from '@mui/material';
-import React, { ReactNode, useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  ReactNode,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 
 import avatarImg from '@assets/images/avatars/avatar-2.jpg';
 import { Email, UserInfo } from './Interface';
@@ -25,6 +32,7 @@ import { number } from 'yup';
 import { EmailUpdateQuery } from '@api/email/interface';
 import EmailMessContainer from '@containers/EmailMessContainer';
 import { emailData } from '@layouts/EmailStatusBar';
+import useLocalStorage from '@hooks/useLocalStorage';
 
 interface ModalForm {
   title: string;
@@ -144,7 +152,6 @@ interface Props {}
 
 const Email: React.FC<Props> = () => {
   const lastEmailMessRef = useRef<HTMLDivElement>(null);
-  const [searchParams] = useSearchParams();
 
   const [showHistory, setShowHistory] = useState<number | null>(null);
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
@@ -156,6 +163,26 @@ const Email: React.FC<Props> = () => {
       handleCloseModal();
     },
   });
+
+  // useLocalstorage
+  const [CURRENT_ROLE] = useLocalStorage('current_role', '');
+
+  // useSearchParams
+  const [searchParams] = useSearchParams();
+  const tabSearchParams = searchParams.get('tab');
+
+  const isShowActions = useMemo(() => {
+    // Nếu là Admin thì xét tab
+    if (CURRENT_ROLE.toLowerCase() === 'admin') {
+      // Nếu ở tab all thì ẩn actions
+      if (tabSearchParams === 'all') return false;
+      // không thì cho hiện
+      return true;
+    }
+
+    // Không phải admin thì cho show actions
+    return true;
+  }, [tabSearchParams, CURRENT_ROLE]);
 
   // queryClient
   const queryClient = useQueryClient();
@@ -174,10 +201,22 @@ const Email: React.FC<Props> = () => {
     });
   const { mutate: updateImportantMutate, isLoading: isUpdateImportantLoading } =
     useMutation({
-      mutationKey: ['email-update-hashtag'],
+      mutationKey: ['email-update-is-important'],
       mutationFn: (params: { id: number; data: EmailUpdateQuery }) =>
         updateEmailWithQuery(params.id, {
           email: { ...params.data, is_favorite: !params.data.is_favorite },
+          send_at: params.data.send_at,
+        }),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['get-emails-list'] });
+      },
+    });
+  const { mutate: updateEmailStatus, isLoading: isLoadingUpdateEmailStatus } =
+    useMutation({
+      mutationKey: ['email-update-status'],
+      mutationFn: (params: { id: number; data: EmailUpdateQuery }) =>
+        updateEmailWithQuery(params.id, {
+          email: { ...params.data },
           send_at: params.data.send_at,
         }),
       onSuccess: () => {
@@ -286,24 +325,19 @@ const Email: React.FC<Props> = () => {
             break;
           }
           case 'unread': {
-            setModal((prevState) => ({
-              ...prevState,
-              title: 'Bạn có chắc muốn bỏ qua Email này chứ?',
-              content: (
-                <p>Nếu bấm có, Email này sẽ được thêm vào danh sách xem sau.</p>
-              ),
-              onSubmit() {
-                const cloneEmailsList = [...EmailsList];
+            const cloneEmailsList = [...EmailsList];
 
-                const unreadEmail = cloneEmailsList.splice(index, 1);
+            const email = cloneEmailsList[index];
 
-                dispatch(addUnreadEmail(unreadEmail));
-                dispatch(setEmailsList(cloneEmailsList));
+            const unreadEmail = cloneEmailsList.splice(index, 1);
 
-                handleCloseModal();
-              },
-            }));
-            setIsOpenModal(true);
+            dispatch(addUnreadEmail(unreadEmail));
+            dispatch(setEmailsList(cloneEmailsList));
+
+            updateEmailStatus({
+              id: email.id,
+              data: { ...email, status: 'unread' },
+            });
             break;
           }
           case 'star': {
@@ -367,7 +401,11 @@ const Email: React.FC<Props> = () => {
             emailData={email}
             onShowHistory={handleShowHistory}
             isShowHeader={showHistory === email.id}
-            isShowActions={searchParams.get('tab') === 'me' && !currRole?.startsWith('EMPLOYEE') ? false : true}
+            isShowActions={
+              searchParams.get('tab') === 'me' && !currRole?.startsWith('EMPLOYEE')
+                ? false
+                : true
+            }
             onChangeStatus={changeEmailStatus}
             index={index}
             onUpdateHashtagClick={(hashtagsList) => {
