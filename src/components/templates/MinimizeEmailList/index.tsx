@@ -28,12 +28,14 @@ export interface MinimizeEmailTypes {
 
 interface MinimizeEmailListProps {
   data: MinimizeEmailTypes[];
+  showMinimizeEmailId?: { id?: number; cacheId?: number };
   onMaximizeClick: (data: MinimizeEmailTypes) => void;
   onCloseClick: (data: MinimizeEmailTypes) => void;
 }
 
 const MinimizeEmailList: React.FC<MinimizeEmailListProps> = ({
   data = [],
+  showMinimizeEmailId,
   onMaximizeClick,
   onCloseClick,
 }) => {
@@ -49,7 +51,7 @@ const MinimizeEmailList: React.FC<MinimizeEmailListProps> = ({
       <AnimatePresence>
         {data.map((value, index) => (
           <motion.div
-            key={`minimize-email-list-${value.id || value.cacheId}`}
+            key={`minimize-email-list-${index}`}
             className="t-minimizeEmailList_itemWrapper"
             style={{ position: 'relative', marginLeft: rem(5), height: rem(46) }}
             initial={{ width: 0, marginLeft: 0 }}
@@ -60,24 +62,27 @@ const MinimizeEmailList: React.FC<MinimizeEmailListProps> = ({
               stiffness: 500,
               damping: 50,
               mass: 1,
-              duration: 5,
+              duration: .2,
             }}>
             <motion.div
               className="t-minimizeEmailList_item"
               initial={
                 location.pathname === '/emails/compose'
                   ? {
-                      translateY: '-800px',
-                      translateX: '-100px',
-                      opacity: 0,
-                      width: rem(500),
-                    }
+                    translateY: '-800px',
+                    translateX: '-100px',
+                    opacity: 0,
+                    width: rem(500),
+                  }
                   : {}
               }
-              animate={{ translateY: 0, translateX: 0, opacity: 1, width: rem(260) }}
+              animate={
+                (value.cacheId === showMinimizeEmailId?.cacheId && value.cacheId !== undefined) ||
+                  (value.id === showMinimizeEmailId?.id && value.id !== undefined) ?
+                  { translateY: '-800px', translateX: '-100px', opacity: 0, width: rem(500) } :
+                  { translateY: 0, translateX: 0, opacity: 1, width: rem(260) }
+              }
               exit={{
-                translateY: '-800px',
-                translateX: '-100px',
                 opacity: 0,
                 width: rem(500),
               }}
@@ -86,7 +91,7 @@ const MinimizeEmailList: React.FC<MinimizeEmailListProps> = ({
                 stiffness: 500,
                 damping: 50,
                 mass: 1,
-                duration: 5,
+                duration: .2,
               }}
               style={{
                 width: rem(260),
