@@ -174,6 +174,20 @@ const EmailMess: React.FC<Props> = ({
   const _renderActionsPendingItems = useMemo(() => {
     const _renderActionsPendingItem = () => {
       if (currRole?.startsWith('EMPLOYEE')) {
+        if(approveAt.getTime() > Date.now())
+          return (
+            <Box>
+              <ControlEmailSend
+                variant="employeeViewApproveTime"
+                title='Email will be sent in: '
+                // scheduleAt={dayjs(sentAt).format('MMMM, DD YYYY - HH:mm')}
+                remainMinutes={Math.floor(
+                  (approveAt.getTime() - Date.now()) / 1000 / 60,
+                )}
+              />
+            </Box>
+          )
+
         if (emailData.type === 'send' && sentAt.getTime() > Date.now())
           return (
             <Box>

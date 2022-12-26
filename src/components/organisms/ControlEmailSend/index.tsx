@@ -1,12 +1,12 @@
 import { Box, Button } from '@mui/material';
 import { rem } from '@utils/functions';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 interface ControlEmailSendProps {
   title?: string;
   remainMinutes?: number;
   scheduleAt?: string;
-  variant?: 'cancel' | 'undoSendNow';
+  variant?: 'cancel' | 'undoSendNow' | 'employeeViewApproveTime';
   onUndo?: () => void;
   onSend?: () => void;
   onCancel?: () => void;
@@ -34,24 +34,26 @@ const ControlEmailSend: React.FC<ControlEmailSendProps> = ({
     return () => clearInterval(handleInterval);
   }, [remainMinutes]);
 
-  if (remainMinutesState <= 0) return null;
+  const renderRemainText = remainMinutesState <= 0 ? 'Sending...' : `${remainMinutesState} minutes`;
 
   return (
     <Box className="t-controlEmailSend flex actions justify-end py-4">
       <Box
-        className="flex items-center px-4 py-2 rounded-[16px]"
+        className="flex items-center px-4 rounded-[16px]"
         sx={{
           backgroundColor: '#F6F3FD',
           fontSize: rem(12),
           lineHeight: rem(13),
           color: '#181818',
+          py: variant === 'employeeViewApproveTime' ? rem(24): rem(8),
         }}>
         <Box className="pr-7 justify-self-end">
           <p className="text-[#181818] text-[14px] font-normal">
             {title}
             <span className="text-[#554CFF] inline-block pl-1">
+              {scheduleAt ? scheduleAt : renderRemainText}
               {/* {remainMinutesState} minutes */}
-              {scheduleAt}
+              {/* {scheduleAt} */}
             </span>
           </p>
         </Box>
