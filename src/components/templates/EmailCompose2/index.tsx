@@ -390,20 +390,6 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                       isHaveLogo={true}
                       logo={<LogoWithLabel />}
                     /> */}
-                    {/* Private Hashtag */}
-                    <Controller
-                      name="hashtags"
-                      render={({ field: { value, onChange } }) => (
-                        <HashtagInput
-                          label="Hashtags: "
-                          optionList={hashtagOptions}
-                          value={value}
-                          onChange={onChange}
-                          placeholder="Enter hashtags"
-                          optionRegex={new RegExp(/([a-zA-Z0-9]+\b)/)}
-                        />
-                      )}
-                    />
                     {/* Files List */}
                     <Box>
                       <Controller
@@ -436,6 +422,20 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                         }}
                       />
                     </Box>
+                    {/* Private Hashtag */}
+                    <Controller
+                      name="hashtags"
+                      render={({ field: { value, onChange } }) => (
+                        <HashtagInput
+                          label="Hashtags: "
+                          optionList={hashtagOptions}
+                          value={value}
+                          onChange={onChange}
+                          placeholder="Enter hashtags"
+                          optionRegex={new RegExp(/([a-zA-Z0-9]+\b)/)}
+                        />
+                      )}
+                    />
                   </Box>
                 </Box>
               </Box>
