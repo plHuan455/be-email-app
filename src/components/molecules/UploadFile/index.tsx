@@ -4,9 +4,10 @@ import ProgressBar from '@components/atoms/ProgressBar';
 import { AttachFile } from '@components/organisms/EmailMessEmpty';
 import { Box } from '@mui/material';
 import { useQuery } from '@tanstack/react-query';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import styles from './styles.module.scss';
 import CloseIcon from '@mui/icons-material/Close';
+import { maxFileSize } from '@utils/variable';
 
 interface Props {
   data: any;
@@ -30,19 +31,30 @@ const UploadFile: React.FC<Props> = ({
     // data.preview = URL.createObjectURL(data);
 
     const res = {
-      ...data,
+      name: data.name,
+      url: '',
+      type: data.type,
       percentage: data?.percentage ?? 0,
     };
 
     return res;
   });
 
-  console.log('upload file', progressPercent);
+  console.log('upload file name', progressPercent);
+
+  useEffect(() => {
+    console.log('uploaded');
+    console.log(customData);
+  }, [customData]);
 
   const { isLoading: isUploadingFile } = useQuery({
     queryKey: [`upload-file-${data.name}`, data],
     queryFn: async () => {
       onUploading(true);
+      console.log('uploading', data);
+      if (data.size > maxFileSize) {
+        throw new Error('Exceed maximum file size');
+      }
       return await uploadFile(data);
     },
     onSuccess(res) {
@@ -55,7 +67,18 @@ const UploadFile: React.FC<Props> = ({
       if (onUploaded) onUploaded(res.data);
       onUploading(false);
     },
-    onError(err) {
+    onError(err: any) {
+      if (err.message.includes('Exceed maximum file size')) {
+        setCustomData((prevState) => ({
+          ...prevState,
+          type: 'exceedFileSize',
+          percentage: 100,
+        }));
+        console.log('Should be here');
+        setProgressPercent(100);
+        onUploading(false);
+        return;
+      }
       setCustomData((prevState) => ({
         ...prevState,
         type: `error`,
@@ -95,7 +118,8 @@ const UploadFile: React.FC<Props> = ({
     }
   }, [isUploadingFile]);
 
-  const { name, url, type, percentage } = customData;
+  const { name, url, type } = customData;
+  console.log('file name', name);
 
   const _renderIconFile = useMemo(() => {
     return (
@@ -105,27 +129,60 @@ const UploadFile: React.FC<Props> = ({
     );
   }, [customData]);
 
+  const renderUploadAlert = useCallback(() => {
+    console.log('uploaded file type', type);
+    if (type === 'exceedFileSize') {
+      return (
+        <p className="font-medium text-[14px] text-[#CF0808]">
+          Exceeds maximum upload file size (Max: 200MB)
+        </p>
+      );
+    }
+    if (type === 'error') {
+      return (
+        <p className="font-medium text-[14px] text-[#CF0808]">
+          An error occurred while uploading the file
+        </p>
+      );
+    }
+    return (
+      <a
+        className="text-[#0F6AF1] text-[13px] font-medium hover:underline"
+        href={url}
+        target="_blank">
+        {url}
+      </a>
+    );
+  }, [type, url]);
+
   return (
     <Box className={`${styles.file} flex mb-4 relative flex-col`}>
       <Box className="flex">
         <Box>{_renderIconFile}</Box>
         <Box className={`${styles.main} pl-3 flex-1`}>
-          <p className="text-[#495057] text-[14px] font-medium leading-5">{name}</p>
+          <p className="text-[#495057] text-[14px] font-medium leading-5">
+            {data.name}
+          </p>
 
-          {progressPercent < 100 ? (
-            <ProgressBar percent={progressPercent} />
-          ) : type === 'error' ? (
-            <p className="font-medium text-[14px] text-[#CF0808]">
-              An error occurred while uploading the file
-            </p>
-          ) : (
-            <a
-              className="text-[#0F6AF1] text-[13px] font-medium hover:underline"
-              href={url}
-              target="_blank">
-              {url}
-            </a>
-          )}
+          {
+            progressPercent < 100 ? (
+              <ProgressBar percent={progressPercent} />
+            ) : (
+              renderUploadAlert()
+            )
+            // type === 'error' ? (
+            //   <p className="font-medium text-[14px] text-[#CF0808]">
+            //     An error occurred while uploading the file
+            //   </p>
+            // ) : (
+            //   <a
+            //     className="text-[#0F6AF1] text-[13px] font-medium hover:underline"
+            //     href={url}
+            //     target="_blank">
+            //     {url}
+            //   </a>
+            // )
+          }
         </Box>
       </Box>
       <button
