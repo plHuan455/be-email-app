@@ -16,7 +16,12 @@ export interface SignItem {
   signature: string;
 }
 
-const SignatureContainer = () => {
+interface SignatureContainerProps {
+  isOpenAddSignature?: boolean;
+  onCloseAddSignature?: () => void;
+}
+
+const SignatureContainer: React.FC<SignatureContainerProps> = ({isOpenAddSignature = false, onCloseAddSignature}) => {
   // hook
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -155,8 +160,11 @@ const SignatureContainer = () => {
         />
       </div>
       <ModalDrawSignature
-        isOpen={modalSignByIdNumber !== 0}
+        isOpen={modalSignByIdNumber !== 0 || isOpenAddSignature}
         onSubmit={hanleSubmitSign}
+        onClose={() => {
+          onCloseAddSignature && onCloseAddSignature();
+        }}
       />
     </div>
   );

@@ -18,6 +18,7 @@ import { attempt, update } from "lodash";
 interface EmailComposeContextTypes {
   method?: UseFormReturn<EmailComposeFields>,
   tabColor?: string;
+  triggerClearData: boolean;
   onSendEmail: (values: (EmailComposeFields & { sendAt: Dayjs | null | undefined })) => void;
   onNewComposeClick: () => void;
   onMinimizeEmailClick: () => void;
@@ -25,6 +26,7 @@ interface EmailComposeContextTypes {
 }
 
 export const EmailComposeContext = createContext<EmailComposeContextTypes>({
+  triggerClearData: false,
   onSendEmail: () => { },
   onNewComposeClick: () => { },
   onMinimizeEmailClick: () => { },
@@ -44,6 +46,7 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
   const alertDialog = useAlertDialog();
 
   const storeDraftTimeOutFunc = useRef<NodeJS.Timeout>();
+  const triggerTimeOutRef = useRef<NodeJS.Timeout>();
 
   const minimizeEmailList = useAppSelector(state => state.email.minimizeEmailList);
 
@@ -65,6 +68,7 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
 
   const [showMinimizeEmailId, setShowMinimizeEmailId] = useState<{ id?: number; cacheId?: number }>();
   const [tabColor, setTabColor] = useState<string>();
+  const [triggerClearData, setTriggerClearData] = useState<boolean>(false);
 
   // MUTATIONS
   const { mutate: deleteEmailMutate } = useMutation({
@@ -164,6 +168,13 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
     method.setValue('subject', data.subject ?? '');
     method.setValue('attachFiles', data.attachFiles ?? {files: [], fileUrls: []});
     method.setValue('hashtags', data.hashtags ?? []);
+  }
+  const handleTriggerClearData = () => {
+    clearTimeout(triggerTimeOutRef.current);
+    setTriggerClearData(true);
+    triggerTimeOutRef.current = setTimeout(() => {
+      setTriggerClearData(false);
+    }, 200)
   }
 
 
@@ -304,6 +315,9 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
 
     /** NOT HAVE DATA AND ISN'T CALL API STORE DRAFT  */
     if(isEmailDataEmpty && !showMinimizeEmailId) {
+      if(location.pathname === '/emails/compose') {
+        handleTriggerClearData();
+      }
       navigate('/emails/compose');
       return;
     }
@@ -405,13 +419,14 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
     return {
       method,
       tabColor,
+      triggerClearData,
       onSendEmail: handleSendEmail,
       onNewComposeClick: handleNewComposeClick,
       onMinimizeEmailClick: handleMinimizeEmailClick,
       onMaximizeEmailClick: () => {
       }
     }
-  }, [method, tabColor, handleMinimizeEmailClick, handleNewComposeClick])
+  }, [method, tabColor, triggerClearData, handleMinimizeEmailClick, handleNewComposeClick])
 
   // useEffect(() => {
   //   const renderArray = (from: number, to: number) => {
@@ -423,14 +438,14 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
   //   })()
   // }, [])
 
-  const convertMinimizeEmailList = useMemo(() => {
-    if (!showMinimizeEmailId) return minimizeEmailList
-    return minimizeEmailList.filter(value => {
-      if (value.id === undefined) return value.cacheId !== showMinimizeEmailId.cacheId;
+  // const convertMinimizeEmailList = useMemo(() => {
+  //   if (!showMinimizeEmailId) return minimizeEmailList
+  //   return minimizeEmailList.filter(value => {
+  //     if (value.id === undefined) return value.cacheId !== showMinimizeEmailId.cacheId;
 
-      return value.id !== showMinimizeEmailId.id
-    })
-  }, [minimizeEmailList, showMinimizeEmailId])
+  //     return value.id !== showMinimizeEmailId.id
+  //   })
+  // }, [minimizeEmailList, showMinimizeEmailId])
 
   return (
     <EmailComposeContext.Provider value={emailContextValue}>
@@ -438,7 +453,8 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
         <Outlet />
       </MainWrapper>
       <MinimizeEmailList
-        data={convertMinimizeEmailList}
+        data={minimizeEmailList}
+        showMinimizeEmailId={showMinimizeEmailId}
         onMaximizeClick={handleMaximizeEmailClick}
         onCloseClick={handleCloseClick}
       />

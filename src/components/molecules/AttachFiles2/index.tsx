@@ -1,5 +1,7 @@
+import { CustomFile } from '@components/templates/EmailCompose2';
 import { Box, Button, Typography } from '@mui/material';
 import { addHttp } from '@utils/functions';
+import { useEffect } from 'react';
 
 import UploadFile from '../UploadFile';
 
@@ -9,14 +11,16 @@ export interface FileInfoTypes {
 }
 interface AttachFiles2Props {
   inputId: string;
-  fileList: (File | undefined)[];
+  fileList: (CustomFile | undefined)[];
   fileUrls: (string | undefined)[];
+  emailIndex?: number;
   onUploaded: (index: number, url: string) => void;
   onDelete: (index: number) => void;
   onDeleteAll: () => void;
 }
 
 const AttachFiles2: React.FC<AttachFiles2Props> = ({
+  emailIndex,
   fileList,
   fileUrls,
   onUploaded,
@@ -24,6 +28,7 @@ const AttachFiles2: React.FC<AttachFiles2Props> = ({
   onDeleteAll,
 }) => {
   console.log(fileList);
+
   return (
     <Box className="m-attachFile2">
       <Box className="mb-4 flex items-center justify-between">
@@ -32,7 +37,7 @@ const AttachFiles2: React.FC<AttachFiles2Props> = ({
           className="text-[#495057] font-bold leading-4 text-[16px]">
           {`File (${fileList.length})`}
         </Typography>
-        <Button variant="text" onClick={() => onDeleteAll()}>
+        <Button variant="text" onClick={onDeleteAll}>
           Delete all
         </Button>
       </Box>

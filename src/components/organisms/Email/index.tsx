@@ -18,7 +18,7 @@ import {
   setEmailsList,
 } from '@redux/Email/reducer';
 import ModalBase from '@components/atoms/ModalBase';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useMutation } from '@tanstack/react-query';
 import { number } from 'yup';
@@ -143,6 +143,7 @@ interface Props {}
 
 const Email: React.FC<Props> = () => {
   const lastEmailMessRef = useRef<HTMLDivElement>(null);
+  const [searchParams] = useSearchParams();
 
   const [showHistory, setShowHistory] = useState<number | null>(null);
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
@@ -301,6 +302,7 @@ const Email: React.FC<Props> = () => {
     [showHistory],
   );
 
+  const currRole = localStorage.getItem('current_role')?.toUpperCase();
   return (
     <Box className="w-full flex flex-wrap flex-col">
       {isLoading ? (
@@ -317,7 +319,7 @@ const Email: React.FC<Props> = () => {
             emailData={email}
             onShowHistory={handleShowHistory}
             isShowHeader={showHistory === email.id}
-            isShowActions={true}
+            isShowActions={searchParams.get('tab') === 'me' && !currRole?.startsWith('EMPLOYEE') ? false : true}
             onChangeStatus={changeEmailStatus}
             index={index}
             onUpdateHashtagClick={(hashtagsList) => {
