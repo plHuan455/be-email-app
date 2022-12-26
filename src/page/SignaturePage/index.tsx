@@ -6,7 +6,7 @@ import React, { useState } from 'react';
 const SignaturePage = () => {
   const [isOpenAddSignature, setIsOpenAddSignature] = useState<boolean>();
   return (
-    <Layout.MainHaveActions headTitle="Signature" onClickAdd={() => setIsOpenAddSignature(true)}>
+    <Layout.MainHaveActions isHaveHeader headTitle="Signature" onClickAdd={() => setIsOpenAddSignature(true)}>
       <SignatureLayout isOpenAddSignature={isOpenAddSignature} onCloseAddSignature={() => setIsOpenAddSignature(false)} />
     </Layout.MainHaveActions>
   );
