@@ -28,6 +28,7 @@ import ContactSharing from './Contact/ContactSharing';
 import ContactGroups from './Contact/ContactGroup';
 import SignaturePage from './SignaturePage';
 import SignatureContainer from '@containers/SignatureContainer';
+import MainWrapperContainer from '@containers/MainWrapperContainer';
 
 export const managerRouter: RouteObject[] = [
   {
@@ -99,7 +100,7 @@ export const sideBarRouter: RouteObject[] = [
 
 export const declareRouter: RouteObject[] = [
   {
-    element: <ProtectedRoute children={<MainWrapper />} />,
+    element: <ProtectedRoute children={<MainWrapperContainer />} />,
     children: [
       {
         path: '/',

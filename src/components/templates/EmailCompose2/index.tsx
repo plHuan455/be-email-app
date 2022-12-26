@@ -10,7 +10,6 @@ import AutoCompleteReceive, {
 import EmailComposeFormGroup from '@components/molecules/EmailComposeFormGroup';
 import WindowComposeActions from '@components/molecules/WindowComposeActions';
 import { Editor } from 'react-draft-wysiwyg';
-import { EditorState, ContentState, convertToRaw, convertFromHTML } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
 import { Box, Button, Typography } from '@mui/material';
@@ -56,7 +55,7 @@ export interface EmailComposeFields {
   subject: string;
   content: any;
   hashtags: { name: string; value: string }[];
-  sendAt?: string | null;
+  from: string | null
 }
 
 // export interface HashTagTypes {
@@ -147,9 +146,8 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
           className="p-8 flex items-center justify-center w-full h-full"
           onSubmit={method.handleSubmit(onSubmit)}>
           <Box
-            className={`flex flex-col h-full w-full mx-auto shadow-xl bg-white rounded-3xl overflow-hidden z-5 transition-all ${
-              isFullScreen && 'fixed top-0 left-0 bottom-0'
-            }`}>
+            className={`flex flex-col h-full w-full mx-auto shadow-xl bg-white rounded-3xl overflow-hidden z-5 transition-all ${isFullScreen && 'fixed top-0 left-0 bottom-0'
+              }`}>
             <WindowComposeActions
               className="p-3 pr-3pt-3 pr-3"
               sx={{
@@ -224,12 +222,16 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                       className="py-1"
                       label="From:"
                       isHaveBorderBottom={true}>
-                      <AutoCompleteReceive
-                        value={[]}
-                        data={backUpData}
-                        defaultValue={[]}
-                        isShowCcFromLabel={false}
-                        isReadOnly={true}
+                      <Controller
+                        name="from"
+                        render={({field: {value}}) => (
+                          <AutoCompleteReceive
+                            value={[]}
+                            data={backUpData}
+                            defaultValue={[]}
+                            isShowCcFromLabel={false}
+                            isReadOnly={true}
+                          />)}
                       />
                     </EmailComposeFormGroup>
                   </Box>
@@ -406,8 +408,10 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                     name="test"
                     id="react-compose-file-input"
                     hidden
+                    accept='file'
                     ref={fileInputRef}
                     onChange={(e) => {
+                      console.log(e);
                       if (e.target.files) {
                         const cloneAttachFile = method.getValues('attachFiles');
                         cloneAttachFile.files = [

@@ -18,15 +18,13 @@ import {
 import { number } from 'yup';
 export interface CreateEmailParam {
   email: {
-    subject: string;
-    to: string[];
-    from: string;
+    subject?: string;
+    to?: string[];
+    from?: string;
     content?: string;
-    text_html: string;
-    cc: string[];
-    bcc: string[];
-    attachs: { path: string }[];
-    hashtags?: string[];
+    text_html?: string;
+    cc?: string[];
+    bcc?: string[];
   };
   send_at?: string;
   tags?: string[];
@@ -103,6 +101,12 @@ export const EmailActions = async (params: {
 
   return res.data;
 };
+
+export const deleteAllWithIdList = async (ids: number[]) => {
+  const url = `${API_EMAIL_USER}/action`;
+  const res = await Promise.all(ids.map(value => ApiClient.post(url, undefined, {user_email_id: value, action: 'delete'})))
+  return res;
+}
 
 // GET ALL CUR EMAIL TAG
 export const getAllEmailTag = async (): Promise<AxiosResponse<any[]>> => {
@@ -241,7 +245,7 @@ export const deleteEmail = async (
 // Update Email With Query
 export const updateEmailWithQuery = async (
   id: number,
-  query: EmailUpdateQuery,
+  query: CreateEmailParam,
 ): Promise<ApiResponse<EmailResponse>> => {
   const url = `${EMAIL_API_URL}/${id}`;
 

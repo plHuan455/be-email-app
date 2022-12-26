@@ -158,12 +158,13 @@ const Email: React.FC<Props> = () => {
   const { EmailsList, isLoading } = useSelector((state: RootState) => state.email);
   const dispatch = useDispatch();
 
-  const { mutate: updateHashtagMutate, isLoading: isUpdateHashtagLoading } =
-    useMutation({
-      mutationKey: ['email-update-hashtag'],
-      mutationFn: (params: { id: number; data: EmailUpdateQuery }) =>
-        updateEmailWithQuery(params.id, params.data),
-    });
+  const { mutate: updateHashtagMutate, isLoading: isUpdateHashtagLoading } = useMutation({
+    mutationKey: ['email-update-hashtag'],
+    mutationFn: (params: {id: number; data: EmailUpdateQuery}) => updateEmailWithQuery(params.id, {
+      email: params.data,
+      send_at: params.data.send_at
+    })
+  })
 
   useEffect(() => {
     if (!isEmpty(EmailsList)) setShowHistory(EmailsList[0].id);
@@ -171,7 +172,7 @@ const Email: React.FC<Props> = () => {
 
   useEffect(() => {
     if(lastEmailMessRef.current) {
-      lastEmailMessRef.current.scrollIntoView()
+      lastEmailMessRef.current.scrollIntoView();
     }
   }, [EmailsList])
 
@@ -311,7 +312,7 @@ const Email: React.FC<Props> = () => {
             key={email.id}
             type={checkIsReceiveEmail(email.id) ? 'receive' : 'send'}
             userInfo={
-              new UserInfo(``, email.email.writer_id?.toString(), email.email.from)
+              new UserInfo(``, email.email?.writer_id?.toString() ?? '', email.email.from)
             }
             emailData={email}
             onShowHistory={handleShowHistory}
