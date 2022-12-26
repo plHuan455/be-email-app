@@ -20,6 +20,9 @@ import LogoWithLabel from '@components/atoms/LogoWithLabel';
 import Icon from '@components/atoms/Icon';
 import { rem } from '@utils/functions';
 import { useParams, useSearchParams } from 'react-router-dom';
+import ScheduleSendIcon from '@mui/icons-material/ScheduleSend';
+import SendIcon from '@mui/icons-material/Send';
+import { color } from 'd3-color';
 export interface UserRead {
   name: string;
   time: string;
@@ -92,7 +95,7 @@ const EmailMess: React.FC<Props> = ({
   onSendEmail,
 }) => {
   const [searchParams] = useSearchParams();
-  
+
   const defaultStatus = useMemo(() => emailData.status, []);
   const [newHashtagList, setNewHashtagList] = useState<HashtagTabs[] | undefined>(
     undefined,
@@ -103,6 +106,47 @@ const EmailMess: React.FC<Props> = ({
   const approveAt = new Date(emailData.approve_at);
 
   const cloneSendTo = !!emailData.email.to ? [...emailData.email.to] : [];
+
+  // useMemo
+  const emailActionType = useMemo(() => {
+    const isTimeNowLessThanSendTime = sentAt.getTime() > Date.now();
+
+    if (emailData.type === 'send') {
+      if (isTimeNowLessThanSendTime) return 'sendAfter';
+      return 'send';
+    }
+    return 'receive';
+  }, [emailData.type]);
+
+  const _renderEmailActionTypeIcon = useMemo(() => {
+    switch (emailActionType) {
+      case 'receive':
+        return (
+          <Box className="flex justify-center">
+            <Icon icon="reply" />
+          </Box>
+        );
+      case 'send':
+        return (
+          <Box className="flex justify-center">
+            <SendIcon sx={{ color: '#999999' }} />
+          </Box>
+        );
+      case 'sendAfter':
+        return (
+          <Box className="flex justify-center">
+            <ScheduleSendIcon sx={{ color: '#999999' }} />
+          </Box>
+        );
+
+      default:
+        return (
+          <Box>
+            <SendIcon />
+          </Box>
+        );
+    }
+  }, [emailActionType]);
 
   const remapPrivateHashtag = useMemo<HashtagTabs[]>(() => {
     return emailData.tags
@@ -178,19 +222,19 @@ const EmailMess: React.FC<Props> = ({
   const _renderActionsPendingItems = useMemo(() => {
     const _renderActionsPendingItem = () => {
       if (currRole?.startsWith('EMPLOYEE')) {
-        if(approveAt.getTime() > Date.now())
+        if (approveAt.getTime() > Date.now())
           return (
             <Box>
               <ControlEmailSend
                 variant="employeeViewApproveTime"
-                title='Email will be sent in: '
+                title="Email will be sent in: "
                 // scheduleAt={dayjs(sentAt).format('MMMM, DD YYYY - HH:mm')}
                 remainMinutes={Math.floor(
                   (approveAt.getTime() - Date.now()) / 1000 / 60,
                 )}
               />
             </Box>
-          )
+          );
 
         if (emailData.type === 'send' && sentAt.getTime() > Date.now())
           return (
@@ -337,12 +381,7 @@ const EmailMess: React.FC<Props> = ({
         <Box>
           <Avatar alt={userInfo.name} src={userInfo.avatar} />
         </Box>
-        <Box>
-          <Icon
-            icon="reply"
-            className={`${emailData.type === 'send' && 'rotate-180'}`}
-          />
-        </Box>
+        {_renderEmailActionTypeIcon}
       </Box>
       <Box
         sx={{ boxShadow: '0px 10px 23px -15px rgba(159,159,159,0.54)' }}
@@ -396,17 +435,20 @@ const EmailMess: React.FC<Props> = ({
           }}
         />
         {/* Actions */}
-        <Box sx={{backgroundColor: '#F1F1F6', minHeight: rem(86)}} display="flex" alignItems="center">
-            {_renderActionsPendingItems}
-            {emailData.status === 'APPROVED' && sentAt.getTime() > Date.now() && (
-              <ControlEmailSend
-                remainMinutes={Math.floor(
-                  (sentAt.getTime() - new Date().getTime()) / 1000 / 60,
-                )}
-                onSend={onUndoEmail}
-                onUndo={onSendEmail}
-              />
-            )}
+        <Box
+          sx={{ backgroundColor: '#F1F1F6', minHeight: rem(86) }}
+          display="flex"
+          alignItems="center">
+          {_renderActionsPendingItems}
+          {emailData.status === 'APPROVED' && sentAt.getTime() > Date.now() && (
+            <ControlEmailSend
+              remainMinutes={Math.floor(
+                (sentAt.getTime() - new Date().getTime()) / 1000 / 60,
+              )}
+              onSend={onUndoEmail}
+              onUndo={onSendEmail}
+            />
+          )}
         </Box>
       </Box>
       {/* Layer if status === 'Reply || ReplyAll' */}

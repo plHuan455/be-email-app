@@ -65,7 +65,7 @@ const EmailActionsList = {
   },
   star: {
     icon: 'star',
-    label: 'Importance',
+    label: 'Important',
     color: 'rgb(250, 175, 0)',
   },
 };

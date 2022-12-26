@@ -159,23 +159,28 @@ const Email: React.FC<Props> = () => {
   const { EmailsList, isLoading } = useSelector((state: RootState) => state.email);
   const dispatch = useDispatch();
 
-  const { mutate: updateHashtagMutate, isLoading: isUpdateHashtagLoading } = useMutation({
-    mutationKey: ['email-update-hashtag'],
-    mutationFn: (params: {id: number; data: EmailUpdateQuery}) => updateEmailWithQuery(params.id, {
-      email: params.data,
-      send_at: params.data.send_at
-    })
-  })
+  const { mutate: updateHashtagMutate, isLoading: isUpdateHashtagLoading } =
+    useMutation({
+      mutationKey: ['email-update-hashtag'],
+      mutationFn: (params: { id: number; data: EmailUpdateQuery }) =>
+        updateEmailWithQuery(params.id, {
+          email: params.data,
+          send_at: params.data.send_at,
+        }),
+    });
 
   useEffect(() => {
-    if (!isEmpty(EmailsList)) setShowHistory(EmailsList[0].id);
+    if (!isEmpty(EmailsList)) {
+      const EmailsListLength = EmailsList.length - 1;
+      setShowHistory(EmailsList[EmailsListLength].id);
+    }
   }, [EmailsList]);
 
   useEffect(() => {
-    if(lastEmailMessRef.current) {
+    if (lastEmailMessRef.current) {
       lastEmailMessRef.current.scrollIntoView();
     }
-  }, [EmailsList])
+  }, [EmailsList]);
 
   const checkIsReceiveEmail = useCallback(
     (id) => {
@@ -314,7 +319,11 @@ const Email: React.FC<Props> = () => {
             key={email.id}
             type={checkIsReceiveEmail(email.id) ? 'receive' : 'send'}
             userInfo={
-              new UserInfo(``, email.email?.writer_id?.toString() ?? '', email.email.from)
+              new UserInfo(
+                ``,
+                email.email?.writer_id?.toString() ?? '',
+                email.email.from,
+              )
             }
             emailData={email}
             onShowHistory={handleShowHistory}
