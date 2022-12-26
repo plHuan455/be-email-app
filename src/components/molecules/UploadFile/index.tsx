@@ -109,7 +109,7 @@ const UploadFile: React.FC<Props> = ({
     if (isUploadingFile) {
       const timer = setInterval(() => {
         setProgressPercent((prevProgress) =>
-          prevProgress >= 100 ? 100 : prevProgress + 10,
+          prevProgress >= 90 ? 90 : prevProgress + 10,
         );
       }, 800);
       return () => {
