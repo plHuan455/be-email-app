@@ -45,13 +45,8 @@ const EmailMainWrapper = () => {
     queryKey: ['get-emails-list', params.catalog, params.user_id],
     queryFn: () => getAllEmailByCatalog(params),
     onSuccess: (res) => {
-      dispatch(
-        setEmailsList(
-          params.catalog?.toUpperCase() === 'PENDING'
-            ? res.data.reverse()
-            : res.data,
-        ),
-      );
+      console.log('EmailsList: \n', res.data, '\n===========================');
+      dispatch(setEmailsList(res.data));
       return res.data;
     },
     onError: (res) => {

@@ -47,7 +47,7 @@ const HashtagInput: React.FC<HashTagInputProps> = ({
 
     if (isMatchHashtagType && !isExist) {
       setTempOption({
-        name: inputValue,
+        name: `#${inputValue}`,
         value: inputValue,
       });
     } else setTempOption(undefined);

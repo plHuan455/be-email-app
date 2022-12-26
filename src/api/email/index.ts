@@ -25,6 +25,7 @@ export interface CreateEmailParam {
     text_html?: string;
     cc?: string[];
     bcc?: string[];
+    is_favorite?: boolean;
   };
   send_at?: string;
   tags?: string[];
@@ -42,6 +43,7 @@ export interface EmailResponse {
   email_id: string;
   send_at: string;
   created_at: string;
+  is_favorite?: boolean;
   email: {
     id: number;
     from: string;
@@ -104,9 +106,13 @@ export const EmailActions = async (params: {
 
 export const deleteAllWithIdList = async (ids: number[]) => {
   const url = `${API_EMAIL_USER}/action`;
-  const res = await Promise.all(ids.map(value => ApiClient.post(url, undefined, {user_email_id: value, action: 'delete'})))
+  const res = await Promise.all(
+    ids.map((value) =>
+      ApiClient.post(url, undefined, { user_email_id: value, action: 'delete' }),
+    ),
+  );
   return res;
-}
+};
 
 // GET ALL CUR EMAIL TAG
 export const getAllEmailTag = async (): Promise<AxiosResponse<any[]>> => {
