@@ -18,6 +18,7 @@ import ControlEmailSend from '../ControlEmailSend';
 import EmailGreeting from '@components/molecules/EmailGreeting';
 import LogoWithLabel from '@components/atoms/LogoWithLabel';
 import Icon from '@components/atoms/Icon';
+import { rem } from '@utils/functions';
 export interface UserRead {
   name: string;
   time: string;
@@ -238,7 +239,7 @@ const EmailMess: React.FC<Props> = ({
       emailData.status.toUpperCase() === 'SENDING'
     )
       return (
-        <Box className="flex flex-wrap actions items-center py-4 justify-between">
+        <Box className="flex flex-wrap actions items-center py-4 justify-between w-full">
           {_renderActionsPendingItem()}
         </Box>
       );
@@ -342,11 +343,11 @@ const EmailMess: React.FC<Props> = ({
       </Box>
       <Box
         sx={{ boxShadow: '0px 10px 23px -15px rgba(159,159,159,0.54)' }}
-        className={`flex-1 bg-white ${
+        className={`flex-1 overflow-hidden bg-white ${
           type === 'send'
             ? 'rounded-tl-[36px] rounded-br-[36px]'
             : 'rounded-tr-[36px] rounded-bl-[36px]'
-        } pb-4 ${styles.emailWrap} mb-8`}>
+        } ${styles.emailWrap} mb-8`}>
         {/* Header */}
         <Box
           className={`flex items-center justify-between cursor-pointer pb-6 bg-violet-200 py-4 ${
@@ -392,16 +393,18 @@ const EmailMess: React.FC<Props> = ({
           }}
         />
         {/* Actions */}
-        {_renderActionsPendingItems}
-        {emailData.status === 'APPROVED' && sentAt.getTime() > Date.now() && (
-          <ControlEmailSend
-            remainMinutes={Math.floor(
-              (sentAt.getTime() - new Date().getTime()) / 1000 / 60,
+        <Box sx={{backgroundColor: '#F1F1F6', minHeight: rem(104)}} display="flex" alignItems="center">
+            {_renderActionsPendingItems}
+            {emailData.status === 'APPROVED' && sentAt.getTime() > Date.now() && (
+              <ControlEmailSend
+                remainMinutes={Math.floor(
+                  (sentAt.getTime() - new Date().getTime()) / 1000 / 60,
+                )}
+                onSend={onUndoEmail}
+                onUndo={onSendEmail}
+              />
             )}
-            onSend={onUndoEmail}
-            onUndo={onSendEmail}
-          />
-        )}
+        </Box>
       </Box>
       {/* Layer if status === 'Reply || ReplyAll' */}
       {(emailData.status === 'reply' ||

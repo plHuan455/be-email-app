@@ -37,17 +37,17 @@ const ControlEmailSend: React.FC<ControlEmailSendProps> = ({
   const renderRemainText = remainMinutesState <= 0 ? 'Sending...' : `${remainMinutesState} minutes`;
 
   return (
-    <Box className="t-controlEmailSend flex actions justify-end py-4">
+    <Box className="t-controlEmailSend flex actions justify-end py-4 w-full">
       <Box
         className="flex items-center px-4 rounded-[16px]"
         sx={{
-          backgroundColor: '#F6F3FD',
+          backgroundColor: '#e7dff7',
           fontSize: rem(12),
           lineHeight: rem(13),
           color: '#181818',
-          py: variant === 'employeeViewApproveTime' ? rem(24): rem(8),
+          py: variant === 'employeeViewApproveTime' ? rem(18): rem(8),
         }}>
-        <Box className="pr-7 justify-self-end">
+        <Box className="justify-self-end">
           <p className="text-[#181818] text-[14px] font-normal">
             {title}
             <span className="text-[#554CFF] inline-block pl-1">
@@ -58,7 +58,7 @@ const ControlEmailSend: React.FC<ControlEmailSendProps> = ({
           </p>
         </Box>
         {variant === 'undoSendNow' && (
-          <Box display="flex" alignItems="center" sx={{ ml: rem(12) }}>
+          <Box display="flex" alignItems="center" sx={{ ml: rem(12), pl: rem(28) }}>
             <Button
               variant="text"
               sx={{
