@@ -438,14 +438,14 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
   //   })()
   // }, [])
 
-  const convertMinimizeEmailList = useMemo(() => {
-    if (!showMinimizeEmailId) return minimizeEmailList
-    return minimizeEmailList.filter(value => {
-      if (value.id === undefined) return value.cacheId !== showMinimizeEmailId.cacheId;
+  // const convertMinimizeEmailList = useMemo(() => {
+  //   if (!showMinimizeEmailId) return minimizeEmailList
+  //   return minimizeEmailList.filter(value => {
+  //     if (value.id === undefined) return value.cacheId !== showMinimizeEmailId.cacheId;
 
-      return value.id !== showMinimizeEmailId.id
-    })
-  }, [minimizeEmailList, showMinimizeEmailId])
+  //     return value.id !== showMinimizeEmailId.id
+  //   })
+  // }, [minimizeEmailList, showMinimizeEmailId])
 
   return (
     <EmailComposeContext.Provider value={emailContextValue}>
@@ -453,7 +453,8 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
         <Outlet />
       </MainWrapper>
       <MinimizeEmailList
-        data={convertMinimizeEmailList}
+        data={minimizeEmailList}
+        showMinimizeEmailId={showMinimizeEmailId}
         onMaximizeClick={handleMaximizeEmailClick}
         onCloseClick={handleCloseClick}
       />
