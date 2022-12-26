@@ -52,7 +52,7 @@ export interface EmailComposeFields {
   subject: string;
   content: any;
   hashtags: { name: string; value: string }[];
-  from: string | null
+  from: string | null;
 }
 
 // export interface HashTagTypes {
@@ -188,7 +188,6 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
     setBccData(afterFilterBcc);
   };
 
-
   return (
     <Box className="t-emailCompose w-full h-full py-10 mt-4">
       <FormProvider {...method}>
@@ -196,8 +195,9 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
           className="p-8 flex items-center justify-center w-full h-full"
           onSubmit={method.handleSubmit(onSubmit)}>
           <Box
-            className={`flex flex-col h-full w-full mx-auto shadow-xl bg-white rounded-3xl overflow-hidden z-5 transition-all ${isFullScreen && 'fixed top-0 left-0 bottom-0'
-              }`}>
+            className={`flex flex-col h-full w-full mx-auto shadow-xl bg-white rounded-3xl overflow-hidden z-5 transition-all ${
+              isFullScreen && 'fixed top-0 left-0 bottom-0'
+            }`}>
             <WindowComposeActions
               className="p-3 pr-3pt-3 pr-3"
               sx={{
@@ -225,12 +225,15 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                           data={toData}
                           value={value}
                           onChange={(_, value) => {
-                            onChange(value);
-                            update();
-                            method.setValue('contactBlock', inputContactBlocks);
+                            // onChange(value);
+                            // update();
+                            // method.setValue('contactBlock', inputContactBlocks);
                           }}
                           onChangeValue={(v) => {
                             // onChange(v);
+                            onChange(value);
+                            update();
+                            method.setValue('contactBlock', inputContactBlocks);
                           }}
                         />
                         <span
@@ -305,13 +308,14 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                       isHaveBorderBottom={true}>
                       <Controller
                         name="from"
-                        render={({field: {value}}) => (
+                        render={({ field: { value } }) => (
                           <AutoCompleteReceive
                             value={[]}
                             data={backUpData}
                             defaultValue={[]}
                             isReadOnly={true}
-                          />)}
+                          />
+                        )}
                       />
                     </EmailComposeFormGroup>
                   </Box>
@@ -486,7 +490,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                     name="test"
                     id="react-compose-file-input"
                     hidden
-                    accept='file'
+                    accept="file"
                     ref={fileInputRef}
                     onChange={(e) => {
                       console.log(e);
