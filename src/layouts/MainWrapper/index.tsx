@@ -17,10 +17,7 @@ import MinimizeEmailList, {
 } from '@components/templates/MinimizeEmailList';
 import { Email } from '@components/organisms/Email/Interface';
 import {
-  removeMinimizeEmail,
-  resetEmailState,
   setHashtags,
-  setShowMinimizeEmail,
 } from '@redux/Email/reducer';
 import { fetchToken, onMessageListener } from '../../messaging_init_in_sw';
 import { deleteDeviceKey } from '@api/deviceKey';
@@ -65,37 +62,12 @@ interface Setting {
   handleClick?: () => void;
 }
 
-function MainWrapper() {
+function MainWrapper({ children }: { children: React.ReactNode }) {
   const dispatch = useAppDispatch();
   const location = useLocation();
-  const minimizeEmails = useAppSelector((state) => state.email.minimizeMailList);
-  const showMinimizeEmailId = useAppSelector(
-    (state) => state.email.showMinimizeEmailId,
-  );
-
+ 
   const [show, setShow] = useState(false);
   const [notification, setNotification] = useState({ title: '', body: '' });
-
-  // GET HASHTAGS
-  console.log(`[TODO]: Change this when hashtag api is done`);
-  const { data: hashtagData, isLoading: isHashtagLoading } = useQuery({
-    queryKey: ['email-compose-get-hashtag'],
-    queryFn: getHashtags,
-    onSuccess(res) {
-      if (res?.data) {
-        dispatch(
-          setHashtags(
-            res.data.map((value) => ({
-              notiNumber: 0,
-              status: 'hashtag',
-              title: value.name,
-              value: value.name,
-            })),
-          ),
-        );
-      }
-    },
-  });
 
   onMessageListener()
     .then((payload) => {
@@ -132,22 +104,18 @@ function MainWrapper() {
     navigate(url);
   };
 
-  const handleMaximizeEmailClick = (data: MinimizeEmailTypes) => {
-    dispatch(setShowMinimizeEmail(data.id));
-    navigate('/emails/compose');
-  };
-  const handleCloseEmailClick = (data: MinimizeEmailTypes) => {
-    if (data.id !== undefined) {
-      dispatch(removeMinimizeEmail(data.id));
-    }
-  };
-
   const settingsEmployee: Setting[] = [
     {
       id: 0,
       label: 'Profile',
       path: '/profile',
       handleClick: handleChangePage('/profile'),
+    },
+    {
+      id: 1,
+      label: 'Signature',
+      path: '/signature',
+      handleClick: handleChangePage('/signature'),
     },
     {
       id: 2,
@@ -192,10 +160,6 @@ function MainWrapper() {
 
   const settings: Setting[] = settingManager;
 
-  const convertedMinimizeEmailList = useMemo(() => {
-    return minimizeEmails.filter((value) => value.id !== showMinimizeEmailId);
-  }, [minimizeEmails, showMinimizeEmailId]);
-
   return (
     <React.Fragment>
       {/* <Header
@@ -233,7 +197,7 @@ function MainWrapper() {
           {/* Breadcrumbs */}
           {/* <Breadcrumbs breadcrumbs={breadcrumbs} /> */}
           {/* Main content */}
-          <Outlet />
+          {children}
         </Box>
       </Box>
       <Drawer
@@ -246,11 +210,6 @@ function MainWrapper() {
         />
         <SideBar />
       </Drawer>
-      <MinimizeEmailList
-        data={convertedMinimizeEmailList}
-        onMaximizeClick={handleMaximizeEmailClick}
-        onCloseClick={handleCloseEmailClick}
-      />
     </React.Fragment>
   );
 }

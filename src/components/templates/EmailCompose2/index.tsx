@@ -10,7 +10,6 @@ import AutoCompleteReceive, {
 import EmailComposeFormGroup from '@components/molecules/EmailComposeFormGroup';
 import WindowComposeActions from '@components/molecules/WindowComposeActions';
 import { Editor } from 'react-draft-wysiwyg';
-import { EditorState, ContentState, convertToRaw, convertFromHTML } from 'draft-js';
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
 import { Box, Button, Typography } from '@mui/material';
@@ -36,6 +35,10 @@ import { HashtagTabs } from '@redux/Email/reducer';
 import HashtagInput, {
   HashtagOptionTypes,
 } from '@components/atoms/Input/HashtagInput';
+import { rowsSign } from '@containers/SignatureContainer';
+import { getDefaultSignId } from '@redux/selector';
+import ModalDrawSignature from '@components/atoms/ModalDrawSignature';
+import ModalChooseSignature from '@components/atoms/ModalChooseSignature';
 
 export interface EmailComposeFields {
   to: InputContactBlock[];
@@ -45,7 +48,7 @@ export interface EmailComposeFields {
   subject: string;
   content: any;
   hashtags: { name: string; value: string }[];
-  sendAt?: string | null;
+  from: string | null
 }
 
 // export interface HashTagTypes {
@@ -97,13 +100,30 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
   onSendTimeClick,
   onSubmit,
   onSetTimeAccept,
-  onSetTimeCancel
+  onSetTimeCancel,
 }) => {
+  // redux
+  const defaultSignId = useSelector(getDefaultSignId);
+
+  // states
+  const [showModalSignature, setShowModalSignature] = useState(false);
+  const [showModalChooseSignature, setShowModalChooseSignature] = useState(false);
+  const [signatureImage, setSignatureImage] = useState<string>('');
+
+  // react hooks
   const fileInputRef = useRef<HTMLInputElement>(null);
   const composeScrollRef = useRef<HTMLDivElement>(null);
 
-  const { privateHashtags } = useSelector((state: RootState) => state.email);
+  useEffect(() => {
+    if (defaultSignId) {
+      const r = rowsSign.find((e) => e.id === defaultSignId);
+      if (r != undefined) {
+        setSignatureImage(r.signature);
+      }
+    }
+  }, []);
 
+  // functions
   const handleAttachFileClick = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
@@ -117,9 +137,8 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
           className="p-8 flex items-center justify-center w-full h-full"
           onSubmit={method.handleSubmit(onSubmit)}>
           <Box
-            className={`flex flex-col h-full w-full mx-auto shadow-xl bg-white rounded-3xl overflow-hidden z-5 transition-all ${
-              isFullScreen && 'fixed top-0 left-0 bottom-0'
-            }`}>
+            className={`flex flex-col h-full w-full mx-auto shadow-xl bg-white rounded-3xl overflow-hidden z-5 transition-all ${isFullScreen && 'fixed top-0 left-0 bottom-0'
+              }`}>
             <WindowComposeActions
               className="p-3 pr-3pt-3 pr-3"
               sx={{
@@ -194,12 +213,16 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                       className="py-1"
                       label="From:"
                       isHaveBorderBottom={true}>
-                      <AutoCompleteReceive
-                        value={[]}
-                        data={backUpData}
-                        defaultValue={[]}
-                        isShowCcFromLabel={false}
-                        isReadOnly={true}
+                      <Controller
+                        name="from"
+                        render={({field: {value}}) => (
+                          <AutoCompleteReceive
+                            value={[]}
+                            data={backUpData}
+                            defaultValue={[]}
+                            isShowCcFromLabel={false}
+                            isReadOnly={true}
+                          />)}
                       />
                     </EmailComposeFormGroup>
                   </Box>
@@ -249,6 +272,15 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                       />
                     )}
                   />
+                  {signatureImage && (
+                    <Box className="mt-4 mb-4">
+                      <img
+                        style={{ width: 120, height: 40, objectFit: 'contain' }}
+                        src={signatureImage}
+                      />
+                    </Box>
+                  )}
+
                   <Box>
                     {/* Greeting */}
                     <EmailGreeting
@@ -340,6 +372,19 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                 )}
               </Box>
 
+              <Box className="flex">
+                <Box className="ml-4">
+                  <Button onClick={() => setShowModalSignature(true)}>
+                    New signature
+                  </Button>
+                </Box>
+                <Box className="ml-4">
+                  <Button onClick={() => setShowModalChooseSignature(true)}>
+                    Choose signature
+                  </Button>
+                </Box>
+              </Box>
+
               {/* ACTIONS */}
               <Box className="flex justify-end items-center flex-1">
                 <UseTemplateButton />
@@ -352,8 +397,10 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                     name="test"
                     id="react-compose-file-input"
                     hidden
+                    accept='file'
                     ref={fileInputRef}
                     onChange={(e) => {
+                      console.log(e);
                       if (e.target.files) {
                         const cloneAttachFile = method.getValues('attachFiles');
                         cloneAttachFile.files = [
@@ -429,6 +476,16 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                 </Button>
               </Box>
             </ModalBase>
+            <ModalDrawSignature
+              isOpen={showModalSignature}
+              onClose={() => setShowModalSignature(false)}
+              onSubmit={(url) => setSignatureImage(url)}
+            />
+            <ModalChooseSignature
+              isOpen={showModalChooseSignature}
+              onClose={() => setShowModalChooseSignature(false)}
+              onSubmit={(url) => setSignatureImage(url)}
+            />
           </Box>
         </form>
       </FormProvider>
