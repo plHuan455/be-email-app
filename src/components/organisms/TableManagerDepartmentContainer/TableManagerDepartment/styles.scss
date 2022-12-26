@@ -1,10 +1,4 @@
 .tableDepartment {
-  & .MuiTableHead-root {
-    & .MuiTableRow-root {
-      opacity: 0.6;
-    }
-  }
-
   & .MuiTableBody-root {
     & .MuiTableCell-root {
       border-color: transparent;

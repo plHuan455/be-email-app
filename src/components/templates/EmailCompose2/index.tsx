@@ -39,6 +39,9 @@ import { rowsSign } from '@containers/SignatureContainer';
 import { getDefaultSignId } from '@redux/selector';
 import ModalDrawSignature from '@components/atoms/ModalDrawSignature';
 import ModalChooseSignature from '@components/atoms/ModalChooseSignature';
+import React from 'react';
+import classNames from 'classnames';
+import _ from 'lodash';
 
 export interface CustomFile extends File {
   percentage: number;
@@ -48,6 +51,7 @@ export interface EmailComposeFields {
   to: InputContactBlock[];
   cc: UserInfo[];
   bcc: UserInfo[];
+  contactBlock: InputContactBlock[];
   attachFiles: {
     fileUrls: (string | undefined)[];
     files: (CustomFile | undefined)[];
@@ -55,7 +59,7 @@ export interface EmailComposeFields {
   subject: string;
   content: any;
   hashtags: { name: string; value: string }[];
-  from: string | null
+  from: string | null;
 }
 
 // export interface HashTagTypes {
@@ -64,6 +68,7 @@ export interface EmailComposeFields {
 // }
 
 interface EmailComposeProps {
+  inputContactBlocks: InputContactBlock[];
   method: UseFormReturn<EmailComposeFields>;
   index?: number;
   isFullScreen?: boolean;
@@ -89,6 +94,7 @@ interface EmailComposeProps {
 }
 
 const EmailCompose2: React.FC<EmailComposeProps> = ({
+  inputContactBlocks,
   method,
   index,
   isFullScreen = false,
@@ -119,6 +125,10 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
   const [showModalChooseSignature, setShowModalChooseSignature] = useState(false);
   const [signatureImage, setSignatureImage] = useState<string>('');
 
+  const [toData, setToData] = useState(inputContactBlocks);
+  const [ccData, setCcData] = useState(inputContactBlocks);
+  const [bccData, setBccData] = useState(inputContactBlocks);
+
   // react hooks
   const fileInputRef = useRef<HTMLInputElement>(null);
   const composeScrollRef = useRef<HTMLDivElement>(null);
@@ -132,11 +142,59 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
     }
   }, []);
 
+  useEffect(() => {
+    setToData(inputContactBlocks);
+    setCcData(inputContactBlocks);
+    setBccData(inputContactBlocks);
+  }, [inputContactBlocks]);
+
   // functions
   const handleAttachFileClick = () => {
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
+  };
+
+  const filterContact =
+    (field: 'to' | 'cc' | 'bcc') => (contactBlock: InputContactBlock) => {
+      const employees = contactBlock.employeesList;
+
+      if (employees.length === 0) return true;
+
+      let isSomeEmploySelected = false;
+      let isSomeEmployEqualField = false;
+
+      const isFullEmploySelected = employees.every((employ) => {
+        if (employ.isChecked) isSomeEmploySelected = true;
+        if (employ.field === field) isSomeEmployEqualField = true;
+        return employ.isChecked;
+      });
+
+      // Nếu tất cả employ được chọn
+      if (isFullEmploySelected) {
+        // Nếu có employ thuộc field => return true
+        // Nếu không có employ thuộc filed => return false
+        return isSomeEmployEqualField;
+      }
+
+      // Nếu có ít nhất 1 employ được chọn => return true
+      // Nếu không có employ được chọn => return true
+      // Còn lại => return false
+      return isSomeEmploySelected || !isFullEmploySelected;
+    };
+
+  const update = () => {
+    const filterTo = filterContact('to');
+    const filterCc = filterContact('cc');
+    const filterBcc = filterContact('bcc');
+
+    const afterFilterTo = inputContactBlocks.filter(filterTo);
+    const afterFilterCc = inputContactBlocks.filter(filterCc);
+    const afterFilterBcc = inputContactBlocks.filter(filterBcc);
+
+    setToData(afterFilterTo);
+    setCcData(afterFilterCc);
+    setBccData(afterFilterBcc);
   };
 
   return (
@@ -146,8 +204,9 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
           className="p-8 flex items-center justify-center w-full h-full"
           onSubmit={method.handleSubmit(onSubmit)}>
           <Box
-            className={`flex flex-col h-full w-full mx-auto shadow-xl bg-white rounded-3xl overflow-hidden z-5 transition-all ${isFullScreen && 'fixed top-0 left-0 bottom-0'
-              }`}>
+            className={`flex flex-col h-full w-full mx-auto shadow-xl bg-white rounded-3xl overflow-hidden z-5 transition-all ${
+              isFullScreen && 'fixed top-0 left-0 bottom-0'
+            }`}>
             <WindowComposeActions
               className="p-3 pr-3pt-3 pr-3"
               sx={{
@@ -165,17 +224,36 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                   name="to"
                   render={({ field: { value, onChange } }) => {
                     return (
-                      <EmailComposeFormGroup label="To :">
+                      <EmailComposeFormGroup
+                        classNameContent="flex items-center"
+                        label="To :">
                         <AutoCompleteReceive
-                          isActiveCcFrom={isShowCCForm}
-                          onClickCcFromLabel={onCCButtonClick}
+                          fullWidth
+                          forField={'to'}
                           defaultValue={[]}
-                          data={backUpData}
+                          data={toData}
                           value={value}
                           onChange={(_, value) => {
+                            // onChange(value);
+                            // update();
+                            // method.setValue('contactBlock', inputContactBlocks);
+                          }}
+                          onChangeValue={(v) => {
+                            // onChange(v);
                             onChange(value);
+                            update();
+                            method.setValue('contactBlock', inputContactBlocks);
                           }}
                         />
+                        <span
+                          className={classNames(
+                            'flex items-center',
+                            'text-[#7E7E7E] text-[14px] border rounded-md p-2 py-1 cursor-pointer',
+                            isShowCCForm && 'font-bold border-2',
+                          )}
+                          onClick={onCCButtonClick}>
+                          Cc,Bcc
+                        </span>
                       </EmailComposeFormGroup>
                     );
                   }}
@@ -190,12 +268,18 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                         name="cc"
                         render={({ field: { value, onChange } }) => (
                           <AutoCompleteReceive
-                            isShowCcFromLabel={false}
+                            forField={'cc'}
                             value={value}
-                            data={backUpData}
+                            data={ccData}
                             defaultValue={value}
-                            onChange={(_, value) => {
-                              onChange(value);
+                            onChange={(v) => {
+                              onChange(v);
+                              update();
+                              method.setValue('contactBlock', inputContactBlocks);
+                            }}
+                            onChangeValue={(v) => {
+                              update();
+                              method.setValue('contactBlock', inputContactBlocks);
                             }}
                           />
                         )}
@@ -209,11 +293,20 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                         name="bcc"
                         render={({ field: { value, onChange } }) => (
                           <AutoCompleteReceive
-                            isShowCcFromLabel={false}
+                            forField={'bcc'}
                             value={value}
-                            data={backUpData}
+                            data={bccData}
                             defaultValue={value}
-                            onChange={(_, value) => onChange(value)}
+                            onChange={(e, v) => {
+                              onChange(v);
+                              update();
+                              method.setValue('contactBlock', inputContactBlocks);
+                            }}
+                            onChangeValue={(v) => {
+                              onChange(v);
+                              update();
+                              method.setValue('contactBlock', inputContactBlocks);
+                            }}
                           />
                         )}
                       />
@@ -224,14 +317,14 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                       isHaveBorderBottom={true}>
                       <Controller
                         name="from"
-                        render={({field: {value}}) => (
+                        render={({ field: { value } }) => (
                           <AutoCompleteReceive
                             value={[]}
                             data={backUpData}
                             defaultValue={[]}
-                            isShowCcFromLabel={false}
                             isReadOnly={true}
-                          />)}
+                          />
+                        )}
                       />
                     </EmailComposeFormGroup>
                   </Box>
@@ -281,22 +374,22 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                       />
                     )}
                   />
-                  {signatureImage && (
-                    <Box className="mt-4 mb-4">
-                      <img
-                        style={{ width: 120, height: 40, objectFit: 'contain' }}
-                        src={signatureImage}
-                      />
-                    </Box>
-                  )}
 
                   <Box>
                     {/* Greeting */}
-                    <EmailGreeting
+                    {signatureImage && (
+                      <Box className="mt-4 mb-4">
+                        <img
+                          style={{ width: 120, height: 40, objectFit: 'contain' }}
+                          src={signatureImage}
+                        />
+                      </Box>
+                    )}
+                    {/* <EmailGreeting
                       greetingLabel="Thanks and Best regards, ------"
                       isHaveLogo={true}
                       logo={<LogoWithLabel />}
-                    />
+                    /> */}
                     {/* Private Hashtag */}
                     <Controller
                       name="hashtags"
@@ -383,7 +476,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                 )}
               </Box>
 
-              <Box className="flex">
+              {/* <Box className="flex">
                 <Box className="ml-4">
                   <Button onClick={() => setShowModalSignature(true)}>
                     New signature
@@ -394,7 +487,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                     Choose signature
                   </Button>
                 </Box>
-              </Box>
+              </Box> */}
 
               {/* ACTIONS */}
               <Box className="flex justify-end items-center flex-1">
@@ -408,7 +501,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                     name="test"
                     id="react-compose-file-input"
                     hidden
-                    accept='file'
+                    accept="file"
                     ref={fileInputRef}
                     onChange={(e) => {
                       console.log(e);

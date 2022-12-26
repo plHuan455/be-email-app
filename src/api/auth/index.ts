@@ -1,4 +1,4 @@
-import ApiClient, { ApiResponse } from '@api/ApiClient';
+import ApiClient, { ApiResponse, CuSAxiosResponse } from '@api/ApiClient';
 import { AuthResponse, AuthUpdate } from './interface';
 
 export type Auth = '/v1/api/author/login';
@@ -7,7 +7,10 @@ export const AuthProfile = '/v1/api/user/setting/profile';
 
 const CURR_EMAIL = localStorage.getItem('current_email') || '';
 
-export const login = async ({ email, password }): Promise<ApiResponse<string>> => {
+export const login = async ({
+  email,
+  password,
+}): Promise<CuSAxiosResponse<string>> => {
   const url: Auth = `/v1/api/author/login`;
   const res = await ApiClient.post(url, undefined, { email, password });
   return res.data;

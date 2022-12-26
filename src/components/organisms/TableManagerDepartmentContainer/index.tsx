@@ -12,7 +12,7 @@ import {
   getDepartments,
   updateDepartment,
 } from '@api/deparment';
-import { Department, Manager } from '@page/Manager/interface';
+import { Department, Manager, Positions } from '@page/Manager/interface';
 import { toast } from 'react-toastify';
 import { getRole } from '@api/role';
 import { Tab, Tabs } from '@mui/material';
@@ -22,13 +22,14 @@ import UpdateEmployeeModal, {
 } from '../TableManagerEmployeeContainer/UpdateEmployeeModal';
 import { createEmployeeSchema } from '@utils/schemas';
 import { uploadFile } from '@api/uploadFile';
-import { deleteUser, getUser, updateEmployee } from '@api/user';
+import { deleteUser, getUser, getUserWithEmail, updateEmployee } from '@api/user';
 import es from 'date-fns/esm/locale/es/index.js';
 import { UpdateEmployeeParams } from '@api/user/interface';
 import AlertDialog, { useAlertDialog } from '@components/molecules/AlertDialog';
 import UpdateDepartmentModal, {
   UpdateDepartmentFields,
 } from './UpdateDepartmentModal';
+import AddPositionModal, { AddPositionField } from './AddPositionModal';
 
 const headerTabData = [
   { id: 0, name: 'Department', url: '/manager/department/department' },
@@ -37,6 +38,7 @@ const headerTabData = [
 
 interface TableManagerDepartmentContainerProps {
   onCloseAddDepartmentModal: () => void;
+  onClickAddDepartmentModal: () => void;
   isShowAddDepartmentModal?: boolean;
 }
 
@@ -48,9 +50,17 @@ const createDepartmentSchema = yup
   })
   .required();
 
+const createPositionSchema = yup.object({
+  name: yup.string().required(),
+});
+
 const TableManagerDepartmentContainer: React.FC<
   TableManagerDepartmentContainerProps
-> = ({ isShowAddDepartmentModal, onCloseAddDepartmentModal }) => {
+> = ({
+  isShowAddDepartmentModal,
+  onCloseAddDepartmentModal,
+  onClickAddDepartmentModal,
+}) => {
   const queryClient = useQueryClient();
   const location = useLocation();
   const navigate = useNavigate();
@@ -84,6 +94,13 @@ const TableManagerDepartmentContainer: React.FC<
     resolver: yupResolver(createDepartmentSchema),
   });
 
+  const createPositionMethod = useForm<AddPositionField>({
+    defaultValues: {
+      name: '',
+    },
+    resolver: yupResolver(createPositionSchema),
+  });
+
   const updateDepartmentMethod = useForm<UpdateDepartmentFields>({
     defaultValues: {
       id: '',
@@ -100,6 +117,7 @@ const TableManagerDepartmentContainer: React.FC<
       avatar: undefined,
       firstName: '',
       lastName: '',
+      identity: '',
       password: '',
       phone: '',
       department: '',
@@ -215,20 +233,21 @@ const TableManagerDepartmentContainer: React.FC<
 
   const { mutate: getEmployeeMutate, isLoading: isGetEmployeeMutate } = useMutation({
     mutationKey: ['table-manager-get-employee'],
-    mutationFn: getUser,
+    mutationFn: getUserWithEmail,
     onSuccess: (res) => {
       const data = res.data;
       if (data) {
-        updateEmployeeMethod.setValue('id', data.user_id);
+        updateEmployeeMethod.setValue('id', data.id);
         updateEmployeeMethod.setValue('avatar', data.avatar);
         updateEmployeeMethod.setValue('firstName', data.first_name);
         updateEmployeeMethod.setValue('lastName', data.last_name);
-        updateEmployeeMethod.setValue('password', data.password);
+        updateEmployeeMethod.setValue('identity', data.identity);
+        updateEmployeeMethod.setValue('password', 'password');
         updateEmployeeMethod.setValue('phone', data.phone_number);
-        updateEmployeeMethod.setValue('department', String(data.department_id));
+        updateEmployeeMethod.setValue('department', String(data.department));
         updateEmployeeMethod.setValue('email', String(data.email));
         updateEmployeeMethod.setValue('position', String(data.position));
-        updateEmployeeMethod.setValue('role', String(data.role_id));
+        updateEmployeeMethod.setValue('role', String(data.role));
       }
     },
   });
@@ -261,7 +280,7 @@ const TableManagerDepartmentContainer: React.FC<
           value?.users?.map(
             (user) =>
               new Manager(
-                user.user_id,
+                user.id,
                 user.avatar,
                 user.first_name,
                 user.last_name,
@@ -270,6 +289,9 @@ const TableManagerDepartmentContainer: React.FC<
                 user.position,
                 roleHash[user.role_id] ?? '',
               ),
+          ) ?? [],
+          value?.positions?.map(
+            (position) => new Positions(position.id, position.name),
           ) ?? [],
           value.description,
         ),
@@ -356,7 +378,7 @@ const TableManagerDepartmentContainer: React.FC<
   };
 
   return (
-    <div className="px-6">
+    <div className="px-6 flex flex-col flex-1 overflow-hidden">
       <TableHeader isHaveActions={false}>
         <Tabs className="tableManagerTabs" value={value} onChange={handleChange}>
           {headerTabData.map((item) => (
@@ -376,6 +398,7 @@ const TableManagerDepartmentContainer: React.FC<
         onEmployeeDeleteClick={handleEmployeeDeleteClick}
         onDepartmentUpdateClick={handleDepartmentUpdateClick}
         onDepartmentDeleteClick={handleDepartmentDeleteClick}
+        onAddPositionClick={onClickAddDepartmentModal}
       />
 
       <AddDepartmentModal
@@ -389,6 +412,13 @@ const TableManagerDepartmentContainer: React.FC<
           createDepartmentMethod.reset();
         }}
       />
+
+      {/* <AddPositionModal
+        isFormLoading={true}
+        isOpen={false}
+        method={createPositionMethod}
+        title=""
+      /> */}
 
       <UpdateDepartmentModal
         isOpen={isShowUpdateDepartment}

@@ -3,17 +3,25 @@ import InformationBar from '@layouts/InformationBar';
 import InformationBarEmpty from '@layouts/InformationBarEmpty';
 import { Box, Typography } from '@mui/material';
 import { RootState } from '@redux/configureStore';
+import { changeSidebarRight, openNotifySidebarRight } from '@redux/Global/reducer';
 import { isEmpty } from 'lodash';
 import React, { PropsWithChildren, useMemo } from 'react';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import styles from './styles.module.scss';
 
 interface Props {
   isBorderBottom: boolean;
+  isShowInformationBtn?: Boolean;
 }
 
-const SidebarRightContainer: React.FC<Props> = ({ isBorderBottom }) => {
+const SidebarRightContainer: React.FC<Props> = ({
+  isBorderBottom,
+  isShowInformationBtn,
+}) => {
+  // dispatch
+  const dispatch = useDispatch();
+
   // useSelector
 
   const { sidebarRight } = useSelector((state: RootState) => state.global);
@@ -47,9 +55,11 @@ const SidebarRightContainer: React.FC<Props> = ({ isBorderBottom }) => {
 
   const _renderSidebarRight = useMemo(() => {
     switch (sidebarRight.type) {
-      case 'information':
-        return _renderEmailsInformation;
-
+      case 'information': {
+        if (isShowInformationBtn) return _renderEmailsInformation;
+        dispatch(changeSidebarRight('notify'));
+        return null;
+      }
       case 'notify':
         return _renderNotify;
 

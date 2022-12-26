@@ -22,6 +22,7 @@ import { rem } from '@utils/functions';
 import TableActionsMenu from '@components/molecules/TableActionsMenu';
 import TableManagerEmployeeContainer from '@containers/TableManagerEmployeeContainer';
 import Loading from '@components/atoms/Loading';
+import TableManagerPositionsContainer from '@containers/TableManagerPositionsContainer';
 
 interface TableManagerDepartmentProps {
   isLoading?: boolean;
@@ -30,6 +31,7 @@ interface TableManagerDepartmentProps {
   onEmployeeUpdateClick: (id: number) => void;
   onDepartmentDeleteClick: (id: number) => void;
   onDepartmentUpdateClick: (id: number) => void;
+  onAddPositionClick: () => void;
 }
 
 interface RowProps {
@@ -41,6 +43,7 @@ interface RowProps {
   onEmployeeDeleteClick: (id: number) => void;
   onDepartmentUpdateClick: (id: number) => void;
   onDepartmentDeleteClick: (id: number) => void;
+  onAddPositionClick: () => void;
 }
 
 function Row({
@@ -52,16 +55,24 @@ function Row({
   onEmployeeDeleteClick,
   onDepartmentDeleteClick,
   onDepartmentUpdateClick,
+  onAddPositionClick,
 }: RowProps) {
   return (
     <React.Fragment>
-      <TableRow className={className} sx={{ '& > *': { borderBottom: 'unset' } }}>
+      <TableRow
+        hover
+        className={`${className} cursor-pointer`}
+        sx={{ '& > *': { borderBottom: 'unset' } }}
+        onClick={() => onChangeIsShow()}>
         <TableCell component="th" scope="row">
-          <IconButton
-            aria-label="expand row"
-            size="small"
-            onClick={() => onChangeIsShow()}>
-            {isShow ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+          <IconButton aria-label="expand row" size="small">
+            {/* {isShow ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />} */}
+            <KeyboardArrowUpIcon
+              sx={{
+                transform: `rotate(${!isShow && '180deg'})`,
+                transition: '.4s',
+              }}
+            />
           </IconButton>
           {row.name}
         </TableCell>
@@ -98,8 +109,40 @@ function Row({
               <Typography variant="h6" gutterBottom component="div">
                 Employees
               </Typography>
+
               <TableManagerEmployeeContainer
+                maxHeight={600}
                 data={row.employees}
+                onUpdate={onEmployeeUpdateClick}
+                onDelete={onEmployeeDeleteClick}
+              />
+            </Box>
+          </Collapse>
+        </TableCell>
+      </TableRow>
+      <TableRow>
+        <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+          <Collapse in={isShow} timeout="auto" unmountOnExit>
+            <Box sx={{ margin: 1 }}>
+              <Box className="flex items-center">
+                <Typography
+                  sx={{ marginBottom: 0 }}
+                  variant="h6"
+                  gutterBottom
+                  component="div">
+                  Position
+                </Typography>
+                <IconButton
+                  className="bg-transparent hover:bg-transparent"
+                  size="small"
+                  onClick={() => onAddPositionClick()}>
+                  <Icon icon={'plus'} rawColor={'#827CFF'} width={16} height={16} />
+                </IconButton>
+              </Box>
+
+              <TableManagerPositionsContainer
+                maxHeight={600}
+                data={row.positions}
                 onUpdate={onEmployeeUpdateClick}
                 onDelete={onEmployeeDeleteClick}
               />
@@ -118,6 +161,7 @@ export default function TableManagerDepartment({
   onEmployeeDeleteClick,
   onDepartmentUpdateClick,
   onDepartmentDeleteClick,
+  onAddPositionClick,
 }: TableManagerDepartmentProps) {
   const [indexShow, setIndexShow] = React.useState<number>();
 
@@ -127,7 +171,7 @@ export default function TableManagerDepartment({
   };
 
   return (
-    <TableContainer className="tableDepartment" component={Paper}>
+    <TableContainer className="tableDepartment flex-1 mb-6" component={Paper}>
       <Table aria-label="collapsible table">
         <TableHead>
           <TableRow>
@@ -171,6 +215,7 @@ export default function TableManagerDepartment({
                 onEmployeeDeleteClick={onEmployeeDeleteClick}
                 onDepartmentUpdateClick={onDepartmentUpdateClick}
                 onDepartmentDeleteClick={onDepartmentDeleteClick}
+                onAddPositionClick={onAddPositionClick}
               />
             ))}
         </TableBody>
