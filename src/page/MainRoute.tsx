@@ -35,6 +35,9 @@ import { AddSignaturePage, EditSignaturePage, SignaturePage } from './SignatureP
 // import MailTemplateContainer from '@containers/MailTemplateContainer';
 
 import MainWrapperContainer from '@containers/MainWrapperContainer';
+import ContactsPage from './Contact/Contacts';
+import { genCRUD } from '@utils/routerHelper';
+import AddContactsPage from './Contact/Contacts/add';
 
 export const managerRouter: RouteObject[] = [
   {
@@ -56,7 +59,7 @@ export const managerRouter: RouteObject[] = [
         element: <UserProfileContainer />,
       },
       {
-        path: '/manager/change-password',
+        path: '/manager/profile/change-password',
         element: <ChangePassword />,
       },
       {
@@ -136,6 +139,16 @@ export const declareRouter: RouteObject[] = [
         path: '/contact',
         element: <ContactLayout />,
         children: [
+          { element: <Navigate to={'/contact/contacts'} />, path: '/contact' },
+          genCRUD(
+            {
+              path: '/contact/contacts',
+            },
+            {
+              index: <ContactsPage />,
+              add: <AddContactsPage />,
+            },
+          ),
           {
             path: '/contact/sharing',
             element: <ContactSharing />,

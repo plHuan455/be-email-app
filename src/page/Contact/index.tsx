@@ -1,13 +1,13 @@
-import ContactContainer from "@containers/ContactContainer";
+import ContactContainer from '@containers/ContactContainer';
 
 interface ContactPageProps {}
 
-const ContactPage: React.FC<ContactPageProps> = () => {
+const ContactSharingPage: React.FC<ContactPageProps> = () => {
   return (
     <div className="t-contactPage">
       <ContactContainer />
     </div>
-  )
-}
+  );
+};
 
-export default ContactPage;
+export default ContactSharingPage;

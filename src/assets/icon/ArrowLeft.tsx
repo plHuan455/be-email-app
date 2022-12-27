@@ -1,8 +1,9 @@
 import { SVGProps } from '@components/atoms/Icon';
 
-const ArrowLeft: React.FC<SVGProps> = ({ width, height, color }) => {
+const ArrowLeft: React.FC<SVGProps> = ({ width, height, color, className }) => {
   return (
     <svg
+      className={className}
       xmlns="http://www.w3.org/2000/svg"
       width={width ? width : '24'}
       height={height ? height : '24'}

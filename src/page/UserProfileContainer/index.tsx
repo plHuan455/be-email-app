@@ -129,7 +129,7 @@ const UserProfileContainer = () => {
   };
 
   const onChangePassword = (e) => {
-    navigate('/manager/change-password');
+    navigate('/manager/profile/change-password');
   };
 
   const handleSubmitUpdateForm = (values: AuthUpdate) => {
