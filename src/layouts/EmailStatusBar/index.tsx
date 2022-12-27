@@ -360,6 +360,7 @@ const EmailStatusBar = (props: Props) => {
       }}>
       <EmailStatusHeader
         title="Email"
+        buttonTitle="Compose"
         color="#827CFF"
         bgButtonColor="#554CFF"
         isComposeButton={true}

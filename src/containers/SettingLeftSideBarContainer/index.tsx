@@ -21,6 +21,7 @@ const SettingLeftContainer = () => {
     <Box className="p-6">
       <EmailStatusHeader
         title="Settings"
+        buttonTitle=""
         bgButtonColor="#554CFF"
         color="#827CFF"
         isComposeButton={false}
