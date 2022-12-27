@@ -54,6 +54,7 @@ const ContactSlideBar: React.FC<ContactSlideBarProps> = ({
             backgroundColor: 'transparent',
             p: rem(16),
             height: '100vh',
+            borderRight: 0,
           },
         }}>
         <EmailStatusHeader
@@ -61,7 +62,7 @@ const ContactSlideBar: React.FC<ContactSlideBarProps> = ({
           buttonTitle="Add Contact"
           color="#827CFF"
           bgButtonColor="#554CFF"
-          isComposeButton={true}
+          isComposeButton={false}
           isSearch={false}
         />
         <List>

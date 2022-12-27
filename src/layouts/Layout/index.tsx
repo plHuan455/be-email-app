@@ -1,3 +1,4 @@
+import ArrowLeft from '@assets/icon/ArrowLeft';
 import Icon from '@components/atoms/Icon';
 import IconButton from '@components/atoms/IconButton';
 import SearchStartWithIcon from '@components/molecules/Search';
@@ -77,6 +78,7 @@ const Main: React.FC<
 
 const MainHaveActions: React.FC<
   PropsWithChildren & {
+    onComback?: () => void;
     isHaveHeader?: boolean;
     isHaveSearch?: boolean;
     isFull?: boolean;
@@ -85,6 +87,7 @@ const MainHaveActions: React.FC<
   }
 > = ({
   children,
+  onComback,
   isHaveHeader = false,
   isHaveSearch = false,
   isFull = false,
@@ -130,7 +133,12 @@ const MainHaveActions: React.FC<
                 gap: theme.spacing(2),
                 marginBottom: theme.spacing(4),
               })}>
-              <Box className="flex">
+              <Box className="flex items-center">
+                {onComback && (
+                  <Box className="pr-4 hover:cursor-pointer" onClick={onComback}>
+                    <ArrowLeft width={22} height={22} color={'#B2B0EE'} />
+                  </Box>
+                )}
                 {headTitle && (
                   <Typography
                     className="text-[#B2B0EE] pr-6"
@@ -178,6 +186,7 @@ const queryClient = new QueryClient({
 
 const MainQueryClient: React.FC<
   PropsWithChildren & {
+    onComback?: () => void;
     isHaveHeader?: boolean;
     isHaveSearch?: boolean;
     isFull?: boolean;
@@ -186,6 +195,7 @@ const MainQueryClient: React.FC<
   }
 > = ({
   children,
+  onComback,
   isHaveHeader = true,
   isHaveSearch = false,
   isFull = false,
@@ -194,6 +204,7 @@ const MainQueryClient: React.FC<
 }) => {
   return (
     <MainHaveActions
+      onComback={onComback}
       isHaveHeader={isHaveHeader}
       isHaveSearch={isHaveSearch}
       isFull={isFull}
