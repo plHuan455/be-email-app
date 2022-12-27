@@ -383,10 +383,8 @@ const Email: React.FC<Props> = () => {
   const currRole = localStorage.getItem('current_role')?.toUpperCase();
   return (
     <Box className="w-full flex flex-wrap flex-col">
-      {isLoading ? (
-        <EmailMessEmpty isLoading={isLoading} />
-      ) : (
-        EmailsList.map((email, index) => (
+      {isLoading && <EmailMessEmpty isLoading={isLoading} />}
+        {EmailsList.map((email, index) => (
           <EmailMessContainer
             ref={EmailsList.length - 1 === index ? lastEmailMessRef : undefined}
             key={email.id}
@@ -413,8 +411,7 @@ const Email: React.FC<Props> = () => {
               updateHashtagMutate({ id: email.id, data: { ...email, tags } });
             }}
           />
-        ))
-      )}
+      ))}
       <ModalBase
         onClose={handleCloseModal}
         onSubmit={modal.onSubmit}
