@@ -7,8 +7,11 @@ interface SignatureLayoutProps {
   onCloseAddSignature?: () => void;
 }
 
-const SignatureLayout: React.FC<SignatureLayoutProps> = ({isOpenAddSignature, onCloseAddSignature}) => {
-  return <SignatureContainer isOpenAddSignature={isOpenAddSignature} onCloseAddSignature={onCloseAddSignature} />;
+const SignatureLayout: React.FC<SignatureLayoutProps> = ({
+  isOpenAddSignature,
+  onCloseAddSignature,
+}) => {
+  return <div>Null</div>;
 };
 
 export default SignatureLayout;

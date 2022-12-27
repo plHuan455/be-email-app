@@ -11,6 +11,7 @@ const SignaturePage = () => {
 
   return (
     <Layout.MainQueryClient
+      isHaveHeader
       headTitle={t('Signatures')}
       onClickAdd={() => {
         navigate('add');

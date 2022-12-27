@@ -7,7 +7,7 @@ const AddSignaturePage = () => {
   const { t } = useTranslation();
 
   return (
-    <Layout.MainQueryClient headTitle={t('Signatures - Add')}>
+    <Layout.MainQueryClient isHaveHeader headTitle={t('Signatures - Add')}>
       <AddSignatureContainer />
     </Layout.MainQueryClient>
   );
