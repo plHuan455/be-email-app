@@ -5,7 +5,7 @@ import Layout from '@layouts/Layout';
 import { SelectChangeEvent, Typography } from '@mui/material';
 import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -35,9 +35,18 @@ const ContactsTemplate: React.FC<ContactsTemplateProps> = ({
   disabledClear,
   disabledSubmit,
 }) => {
+  useEffect(() => {
+    setValue('id', formData.id);
+    setValue('avatar', formData.avatar);
+    setValue('first_name', formData.first_name);
+    setValue('last_name', formData.last_name);
+    setValue('mail', formData.mail);
+  }, [formData]);
+
   const { t } = useTranslation();
 
   const {
+    setValue,
     register,
     handleSubmit: _handleSubmit,
     formState: { errors },

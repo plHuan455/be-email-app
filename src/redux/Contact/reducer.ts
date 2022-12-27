@@ -42,8 +42,21 @@ const contactSlice = createSlice({
   name: 'contact',
   initialState,
   reducers: {
+    editContactsList(state, actions) {
+      const { id, data } = actions.payload;
+
+      const position = state.contactsList.findIndex((contact) => contact.id === +id);
+
+      const cloneContactsList = [...state.contactsList];
+
+      cloneContactsList.splice(position, 1, data);
+
+      localStorage.setItem('contacts-list', JSON.stringify(cloneContactsList));
+
+      return { ...state, contactsList: [...cloneContactsList] };
+    },
     pushContactsList(state, actions) {
-      const nextId = state.contactsList.length;
+      const nextId = state.contactsList.length + 1;
 
       const nextContact = [
         ...state.contactsList,
@@ -61,5 +74,6 @@ const contactSlice = createSlice({
   },
 });
 
-export const { setContactsList, pushContactsList } = contactSlice.actions;
+export const { setContactsList, pushContactsList, editContactsList } =
+  contactSlice.actions;
 export default contactSlice.reducer;
