@@ -148,9 +148,11 @@ const saveEmailList = [
   },
 ];
 
-interface Props {}
+interface Props {
+  pageParams?: { page: number; limit: number}
+}
 
-const Email: React.FC<Props> = () => {
+const Email: React.FC<Props> = ({pageParams}) => {
   const lastEmailMessRef = useRef<HTMLDivElement>(null);
 
   const [showHistory, setShowHistory] = useState<number | null>(null);
@@ -231,11 +233,11 @@ const Email: React.FC<Props> = () => {
     }
   }, [EmailsList]);
 
-  useEffect(() => {
-    if (lastEmailMessRef.current) {
-      lastEmailMessRef.current.scrollIntoView();
-    }
-  }, [EmailsList]);
+  // useEffect(() => {
+  //   if (lastEmailMessRef.current) {
+  //     lastEmailMessRef.current.scrollIntoView();
+  //   }
+  // }, [EmailsList]);
 
   const checkIsReceiveEmail = useCallback(
     (id) => {
@@ -379,12 +381,17 @@ const Email: React.FC<Props> = () => {
     },
     [showHistory],
   );
+  
+  const convertedEmailList = useMemo(() => {
+    if(pageParams) return EmailsList.slice(-1 * pageParams.page * pageParams.limit);
+    return EmailsList;
+  }, [pageParams, EmailsList])
 
   const currRole = localStorage.getItem('current_role')?.toUpperCase();
   return (
     <Box className="w-full flex flex-wrap flex-col">
       {isLoading && <EmailMessEmpty isLoading={isLoading} />}
-        {EmailsList.map((email, index) => (
+        {convertedEmailList.map((email, index) => (
           <EmailMessContainer
             ref={EmailsList.length - 1 === index ? lastEmailMessRef : undefined}
             key={email.id}
