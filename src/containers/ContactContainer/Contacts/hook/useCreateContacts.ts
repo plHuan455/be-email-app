@@ -1,8 +1,9 @@
 import { useUploadFileToSever } from '@hooks/useUploadFileToSever';
-import { pushContactsList } from '@redux/Contact/reducer';
+import { RootState } from '@redux/configureStore';
+import { editContactsList, pushContactsList } from '@redux/Contact/reducer';
 import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast, useToast } from 'react-toastify';
 import * as yup from 'yup';
@@ -85,9 +86,18 @@ export const useCreateContacts = () => {
   };
 };
 
-export const useEditStoreManagement = () => {
+export const useEditContacts = () => {
   const hook = useCreateContacts();
   const { param, navigate, contacts, setContacts, files, uploadImage } = hook;
+
+  const dispatch = useDispatch();
+
+  // Dùng đỡ nào có API gỡ
+  const { contactsList } = useSelector((state: RootState) => state.contact);
+  const { id } = useParams();
+  useEffect(() => {
+    setContacts(contactsList[Number(id) - 1]);
+  }, [id]);
 
   // useQuery(
   //   ['getSignById', param.id],
@@ -111,12 +121,18 @@ export const useEditStoreManagement = () => {
   const handleEdit = async () => {
     try {
       // call await update
-      if (files.image && files.image.length > 0) {
-        const picture = await uploadImage(files.image[0]);
-        // update with img change
-      } else {
-        // update without img change
-      }
+      // if (files.image && files.image.length > 0) {
+      //   const picture = await uploadImage(files.image[0]);
+      // update with img change
+      // } else {
+      // update without img change
+      // }
+      dispatch(
+        editContactsList({
+          id: id,
+          data: contacts,
+        }),
+      );
       navigate('..');
       toast.success('Success');
     } catch (error: any) {

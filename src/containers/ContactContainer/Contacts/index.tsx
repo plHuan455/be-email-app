@@ -1,13 +1,21 @@
+import TableActionsMenu from '@components/molecules/TableActionsMenu';
 import Contacts from '@components/organisms/Contact/Contacts';
 import useLocalStorage from '@hooks/useLocalStorage';
-import { Avatar } from '@mui/material';
-import { GridColDef } from '@mui/x-data-grid';
+import { Avatar, IconButton, Tooltip } from '@mui/material';
+import { GridColDef, GridRowId } from '@mui/x-data-grid';
 import { RootState } from '@redux/configureStore';
 import { setContactsList } from '@redux/Contact/reducer';
+import { rem } from '@utils/functions';
 import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import DeleteIcon from '@mui/icons-material/Delete';
+import UpdateIcon from '@mui/icons-material/Update';
+import { useNavigate } from 'react-router-dom';
 
 const ContactsContainer = () => {
+  // useNavigate
+  const navigate = useNavigate();
+
   // useDispatch
   const dispatch = useDispatch();
 
@@ -65,26 +73,48 @@ const ContactsContainer = () => {
       },
       {
         field: 'mail',
-        headerName: 'Mail',
+        headerName: 'Email',
         align: 'center',
         headerAlign: 'center',
         flex: 1,
       },
+      {
+        field: 'actions',
+        headerName: 'Actions',
+        align: 'center',
+        headerAlign: 'center',
+        flex: 1,
+        renderCell: (params) => (
+          <Tooltip title="Delete" placement="right">
+            <IconButton onClick={handleClickDelete(params.id)}>
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        ),
+      },
     ];
+
+    // Handler FNC
+    const handleClickDelete = (index: GridRowId) => (e) => {
+      e.stopPropagation();
+      console.log(index);
+    };
 
     return colsDef;
   }, [contactsList]);
 
   //   Handler FNC
-  const handleRowClick = (rowData) => {
+  const handleCellClick = (rowData) => {
     console.log('row data ------->', rowData);
+    if (rowData.field === 'actions') return;
+    navigate(`edit/${rowData.id}`);
   };
 
   return (
     <Contacts
       rows={contactsList}
       columns={columns}
-      handleRowClick={handleRowClick}
+      handleCellClick={handleCellClick}
     />
   );
 };

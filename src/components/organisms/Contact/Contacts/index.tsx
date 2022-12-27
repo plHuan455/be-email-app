@@ -5,10 +5,10 @@ import React from 'react';
 interface ContactsProps {
   rows: ContactType[];
   columns: GridColDef[];
-  handleRowClick: (any) => void;
+  handleCellClick: (any) => void;
 }
 
-const Contacts: React.FC<ContactsProps> = ({ rows, columns, handleRowClick }) => {
+const Contacts: React.FC<ContactsProps> = ({ rows, columns, handleCellClick }) => {
   console.log(rows);
   return (
     <div className="px-6 flex-1 overflow-hidden flex flex-col">
@@ -20,7 +20,7 @@ const Contacts: React.FC<ContactsProps> = ({ rows, columns, handleRowClick }) =>
           rowsPerPageOptions={[5]}
           style={{ backgroundColor: '#fff', borderRadius: 15 }}
           // onRowClick={(params) => handleRowClick(params)}
-          onCellClick={(params) => handleRowClick(params)}
+          onCellClick={(params) => handleCellClick(params)}
         />
       </div>
     </div>

@@ -1,4 +1,3 @@
-import React from 'react';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { useEditStoreManagement } from './hook';
 import SignatureTemplate from './template';
@@ -14,10 +13,6 @@ const UpdateSignContainer = () => {
     handleEdit,
     handleCancel,
   } = useEditStoreManagement();
-
-  console.log('signature -->', signature);
-
-  // if (signature.id === -1) return <div>Loading...</div>;
 
   return (
     <SignatureTemplate
