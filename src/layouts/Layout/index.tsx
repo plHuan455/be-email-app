@@ -186,7 +186,7 @@ const MainQueryClient: React.FC<
   }
 > = ({
   children,
-  isHaveHeader = false,
+  isHaveHeader = true,
   isHaveSearch = false,
   isFull = false,
   onClickAdd,

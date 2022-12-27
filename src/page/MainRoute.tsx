@@ -56,7 +56,7 @@ export const managerRouter: RouteObject[] = [
         element: <UserProfileContainer />,
       },
       {
-        path: '/manager/change-password',
+        path: '/manager/profile/change-password',
         element: <ChangePassword />,
       },
       {

@@ -47,11 +47,8 @@ const SettingLeftContainer = () => {
 
 const menuSettingsListEmployee: MenuContactTypes[] = [
   {
-    name: 'MySetting',
-    menuItems: [
-      { id: 1, name: 'Profile', navigate: '/manager/profile' },
-      { id: 2, name: 'Change Password', navigate: '/manager/change-password' },
-    ],
+    name: 'Profile',
+    navigate: '/manager/profile',
   },
   { name: 'Signature', navigate: '/manager/signature' },
   { name: 'Department', navigate: '/manager/department' },
