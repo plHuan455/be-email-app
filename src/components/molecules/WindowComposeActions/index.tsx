@@ -9,14 +9,19 @@ interface WindowComposeActionsProps {
   sx?: SxProps<Theme>;
   onMinimizeClick?: () => void;
   onMaximizeClick?: () => void;
+  onCloseClick?: () => void;
 }
 
-function WindowComposeActions({ sx, className, onMinimizeClick, onMaximizeClick }: WindowComposeActionsProps) {
+function WindowComposeActions({ sx, className, onMinimizeClick, onMaximizeClick, onCloseClick }: WindowComposeActionsProps) {
   const { isZoom, reset, negativeIsZoom } = useEmailCompose();
 
   const navigate = useNavigate();
 
   const handleClose = () => {
+    if(onCloseClick) {
+      onCloseClick();
+      return;
+    }
     reset();
     navigate(-1);
   };
