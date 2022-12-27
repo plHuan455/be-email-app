@@ -325,7 +325,7 @@ const EmailMess: React.FC<Props> = ({
   const _renderEmailTitle = useMemo(() => {
     const emailTitle = emailData.email.subject;
     const limitShow = 250;
-    if (emailTitle.length < limitShow)
+    if (emailTitle?.length < limitShow)
       return (
         <h1 className="text-stone-700 font-bold text-base">
           {emailData.email.subject}
@@ -333,8 +333,8 @@ const EmailMess: React.FC<Props> = ({
       );
     return (
       <h1 className="text-stone-700 font-bold text-base">
-        <span>{emailTitle.substring(0, limitShow)}...</span>
-        {isShowLimitTitle && <span>{emailTitle.substring(limitShow)}</span>}
+        <span>{emailTitle?.substring(0, limitShow)}...</span>
+        {isShowLimitTitle && <span>{emailTitle?.substring(limitShow)}</span>}
         <span
           onClick={handleNavigateShowLimitTitle}
           className="pl-2 inline-block text-[14px] hover:opacity-80"
