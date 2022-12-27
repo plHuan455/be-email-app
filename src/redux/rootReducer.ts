@@ -5,6 +5,7 @@ import { combineReducers } from 'redux';
 import email, { EmailState } from './Email/reducer';
 import notify from './Notify/reducer';
 import { NotifyState } from './Notify/interface';
+import contact, { ContactState } from './Contact/reducer';
 
 export interface RootReducer {
   user?: UserState;
@@ -12,9 +13,11 @@ export interface RootReducer {
   breadcrumbs?: BreadcrumbsState;
   email?: EmailState;
   notify?: NotifyState;
+  contact?: ContactState;
 }
 
 const rootReducer = combineReducers({
+  contact,
   user,
   global,
   breadcrumbs,

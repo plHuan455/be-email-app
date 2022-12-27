@@ -2,15 +2,25 @@ import Contacts from '@components/organisms/Contact/Contacts';
 import useLocalStorage from '@hooks/useLocalStorage';
 import { Avatar } from '@mui/material';
 import { GridColDef } from '@mui/x-data-grid';
-import React, { useMemo, useState } from 'react';
-import { ContactType } from './interface';
+import { RootState } from '@redux/configureStore';
+import { setContactsList } from '@redux/Contact/reducer';
+import React, { useEffect, useMemo, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 const ContactsContainer = () => {
-  // useLocalStorage
-  const [contactsLocal] = useLocalStorage('contacts-list', contactsList);
+  // useDispatch
+  const dispatch = useDispatch();
 
-  // useState
-  const [listSign, setListSign] = useState(contactsLocal);
+  // useSelector
+  const { contactsList } = useSelector((state: RootState) => state.contact);
+
+  // useLocalStorage
+  const [localContactsList] = useLocalStorage('contacts-list', undefined);
+
+  // useEffect
+  useEffect(() => {
+    if (localContactsList) dispatch(setContactsList(JSON.parse(localContactsList)));
+  }, [localContactsList]);
 
   const columns = useMemo(() => {
     const colsDef: GridColDef[] = [
@@ -71,32 +81,12 @@ const ContactsContainer = () => {
   };
 
   return (
-    <Contacts rows={listSign} columns={columns} handleRowClick={handleRowClick} />
+    <Contacts
+      rows={contactsList}
+      columns={columns}
+      handleRowClick={handleRowClick}
+    />
   );
 };
-
-const contactsList: ContactType[] = [
-  {
-    id: 1,
-    avatar: '',
-    first_name: 'Contact',
-    last_name: 'Name 1',
-    mail: 'contact1@mail.mail',
-  },
-  {
-    id: 2,
-    avatar: '',
-    first_name: 'Contact',
-    last_name: 'Name 2',
-    mail: 'contact2@mail.mail',
-  },
-  {
-    id: 3,
-    avatar: '',
-    first_name: 'Contact',
-    last_name: 'Name 3',
-    mail: 'contact3@mail.mail',
-  },
-];
 
 export default ContactsContainer;
