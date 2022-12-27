@@ -20,7 +20,6 @@ const MinimizeEmail: React.FC<MinimizeEmailProps> = ({
   onMaximizeClick,
   onCloseClick,
 }) => {
-  console.log('mini email data', data);
   return (
     <Box className="o-minimizeEmail" display="flex" alignItems="center">
       <Typography
