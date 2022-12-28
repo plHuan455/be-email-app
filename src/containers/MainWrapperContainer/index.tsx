@@ -14,6 +14,7 @@ import MinimizeEmailList, { MinimizeEmailTypes } from "@components/templates/Min
 import AlertDialog, { useAlertDialog } from "@components/molecules/AlertDialog";
 import { deleteAllWithIdList } from "@api/email";
 import { attempt, update } from "lodash";
+import { emailData } from "@layouts/EmailStatusBar";
 
 interface EmailComposeContextTypes {
   method?: UseFormReturn<EmailComposeFields>,
@@ -24,6 +25,7 @@ interface EmailComposeContextTypes {
   onMinimizeEmailClick: () => void;
   onMaximizeEmailClick: () => void;
   onCloseEmail: () => void;
+  onContinueClick: (values: MinimizeEmailTypes) => void;
 }
 
 export const EmailComposeContext = createContext<EmailComposeContextTypes>({
@@ -33,6 +35,7 @@ export const EmailComposeContext = createContext<EmailComposeContextTypes>({
   onMinimizeEmailClick: () => { },
   onMaximizeEmailClick: () => { },
   onCloseEmail: () => { },
+  onContinueClick: () => {},
 });
 
 
@@ -196,6 +199,30 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
       return;
     }
     submitEmailComposeMutate(createApiData(values))
+  }
+
+  const handleContinueClick = (values: MinimizeEmailTypes) => {
+    console.log(values);
+    const currValue = method.getValues();
+    const currData = createApiData(currValue);
+    const isEmailDataEmpty = checkEmailDataEmpty(currValue);
+    
+    const foundMinimizeEmail = minimizeEmailList.find(value => value.id === values.id && values.id !== undefined);
+    
+    if(showMinimizeEmailId || !isEmailDataEmpty) {
+      if(showMinimizeEmailId?.id) {
+        updateDraftMutate({id: showMinimizeEmailId.id, data: currData});
+      } else {
+        const newCacheId = Date.now();
+        storeDraftMutate({cacheId: showMinimizeEmailId?.cacheId ?? newCacheId, data: currData});
+      }
+    }
+    
+    createDataForForm({subject: values.subject, content: values.content})
+    clearTimeout(storeDraftTimeOutFunc.current);
+    setTabColor(foundMinimizeEmail?.color);
+    setShowMinimizeEmailId({id: values.id});
+    navigate('/emails/compose');
   }
 
   const handleMaximizeEmailClick = (data: MinimizeEmailTypes) => {
@@ -482,6 +509,7 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
       onMinimizeEmailClick: handleMinimizeEmailClick,
       onMaximizeEmailClick: () => { },
       onCloseEmail: handleCloseEmail,
+      onContinueClick: handleContinueClick,
     }
   }, [method, tabColor, triggerClearData, handleMinimizeEmailClick, handleNewComposeClick, handleCloseEmail])
 

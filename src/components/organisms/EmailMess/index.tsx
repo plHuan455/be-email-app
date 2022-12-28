@@ -1,4 +1,5 @@
-import { Avatar, Box, Button } from '@mui/material';
+import { Avatar, Box, Button, Typography } from '@mui/material';
+import CreateIcon from '@mui/icons-material/Create';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import styles from './styles.module.scss';
 import AttachFiles from '@components/atoms/AttachFiles';
@@ -56,6 +57,7 @@ interface Props {
   onUndoEmail: () => void;
   onApproveNow: () => void;
   onSendEmail: () => void;
+  onContinueClick?: () => void;
 }
 
 export const attachsToAttachFiles: (attachs: attachs[]) => AttachFile[] = (
@@ -94,6 +96,7 @@ const EmailMess: React.FC<Props> = ({
   onUndoEmail,
   onApproveNow,
   onSendEmail,
+  onContinueClick,
 }) => {
   const [searchParams] = useSearchParams();
 
@@ -405,7 +408,15 @@ const EmailMess: React.FC<Props> = ({
             {renderSendTo()}
           </div>
           {emailData.status.toLowerCase() !== 'null' && (
-            <EmailStatus emailStatus={emailData.status.toLowerCase()} />
+            <Box display="flex" alignItems="center">
+              {emailData?.status?.toLowerCase() === 'draft' && (
+                <Button sx={{mr: rem(16), borderRadius: rem(20)}} onClick={onContinueClick}>
+                  <CreateIcon sx={{fontSize: rem(20)}}/>
+                  <Typography sx={{ml: rem(8), fontSize: rem(14), fontWeight: 500}}>Continue</Typography>
+                </Button>
+              )}
+              <EmailStatus emailStatus={emailData.status.toLowerCase()} />
+            </Box>
           )}
         </Box>
         {/* Email Content */}

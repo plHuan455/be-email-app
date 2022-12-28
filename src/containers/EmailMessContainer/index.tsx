@@ -5,13 +5,14 @@ import AlertWithEmailAction from '@components/molecules/AlertWithEmailAction';
 import SettimeInput from '@components/molecules/SettimeInput';
 import { UserInfo } from '@components/organisms/Email/Interface';
 import EmailMess from '@components/organisms/EmailMess';
+import { EmailComposeContext } from '@containers/MainWrapperContainer';
 import { emailData } from '@layouts/EmailStatusBar';
 import { Box, Button } from '@mui/material';
 import { deleteIndexEmail, HashtagTabs } from '@redux/Email/reducer';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import dayjs, { Dayjs } from 'dayjs';
 import { userInfo } from 'os';
-import React, { forwardRef, useState } from 'react';
+import React, { forwardRef, useContext, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 
@@ -49,6 +50,9 @@ const EmailMessContainerRef: React.ForwardRefRenderFunction<
   const [valueApproveIn, setValueApproveIn] = useState<Dayjs>(
     dayjs('Thu Apr 07 2022 00:15:00'),
   );
+
+  const {onContinueClick} = useContext(EmailComposeContext);
+
 
   // useAlertDialog
   const {
@@ -244,6 +248,22 @@ const EmailMessContainerRef: React.ForwardRefRenderFunction<
     );
   };
 
+  const handleContinueEmailClick = () => {
+    const {email} = emailData;
+    console.log(`[TODO] CONTINUE ADD FIELDS`);
+    onContinueClick({
+        id: emailData.id,
+        subject: email.subject,
+        content: email.text_html,
+        // hashtags: emailData.tags?.map(value => ({name: `#${value}`, value})),
+        // attachFiles: {
+        //   files: Array(email.attachs?.length ?? 0).fill(undefined),
+        //   fileUrls: email.attachs?.map(value => value.path) ?? []
+        // }
+      }
+    )
+  }
+
   return (
     <Box ref={ref}>
       <EmailMess
@@ -262,6 +282,7 @@ const EmailMessContainerRef: React.ForwardRefRenderFunction<
         onUndoEmail={handleUndoEmail}
         onApproveNow={handleApproveNow}
         onSendEmail={handleSendEmail}
+        onContinueClick={handleContinueEmailClick}
       />
       <AlertDialog
         titleLabel={alertDialogTitle}
