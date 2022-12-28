@@ -1,6 +1,7 @@
 import { useUploadFileToSever } from '@hooks/useUploadFileToSever';
 import { RootState } from '@redux/configureStore';
 import {
+  editContactGroup,
   editContactsList,
   pushContactGroups,
   pushContactsList,
@@ -111,13 +112,22 @@ export const useEditContacts = () => {
     hook;
 
   const dispatch = useDispatch();
+  // useSelector
+  const { contactsList } = useSelector((state: RootState) => state.contact);
 
   // Dùng đỡ nào có API gỡ
-  const { contactsList } = useSelector((state: RootState) => state.contact);
+  const { contactGroupsList } = useSelector((state: RootState) => state.contact);
   const { id } = useParams();
-  // useEffect(() => {
-  //   setContactGroup(contactsList[Number(id) - 1]);
-  // }, [id]);
+  useEffect(() => {
+    const setData = {
+      ...contactGroupsList[Number(id) - 1],
+      members: contactGroupsList[Number(id) - 1].members.map(
+        (member) => member.mail,
+      ),
+    };
+
+    setContactGroup(setData);
+  }, [id]);
 
   // useQuery(
   //   ['getSignById', param.id],
@@ -147,10 +157,23 @@ export const useEditContacts = () => {
       // } else {
       // update without img change
       // }
+      const cloneContactsList = [...contactsList];
+      const cloneMembers = [...contactGroup.members];
+
+      const remapMembers = cloneMembers.reduce((currMem, nextMem) => {
+        const isFoundPosition = cloneContactsList.findIndex(
+          (contact) => contact.mail === nextMem,
+        );
+
+        if (isFoundPosition > -1)
+          return [...currMem, cloneContactsList[isFoundPosition]];
+        return currMem;
+      }, []);
+
       dispatch(
-        editContactsList({
+        editContactGroup({
           id: id,
-          data: contactGroup,
+          data: { ...contactGroup, members: remapMembers },
         }),
       );
       navigate('..');

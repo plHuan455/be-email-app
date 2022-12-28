@@ -43,7 +43,8 @@ import ContactsPage from './Contact/Contacts';
 import { genCRUD } from '@utils/routerHelper';
 import AddContactsPage from './Contact/Contacts/add';
 import EditContactPage from './Contact/Contacts/edit';
-import AddContactGroup from './Contact/ContactSharing/add';
+import AddContactGroup from './Contact/ContactGroup/add';
+import EditContactGroupPage from './Contact/ContactGroup/edit';
 
 export const managerRouter: RouteObject[] = [
   {
@@ -173,7 +174,7 @@ export const declareRouter: RouteObject[] = [
             {
               index: <ContactGroups />,
               add: <AddContactGroup />,
-              // edit: <EditContactPage />,
+              edit: <EditContactGroupPage />,
             },
           ),
         ],

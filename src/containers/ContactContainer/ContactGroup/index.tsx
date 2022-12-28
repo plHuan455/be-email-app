@@ -11,6 +11,7 @@ import { RootState } from '@redux/configureStore';
 import Icon from '@components/atoms/Icon';
 import useLocalStorage from '@hooks/useLocalStorage';
 import { setContactGroups } from '@redux/Contact/reducer';
+import { useNavigate } from 'react-router-dom';
 
 const ContactGroupContainer = () => {
   // useSelector
@@ -19,6 +20,8 @@ const ContactGroupContainer = () => {
   const dispatch = useDispatch();
   // useLocalStorage
   const [localContactGroup] = useLocalStorage('contact-groups-list', undefined);
+  // useNavigate
+  const navigate = useNavigate();
 
   // useEffect
   useEffect(() => {
@@ -97,12 +100,18 @@ const ContactGroupContainer = () => {
     console.log(id);
   };
 
+  const handleCellClick = (rowData) => {
+    console.log('row data ------->', rowData);
+    if (rowData.field === 'actions') return;
+    navigate(`edit/${rowData.id}`);
+  };
+
   return (
     <>
       <ContactGroup
         columns={columns}
         rows={contactGroupsList}
-        handleCellClick={() => console.log('cell click')}
+        handleCellClick={handleCellClick}
       />
     </>
   );
