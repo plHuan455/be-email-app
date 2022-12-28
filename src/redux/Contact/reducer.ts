@@ -1,41 +1,56 @@
 import { createSlice } from '@reduxjs/toolkit';
-
-interface Contact {
-  id: number;
-  first_name: string;
-  last_name: string;
-  mail: string;
-  avatar: string;
-}
+import { Contact, ContactGroup } from './interface';
 
 export interface ContactState {
   contactsList: Contact[];
+  contactGroupsList: ContactGroup[];
 }
 
+const contactsListDefault: Contact[] = [
+  {
+    id: 1,
+    avatar: '',
+    first_name: 'Contact',
+    last_name: 'Name 1',
+    mail: 'contact1@mail.mail',
+  },
+  {
+    id: 2,
+    avatar: '',
+    first_name: 'Contact',
+    last_name: 'Name 2',
+    mail: 'contact2@mail.mail',
+  },
+  {
+    id: 3,
+    avatar: '',
+    first_name: 'Contact',
+    last_name: 'Name 3',
+    mail: 'contact3@mail.mail',
+  },
+];
+
+const contactGroupsListDefault: ContactGroup[] = [
+  {
+    id: 1,
+    group_name: 'Nhóm test 1',
+    members: contactsListDefault,
+  },
+  {
+    id: 2,
+    group_name: 'Nhóm test 2',
+    members: contactsListDefault,
+  },
+  {
+    id: 3,
+    group_name: 'Nhóm test 3',
+    members: contactsListDefault,
+  },
+];
+
 const initialState: ContactState = {
-  contactsList: [
-    {
-      id: 1,
-      avatar: '',
-      first_name: 'Contact',
-      last_name: 'Name 1',
-      mail: 'contact1@mail.mail',
-    },
-    {
-      id: 2,
-      avatar: '',
-      first_name: 'Contact',
-      last_name: 'Name 2',
-      mail: 'contact2@mail.mail',
-    },
-    {
-      id: 3,
-      avatar: '',
-      first_name: 'Contact',
-      last_name: 'Name 3',
-      mail: 'contact3@mail.mail',
-    },
-  ],
+  contactsList: contactsListDefault,
+  contactGroupsList: contactGroupsListDefault,
 };
 
 const contactSlice = createSlice({
