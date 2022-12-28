@@ -1,6 +1,6 @@
-/* @import "./_mixin.scss"; */
+/* @import "./_mixin.scss"; */
 
-/*must import above this line recommended by postcss */
+/*must import above this line recommended by postcss */
 
 *, ::before, ::after {
     --tw-border-spacing-x: 0;
@@ -298,16 +298,16 @@
     margin-bottom: 0.5rem;
 }
 
-.ml-4 {
-    margin-left: 1rem;
-}
-
 .mr-4 {
     margin-right: 1rem;
 }
 
 .mt-6 {
     margin-top: 1.5rem;
+}
+
+.ml-4 {
+    margin-left: 1rem;
 }
 
 .block {
@@ -482,6 +482,11 @@
     width: 5rem;
 }
 
+.w-fit {
+    width: -moz-fit-content;
+    width: fit-content;
+}
+
 .w-full {
     width: 100%;
 }
@@ -498,16 +503,16 @@
     width: 70%;
 }
 
-.w-auto {
-    width: auto;
-}
-
 .w-\[90\%\] {
     width: 90%;
 }
 
 .w-\[5\%\] {
     width: 5%;
+}
+
+.w-auto {
+    width: auto;
 }
 
 .min-w-\[260px\] {
@@ -1410,6 +1415,11 @@
     padding-bottom: 0px;
 }
 
+.px-4 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
 .py-4 {
     padding-top: 1rem;
     padding-bottom: 1rem;
@@ -1453,11 +1463,6 @@
 .px-5 {
     padding-left: 1.25rem;
     padding-right: 1.25rem;
-}
-
-.px-4 {
-    padding-left: 1rem;
-    padding-right: 1rem;
 }
 
 .py-0\.5 {

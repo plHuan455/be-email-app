@@ -1,7 +1,6 @@
 import { useTranslation } from '@@packages/localization/src';
 import { SignatureContainer } from '@containers/SignatureContainer';
 import Layout from '@layouts/Layout';
-import SignatureLayout from '@layouts/Signature';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 

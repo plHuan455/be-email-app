@@ -7,7 +7,12 @@ export interface AuthContextType {
   token: string | undefined;
 }
 
-const AuthContext = createContext<AuthContextType>(null!);
+const AuthContext = createContext<AuthContextType>({
+  user: null,
+  token: undefined,
+  signin: () => undefined,
+  signout: () => undefined,
+});
 
 function useAuth() {
   return useContext(AuthContext);

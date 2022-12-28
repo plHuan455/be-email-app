@@ -27,7 +27,7 @@ export const changePassword = async ({
 };
 
 export const getUserInfo = async (): Promise<ApiResponse<AuthUpdate>> => {
-  const url = `${AuthProfile}/8`;
+  const url = `${AuthProfile}`;
 
   const res = await ApiClient.get(url);
 

@@ -4,7 +4,7 @@ import Header from '@layouts/Header';
 import SideBar from '@layouts/SideBar';
 import { Box, Container, Drawer } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Outlet, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { makeStyles } from 'tss-react/mui';
 import { toast } from 'react-toastify';
@@ -87,15 +87,15 @@ function MainWrapper({ children }: { children: React.ReactNode }) {
     return () => setOpenMobileSideBar(value);
   };
 
-  const handleLogout = () => {
+  const handleLogout = useCallback(() => {
     auth.signout(() => {
-      toast.success('Bái bai!');
+      deleteDeviceKey();
+      localStorage.removeItem('device_key_id');
+      localStorage.removeItem('token');
+      localStorage.removeItem('device_token');
     });
-    deleteDeviceKey();
-    localStorage.removeItem('device_key_id');
-    localStorage.removeItem('token');
-    localStorage.removeItem('device_token');
-  };
+    toast.success('Bái bai!');
+  }, [auth.signout]);
 
   const handleChangePage = (url: string) => () => {
     navigate(url);

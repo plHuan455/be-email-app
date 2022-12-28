@@ -43,6 +43,7 @@ import { parseSignToHtml } from '@utils/parseSignToHtml';
 import React from 'react';
 import classNames from 'classnames';
 import _ from 'lodash';
+import SignatureTmpTemplate from '@layouts/SignatureTmpTemplate';
 
 export interface CustomFile extends File {
   percentage: number;
@@ -124,9 +125,6 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
   const defaultSignId = useSelector(getDefaultSignId);
 
   // states
-  const [showModalSignature, setShowModalSignature] = useState(false);
-  const [showModalChooseSignature, setShowModalChooseSignature] = useState(false);
-  const [signatureImage, setSignatureImage] = useState<string>('');
 
   const [toData, setToData] = useState(inputContactBlocks);
   const [ccData, setCcData] = useState(inputContactBlocks);
@@ -135,15 +133,6 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
   // react hooks
   const fileInputRef = useRef<HTMLInputElement>(null);
   const composeScrollRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (defaultSignId) {
-      const r = rowsSign.find((e) => e.id === defaultSignId);
-      // if (r != undefined) {
-      //   setSignatureImage(r.signature);
-      // }
-    }
-  }, []);
 
   useEffect(() => {
     setToData(inputContactBlocks);
@@ -378,34 +367,9 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                       />
                     )}
                   />
-                  {signatureImage && (
-                    <Box className="mt-4 mb-4">
-                      <img
-                        style={{ width: 120, height: 40, objectFit: 'contain' }}
-                        src={signatureImage}
-                      />
-                    </Box>
-                  )}
-                  {/* <div
-                    dangerouslySetInnerHTML={{
-                      __html: parseSignToHtml(signDataTest),
-                    }}></div> */}
-                  <Box>
-                    {/* Greeting */}
-                    {signatureImage && (
-                      <Box className="mt-4 mb-4">
-                        <img
-                          style={{ width: 120, height: 40, objectFit: 'contain' }}
-                          src={signatureImage}
-                        />
-                      </Box>
-                    )}
-                    {/* <EmailGreeting
-                      greetingLabel="Thanks and Best regards, ------"
-                      isHaveLogo={true}
-                      logo={<LogoWithLabel />}
-                    /> */}
-                    {/* Files List */}
+
+                  <SignatureTmpTemplate />
+                  <Box className="mt-4">
                     <Box>
                       <Controller
                         name="attachFiles"
@@ -490,19 +454,6 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                   </Box>
                 )}
               </Box>
-
-              {/* <Box className="flex">
-                <Box className="ml-4">
-                  <Button onClick={() => setShowModalSignature(true)}>
-                    New signature
-                  </Button>
-                </Box>
-                <Box className="ml-4">
-                  <Button onClick={() => setShowModalChooseSignature(true)}>
-                    Choose signature
-                  </Button>
-                </Box>
-              </Box> */}
 
               {/* ACTIONS */}
               <Box className="flex justify-end items-center flex-1">
@@ -595,16 +546,6 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                 </Button>
               </Box>
             </ModalBase>
-            <ModalDrawSignature
-              isOpen={showModalSignature}
-              onClose={() => setShowModalSignature(false)}
-              onSubmit={(url) => setSignatureImage(url)}
-            />
-            <ModalChooseSignature
-              isOpen={showModalChooseSignature}
-              onClose={() => setShowModalChooseSignature(false)}
-              onSubmit={(url) => setSignatureImage(url)}
-            />
           </Box>
         </form>
       </FormProvider>
@@ -613,12 +554,3 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
 };
 
 export default EmailCompose2;
-
-const signDataTest = {
-  avatar:
-    'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=2000',
-  name: 'Jame Mattow',
-  position: 'Frontend Developer',
-  phone: '0312456789',
-  email: 'jame@dev.com',
-};

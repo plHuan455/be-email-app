@@ -15,7 +15,6 @@ import ErrorPage from './ErrorPage';
 import EmailWrap from './Email';
 
 import ManagerEmployee from './Manager/ManagerEmployee';
-import ManagerDepartment from './Manager/ManagerDepartment';
 import SettingRoles from './Settings/SettingsRoles';
 import Manager from './Manager';
 import ChangePassword from './ChangePassword';
@@ -35,6 +34,11 @@ import { AddSignaturePage, EditSignaturePage, SignaturePage } from './SignatureP
 // import MailTemplateContainer from '@containers/MailTemplateContainer';
 
 import MainWrapperContainer from '@containers/MainWrapperContainer';
+import {
+  AddDepartmentPage,
+  EditDepartmentPage,
+  ManagerDepartmentPage,
+} from './Manager/ManagerDepartment';
 import ContactsPage from './Contact/Contacts';
 import { genCRUD } from '@utils/routerHelper';
 import AddContactsPage from './Contact/Contacts/add';
@@ -45,14 +49,20 @@ export const managerRouter: RouteObject[] = [
     path: '/manager',
     element: <Manager />,
     children: [
-      { path: '/manager', element: <ManagerDepartment /> },
+      { path: '/manager', element: <ManagerDepartmentPage /> },
       { path: '/manager/setting', element: <SettingRoles /> },
       {
         path: '/manager/department',
         children: [
-          { path: '/manager/department', element: <ManagerDepartment /> },
-          { path: '/manager/department/employee', element: <ManagerEmployee /> },
-          { path: '/manager/department/department', element: <ManagerDepartment /> },
+          {
+            index: true,
+            path: '/manager/department',
+            element: <ManagerDepartmentPage />,
+          },
+          { path: '/manager/department/add', element: <AddDepartmentPage /> },
+          { path: '/manager/department/edit/:id', element: <EditDepartmentPage /> },
+          // { path: '/manager/department/employee', element: <ManagerEmployee /> },
+          // { path: '/manager/department/department', element: <ManagerDepartment /> },
         ],
       },
       {
