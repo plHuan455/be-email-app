@@ -42,6 +42,22 @@ const contactSlice = createSlice({
   name: 'contact',
   initialState,
   reducers: {
+    deleteContacts(state, actions) {
+      const cloneContactsList = [...state.contactsList];
+
+      const position = cloneContactsList.findIndex(
+        (contact) => contact.id === +actions.payload,
+      );
+
+      cloneContactsList.splice(position, 1);
+
+      localStorage.setItem('contacts-list', JSON.stringify(cloneContactsList));
+
+      return {
+        ...state,
+        contactsList: [...cloneContactsList],
+      };
+    },
     editContactsList(state, actions) {
       const { id, data } = actions.payload;
 
@@ -74,6 +90,10 @@ const contactSlice = createSlice({
   },
 });
 
-export const { setContactsList, pushContactsList, editContactsList } =
-  contactSlice.actions;
+export const {
+  setContactsList,
+  pushContactsList,
+  editContactsList,
+  deleteContacts,
+} = contactSlice.actions;
 export default contactSlice.reducer;
