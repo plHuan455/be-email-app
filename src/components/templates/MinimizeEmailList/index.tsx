@@ -54,7 +54,10 @@ const MinimizeEmailList: React.FC<MinimizeEmailListProps> = ({
             className="t-minimizeEmailList_itemWrapper"
             style={{ position: 'relative', marginLeft: rem(5), height: rem(46) }}
             initial={{ width: 0, marginLeft: 0 }}
-            animate={{ width: rem(260), marginLeft: rem(5) }}
+            animate={{ 
+              width: value.id === showMinimizeEmailId?.id && value.id !== undefined? 0 : rem(260),
+              marginLeft: rem(5)
+            }}
             exit={{ width: 0, marginLeft: 0 }}
             transition={{
               type: 'spring',
