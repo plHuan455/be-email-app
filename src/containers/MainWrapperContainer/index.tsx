@@ -157,7 +157,7 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
         subject: values.subject,
         attachs: values.attachFiles.fileUrls.map(value => ({ path: value }))
       },
-      tags: values.hashtags.map(value => value.value),
+      hashtags: values.hashtags.map(value => value.value),
       send_at: values.sendAt?.toISOString() ?? dayjs().toISOString(),
     }
   }
@@ -218,7 +218,7 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
       }
     }
     
-    createDataForForm({subject: values.subject, content: values.content})
+    createDataForForm({subject: values.subject, content: values.content, hashtags: values.hashtags})
     clearTimeout(storeDraftTimeOutFunc.current);
     setTabColor(foundMinimizeEmail?.color);
     setShowMinimizeEmailId({id: values.id});

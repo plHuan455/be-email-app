@@ -153,8 +153,8 @@ const EmailMess: React.FC<Props> = ({
   }, [emailActionType]);
 
   const remapPrivateHashtag = useMemo<HashtagTabs[]>(() => {
-    return emailData.tags
-      ? emailData.tags.map((val) => ({
+    return emailData.hashtags
+      ? emailData.hashtags.map((val) => ({
           notiNumber: 0,
           status: 'hashtag',
           title: `#${val}`,

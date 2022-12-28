@@ -30,7 +30,7 @@ export interface CreateEmailParam {
   };
   action?: string;
   send_at?: string;
-  tags?: string[];
+  hashtags?: string[];
 }
 
 export interface attachs {
@@ -61,7 +61,7 @@ export interface EmailResponse {
     attachs?: attachs[];
     tags: [];
   };
-  tags: string[];
+  hashtags: string[];
   type: string;
   status: string;
   approve_at: string;

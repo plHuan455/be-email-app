@@ -250,12 +250,12 @@ const EmailMessContainerRef: React.ForwardRefRenderFunction<
 
   const handleContinueEmailClick = () => {
     const {email} = emailData;
-    console.log(`[TODO] CONTINUE ADD FIELDS`);
+    console.log(`[TODO] CONTINUE DRAFT EMAIL ADD FIELDS (TO, BCC, CC, ATTACH_FILE)`);
     onContinueClick({
         id: emailData.id,
         subject: email.subject,
         content: email.text_html,
-        // hashtags: emailData.tags?.map(value => ({name: `#${value}`, value})),
+        hashtags: emailData.hashtags?.map(value => ({name: `#${value}`, value})),
         // attachFiles: {
         //   files: Array(email.attachs?.length ?? 0).fill(undefined),
         //   fileUrls: email.attachs?.map(value => value.path) ?? []
