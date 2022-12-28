@@ -15,8 +15,24 @@ export const contactDummy: MenuContactTypes[] = [
   },
   {
     name: 'Sharing',
-    navigate: '/contact/sharing',
     icon: <ShareIcon />,
+    menuItems: [
+      {
+        id: 1,
+        name: 'Department',
+        navigate: '/contact/sharing/department',
+      },
+      {
+        id: 2,
+        name: 'Groups',
+        navigate: '/contact/sharing/groups',
+      },
+      {
+        id: 3,
+        name: 'Personals',
+        navigate: '/contact/sharing/personals',
+      },
+    ],
   },
   {
     name: 'Groups',

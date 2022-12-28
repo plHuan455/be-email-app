@@ -6,6 +6,7 @@ import { rem } from '@utils/functions';
 import React, { useEffect, useMemo } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import UpdateIcon from '@mui/icons-material/Update';
+import ShareIcon from '@mui/icons-material/Share';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@redux/configureStore';
 import Icon from '@components/atoms/Icon';
@@ -76,12 +77,12 @@ const ContactGroupContainer = () => {
           <TableActionsMenu
             sx={{ maxWidth: rem(52), minWidth: rem(52) }}
             options={[
-              // { value: 0, label: 'Update', icon: <UpdateIcon /> },
+              { value: 0, label: 'Share', icon: <ShareIcon /> },
               { value: 1, label: 'Delete', icon: <DeleteIcon /> },
             ]}
             onItemClick={(value) => {
               if (value === 0) {
-                console.log('update click');
+                console.log('Share click');
                 // onDepartmentUpdateClick(row.id);
               }
               if (value === 1) {

@@ -10,6 +10,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import DeleteIcon from '@mui/icons-material/Delete';
 import UpdateIcon from '@mui/icons-material/Update';
+import ShareIcon from '@mui/icons-material/Share';
 import { useNavigate } from 'react-router-dom';
 import AlertDialog, { useAlertDialog } from '@components/molecules/AlertDialog';
 import { Box } from '@mui/system';
@@ -109,12 +110,12 @@ const ContactsContainer = () => {
           <TableActionsMenu
             sx={{ maxWidth: rem(52), minWidth: rem(52) }}
             options={[
-              // { value: 0, label: 'Update', icon: <UpdateIcon /> },
+              { value: 0, label: 'Share', icon: <ShareIcon /> },
               { value: 1, label: 'Delete', icon: <DeleteIcon /> },
             ]}
             onItemClick={(value) => {
               if (value === 0) {
-                console.log('update click');
+                console.log('Share click');
                 // onDepartmentUpdateClick(row.id);
               }
               if (value === 1) {

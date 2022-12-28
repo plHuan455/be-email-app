@@ -23,7 +23,7 @@ import EmailEmptyContainer from '@containers/EmailEmptyContainer';
 import EmailMainWrapper from '@layouts/EmailMainWrapper';
 import EmailComposePage from './Email/EmailComposePage';
 import ContactLayout from '@layouts/Contact';
-import ContactSharing from './Contact/ContactSharing';
+import ContactSharing from './Contact/ContactSharingGroups';
 import ContactGroups from './Contact/ContactGroup';
 import {
   AddMailTemplatePage,
@@ -45,6 +45,7 @@ import AddContactsPage from './Contact/Contacts/add';
 import EditContactPage from './Contact/Contacts/edit';
 import AddContactGroup from './Contact/ContactGroup/add';
 import EditContactGroupPage from './Contact/ContactGroup/edit';
+import ContactSharingGroupPage from './Contact';
 
 export const managerRouter: RouteObject[] = [
   {
@@ -164,8 +165,8 @@ export const declareRouter: RouteObject[] = [
             },
           ),
           {
-            path: '/contact/sharing',
-            element: <ContactSharing />,
+            path: '/contact/sharing/groups',
+            element: <ContactSharingGroupPage />,
           },
           genCRUD(
             {

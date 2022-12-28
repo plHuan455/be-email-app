@@ -1,13 +1,18 @@
 import ContactContainer from '@containers/ContactContainer';
+import ContactSharingGroupsLayout from '@layouts/ContactSharingGroups';
+import Layout from '@layouts/Layout';
+import { useNavigate } from 'react-router-dom';
 
 interface ContactPageProps {}
 
-const ContactSharingPage: React.FC<ContactPageProps> = () => {
+const ContactSharingGroupPage: React.FC<ContactPageProps> = () => {
+  const navigate = useNavigate();
+
   return (
-    <div className="t-contactPage">
-      <ContactContainer />
-    </div>
+    <Layout.MainQueryClient headTitle="Contacts" onClickAdd={() => navigate('add')}>
+      <ContactSharingGroupsLayout />
+    </Layout.MainQueryClient>
   );
 };
 
-export default ContactSharingPage;
+export default ContactSharingGroupPage;

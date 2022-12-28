@@ -1,6 +1,5 @@
-import ContactSharingLayout from '@layouts/ContactSharing';
+import ContactSharingGroupsLayout from '@layouts/ContactSharingGroups';
 import Layout from '@layouts/Layout';
-import { Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 
 interface ContactSharingProps {}
@@ -12,7 +11,7 @@ const ContactSharing: React.FC<ContactSharingProps> = () => {
     <Layout.MainQueryClient
       headTitle="Contact Sharing"
       onClickAdd={() => navigate('add')}>
-      <ContactSharingLayout />
+      <ContactSharingGroupsLayout />
     </Layout.MainQueryClient>
   );
 };
