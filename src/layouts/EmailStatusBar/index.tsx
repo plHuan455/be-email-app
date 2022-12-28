@@ -108,6 +108,13 @@ const EmailTabsData: EmailTabs[] = [
 ];
 const EmailTabsSecData: EmailTabs[] = [
   {
+    status: 'important',
+    title: '#important',
+    notiNumber: 0,
+    emailData: emailData,
+    color: '#f44336',
+  },
+  {
     status: 'sent',
     title: '#sent',
     notiNumber: 0,
