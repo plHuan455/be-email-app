@@ -1,18 +1,17 @@
-import ValidateInput from "@components/atoms/Input/ValidateInput";
-import ModalBase from "@components/atoms/ModalBase"
-import LoadingButton from "@mui/lab/LoadingButton";
-import { Button, Grid } from "@mui/material";
-import { Controller, FormProvider, UseFormReturn } from "react-hook-form";
-import styled from "styled-components";
+import ValidateInput from '@components/atoms/Input/ValidateInput';
+import ModalBase from '@components/atoms/ModalBase';
+import LoadingButton from '@mui/lab/LoadingButton';
+import { Button, Grid } from '@mui/material';
+import { Controller, FormProvider, UseFormReturn } from 'react-hook-form';
+import styled from 'styled-components';
 
 export interface UpdateDepartmentFields {
-  id: string;
   name?: string;
   description?: string;
   address?: string;
 }
 interface UpdateDepartmentModalProps {
-  method: UseFormReturn<UpdateDepartmentFields>
+  method: UseFormReturn<UpdateDepartmentFields>;
   isOpen: boolean;
   isFormLoading: boolean;
   title: string;
@@ -33,13 +32,13 @@ const StyleButtonWrapper = styled.div`
   }
 `;
 
-const UpdateDepartmentModal: React.FC<UpdateDepartmentModalProps>  = ({ 
-  method, 
-  isOpen, 
-  isFormLoading, 
-  title, 
-  onClose, 
-  onSubmit 
+const UpdateDepartmentModal: React.FC<UpdateDepartmentModalProps> = ({
+  method,
+  isOpen,
+  isFormLoading,
+  title,
+  onClose,
+  onSubmit,
 }) => {
   return (
     <ModalBase
@@ -47,10 +46,11 @@ const UpdateDepartmentModal: React.FC<UpdateDepartmentModalProps>  = ({
       title={title}
       style={{ width: '90%' }}
       onClose={onClose}
-      submitLabel=""
-    >
+      submitLabel="">
       <FormProvider {...method}>
-        <form onSubmit={method.handleSubmit(onSubmit)} className="o-tableManagerDepartment_form">
+        <form
+          onSubmit={method.handleSubmit(onSubmit)}
+          className="o-tableManagerDepartment_form">
           <Grid container spacing={4}>
             <Grid item xs={12}>
               <Controller
@@ -118,16 +118,15 @@ const UpdateDepartmentModal: React.FC<UpdateDepartmentModalProps>  = ({
                     paddingTop: '0.75rem',
                     paddingBottom: '0.75rem',
                     '&:hover': {
-                      backgroundColor: 'rgb(59, 53, 178)'
+                      backgroundColor: 'rgb(59, 53, 178)',
                     },
                     '.MuiLoadingButton-loading': {
-                      color: '#ffffff'
-                    }
+                      color: '#ffffff',
+                    },
                   }}
                   className="button-create-mui"
                   fullWidth
-                  type="submit"
-                >
+                  type="submit">
                   Update department
                 </LoadingButton>
               </StyleButtonWrapper>
@@ -136,7 +135,7 @@ const UpdateDepartmentModal: React.FC<UpdateDepartmentModalProps>  = ({
         </form>
       </FormProvider>
     </ModalBase>
-  )
-}
+  );
+};
 
-export default UpdateDepartmentModal
+export default UpdateDepartmentModal;

@@ -103,7 +103,7 @@ const TableManagerDepartmentContainer: React.FC<
 
   const updateDepartmentMethod = useForm<UpdateDepartmentFields>({
     defaultValues: {
-      id: '',
+      // id: '',
       name: '',
       description: '',
       address: '',
@@ -324,7 +324,7 @@ const TableManagerDepartmentContainer: React.FC<
   };
 
   const handleUpdateDepartmentSubmit = (values: UpdateDepartmentFields) => {
-    updateDepartmentMutate({ id: Number(values.id), params: values });
+    updateDepartmentMutate({ id: Number(1), params: values });
   };
 
   const handleUpdateEmployeeSubmit = (values: UpdateEmployeeFields) => {
@@ -362,7 +362,7 @@ const TableManagerDepartmentContainer: React.FC<
   const handleDepartmentUpdateClick = (id: number) => {
     const foundDepartment = departmentData?.data?.find((value) => value.id === id);
     if (foundDepartment) {
-      updateDepartmentMethod.setValue('id', String(foundDepartment.id));
+      // updateDepartmentMethod.setValue('id', String(foundDepartment.id));
       updateDepartmentMethod.setValue('name', foundDepartment.name);
       updateDepartmentMethod.setValue('address', foundDepartment.address);
       updateDepartmentMethod.setValue('description', foundDepartment.description);

@@ -1,3 +1,4 @@
+import { getDepartmentById, getDepartments } from '@api/deparment';
 import { useUploadFileToSever } from '@hooks/useUploadFileToSever';
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
@@ -84,9 +85,9 @@ export const useEditStoreManagement = () => {
   const { param, navigate, signature, setSignature, files, uploadImage } = hook;
 
   // useQuery(
-  //   ['getSignById', param.id],
+  //   ['getDepartmentById', param.id],
   //   () => {
-  //     //  getSignById(param.id!)
+  //     getDepartmentById(Number(param.id!));
   //   },
   //   {
   //     onError: (error: any) => {

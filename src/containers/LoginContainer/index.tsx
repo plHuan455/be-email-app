@@ -52,13 +52,13 @@ function LoginContainer() {
     resolver: yupResolver(schema),
   });
 
-  const auth = useAuth();
+  const { user, token, signin } = useAuth();
 
   const submitLogin = async ({ email, password }) => {
     try {
       const res = await login({ email, password });
       // Change to res.data
-      auth.signin({}, res.data, async () => {
+      signin({}, res.data, async () => {
         if (res.message === 'Login successful') {
           const { user_id } = res;
           localStorage.setItem('current_id', `${user_id}`);
@@ -115,7 +115,7 @@ function LoginContainer() {
   //   handleReLoginWithEmail();
   // }, [isLogined]);
 
-  if (auth.token) return <Navigate to={'/'} replace={true} />;
+  if (user && token) return <Navigate to={'/'} replace={true} />;
 
   return (
     <Root>
