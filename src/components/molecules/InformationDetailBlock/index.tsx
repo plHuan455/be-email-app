@@ -22,9 +22,9 @@ export interface ReceiverData {
 
 export interface ActivityData {
   date: string;
-  time: string;
+  time?: string;
   status: string;
-  userName: string;
+  userName?: string;
 }
 
 type Props = {
@@ -252,7 +252,7 @@ const InformationDetailBlock = (props: Props) => {
                   <Typography
                     component={'p'}
                     sx={{ fontSize: '12px', color: '#959595' }}>
-                    {item.status} from
+                    {item.status}
                   </Typography>
                   <Typography
                     component={'p'}
@@ -260,7 +260,7 @@ const InformationDetailBlock = (props: Props) => {
                     {item.date}
                   </Typography>
                 </Box>
-                <Box
+                {/* <Box
                   sx={{
                     display: 'flex',
                     alignItems: 'center',
@@ -276,7 +276,7 @@ const InformationDetailBlock = (props: Props) => {
                     sx={{ fontSize: '10px', color: '#838383' }}>
                     {item.time}
                   </Typography>
-                </Box>
+                </Box> */}
               </Box>
             );
           })

@@ -1,15 +1,23 @@
+import { EmailResponse } from '@api/email';
 import Email from '@components/organisms/Email';
 import EmailsListActionsContainer from '@containers/EmailsListActionsContainer';
 import { Box } from '@mui/material';
-import { useAppSelector } from '@redux/configureStore';
+import { useAppDispatch, useAppSelector } from '@redux/configureStore';
+import { setCurrEmail } from '@redux/Email/reducer';
 import React, { useEffect, useRef, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import useEmailCompose from '../../zustand/useEmailCompose';
 
 const EmailContainer = () => {
   const isCompose = useEmailCompose((state) => state.isCompose);
+  const dispatch = useAppDispatch();
+
+  const currEmail = useAppSelector(state => state.email.currEmail);
+
   const containerRef = useRef<HTMLDivElement>(null);
   const preContainerScrollHeight = useRef<number>();
+  const intersectingEmailMessStack = useRef<{target: HTMLDivElement; emailData: EmailResponse}[]>([]);
+
   const { EmailsList } = useAppSelector((state) => state.email);
   const [pageParams, setPageParams] = useState<{page: number; limit: number}>({page: 1, limit: 3});
 
@@ -36,7 +44,29 @@ const EmailContainer = () => {
       preContainerScrollHeight.current = container.scrollHeight;
       setPageParams(preState => ({...preState, page: preState.page + 1}));
     }
+
+    // 
+    const foundIntersecting = intersectingEmailMessStack.current.find(value => {
+      const rect = value.target.getBoundingClientRect();
+      return rect.top < window.innerHeight / 2 && rect.bottom > window.innerHeight / 2}
+    )
+
+    if(foundIntersecting) {
+      dispatch(setCurrEmail(foundIntersecting.emailData));
+    }
   }
+  
+  const handleInterSecting = (target: HTMLDivElement, emailData: EmailResponse) => {
+    intersectingEmailMessStack.current.push({target, emailData});
+  }
+
+  const handleEmailMessUnIntersect = (emailId) => {
+    const stackIndex = intersectingEmailMessStack.current.findIndex(value => value.emailData.id === emailId);
+    if(stackIndex !== -1 ) {
+      intersectingEmailMessStack.current.splice(stackIndex, 1);
+    }
+  }
+  
   return (
     // <Box
     //   sx={{
@@ -57,7 +87,11 @@ const EmailContainer = () => {
       }}
       ref={containerRef}
     >
-      <Email pageParams={pageParams}/>
+      <Email 
+        pageParams={pageParams} 
+        onEmailMessIntersecting={handleInterSecting} 
+        onUnIntersecting={handleEmailMessUnIntersect}
+      />
     </Box>
     //   {/* {isCompose ? <EmailCompose /> : <Email />} */}
     // </Box>

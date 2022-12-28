@@ -110,7 +110,7 @@ export const deleteAllWithIdList = async (ids: number[]) => {
   const url = `${API_EMAIL_USER}/action`;
   const res = await Promise.all(
     ids.map((value) =>
-      ApiClient.post(url, undefined, { user_email_id: value, action: 'delete' }),
+      deleteEmail(String(value)),
     ),
   );
   return res;

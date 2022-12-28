@@ -11,7 +11,7 @@ import React, {
 import avatarImg from '@assets/images/avatars/avatar-2.jpg';
 import { Email, UserInfo } from './Interface';
 import EmailMess from '../EmailMess';
-import { deleteEmail, EmailActions, updateEmailWithQuery } from '@api/email';
+import { deleteEmail, EmailActions, EmailResponse, updateEmailWithQuery } from '@api/email';
 
 import { isEmpty } from 'lodash';
 import EmailMessEmpty from '../EmailMessEmpty';
@@ -150,9 +150,11 @@ const saveEmailList = [
 
 interface Props {
   pageParams?: { page: number; limit: number}
+  onEmailMessIntersecting?: (target: HTMLDivElement, emailId: EmailResponse) => void;
+  onUnIntersecting?: (emailId: number) => void;
 }
 
-const Email: React.FC<Props> = ({pageParams}) => {
+const Email: React.FC<Props> = ({pageParams, onEmailMessIntersecting, onUnIntersecting}) => {
   const lastEmailMessRef = useRef<HTMLDivElement>(null);
 
   const [showHistory, setShowHistory] = useState<number | null>(null);
@@ -417,6 +419,11 @@ const Email: React.FC<Props> = ({pageParams}) => {
               const tags = hashtagsList.map((hashtag) => hashtag.value);
               updateHashtagMutate({ id: email.id, data: { ...email, tags } });
             }}
+            onInterSecting={(entry) => {
+              if(onEmailMessIntersecting)
+                onEmailMessIntersecting(entry.target as HTMLDivElement, email)
+            }}
+            onUnInterSecting={() => {onUnIntersecting && onUnIntersecting(email.id)}}
           />
       ))}
       <ModalBase
