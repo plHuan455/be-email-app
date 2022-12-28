@@ -88,7 +88,9 @@ type Props = {
 };
 
 const InformationBar = (props: Props) => {
-  const { EmailsList, currEmail: currEmailIntersecting } = useSelector((state: RootState) => state.email);
+  const { EmailsList, currEmail: currEmailIntersecting } = useSelector(
+    (state: RootState) => state.email,
+  );
   const [isShowMoreInformation, setIsShowMoreInformation] = useState<boolean>(false);
   const [typeShowMoreInfomation, setTypeShowMoreInfomation] =
     useState<string>('files');
@@ -162,29 +164,32 @@ const InformationBar = (props: Props) => {
   };
 
   const convertedActiveData = useMemo<ActivityData[]>(() => {
-    const result =  [
+    const result = [
       {
         status: 'Created At',
         date: dayjs(currEmailIntersecting?.created_at).format('lll'),
       },
-    ]
+    ];
 
-    if(currEmailIntersecting?.status.toUpperCase() !== 'DRAFT') {
+    if (currEmailIntersecting?.status.toUpperCase() !== 'DRAFT') {
       result.push({
         status: 'Sent At',
         date: dayjs(currEmailIntersecting?.send_at).format('lll'),
-      })
+      });
     }
 
-    if(currEmailIntersecting?.approve_at) {
+    if (currEmailIntersecting?.approve_at) {
       result.push({
-        status: currEmailIntersecting.status.toUpperCase() === 'DECLINED' ? 'Declined At' : 'Approved At',
+        status:
+          currEmailIntersecting.status.toUpperCase() === 'DECLINED'
+            ? 'Declined At'
+            : 'Approved At',
         date: dayjs(currEmailIntersecting?.approve_at).format('lll'),
-      })
+      });
     }
 
     return result;
-  }, [currEmailIntersecting])
+  }, [currEmailIntersecting]);
 
   return (
     <Box>

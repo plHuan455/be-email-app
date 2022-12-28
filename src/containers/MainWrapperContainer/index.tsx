@@ -723,7 +723,7 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
 
       // Stored to draft
       if (showMinimizeEmailId.id !== undefined) {
-        if(!isExistShowEmail() && isEmailDataEmpty) {
+        if (!isExistShowEmail() && isEmailDataEmpty) {
           deleteEmailMutate(String(showMinimizeEmailId.id));
           setShowMinimizeEmailId(undefined);
           return;
@@ -774,7 +774,7 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
   //     return Array(to - from + 1).fill(1).map((_, index) => index + from)
   //   }
   //   (async function deleteDraft(){
-  //     const idList = renderArray(118, 218);
+  //     const idList = renderArray(89, 145);
   //     await deleteAllWithIdList(idList);
   //   })()
   // }, [])

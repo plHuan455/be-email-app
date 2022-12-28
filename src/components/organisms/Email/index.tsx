@@ -16,6 +16,8 @@ import {
   HashtagType,
   updateEmailWithQuery,
 } from '@api/email';
+import avatarImg from '@assets/images/avatars/avatar-2.jpg';
+import EmailMess from '../EmailMess';
 
 import { isEmpty } from 'lodash';
 import EmailMessEmpty from '../EmailMessEmpty';
