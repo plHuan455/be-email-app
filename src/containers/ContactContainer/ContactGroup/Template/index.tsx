@@ -2,7 +2,16 @@ import { useTranslation } from '@@packages/localization/src';
 import UploadArea from '@components/atoms/UploadArea';
 
 import Layout from '@layouts/Layout';
-import { SelectChangeEvent, Typography } from '@mui/material';
+import {
+  Checkbox,
+  FormHelperText,
+  ListItemText,
+  MenuItem,
+  OutlinedInput,
+  Select,
+  SelectChangeEvent,
+  Typography,
+} from '@mui/material';
 import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField';
 import React, { useCallback, useEffect, useState } from 'react';
@@ -13,13 +22,16 @@ import { convertPathImage } from '@utils/functions';
 import { useForm } from 'react-hook-form';
 import { isEmpty } from 'lodash';
 import { ContactType } from '@containers/ContactContainer/Contacts/interface';
+import { useSelector } from 'react-redux';
+import { RootState } from '@redux/configureStore';
+import { Contact } from '@redux/Contact/interface';
 
 interface ContactsTemplateProps extends CRUDComponentProps<SignItemProps> {}
 
 export interface SignItemProps {
   id: number;
   group_name: string;
-  members: never[];
+  members: any[];
 }
 
 const ContactGroupTemplate: React.FC<ContactsTemplateProps> = ({
@@ -40,6 +52,9 @@ const ContactGroupTemplate: React.FC<ContactsTemplateProps> = ({
     setValue('members', formData.members);
   }, [formData]);
 
+  // useSelector
+  const { contactsList } = useSelector((state: RootState) => state.contact);
+
   const { t } = useTranslation();
 
   const {
@@ -52,6 +67,17 @@ const ContactGroupTemplate: React.FC<ContactsTemplateProps> = ({
     resolver: schema && yupResolver(schema),
     mode: 'all',
   });
+
+  const ITEM_HEIGHT = 48;
+  const ITEM_PADDING_TOP = 8;
+  const MenuProps = {
+    PaperProps: {
+      style: {
+        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+        width: 250,
+      },
+    },
+  };
 
   const handleInputChange = useCallback(
     (
@@ -98,9 +124,9 @@ const ContactGroupTemplate: React.FC<ContactsTemplateProps> = ({
             size={'small'}
           />
         </FormControl>
-        {/* <FormControl fullWidth className="py-2">
-          <Typography sx={{ fontWeight: 700 }}>Last Name</Typography>
-          <TextField
+        <FormControl fullWidth className="py-2">
+          <Typography sx={{ fontWeight: 700 }}>Members :</Typography>
+          {/* <TextField
             {...register('last_name')}
             error={Boolean(errors.last_name)}
             helperText={errors.last_name?.message?.toString()}
@@ -110,6 +136,33 @@ const ContactGroupTemplate: React.FC<ContactsTemplateProps> = ({
             onChange={handleInputChange}
             size={'small'}
           /> */}
+          <Select
+            displayEmpty
+            labelId=""
+            name="members"
+            placeholder="Member"
+            multiple
+            value={formData.members}
+            defaultValue={contactsList}
+            error={Boolean(errors.members)}
+            onChange={handleInputChange}
+            renderValue={(selected) => selected.join(', ')}
+            MenuProps={MenuProps}>
+            {contactsList.map((contact) => {
+              return (
+                <MenuItem key={contact.id} value={contact.mail}>
+                  <Checkbox checked={formData.members.indexOf(contact.mail) > -1} />
+                  <ListItemText
+                    primary={`${contact.first_name} ${contact.last_name}`}
+                  />
+                </MenuItem>
+              );
+            })}
+          </Select>
+          {errors.members?.message?.toString() && (
+            <FormHelperText>{errors.members?.message?.toString()}</FormHelperText>
+          )}
+        </FormControl>
       </div>
 
       <Layout.GroupButton

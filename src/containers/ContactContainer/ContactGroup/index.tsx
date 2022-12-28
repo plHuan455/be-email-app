@@ -3,16 +3,27 @@ import ContactGroup from '@components/organisms/Contact/ContactGroup';
 import { Avatar } from '@mui/material';
 import { GridColDef, GridRowId } from '@mui/x-data-grid';
 import { rem } from '@utils/functions';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import DeleteIcon from '@mui/icons-material/Delete';
 import UpdateIcon from '@mui/icons-material/Update';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@redux/configureStore';
 import Icon from '@components/atoms/Icon';
+import useLocalStorage from '@hooks/useLocalStorage';
+import { setContactGroups } from '@redux/Contact/reducer';
 
 const ContactGroupContainer = () => {
   // useSelector
   const { contactGroupsList } = useSelector((state: RootState) => state.contact);
+  // useDispatch
+  const dispatch = useDispatch();
+  // useLocalStorage
+  const [localContactGroup] = useLocalStorage('contact-groups-list', undefined);
+
+  // useEffect
+  useEffect(() => {
+    if (localContactGroup) dispatch(setContactGroups(JSON.parse(localContactGroup)));
+  }, [localContactGroup]);
 
   const columns = useMemo(() => {
     const colsDef: GridColDef[] = [

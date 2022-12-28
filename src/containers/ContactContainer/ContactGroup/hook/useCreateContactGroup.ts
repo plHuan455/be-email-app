@@ -1,6 +1,10 @@
 import { useUploadFileToSever } from '@hooks/useUploadFileToSever';
 import { RootState } from '@redux/configureStore';
-import { editContactsList, pushContactsList } from '@redux/Contact/reducer';
+import {
+  editContactsList,
+  pushContactGroups,
+  pushContactsList,
+} from '@redux/Contact/reducer';
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -12,7 +16,11 @@ const schema = yup.object().shape({
   group_name: yup.string().required('First Name is required!'),
 });
 
-const initStore = {
+const initStore: {
+  id: number;
+  group_name: string;
+  members: any[];
+} = {
   id: -1,
   group_name: '',
   members: [],
@@ -52,6 +60,8 @@ export const useCreateContactGroup = () => {
 
   //   useDispatch
   const dispatch = useDispatch();
+  // useSelector
+  const { contactsList } = useSelector((state: RootState) => state.contact);
 
   const handleCreate = async () => {
     try {
@@ -65,8 +75,21 @@ export const useCreateContactGroup = () => {
 
       // console.log('sign avatar --->', avatar);
 
+      const cloneContactsList = [...contactsList];
+      const cloneMembers = [...contactGroup.members];
+
+      const remapMember = cloneMembers.reduce((currMem, nextMem) => {
+        const isFoundPosition = cloneContactsList.findIndex(
+          (contact) => contact.mail === nextMem,
+        );
+
+        if (isFoundPosition > -1)
+          return [...currMem, cloneContactsList[isFoundPosition]];
+        return currMem;
+      }, []);
+
       // call create here
-      dispatch(pushContactsList(contactGroup));
+      dispatch(pushContactGroups({ ...contactGroup, members: remapMember }));
       toast.success('Add contact successfully!');
 
       navigate('..');
