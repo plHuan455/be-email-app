@@ -24,6 +24,13 @@ const schema = yup
   })
   .required();
 
+const removeLocalStore = () => {
+  localStorage.removeItem('device_key_id');
+  localStorage.removeItem('token');
+  localStorage.removeItem('device_token');
+  localStorage.removeItem('current_email');
+};
+
 function LoginContainer() {
   const [isTokenFound, setTokenFound] = useState(false);
   const [getFcmToken, setFcmToken] = useState('');
@@ -52,13 +59,13 @@ function LoginContainer() {
     resolver: yupResolver(schema),
   });
 
-  const auth = useAuth();
+  const { user, token, signin } = useAuth();
 
   const submitLogin = async ({ email, password }) => {
     try {
       const res = await login({ email, password });
-      // Change 'asdasd to res.data
-      auth.signin({}, res.data, async () => {
+      // Change to res.data
+      signin({}, res.data, async () => {
         if (res.message === 'Login successful') {
           const { user_id } = res;
           localStorage.setItem('current_id', `${user_id}`);
@@ -99,7 +106,7 @@ function LoginContainer() {
   };
 
   const handleReLoginWithEmail = () => {
-    localStorage.removeItem('current_email');
+    removeLocalStore();
     navigate(0);
   };
 
@@ -115,7 +122,7 @@ function LoginContainer() {
   //   handleReLoginWithEmail();
   // }, [isLogined]);
 
-  if (auth.token) return <Navigate to={'/'} replace={true} />;
+  if (user && token) return <Navigate to={'/'} replace={true} />;
 
   return (
     <Root>

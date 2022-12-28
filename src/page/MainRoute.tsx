@@ -15,7 +15,6 @@ import ErrorPage from './ErrorPage';
 import EmailWrap from './Email';
 
 import ManagerEmployee from './Manager/ManagerEmployee';
-import ManagerDepartment from './Manager/ManagerDepartment';
 import SettingRoles from './Settings/SettingsRoles';
 import Manager from './Manager';
 import ChangePassword from './ChangePassword';
@@ -26,23 +25,46 @@ import EmailComposePage from './Email/EmailComposePage';
 import ContactLayout from '@layouts/Contact';
 import ContactSharing from './Contact/ContactSharing';
 import ContactGroups from './Contact/ContactGroup';
-import SignaturePage from './SignaturePage';
-import SignatureContainer from '@containers/SignatureContainer';
+import {
+  AddMailTemplatePage,
+  EditMailTemplatePage,
+  MainMailTemplatePage,
+} from './MailTemplatePage';
+import { AddSignaturePage, EditSignaturePage, SignaturePage } from './SignaturePage';
+// import MailTemplateContainer from '@containers/MailTemplateContainer';
+
 import MainWrapperContainer from '@containers/MainWrapperContainer';
+import {
+  AddDepartmentPage,
+  EditDepartmentPage,
+  ManagerDepartmentPage,
+} from './Manager/ManagerDepartment';
+import ContactsPage from './Contact/Contacts';
+import { genCRUD } from '@utils/routerHelper';
+import AddContactsPage from './Contact/Contacts/add';
+import EditContactPage from './Contact/Contacts/edit';
+import AddContactGroup from './Contact/ContactGroup/add';
+import EditContactGroupPage from './Contact/ContactGroup/edit';
 
 export const managerRouter: RouteObject[] = [
   {
     path: '/manager',
     element: <Manager />,
     children: [
-      { path: '/manager', element: <ManagerDepartment /> },
+      { path: '/manager', element: <ManagerDepartmentPage /> },
       { path: '/manager/setting', element: <SettingRoles /> },
       {
         path: '/manager/department',
         children: [
-          { path: '/manager/department', element: <ManagerDepartment /> },
-          { path: '/manager/department/employee', element: <ManagerEmployee /> },
-          { path: '/manager/department/department', element: <ManagerDepartment /> },
+          {
+            index: true,
+            path: '/manager/department',
+            element: <ManagerDepartmentPage />,
+          },
+          { path: '/manager/department/add', element: <AddDepartmentPage /> },
+          { path: '/manager/department/edit/:id', element: <EditDepartmentPage /> },
+          // { path: '/manager/department/employee', element: <ManagerEmployee /> },
+          // { path: '/manager/department/department', element: <ManagerDepartment /> },
         ],
       },
       {
@@ -50,12 +72,27 @@ export const managerRouter: RouteObject[] = [
         element: <UserProfileContainer />,
       },
       {
-        path: '/manager/change-password',
+        path: '/manager/profile/change-password',
         element: <ChangePassword />,
       },
       {
         path: '/manager/signature',
-        element: <SignaturePage />,
+        // element: <SignaturePage />,
+        children: [
+          {
+            index: true,
+            path: '/manager/signature',
+            element: <SignaturePage />,
+          },
+          {
+            path: '/manager/signature/add',
+            element: <AddSignaturePage />,
+          },
+          {
+            path: '/manager/signature/edit/:id',
+            element: <EditSignaturePage />,
+          },
+        ],
       },
     ],
   },
@@ -115,14 +152,31 @@ export const declareRouter: RouteObject[] = [
         path: '/contact',
         element: <ContactLayout />,
         children: [
+          { element: <Navigate to={'/contact/contacts'} />, path: '/contact' },
+          genCRUD(
+            {
+              path: '/contact/contacts',
+            },
+            {
+              index: <ContactsPage />,
+              add: <AddContactsPage />,
+              edit: <EditContactPage />,
+            },
+          ),
           {
             path: '/contact/sharing',
             element: <ContactSharing />,
           },
-          {
-            path: '/contact/groups',
-            element: <ContactGroups />,
-          },
+          genCRUD(
+            {
+              path: '/contact/groups',
+            },
+            {
+              index: <ContactGroups />,
+              add: <AddContactGroup />,
+              edit: <EditContactGroupPage />,
+            },
+          ),
         ],
       },
       {
@@ -133,9 +187,24 @@ export const declareRouter: RouteObject[] = [
         path: '/profile',
         element: <UserProfileContainer />,
       },
+
       {
-        path: '/signature',
-        element: <SignatureContainer />,
+        path: '/template',
+        children: [
+          {
+            index: true,
+            path: '/template',
+            element: <MainMailTemplatePage />,
+          },
+          {
+            path: '/template/add',
+            element: <AddMailTemplatePage />,
+          },
+          {
+            path: '/template/edit',
+            element: <EditMailTemplatePage />,
+          },
+        ],
       },
       ...sideBarRouter,
       ...managerRouter,

@@ -76,7 +76,8 @@ export type StatusOptions =
   | 'draft'
   | 'trash'
   | 'spam'
-  | 'sent';
+  | 'sent'
+  | 'important';
 
 type Props = {
   titleColor: string;
@@ -159,9 +160,18 @@ const ModalEmailList: React.FC<Props> = ({
   }, [notificationList]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
-    setValue(newValue);
-    if (newValue === 0) navigate('?tab=me');
-    else navigate('?tab=all');
+    if (value === newValue) {
+      if (newValue === 0) navigate('?tab=me');
+      else {
+        navigate(`?tab=all`);
+      }
+    } else {
+      setValue(newValue);
+      if (newValue === 0) navigate(`/emails/catalog/${params.catalog}?tab=me`);
+      else {
+        navigate(`/emails/catalog/${params.catalog}?tab=all`);
+      }
+    }
   };
 
   const handleSelectEmailItem = (user_id: number) => {

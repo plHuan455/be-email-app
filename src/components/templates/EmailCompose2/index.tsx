@@ -34,13 +34,15 @@ import { HashtagTabs } from '@redux/Email/reducer';
 import HashtagInput, {
   HashtagOptionTypes,
 } from '@components/atoms/Input/HashtagInput';
-import { rowsSign } from '@containers/SignatureContainer';
 import { getDefaultSignId } from '@redux/selector';
 import ModalDrawSignature from '@components/atoms/ModalDrawSignature';
 import ModalChooseSignature from '@components/atoms/ModalChooseSignature';
+import { rowsSign } from '@containers/SignatureContainer/Main';
+import { parseSignToHtml } from '@utils/parseSignToHtml';
 import React from 'react';
 import classNames from 'classnames';
 import _ from 'lodash';
+import SignatureTmpTemplate from '@layouts/SignatureTmpTemplate';
 
 export interface CustomFile extends File {
   percentage: number;
@@ -84,6 +86,7 @@ interface EmailComposeProps {
   onCCButtonClick?: () => void;
   onChangeCalendarValue: (date: Dayjs | null) => void;
   onCloseCalendarModal: () => void;
+  onCloseEmail: () => void;
   onUnsetTimeClick: () => void;
   onSetTimeClick: () => void;
   onSendTimeClick: () => void;
@@ -118,6 +121,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
   onMaximizeClick,
   onCCButtonClick,
   onChangeCalendarValue,
+  onCloseEmail,
   onCloseCalendarModal,
   onSetTimeClick,
   onUnsetTimeClick,
@@ -130,9 +134,6 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
   const defaultSignId = useSelector(getDefaultSignId);
 
   // states
-  const [showModalSignature, setShowModalSignature] = useState(false);
-  const [showModalChooseSignature, setShowModalChooseSignature] = useState(false);
-  const [signatureImage, setSignatureImage] = useState<string>('');
 
   const defaultInputContactBlock = React.useMemo(() => {
     return [...inputContactBlocks];
@@ -149,15 +150,6 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
   // react hooks
   const fileInputRef = useRef<HTMLInputElement>(null);
   const composeScrollRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (defaultSignId) {
-      const r = rowsSign.find((e) => e.id === defaultSignId);
-      if (r != undefined) {
-        setSignatureImage(r.signature);
-      }
-    }
-  }, []);
 
   useEffect(() => {
     const filter = getSelectedContact(defaultInputContactBlock);
@@ -252,6 +244,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
               }}
               onMinimizeClick={onMinimizeClick}
               onMaximizeClick={onMaximizeClick}
+              onCloseClick={onCloseEmail}
             />
             <Box
               className="bg-white flex-1 flex flex-col overflow-scroll"
@@ -410,36 +403,8 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                     )}
                   />
 
-                  <Box>
-                    {/* Greeting */}
-                    {signatureImage && (
-                      <Box className="mt-4 mb-4">
-                        <img
-                          style={{ width: 120, height: 40, objectFit: 'contain' }}
-                          src={signatureImage}
-                        />
-                      </Box>
-                    )}
-                    {/* <EmailGreeting
-                      greetingLabel="Thanks and Best regards, ------"
-                      isHaveLogo={true}
-                      logo={<LogoWithLabel />}
-                    /> */}
-                    {/* Private Hashtag */}
-                    <Controller
-                      name="hashtags"
-                      render={({ field: { value, onChange } }) => (
-                        <HashtagInput
-                          label="Hashtags: "
-                          optionList={hashtagOptions}
-                          value={value}
-                          onChange={onChange}
-                          placeholder="Enter hashtags"
-                          optionRegex={new RegExp(/([a-zA-Z0-9]+\b)/)}
-                        />
-                      )}
-                    />
-                    {/* Files List */}
+                  <SignatureTmpTemplate />
+                  <Box className="mt-4">
                     <Box>
                       <Controller
                         name="attachFiles"
@@ -471,6 +436,20 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                         }}
                       />
                     </Box>
+                    {/* Private Hashtag */}
+                    <Controller
+                      name="hashtags"
+                      render={({ field: { value, onChange } }) => (
+                        <HashtagInput
+                          label="Hashtags: "
+                          optionList={hashtagOptions}
+                          value={value}
+                          onChange={onChange}
+                          placeholder="Enter hashtags"
+                          optionRegex={new RegExp(/([a-zA-Z0-9]+\b)/)}
+                        />
+                      )}
+                    />
                   </Box>
                 </Box>
               </Box>
@@ -510,19 +489,6 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                   </Box>
                 )}
               </Box>
-
-              {/* <Box className="flex">
-                <Box className="ml-4">
-                  <Button onClick={() => setShowModalSignature(true)}>
-                    New signature
-                  </Button>
-                </Box>
-                <Box className="ml-4">
-                  <Button onClick={() => setShowModalChooseSignature(true)}>
-                    Choose signature
-                  </Button>
-                </Box>
-              </Box> */}
 
               {/* ACTIONS */}
               <Box className="flex justify-end items-center flex-1">
@@ -615,16 +581,6 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                 </Button>
               </Box>
             </ModalBase>
-            <ModalDrawSignature
-              isOpen={showModalSignature}
-              onClose={() => setShowModalSignature(false)}
-              onSubmit={(url) => setSignatureImage(url)}
-            />
-            <ModalChooseSignature
-              isOpen={showModalChooseSignature}
-              onClose={() => setShowModalChooseSignature(false)}
-              onSubmit={(url) => setSignatureImage(url)}
-            />
           </Box>
         </form>
       </FormProvider>

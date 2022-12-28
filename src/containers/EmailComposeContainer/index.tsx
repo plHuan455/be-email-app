@@ -86,6 +86,7 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
     triggerClearData,
     onMinimizeEmailClick,
     onSendEmail,
+    onCloseEmail
   } = useContext(EmailComposeContext);
 
   if (!method) return null;
@@ -108,11 +109,6 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
   // const [inputContactBlocks, setInputContactBlocks] = useState<InputContactBlock[]>(
   //   [],
   // );
-
-  const { mutate: deleteEmailMutate } = useMutation({
-    mutationKey: ['email-compose-delete-email'],
-    mutationFn: deleteEmail,
-  });
 
   useQuery(['getDepartments'], getDepartments, {
     onSuccess: (res) => {
@@ -308,6 +304,10 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
     onMinimizeEmailClick();
   };
 
+  const handleCloseEmail = () => {
+    onCloseEmail();
+  }
+
   const handleSubmit = (values: EmailComposeFields) => {
     onSendEmail({ ...values, sendAt: selectedDate });
   };
@@ -342,6 +342,7 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
           onCCButtonClick={() => setIsShowCCForm((preState) => !preState)}
           onCloseCalendarModal={() => setIsShowCalendarModal(false)}
           onChangeCalendarValue={(value) => setCalendarValue(value)}
+          onCloseEmail={handleCloseEmail}
           onSubmit={handleSubmit}
           onSendTimeClick={() => {
             setIsOpenCalendarSelect(true);

@@ -1,28 +1,5 @@
-import { useTranslation } from '@@packages/localization/src';
-import SearchStartWithIcon from '@components/molecules/Search';
-import PageCrudData from '@components/organisms/PageCrudData';
-import TableManagerDepartmentContainer from '@components/organisms/TableManagerDepartmentContainer';
-import Layout from '@layouts/Layout';
-import React, { useState } from 'react';
+import AddDepartmentPage from './Add';
+import EditDepartmentPage from './Edit';
+import ManagerDepartmentPage from './Main';
 
-const ManagerDepartment = () => {
-  const { t } = useTranslation();
-  const [isShowAddDepartmentModal, setIsAddDepartmentModal] =
-    useState<boolean>(false);
-
-  return (
-    <Layout.MainQueryClient
-      headTitle={t('Department')}
-      onClickAdd={() => {
-        setIsAddDepartmentModal(true);
-      }}>
-      <TableManagerDepartmentContainer
-        isShowAddDepartmentModal={isShowAddDepartmentModal}
-        onCloseAddDepartmentModal={() => setIsAddDepartmentModal(false)}
-        onClickAddDepartmentModal={() => setIsAddDepartmentModal(true)}
-      />
-    </Layout.MainQueryClient>
-  );
-};
-
-export default ManagerDepartment;
+export { AddDepartmentPage, EditDepartmentPage, ManagerDepartmentPage };

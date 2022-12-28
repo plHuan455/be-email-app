@@ -22,8 +22,6 @@ export const getRole = async (): Promise<AxiosResponse<RoleResponse[]>> => {
   const url = `${ROLE_API_URL}`;
   const res = await ApiClient.get(url, undefined, undefined);
 
-  console.log('🚀 ~ file: role/index.ts ~ line 10 ~ res', res.data);
-
   return res.data;
 };
 

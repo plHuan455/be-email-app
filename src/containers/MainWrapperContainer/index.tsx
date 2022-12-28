@@ -33,6 +33,7 @@ import { attempt, update } from 'lodash';
 import { InputContactBlock } from '@components/molecules/AutoCompleteReceive';
 import { UserReceiveInfo } from '@components/organisms/Email/Interface';
 import { emailRegex } from '@constants/constants';
+import { emailData } from "@layouts/EmailStatusBar";
 
 interface EmailComposeContextTypes {
   inputContactBlocks: InputContactBlock[];
@@ -46,16 +47,20 @@ interface EmailComposeContextTypes {
   onNewComposeClick: () => void;
   onMinimizeEmailClick: () => void;
   onMaximizeEmailClick: () => void;
+  onCloseEmail: () => void;
+  onContinueClick: (values: MinimizeEmailTypes) => void;
 }
 
 export const EmailComposeContext = createContext<EmailComposeContextTypes>({
   inputContactBlocks: [],
   setInputContactBlocks: () => undefined,
   triggerClearData: false,
-  onSendEmail: () => {},
-  onNewComposeClick: () => {},
-  onMinimizeEmailClick: () => {},
-  onMaximizeEmailClick: () => {},
+  onSendEmail: () => { },
+  onNewComposeClick: () => { },
+  onMinimizeEmailClick: () => { },
+  onMaximizeEmailClick: () => { },
+  onCloseEmail: () => { },
+  onContinueClick: () => {},
 });
 
 interface MainWrapperContainerProps {}
@@ -109,12 +114,7 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
   const { mutate: storeDraftMutate, isLoading: isStoreDraftLoading } = useMutation({
     mutationKey: ['main-wrapper-container-store-draft', showMinimizeEmailId],
     mutationFn: async (params: { data: CreateEmailParam; cacheId?: number }) => {
-      const res = await sendEmail(params.data);
-      const draft = await approveEmail({
-        user_email_id: res.data.id,
-        status: 'DRAFT',
-        approve_after: 0,
-      });
+      const res = await sendEmail({...params.data, action: 'draft'});
       return res;
     },
     onSuccess(res, params) {
@@ -149,8 +149,15 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
       onSuccess: (res) => {
         navigate(`/emails/catalog/pending/${res.data.user_id}`);
         queryClient.invalidateQueries({ queryKey: ['get-all-email-status'] });
-        setShowMinimizeEmailId(undefined);
+        setShowMinimizeEmailId(preState => {
+          if (preState?.id !== undefined) {
+            deleteEmailMutate(String(preState.id));
+            dispatch(deleteMinimizeEmail({ id: preState.id }));
+          }
+          return undefined
+        });
         method.reset();
+        setTabColor(undefined);
         clearTimeout(storeDraftTimeOutFunc.current);
         toast.success('Email has been sent');
       },
@@ -188,6 +195,7 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
     };
   };
 
+  // HANDLE FUNCTIONS
   const checkEmailDataEmpty = (values: EmailComposeFields): boolean => {
     const { contactBlock } = values;
     const { to, cc, bcc } = convertContactField(contactBlock);
@@ -199,16 +207,12 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
       !values.subject &&
       values.attachFiles.fileUrls.length === 0 &&
       values.attachFiles.files.length === 0 &&
-      (values.content === '' ||
-        getHtmlStringFromEditorState(values.content) === '<p></p>\n')
-    );
-  };
-  const createApiData = (
-    values: EmailComposeFields & { sendAt?: Dayjs | null | undefined },
-  ) => {
+      (values.content === '' || getHtmlStringFromEditorState(values.content) === '<p></p>\n')
+    )
+  }
+  const createApiData = (values: EmailComposeFields & { sendAt?: Dayjs | null | undefined }, isDraft?: Boolean): CreateEmailParam => {
     const { contactBlock } = values;
     const { to, cc, bcc } = convertContactField(contactBlock);
-
     return {
       email: {
         to,
@@ -217,7 +221,9 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
         from: currentUserEmail ?? '',
         text_html: getHtmlStringFromEditorState(values.content),
         subject: values.subject,
+        attachs: values.attachFiles.fileUrls.map(value => ({ path: value }))
       },
+      hashtags: values.hashtags.map(value => value.value),
       send_at: values.sendAt?.toISOString() ?? dayjs().toISOString(),
     };
   };
@@ -285,8 +291,32 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
       );
       return;
     }
-    submitEmailComposeMutate(createApiData(values));
-  };
+    submitEmailComposeMutate(createApiData(values))
+  }
+
+  const handleContinueClick = (values: MinimizeEmailTypes) => {
+    console.log(values);
+    const currValue = method.getValues();
+    const currData = createApiData(currValue);
+    const isEmailDataEmpty = checkEmailDataEmpty(currValue);
+    
+    const foundMinimizeEmail = minimizeEmailList.find(value => value.id === values.id && values.id !== undefined);
+    
+    if(showMinimizeEmailId || !isEmailDataEmpty) {
+      if(showMinimizeEmailId?.id) {
+        updateDraftMutate({id: showMinimizeEmailId.id, data: currData});
+      } else {
+        const newCacheId = Date.now();
+        storeDraftMutate({cacheId: showMinimizeEmailId?.cacheId ?? newCacheId, data: currData});
+      }
+    }
+    
+    createDataForForm({subject: values.subject, content: values.content, hashtags: values.hashtags})
+    clearTimeout(storeDraftTimeOutFunc.current);
+    setTabColor(foundMinimizeEmail?.color);
+    setShowMinimizeEmailId({id: values.id});
+    navigate('/emails/compose');
+  }
 
   const handleMaximizeEmailClick = (data: MinimizeEmailTypes) => {
     const values = method.getValues();
@@ -312,27 +342,13 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
     // MINIMIZE ABLE
     if (isExistShowEmail() || minimizeEmailList.length < 2) {
       const newCacheId = Date.now();
-      if (showMinimizeEmailId?.id !== undefined) {
-        dispatch(
-          addMinimizeEmail({
-            ...convertMinimizeEmailData,
-            id: showMinimizeEmailId.id,
-            cacheId: undefined,
-          }),
-        );
-        updateDraftMutate({ id: showMinimizeEmailId.id, data: apiParamData });
-      } else {
-        dispatch(
-          addMinimizeEmail({
-            ...convertMinimizeEmailData,
-            cacheId: showMinimizeEmailId?.cacheId ?? newCacheId,
-            id: undefined,
-          }),
-        );
-        storeDraftMutate({
-          cacheId: showMinimizeEmailId?.cacheId ?? newCacheId,
-          data: apiParamData,
-        });
+      if(showMinimizeEmailId?.id !== undefined) {
+        dispatch(addMinimizeEmail({...convertMinimizeEmailData, id: showMinimizeEmailId.id, cacheId: undefined}));
+        updateDraftMutate({id: showMinimizeEmailId.id, data: apiParamData});
+      }
+      else {
+        dispatch(addMinimizeEmail({...convertMinimizeEmailData, cacheId: showMinimizeEmailId?.cacheId ?? newCacheId, id: undefined}));
+        storeDraftMutate({cacheId: showMinimizeEmailId?.cacheId ?? newCacheId, data: apiParamData});
       }
       createDataForForm(data);
       clearTimeout(storeDraftTimeOutFunc.current);
@@ -352,8 +368,8 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
         if (showMinimizeEmailId?.id) {
           updateDraftMutate({
             data: apiParamData,
-            id: showMinimizeEmailId.id,
-          });
+            id: showMinimizeEmailId.id
+          })
         } else {
           storeDraftMutate({
             data: apiParamData,
@@ -362,16 +378,14 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
         }
         createDataForForm(data);
         clearTimeout(storeDraftTimeOutFunc.current);
-        setShowMinimizeEmailId({
-          id: data.id,
-          cacheId: data.id ? undefined : data.cacheId,
-        });
+        setShowMinimizeEmailId({ id: data.id, cacheId: data.id ? undefined : data.cacheId });
         setTabColor(data.color);
         alertDialog.onClose();
         navigate('/emails/compose');
-      },
-    );
-  };
+      }
+    )
+
+  }
 
   const handleCloseClick = (data: MinimizeEmailTypes) => {
     dispatch(deleteMinimizeEmail({ cacheId: data.cacheId, id: data.id }));
@@ -507,7 +521,54 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
     }
 
     // Curr Email isn't in minimize email list
-  };
+
+  }
+
+  const handleCloseEmail = () => {
+    const values = method.getValues()
+    const data = createApiData(values);
+    const isEmailDataEmpty = checkEmailDataEmpty(values);
+    const isExistShow = isExistShowEmail();
+
+    if (isEmailDataEmpty && !isExistShow) {
+      navigate('/emails');
+      return;
+    }
+
+    if (isExistShow) {
+      setShowMinimizeEmailId(undefined);
+      setTabColor(undefined);
+      dispatch(deleteMinimizeEmail({ cacheId: showMinimizeEmailId?.cacheId, id: showMinimizeEmailId?.id }));
+      method.reset();
+      clearTimeout(storeDraftTimeOutFunc.current);
+      navigate('/emails');
+      return;
+    }
+
+    alertDialog.setAlertData(
+      'Store email',
+      'Do you want to save the current email?',
+      () => {
+        if (showMinimizeEmailId?.id) {
+          updateDraftMutate({
+            data,
+            id: showMinimizeEmailId.id
+          })
+        } else {
+          storeDraftMutate({
+            data,
+            cacheId: showMinimizeEmailId?.cacheId ?? Date.now(),
+          });
+        }
+        setShowMinimizeEmailId(undefined);
+        method.reset();
+        clearTimeout(storeDraftTimeOutFunc.current);
+        alertDialog.onClose()
+        navigate('/emails');
+      },
+    )
+
+  }
 
   const handleNewComposeClick = () => {
     const values = method.getValues();
@@ -531,29 +592,14 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
     if (isExistShowEmail() || minimizeEmailList.length < 2) {
       const newCacheId = Date.now();
       if (showMinimizeEmailId?.id !== undefined) {
-        dispatch(
-          addMinimizeEmail({
-            ...convertMinimizeEmailData,
-            id: showMinimizeEmailId.id,
-            cacheId: undefined,
-          }),
-        );
+        dispatch(addMinimizeEmail({ ...convertMinimizeEmailData, id: showMinimizeEmailId.id, cacheId: undefined }));
         updateDraftMutate({ data, id: showMinimizeEmailId.id });
       } else {
-        dispatch(
-          addMinimizeEmail({
-            ...convertMinimizeEmailData,
-            cacheId: showMinimizeEmailId?.cacheId ?? newCacheId,
-            id: undefined,
-          }),
-        );
-        storeDraftMutate({
-          data,
-          cacheId: showMinimizeEmailId?.cacheId ?? newCacheId,
-        });
+        dispatch(addMinimizeEmail({ ...convertMinimizeEmailData, cacheId: showMinimizeEmailId?.cacheId ?? newCacheId, id: undefined }));
+        storeDraftMutate({ data, cacheId: showMinimizeEmailId?.cacheId ?? newCacheId });
       }
 
-      setShowMinimizeEmailId(undefined);
+      setShowMinimizeEmailId(undefined)
       setTabColor(undefined);
       method.reset();
       clearTimeout(storeDraftTimeOutFunc.current);
@@ -588,7 +634,12 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
         alertDialog.onClose();
         navigate('/emails/compose');
       },
-    );
+      () => {
+        if (showMinimizeEmailId?.id) {
+          deleteEmailMutate(String(showMinimizeEmailId.id))
+        }
+      }
+    )
     return;
   };
 
@@ -645,15 +696,11 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
       onSendEmail: handleSendEmail,
       onNewComposeClick: handleNewComposeClick,
       onMinimizeEmailClick: handleMinimizeEmailClick,
-      onMaximizeEmailClick: () => {},
-    };
-  }, [
-    method,
-    tabColor,
-    triggerClearData,
-    handleMinimizeEmailClick,
-    handleNewComposeClick,
-  ]);
+      onMaximizeEmailClick: () => { },
+      onCloseEmail: handleCloseEmail,
+      onContinueClick: handleContinueClick,
+    }
+  }, [method, tabColor, triggerClearData, handleMinimizeEmailClick, handleNewComposeClick, handleCloseEmail])
 
   // useEffect(() => {
   //   const renderArray = (from: number, to: number) => {
@@ -689,7 +736,12 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
         titleLabel={alertDialog.title}
         descriptionLabel={alertDialog.description}
         isOpen={alertDialog.isOpen}
-        onClose={alertDialog.onClose}
+        onClose={() => {
+          alertDialog.onClose();
+          if (alertDialog.onCloseCallBack) {
+            alertDialog.onCloseCallBack();
+          }
+        }}
         onAgree={alertDialog.callback}
         onDisagree={alertDialog.onClose}
       />

@@ -5,13 +5,14 @@ import AlertWithEmailAction from '@components/molecules/AlertWithEmailAction';
 import SettimeInput from '@components/molecules/SettimeInput';
 import { UserInfo } from '@components/organisms/Email/Interface';
 import EmailMess from '@components/organisms/EmailMess';
+import { EmailComposeContext } from '@containers/MainWrapperContainer';
 import { emailData } from '@layouts/EmailStatusBar';
 import { Box, Button } from '@mui/material';
 import { deleteIndexEmail, HashtagTabs } from '@redux/Email/reducer';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import dayjs, { Dayjs } from 'dayjs';
 import { userInfo } from 'os';
-import React, { forwardRef, useState } from 'react';
+import React, { forwardRef, useContext, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
 
@@ -27,22 +28,31 @@ interface Props {
   onUpdateHashtagClick?: (hashtags: HashtagTabs[]) => void;
 }
 
-const EmailMessContainerRef: React.ForwardRefRenderFunction<HTMLDivElement | undefined, Props> = ({
-  userInfo,
-  emailData,
-  onChangeStatus,
-  onShowHistory,
-  type,
-  isShowHeader,
-  isShowActions,
-  index,
-  onUpdateHashtagClick,
-}, ref) => {
+const EmailMessContainerRef: React.ForwardRefRenderFunction<
+  HTMLDivElement | undefined,
+  Props
+> = (
+  {
+    userInfo,
+    emailData,
+    onChangeStatus,
+    onShowHistory,
+    type,
+    isShowHeader,
+    isShowActions,
+    index,
+    onUpdateHashtagClick,
+  },
+  ref,
+) => {
   // useState
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [valueApproveIn, setValueApproveIn] = useState<Dayjs>(
     dayjs('Thu Apr 07 2022 00:15:00'),
   );
+
+  const {onContinueClick} = useContext(EmailComposeContext);
+
 
   // useAlertDialog
   const {
@@ -238,6 +248,22 @@ const EmailMessContainerRef: React.ForwardRefRenderFunction<HTMLDivElement | und
     );
   };
 
+  const handleContinueEmailClick = () => {
+    const {email} = emailData;
+    console.log(`[TODO] CONTINUE DRAFT EMAIL ADD FIELDS (TO, BCC, CC, ATTACH_FILE)`);
+    onContinueClick({
+        id: emailData.id,
+        subject: email.subject,
+        content: email.text_html,
+        hashtags: emailData.hashtags?.map(value => ({name: `#${value}`, value})),
+        // attachFiles: {
+        //   files: Array(email.attachs?.length ?? 0).fill(undefined),
+        //   fileUrls: email.attachs?.map(value => value.path) ?? []
+        // }
+      }
+    )
+  }
+
   return (
     <Box ref={ref}>
       <EmailMess
@@ -256,6 +282,7 @@ const EmailMessContainerRef: React.ForwardRefRenderFunction<HTMLDivElement | und
         onUndoEmail={handleUndoEmail}
         onApproveNow={handleApproveNow}
         onSendEmail={handleSendEmail}
+        onContinueClick={handleContinueEmailClick}
       />
       <AlertDialog
         titleLabel={alertDialogTitle}

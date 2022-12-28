@@ -26,14 +26,12 @@ const ModalDrawSignature: React.FC<Props> = ({ isOpen, onClose, onSubmit }) => {
       const url = signRef.current.getTrimmedCanvas().toDataURL('image/png');
       onSubmit && onSubmit(url);
       onClose && onClose();
-      // setImgUrl(url);
-      console.log('url --->', url);
     }
   };
 
   const clearSignature = () => {
     if (signRef.current && signRef) {
-      const url = signRef.current.clear();
+      signRef.current.clear();
     }
   };
 

@@ -4,10 +4,12 @@ import React, { Dispatch, SetStateAction, useCallback, useRef } from 'react';
 import Icon from '../Icon';
 import { v4 as uuidV4 } from 'uuid';
 import ImageComponent from '../LazyImage';
+import { Button } from '@mui/material';
+import classNames from 'classnames';
 
 interface UploadAreaProps {
   name?: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   fileSelected?: FileList;
 
   //
@@ -16,6 +18,12 @@ interface UploadAreaProps {
   containerId?: string;
   dragDrop?: boolean;
   preview?: boolean;
+  accept?: 'image/*' | 'application/pdf';
+  /** Note:
+   * Tạm, chưa ổn định, còn check tiếp
+   */
+  checkType?: boolean;
+  disabled?: boolean;
 }
 
 const UploadArea: React.FC<UploadAreaProps> = ({
@@ -27,8 +35,26 @@ const UploadArea: React.FC<UploadAreaProps> = ({
   containerId,
   dragDrop,
   preview,
+  accept,
+  checkType,
+  disabled,
 }) => {
-  const { onUpload, fileList } = useUploadFile({ dragDrop, containerId, onChange });
+  const { onUpload, fileList } = useUploadFile({
+    dragDrop,
+    containerId,
+    onChange,
+    accept: [accept],
+    checkType,
+    disabled,
+  });
+
+  const ImgComponent = React.useMemo(() => {
+    return fileSelected && fileSelected.length > 0
+      ? ({ className, ...props }: React.ImgHTMLAttributes<HTMLImageElement>) => (
+          <img {...props} className={classNames(className, 'object-contain')} />
+        )
+      : ImageComponent.LazyImage;
+  }, [fileSelected, defaultValue]);
 
   const files = React.useMemo(() => {
     return fileSelected && fileSelected.length > 0
@@ -36,25 +62,24 @@ const UploadArea: React.FC<UploadAreaProps> = ({
       : defaultValue.filter((ele) => ele);
   }, [fileSelected, defaultValue]);
 
-  /**
-   * Todo
-   * 1. Bug mở cửa sổ chọn ảnh 2 lần
-   */
-  const handleClickUploadArea = () => {
+  const handleClickUploadArea = (
+    e: React.MouseEvent<HTMLDivElement, MouseEvent>,
+  ) => {
+    if (dragDrop) return;
     onUpload();
   };
 
-  console.log('has file -->', fileSelected, typeof fileSelected);
-
   React.useEffect(() => {
-    console.log({ fileList });
     onFileChange && onFileChange(fileList);
-  }, [onFileChange, fileList]);
+  }, [fileList]);
 
   return (
-    <div className="upload-area-wrapper relative" onClick={handleClickUploadArea}>
+    <div
+      id="wrapper"
+      className="upload-area-wrapper relative"
+      onClick={handleClickUploadArea}>
       {preview && files.length > 0 ? (
-        <ImageComponent.LazyImage
+        <ImgComponent
           alt=""
           className="w-full h-full"
           height={'100%'}

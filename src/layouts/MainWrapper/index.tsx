@@ -4,7 +4,7 @@ import Header from '@layouts/Header';
 import SideBar from '@layouts/SideBar';
 import { Box, Container, Drawer } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Outlet, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { makeStyles } from 'tss-react/mui';
 import { toast } from 'react-toastify';
@@ -16,22 +16,17 @@ import MinimizeEmailList, {
   MinimizeEmailTypes,
 } from '@components/templates/MinimizeEmailList';
 import { Email } from '@components/organisms/Email/Interface';
-import {
-  setHashtags,
-} from '@redux/Email/reducer';
+import { setHashtags } from '@redux/Email/reducer';
 import { fetchToken, onMessageListener } from '../../messaging_init_in_sw';
 import { deleteDeviceKey } from '@api/deviceKey';
 import { unShiftNotificationList } from '@redux/Notify/reducer';
 import { IS_EMPLOYEE_ROLE } from '@constants/localStore';
 import { useQuery } from '@tanstack/react-query';
 import { getHashtags } from '@api/email';
+import useLocalStorage from '@hooks/useLocalStorage';
 
 const sideBarWidth = 75;
 const emailStatusWidth = 290;
-
-const DEVICE_KEY_ID: number = JSON.parse(
-  localStorage.getItem('device_key_id') || '0',
-);
 
 const useStyles = makeStyles()((theme) => ({
   body: {
@@ -65,7 +60,7 @@ interface Setting {
 function MainWrapper({ children }: { children: React.ReactNode }) {
   const dispatch = useAppDispatch();
   const location = useLocation();
- 
+
   const [show, setShow] = useState(false);
   const [notification, setNotification] = useState({ title: '', body: '' });
 
@@ -92,13 +87,15 @@ function MainWrapper({ children }: { children: React.ReactNode }) {
     return () => setOpenMobileSideBar(value);
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem('token');
+  const handleLogout = useCallback(() => {
     auth.signout(() => {
-      toast.success('Bái bai!');
+      deleteDeviceKey();
+      localStorage.removeItem('device_key_id');
+      localStorage.removeItem('token');
+      localStorage.removeItem('device_token');
     });
-    deleteDeviceKey(DEVICE_KEY_ID);
-  };
+    toast.success('Bái bai!');
+  }, [auth.signout]);
 
   const handleChangePage = (url: string) => () => {
     navigate(url);
@@ -147,8 +144,8 @@ function MainWrapper({ children }: { children: React.ReactNode }) {
     {
       id: 2,
       label: 'Change Password',
-      path: '/change-password',
-      handleClick: handleChangePage('/manager/change-password'),
+      path: '/manager/profile/change-password',
+      handleClick: handleChangePage('/manager/profile/change-password'),
     },
     {
       id: 3,

@@ -1,13 +1,20 @@
-import { Box } from "@mui/material"
+import ContactGroupLayout from '@layouts/ContactGroup';
+import Layout from '@layouts/Layout';
+import { Box } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 
 interface ContactGroupsProps {}
 
 const ContactGroups: React.FC<ContactGroupsProps> = () => {
-  return (
-    <Box className="p-contactSharing">
-      contact group page
-    </Box>
-  )
-}
+  const navigate = useNavigate();
 
-export default ContactGroups
+  return (
+    <Layout.MainQueryClient
+      headTitle="Contact Groups"
+      onClickAdd={() => navigate('add')}>
+      <ContactGroupLayout />
+    </Layout.MainQueryClient>
+  );
+};
+
+export default ContactGroups;

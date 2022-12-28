@@ -23,7 +23,7 @@ export interface PageCrudHelpers {
 
 interface PageCrudDataProps extends React.PropsWithChildren {
   refreshKey?: string;
-  api: PathAPI;
+  api: string;
   exceptColumns?: Array<string>;
   onCellEdit?: (model: any) => void;
   onCellDelete?: (model: any) => void;

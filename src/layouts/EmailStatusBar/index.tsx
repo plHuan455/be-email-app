@@ -108,6 +108,13 @@ const EmailTabsData: EmailTabs[] = [
 ];
 const EmailTabsSecData: EmailTabs[] = [
   {
+    status: 'important',
+    title: '#important',
+    notiNumber: 0,
+    emailData: emailData,
+    color: '#f44336',
+  },
+  {
     status: 'sent',
     title: '#sent',
     notiNumber: 0,
@@ -360,6 +367,7 @@ const EmailStatusBar = (props: Props) => {
       }}>
       <EmailStatusHeader
         title="Email"
+        buttonTitle="Compose"
         color="#827CFF"
         bgButtonColor="#554CFF"
         isComposeButton={true}

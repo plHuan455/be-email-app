@@ -1,4 +1,5 @@
-import { Avatar, Box, Button } from '@mui/material';
+import { Avatar, Box, Button, Typography } from '@mui/material';
+import CreateIcon from '@mui/icons-material/Create';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import styles from './styles.module.scss';
 import AttachFiles from '@components/atoms/AttachFiles';
@@ -20,6 +21,10 @@ import LogoWithLabel from '@components/atoms/LogoWithLabel';
 import Icon from '@components/atoms/Icon';
 import { rem } from '@utils/functions';
 import { useParams, useSearchParams } from 'react-router-dom';
+import ScheduleSendIcon from '@mui/icons-material/ScheduleSend';
+import SendIcon from '@mui/icons-material/Send';
+import { color } from 'd3-color';
+import { data } from 'autoprefixer';
 export interface UserRead {
   name: string;
   time: string;
@@ -52,13 +57,14 @@ interface Props {
   onUndoEmail: () => void;
   onApproveNow: () => void;
   onSendEmail: () => void;
+  onContinueClick?: () => void;
 }
 
 export const attachsToAttachFiles: (attachs: attachs[]) => AttachFile[] = (
   attachs,
 ) =>
   attachs.map((file) => {
-    const clonePath = file.path;
+    const clonePath = file.path ?? "file 's not found";
 
     const fileName = clonePath.replace(/^.*[\\\/]/, '');
 
@@ -90,9 +96,10 @@ const EmailMess: React.FC<Props> = ({
   onUndoEmail,
   onApproveNow,
   onSendEmail,
+  onContinueClick,
 }) => {
   const [searchParams] = useSearchParams();
-  
+
   const defaultStatus = useMemo(() => emailData.status, []);
   const [newHashtagList, setNewHashtagList] = useState<HashtagTabs[] | undefined>(
     undefined,
@@ -104,9 +111,50 @@ const EmailMess: React.FC<Props> = ({
 
   const cloneSendTo = !!emailData.email.to ? [...emailData.email.to] : [];
 
+  // useMemo
+  const emailActionType = useMemo(() => {
+    const isTimeNowLessThanSendTime = sentAt.getTime() > Date.now();
+
+    if (emailData.type === 'send') {
+      if (isTimeNowLessThanSendTime) return 'sendAfter';
+      return 'send';
+    }
+    return 'receive';
+  }, [emailData.type]);
+
+  const _renderEmailActionTypeIcon = useMemo(() => {
+    switch (emailActionType) {
+      case 'receive':
+        return (
+          <Box className="flex justify-center">
+            <Icon icon="reply" />
+          </Box>
+        );
+      case 'send':
+        return (
+          <Box className="flex justify-center">
+            <SendIcon sx={{ color: '#999999' }} />
+          </Box>
+        );
+      case 'sendAfter':
+        return (
+          <Box className="flex justify-center">
+            <ScheduleSendIcon sx={{ color: '#999999' }} />
+          </Box>
+        );
+
+      default:
+        return (
+          <Box>
+            <SendIcon />
+          </Box>
+        );
+    }
+  }, [emailActionType]);
+
   const remapPrivateHashtag = useMemo<HashtagTabs[]>(() => {
-    return emailData.tags
-      ? emailData.tags.map((val) => ({
+    return emailData.hashtags
+      ? emailData.hashtags.map((val) => ({
           notiNumber: 0,
           status: 'hashtag',
           title: `#${val}`,
@@ -178,19 +226,19 @@ const EmailMess: React.FC<Props> = ({
   const _renderActionsPendingItems = useMemo(() => {
     const _renderActionsPendingItem = () => {
       if (currRole?.startsWith('EMPLOYEE')) {
-        if(approveAt.getTime() > Date.now())
+        if (approveAt.getTime() > Date.now())
           return (
             <Box>
               <ControlEmailSend
                 variant="employeeViewApproveTime"
-                title='Email will be sent in: '
+                title="Email will be sent in: "
                 // scheduleAt={dayjs(sentAt).format('MMMM, DD YYYY - HH:mm')}
                 remainMinutes={Math.floor(
                   (approveAt.getTime() - Date.now()) / 1000 / 60,
                 )}
               />
             </Box>
-          )
+          );
 
         if (emailData.type === 'send' && sentAt.getTime() > Date.now())
           return (
@@ -280,7 +328,7 @@ const EmailMess: React.FC<Props> = ({
   const _renderEmailTitle = useMemo(() => {
     const emailTitle = emailData.email.subject;
     const limitShow = 250;
-    if (emailTitle.length < limitShow)
+    if (emailTitle?.length < limitShow)
       return (
         <h1 className="text-stone-700 font-bold text-base">
           {emailData.email.subject}
@@ -288,8 +336,8 @@ const EmailMess: React.FC<Props> = ({
       );
     return (
       <h1 className="text-stone-700 font-bold text-base">
-        <span>{emailTitle.substring(0, limitShow)}...</span>
-        {isShowLimitTitle && <span>{emailTitle.substring(limitShow)}</span>}
+        <span>{emailTitle?.substring(0, limitShow)}...</span>
+        {isShowLimitTitle && <span>{emailTitle?.substring(limitShow)}</span>}
         <span
           onClick={handleNavigateShowLimitTitle}
           className="pl-2 inline-block text-[14px] hover:opacity-80"
@@ -323,6 +371,7 @@ const EmailMess: React.FC<Props> = ({
           <Box className="w-full flex">
             <Box className="flex-1">
               <EmailActions
+                isImportant={!!emailData.is_favorite}
                 type={type}
                 isActiveClick={true}
                 emailIndex={index}
@@ -337,12 +386,7 @@ const EmailMess: React.FC<Props> = ({
         <Box>
           <Avatar alt={userInfo.name} src={userInfo.avatar} />
         </Box>
-        <Box>
-          <Icon
-            icon="reply"
-            className={`${emailData.type === 'send' && 'rotate-180'}`}
-          />
-        </Box>
+        {_renderEmailActionTypeIcon}
       </Box>
       <Box
         sx={{ boxShadow: '0px 10px 23px -15px rgba(159,159,159,0.54)' }}
@@ -364,7 +408,20 @@ const EmailMess: React.FC<Props> = ({
             {renderSendTo()}
           </div>
           {emailData.status.toLowerCase() !== 'null' && (
-            <EmailStatus emailStatus={emailData.status.toLowerCase()} />
+            <Box display="flex" alignItems="center">
+              {emailData?.status?.toLowerCase() === 'draft' && (
+                <Button
+                  sx={{ mr: rem(16), borderRadius: rem(20) }}
+                  onClick={onContinueClick}>
+                  <CreateIcon sx={{ fontSize: rem(20) }} />
+                  <Typography
+                    sx={{ ml: rem(8), fontSize: rem(14), fontWeight: 500 }}>
+                    Continue
+                  </Typography>
+                </Button>
+              )}
+              <EmailStatus emailStatus={emailData.status.toLowerCase()} />
+            </Box>
           )}
         </Box>
         {/* Email Content */}
@@ -396,17 +453,20 @@ const EmailMess: React.FC<Props> = ({
           }}
         />
         {/* Actions */}
-        <Box sx={{backgroundColor: '#F1F1F6', minHeight: rem(86)}} display="flex" alignItems="center">
-            {_renderActionsPendingItems}
-            {emailData.status === 'APPROVED' && sentAt.getTime() > Date.now() && (
-              <ControlEmailSend
-                remainMinutes={Math.floor(
-                  (sentAt.getTime() - new Date().getTime()) / 1000 / 60,
-                )}
-                onSend={onUndoEmail}
-                onUndo={onSendEmail}
-              />
-            )}
+        <Box
+          sx={{ backgroundColor: '#F1F1F6', minHeight: rem(86) }}
+          display="flex"
+          alignItems="center">
+          {_renderActionsPendingItems}
+          {emailData.status === 'APPROVED' && sentAt.getTime() > Date.now() && (
+            <ControlEmailSend
+              remainMinutes={Math.floor(
+                (sentAt.getTime() - new Date().getTime()) / 1000 / 60,
+              )}
+              onSend={onUndoEmail}
+              onUndo={onSendEmail}
+            />
+          )}
         </Box>
       </Box>
       {/* Layer if status === 'Reply || ReplyAll' */}
