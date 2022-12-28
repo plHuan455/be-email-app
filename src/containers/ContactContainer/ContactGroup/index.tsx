@@ -1,6 +1,6 @@
 import TableActionsMenu from '@components/molecules/TableActionsMenu';
 import ContactGroup from '@components/organisms/Contact/ContactGroup';
-import { Avatar } from '@mui/material';
+import { Avatar, Box } from '@mui/material';
 import { GridColDef, GridRowId } from '@mui/x-data-grid';
 import { rem } from '@utils/functions';
 import React, { useEffect, useMemo } from 'react';
@@ -10,8 +10,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@redux/configureStore';
 import Icon from '@components/atoms/Icon';
 import useLocalStorage from '@hooks/useLocalStorage';
-import { setContactGroups } from '@redux/Contact/reducer';
+import { deleteContactGroups, setContactGroups } from '@redux/Contact/reducer';
 import { useNavigate } from 'react-router-dom';
+import AlertDialog, { useAlertDialog } from '@components/molecules/AlertDialog';
+import { toast } from 'react-toastify';
 
 const ContactGroupContainer = () => {
   // useSelector
@@ -95,9 +97,54 @@ const ContactGroupContainer = () => {
     return colsDef;
   }, [contactGroupsList]);
 
+  // useAlertDialog
+  const {
+    isOpen,
+    isLoading,
+    title,
+    description,
+    callback,
+    onCloseCallBack,
+    setAlertData,
+    setIsLoading,
+    onClose,
+  } = useAlertDialog();
+
+  // render FNC
+
+  const _renderAlertSelectedContact = (id: GridRowId, alertLabel: string) => {
+    const selectedContact = contactGroupsList.find((contact) => contact.id === +id);
+
+    const { group_name } = selectedContact || {
+      group_name: '',
+    };
+
+    return (
+      <Box>
+        <Box>
+          <p>{alertLabel}</p>
+        </Box>
+        <Box>
+          <p>
+            <b>Group name:</b> <span>{`${group_name}`}</span>
+          </p>
+        </Box>
+      </Box>
+    );
+  };
+
   // Handler FNC
   const handleClickDelete = (id: GridRowId) => {
-    console.log(id);
+    setAlertData(
+      '',
+      _renderAlertSelectedContact(id, `Are you sure want to "Delete" this contact?`),
+      () => {
+        dispatch(deleteContactGroups(id));
+        onClose();
+        toast.success('Delete successfully!');
+      },
+      () => {},
+    );
   };
 
   const handleCellClick = (rowData) => {
@@ -112,6 +159,14 @@ const ContactGroupContainer = () => {
         columns={columns}
         rows={contactGroupsList}
         handleCellClick={handleCellClick}
+      />
+      <AlertDialog
+        isOpen={isOpen}
+        descriptionLabel={description}
+        onClose={onClose}
+        titleLabel={title}
+        onAgree={callback}
+        onDisagree={onClose}
       />
     </>
   );

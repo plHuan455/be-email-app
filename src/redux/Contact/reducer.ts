@@ -57,6 +57,20 @@ const contactSlice = createSlice({
   name: 'contact',
   initialState,
   reducers: {
+    deleteContactGroups(state, actions) {
+      const cloneContactGroups = [...state.contactGroupsList];
+
+      const position = cloneContactGroups.findIndex(
+        (contactGroup) => contactGroup.id === actions.payload,
+      );
+
+      cloneContactGroups.splice(position, 1);
+
+      return {
+        ...state,
+        contactGroupsList: [...cloneContactGroups],
+      };
+    },
     editContactGroup(state, actions) {
       const { id, data } = actions.payload;
 
@@ -145,6 +159,7 @@ const contactSlice = createSlice({
 });
 
 export const {
+  deleteContactGroups,
   editContactGroup,
   setContactGroups,
   pushContactGroups,
