@@ -14,6 +14,7 @@ import { useNavigate } from 'react-router-dom';
 import AlertDialog, { useAlertDialog } from '@components/molecules/AlertDialog';
 import { Box } from '@mui/system';
 import { ContactType } from './interface';
+import { toast } from 'react-toastify';
 
 const ContactsContainer = () => {
   // useNavigate
@@ -144,6 +145,7 @@ const ContactsContainer = () => {
       () => {
         dispatch(deleteContacts(id));
         onClose();
+        toast.success('Delete successfully!');
       },
       () => {},
     );
