@@ -331,7 +331,7 @@ const EmailSlice = createSlice({
     setEmailsList(state, action) {
       return { ...state, EmailsList: action.payload };
     },
-    setCurrEmail(state, action: PayloadAction<EmailResponse>) {
+    setCurrEmail(state, action: PayloadAction<EmailResponse | undefined>) {
       state.currEmail = action.payload;
       return state;
     },

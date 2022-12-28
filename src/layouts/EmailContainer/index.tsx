@@ -21,6 +21,17 @@ const EmailContainer = () => {
   const { EmailsList } = useAppSelector((state) => state.email);
   const [pageParams, setPageParams] = useState<{page: number; limit: number}>({page: 1, limit: 3});
 
+  const handleChangeCurrEmail = () => {
+    const foundIntersecting = intersectingEmailMessStack.current.find(value => {
+      const rect = value.target.getBoundingClientRect();
+      return rect.top < window.innerHeight / 2 && rect.bottom > window.innerHeight / 2}
+    )
+
+    if(foundIntersecting) {
+      dispatch(setCurrEmail(foundIntersecting.emailData));
+    }
+  }
+
   useEffect(() => {
     const container = containerRef.current;
     if(container && preContainerScrollHeight.current !== undefined) {
@@ -31,29 +42,28 @@ const EmailContainer = () => {
   useEffect(()=>{
     const container = containerRef.current;
     if(container) {
+      setTimeout(() => {
+        handleChangeCurrEmail();
+      }, 200)
       container.scrollTop = container.scrollHeight;
       container.addEventListener('scroll', handleScroll);
-      return () => container.removeEventListener('scroll', handleScroll);
+      return () => {
+        container.removeEventListener('scroll', handleScroll)
+        dispatch(setCurrEmail(undefined));
+        intersectingEmailMessStack.current = []
+      };
     }
 
   }, [containerRef, EmailsList])
 
-  function handleScroll (e: Event) {
-    const container = e.target as HTMLDivElement;
+  function handleScroll (e?: Event) {
+    const container = e?.target as HTMLDivElement;
     if (container.scrollTop === 0) {
       preContainerScrollHeight.current = container.scrollHeight;
       setPageParams(preState => ({...preState, page: preState.page + 1}));
     }
 
-    // 
-    const foundIntersecting = intersectingEmailMessStack.current.find(value => {
-      const rect = value.target.getBoundingClientRect();
-      return rect.top < window.innerHeight / 2 && rect.bottom > window.innerHeight / 2}
-    )
-
-    if(foundIntersecting) {
-      dispatch(setCurrEmail(foundIntersecting.emailData));
-    }
+    handleChangeCurrEmail();
   }
   
   const handleInterSecting = (target: HTMLDivElement, emailData: EmailResponse) => {
