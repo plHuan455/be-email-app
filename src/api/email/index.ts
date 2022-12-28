@@ -26,7 +26,9 @@ export interface CreateEmailParam {
     cc?: string[];
     bcc?: string[];
     is_favorite?: boolean;
+    attachs?: {path?: string}[];
   };
+  action?: string;
   send_at?: string;
   tags?: string[];
 }

@@ -62,7 +62,7 @@ const Hashtag: React.FC<Props> = ({
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '5px 10px',
+          padding: '5px 4px',
         }}>
         <NavLink to={`/emails/catalog/${catalog}`}>
           {({ isActive }) => {

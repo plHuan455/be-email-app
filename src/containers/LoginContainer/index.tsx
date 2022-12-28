@@ -24,6 +24,13 @@ const schema = yup
   })
   .required();
 
+const removeLocalStore = () => {
+  localStorage.removeItem('device_key_id');
+  localStorage.removeItem('token');
+  localStorage.removeItem('device_token');
+  localStorage.removeItem('current_email');
+};
+
 function LoginContainer() {
   const [isTokenFound, setTokenFound] = useState(false);
   const [getFcmToken, setFcmToken] = useState('');
@@ -99,7 +106,7 @@ function LoginContainer() {
   };
 
   const handleReLoginWithEmail = () => {
-    localStorage.removeItem('current_email');
+    removeLocalStore();
     navigate(0);
   };
 

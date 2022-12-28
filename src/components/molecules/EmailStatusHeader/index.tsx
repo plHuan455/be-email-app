@@ -19,21 +19,23 @@ import { useNavigate } from 'react-router-dom';
 
 type Props = {
   title: string;
+  buttonTitle: string;
   color: string;
   bgButtonColor: string;
   isSearch?: boolean;
   isComposeButton?: boolean;
 };
 
-const EmailStatusHeader = ({
+const EmailStatusHeader: React.FC<Props> = ({
   title,
+  buttonTitle,
   isSearch,
   isComposeButton,
   color,
   bgButtonColor,
-}: Props) => {
+}) => {
   const navigate = useNavigate();
-  const {onNewComposeClick} = useContext(EmailComposeContext);
+  const { onNewComposeClick } = useContext(EmailComposeContext);
 
   const handleComposeEmail = useCallback(() => {
     onNewComposeClick();
@@ -57,8 +59,8 @@ const EmailStatusHeader = ({
         <Box className="flex gap-3 justify-end">
           {isComposeButton && (
             <CustomButton
-              className="py-3 hover:opacity-90 ease-linear duration-300"
-              label="Compose"
+              className="py-3 hover:opacity-90 ease-linear duration-300 w-auto"
+              label={buttonTitle}
               bgButtonColor="#554CFF"
               color="#fff"
               isAfterIcon={true}

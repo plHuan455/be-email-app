@@ -22,7 +22,7 @@ const iconsList: {
   '/manager': 'managerAcccount',
   '/profile': 'accountCircle',
   '/setting': 'settings',
-  '/change-password': 'password',
+  '/manager/profile/change-password': 'password',
   '/log-out': 'logout',
 };
 

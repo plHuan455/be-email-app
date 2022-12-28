@@ -144,8 +144,8 @@ function MainWrapper({ children }: { children: React.ReactNode }) {
     {
       id: 2,
       label: 'Change Password',
-      path: '/change-password',
-      handleClick: handleChangePage('/manager/change-password'),
+      path: '/manager/profile/change-password',
+      handleClick: handleChangePage('/manager/profile/change-password'),
     },
     {
       id: 3,

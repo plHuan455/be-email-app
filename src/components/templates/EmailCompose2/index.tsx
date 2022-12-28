@@ -87,6 +87,7 @@ interface EmailComposeProps {
   onCCButtonClick?: () => void;
   onChangeCalendarValue: (date: Dayjs | null) => void;
   onCloseCalendarModal: () => void;
+  onCloseEmail: () => void;
   onUnsetTimeClick: () => void;
   onSetTimeClick: () => void;
   onSendTimeClick: () => void;
@@ -111,6 +112,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
   onMaximizeClick,
   onCCButtonClick,
   onChangeCalendarValue,
+  onCloseEmail,
   onCloseCalendarModal,
   onSetTimeClick,
   onUnsetTimeClick,
@@ -205,6 +207,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
               }}
               onMinimizeClick={onMinimizeClick}
               onMaximizeClick={onMaximizeClick}
+              onCloseClick={onCloseEmail}
             />
             <Box
               className="bg-white flex-1 flex flex-col overflow-scroll"

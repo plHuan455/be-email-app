@@ -40,6 +40,7 @@ export const useAlertDialog = (isOpenDefault: boolean = false) => {
     title: string;
     description: React.ReactNode;
     callback: () => void;
+    onCloseCallBack?: () => void;
   }>({
     title: '',
     description: '',
@@ -50,11 +51,13 @@ export const useAlertDialog = (isOpenDefault: boolean = false) => {
     title: string,
     description: React.ReactNode,
     callback: () => void,
+    onCloseCallBack?: () => void,
   ) => {
     alertDataRef.current = {
       title,
       description,
       callback,
+      onCloseCallBack,
     };
     setIsOpen(true);
   };
@@ -76,6 +79,7 @@ export const useAlertDialog = (isOpenDefault: boolean = false) => {
     title: alertDataRef.current.title,
     description: alertDataRef.current.description,
     callback: alertDataRef.current.callback,
+    onCloseCallBack: alertDataRef.current.onCloseCallBack,
     setAlertData,
     setIsLoading,
     onClose,
