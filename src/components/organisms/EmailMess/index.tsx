@@ -64,7 +64,7 @@ export const attachsToAttachFiles: (attachs: attachs[]) => AttachFile[] = (
   attachs,
 ) =>
   attachs.map((file) => {
-    const clonePath = file.path;
+    const clonePath = file.path ?? "file 's not found";
 
     const fileName = clonePath.replace(/^.*[\\\/]/, '');
 
@@ -410,9 +410,14 @@ const EmailMess: React.FC<Props> = ({
           {emailData.status.toLowerCase() !== 'null' && (
             <Box display="flex" alignItems="center">
               {emailData?.status?.toLowerCase() === 'draft' && (
-                <Button sx={{mr: rem(16), borderRadius: rem(20)}} onClick={onContinueClick}>
-                  <CreateIcon sx={{fontSize: rem(20)}}/>
-                  <Typography sx={{ml: rem(8), fontSize: rem(14), fontWeight: 500}}>Continue</Typography>
+                <Button
+                  sx={{ mr: rem(16), borderRadius: rem(20) }}
+                  onClick={onContinueClick}>
+                  <CreateIcon sx={{ fontSize: rem(20) }} />
+                  <Typography
+                    sx={{ ml: rem(8), fontSize: rem(14), fontWeight: 500 }}>
+                    Continue
+                  </Typography>
                 </Button>
               )}
               <EmailStatus emailStatus={emailData.status.toLowerCase()} />
