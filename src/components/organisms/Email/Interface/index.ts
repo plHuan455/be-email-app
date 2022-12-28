@@ -28,10 +28,16 @@ export class UserReceiveInfo extends UserInfo {
   isChecked: boolean;
   field?: 'to' | 'cc' | 'bcc';
 
-  constructor(avatar: string, name: string, mail: string, isChecked: boolean) {
+  constructor(
+    avatar: string,
+    name: string,
+    mail: string,
+    isChecked: boolean,
+    field?: 'to' | 'cc' | 'bcc',
+  ) {
     super(avatar, name, mail);
     this.isChecked = isChecked;
-    // this.field = isChecked;
+    this.field = field;
   }
 }
 
