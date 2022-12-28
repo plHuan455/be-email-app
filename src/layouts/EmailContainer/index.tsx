@@ -1,5 +1,4 @@
 import { EmailResponse } from '@api/email';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import Email from '@components/organisms/Email';
 import EmailsListActionsContainer from '@containers/EmailsListActionsContainer';
 import { Box, Button } from '@mui/material';
@@ -9,6 +8,7 @@ import { rem } from '@utils/functions';
 import React, { memo, useEffect, useRef, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import useEmailCompose from '../../zustand/useEmailCompose';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 const EmailContainer = () => {
   const isCompose = useEmailCompose((state) => state.isCompose);
