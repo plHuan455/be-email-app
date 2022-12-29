@@ -1,7 +1,7 @@
 import Icon from '@components/atoms/Icon';
 import SwitchOnOff from '@components/atoms/SwitchOnOff';
 import { Badge, Box, IconButton } from '@mui/material';
-import React, { useCallback } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import SearchStartWithIcon from '../Search';
 import { StickyContainer, Sticky } from 'react-sticky';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,6 +14,7 @@ import {
 } from '@redux/Global/reducer';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import { useLocation } from 'react-router-dom';
+import { sortNotification } from '@redux/Notify/reducer';
 
 interface Props {
   className?: string;
@@ -33,6 +34,7 @@ const EmailsListActions: React.FC<Props> = ({ className, isShowInformationBtn })
     else {
       if (sidebarRight.type === 'notify') {
         dispatch(closeNotifySidebarRight());
+        dispatch(sortNotification());
         dispatch(openInformationSidebarRight());
       } else dispatch(closeInformationSidebarRight());
     }
@@ -43,9 +45,16 @@ const EmailsListActions: React.FC<Props> = ({ className, isShowInformationBtn })
       if (sidebarRight.type === 'information') {
         dispatch(closeInformationSidebarRight());
         dispatch(openNotifySidebarRight());
-      } else dispatch(closeNotifySidebarRight());
+      } else {
+        dispatch(closeNotifySidebarRight());
+        dispatch(sortNotification());
+      }
     }
   };
+
+  const unReadNotificationCount = useMemo(() => {
+    return notificationList.reduce((count, value) => value.isSeen ? count : count + 1, 0)
+  }, [notificationList])
 
   return (
     <Box
@@ -67,7 +76,7 @@ const EmailsListActions: React.FC<Props> = ({ className, isShowInformationBtn })
         </Box>
       )}
       <Box>
-        <Badge badgeContent={notificationList.length} color="error">
+        <Badge badgeContent={unReadNotificationCount} color="error">
           <IconButton onClick={handleChangeIsShowNotifySideBarState}>
             <NotificationsActiveIcon
               sx={{

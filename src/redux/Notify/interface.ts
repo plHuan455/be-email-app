@@ -1,8 +1,11 @@
-interface NotifycationList {
+export interface NotificationList {
+  id: number;
   body: string;
   title: string;
+  createdAt: string;
+  isSeen?: boolean;
 }
 
 export interface NotifyState {
-  notificationList: NotifycationList[];
+  notificationList: NotificationList[];
 }
