@@ -6,7 +6,7 @@ interface ContactPageProps {}
 const ContactSharingGroupPage: React.FC<ContactPageProps> = () => {
   return (
     <>
-      <ContactSharingGroupsLayout headTitle="Contact Sharing Group" />
+      <ContactSharingGroupsLayout headTitle="Contact Sharing Groups" />
     </>
   );
 };
