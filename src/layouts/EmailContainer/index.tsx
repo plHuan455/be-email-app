@@ -1,10 +1,12 @@
 import { EmailResponse } from '@api/email';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import Email from '@components/organisms/Email';
 import EmailsListActionsContainer from '@containers/EmailsListActionsContainer';
-import { Box } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '@redux/configureStore';
 import { setCurrEmail } from '@redux/Email/reducer';
-import React, { useEffect, useRef, useState } from 'react';
+import { rem } from '@utils/functions';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import useEmailCompose from '../../zustand/useEmailCompose';
 
@@ -12,14 +14,13 @@ const EmailContainer = () => {
   const isCompose = useEmailCompose((state) => state.isCompose);
   const dispatch = useAppDispatch();
 
-  const currEmail = useAppSelector(state => state.email.currEmail);
-
   const containerRef = useRef<HTMLDivElement>(null);
   const preContainerScrollHeight = useRef<number>();
   const intersectingEmailMessStack = useRef<{target: HTMLDivElement; emailData: EmailResponse}[]>([]);
 
   const { EmailsList } = useAppSelector((state) => state.email);
   const [pageParams, setPageParams] = useState<{page: number; limit: number}>({page: 1, limit: 3});
+  const [isShowScrollBottom, setIsShowScrollButton] = useState<boolean>(false);
 
   const handleChangeCurrEmail = () => {
     const foundIntersecting = intersectingEmailMessStack.current.find(value => {
@@ -58,6 +59,10 @@ const EmailContainer = () => {
 
   function handleScroll (e?: Event) {
     const container = e?.target as HTMLDivElement;
+
+    const {scrollHeight, scrollTop, clientHeight} = container;
+    setIsShowScrollButton(scrollTop + clientHeight + 100 < scrollHeight);
+
     if (container.scrollTop === 0) {
       preContainerScrollHeight.current = container.scrollHeight;
       setPageParams(preState => ({...preState, page: preState.page + 1}));
@@ -76,7 +81,14 @@ const EmailContainer = () => {
       intersectingEmailMessStack.current.splice(stackIndex, 1);
     }
   }
-  
+
+  const handleScrollBottom = () => {
+    if(containerRef.current) {
+      const container = containerRef.current;
+      containerRef.current.scrollTo({top: container.scrollHeight, behavior: 'smooth'})
+    }
+  }
+
   return (
     // <Box
     //   sx={{
@@ -89,20 +101,47 @@ const EmailContainer = () => {
     //   }}>
     //   <EmailsListActionsContainer />
 
-    <Box
-      sx={{
-        flex: 1,
-        overflow: 'scroll',
-        padding: '120px 28px 28px 28px',
-      }}
-      ref={containerRef}
-    >
-      <Email 
-        pageParams={pageParams} 
-        onEmailMessIntersecting={handleInterSecting} 
-        onUnIntersecting={handleEmailMessUnIntersect}
-      />
-    </Box>
+    <>
+      <Box
+        sx={{
+          flex: 1,
+          overflow: 'scroll',
+          padding: '120px 28px 28px 28px',
+        }}
+        ref={containerRef}
+      >
+        <Email
+          pageParams={pageParams}
+          onEmailMessIntersecting={handleInterSecting}
+          onUnIntersecting={handleEmailMessUnIntersect}
+        />
+      </Box>
+      {isShowScrollBottom && (
+        <Button 
+          sx={{
+            position: 'absolute',
+            bottom: rem(25),
+            left: 'calc(50% + 20px)',
+            backgroundColor: 'white',
+            borderRadius: '100%',
+            margin: 0,
+            padding: 0,
+            zIndex: 100,
+            minWidth: 'auto',
+            boxShadow: '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)',
+            width: rem(40),
+            height: rem(40),
+            '&.MuiButton-root:hover': {
+              backgroundColor: '#d5d5d5',
+              boxShadow: '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)',
+            }
+          }}
+          onClick={handleScrollBottom}
+        >
+          <KeyboardArrowDownIcon sx={{color: 'black', fontSize: rem(28)}}/>
+        </Button>
+      )}
+    </>
     //   {/* {isCompose ? <EmailCompose /> : <Email />} */}
     // </Box>
   );
