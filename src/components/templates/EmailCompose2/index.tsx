@@ -505,7 +505,6 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                     accept="file"
                     ref={fileInputRef}
                     onChange={(e) => {
-                      console.log(e);
                       if (e.target.files) {
                         const cloneAttachFile = method.getValues('attachFiles');
                         cloneAttachFile.files = [
@@ -514,6 +513,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                             (key) => e.target.files?.[key],
                           ),
                         ];
+                        e.target.value = '';
                         method.setValue('attachFiles', cloneAttachFile);
                         // if (attachFileRef.current) {
                         //   attachFileRef.current.scrollIntoView({ behavior: "smooth", block: "end", inline: "end" });
