@@ -11,7 +11,12 @@ import React, {
 import avatarImg from '@assets/images/avatars/avatar-2.jpg';
 import { Email, UserInfo } from './Interface';
 import EmailMess from '../EmailMess';
-import { deleteEmail, EmailActions, EmailResponse, updateEmailWithQuery } from '@api/email';
+import {
+  deleteEmail,
+  EmailActions,
+  EmailResponse,
+  updateEmailWithQuery,
+} from '@api/email';
 
 import { isEmpty } from 'lodash';
 import EmailMessEmpty from '../EmailMessEmpty';
@@ -149,12 +154,16 @@ const saveEmailList = [
 ];
 
 interface Props {
-  pageParams?: { page: number; limit: number}
+  pageParams?: { page: number; limit: number };
   onEmailMessIntersecting?: (target: HTMLDivElement, emailId: EmailResponse) => void;
   onUnIntersecting?: (emailId: number) => void;
 }
 
-const Email: React.FC<Props> = ({pageParams, onEmailMessIntersecting, onUnIntersecting}) => {
+const Email: React.FC<Props> = ({
+  pageParams,
+  onEmailMessIntersecting,
+  onUnIntersecting,
+}) => {
   const lastEmailMessRef = useRef<HTMLDivElement>(null);
 
   const [showHistory, setShowHistory] = useState<number | null>(null);
@@ -193,6 +202,20 @@ const Email: React.FC<Props> = ({pageParams, onEmailMessIntersecting, onUnInters
 
   const { EmailsList, isLoading } = useSelector((state: RootState) => state.email);
   const dispatch = useDispatch();
+
+  const { mutate: deleteEmailAction, isLoading: isDeletingEmail } = useMutation({
+    mutationKey: ['email-delete'],
+    mutationFn: deleteEmail,
+    onSuccess: () => {
+      setIsOpenModal(false);
+      queryClient.invalidateQueries({
+        queryKey: ['get-email-manager'],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ['get-emails-list'],
+      });
+    },
+  });
 
   const { mutate: updateHashtagMutate, isLoading: isUpdateHashtagLoading } =
     useMutation({
@@ -292,16 +315,13 @@ const Email: React.FC<Props> = ({pageParams, onEmailMessIntersecting, onUnInters
           case 'delete': {
             setModal((prevState) => ({
               ...prevState,
-              title: 'Bạn có chắc muốn xóa Email này chứ?',
-              content: (
-                <p>Nếu bấm có, Email này sẽ bị xóa khỏi danh sách email của bạn.</p>
-              ),
-              onSubmit: async () =>
-                await handleSubmitStatusActions(
-                  index,
-                  'Delete successfull!',
-                  'delete',
-                ),
+              title: 'Are you sure want to delete this email??',
+              content: <p>If click "OK", you'll delete it .</p>,
+              onSubmit: async () => {
+                const cloneEmailsList = [...EmailsList];
+
+                deleteEmailAction(cloneEmailsList[index].id.toString());
+              },
             }));
             setIsOpenModal(true);
             break;
@@ -383,48 +403,50 @@ const Email: React.FC<Props> = ({pageParams, onEmailMessIntersecting, onUnInters
     },
     [showHistory],
   );
-  
+
   const convertedEmailList = useMemo(() => {
-    if(pageParams) return EmailsList.slice(-1 * pageParams.page * pageParams.limit);
+    if (pageParams) return EmailsList.slice(-1 * pageParams.page * pageParams.limit);
     return EmailsList;
-  }, [pageParams, EmailsList])
+  }, [pageParams, EmailsList]);
 
   const currRole = localStorage.getItem('current_role')?.toUpperCase();
   return (
     <Box className="w-full flex flex-wrap flex-col">
       {isLoading && <EmailMessEmpty isLoading={isLoading} />}
-        {convertedEmailList.map((email, index) => (
-          <EmailMessContainer
-            ref={EmailsList.length - 1 === index ? lastEmailMessRef : undefined}
-            key={email.id}
-            type={checkIsReceiveEmail(email.id) ? 'receive' : 'send'}
-            userInfo={
-              new UserInfo(
-                ``,
-                email.email?.writer_id?.toString() ?? '',
-                email.email.from,
-              )
-            }
-            emailData={email}
-            onShowHistory={handleShowHistory}
-            isShowHeader={showHistory === email.id}
-            isShowActions={
-              searchParams.get('tab') === 'me' && !currRole?.startsWith('EMPLOYEE')
-                ? false
-                : true
-            }
-            onChangeStatus={changeEmailStatus}
-            index={index}
-            onUpdateHashtagClick={(hashtagsList) => {
-              const tags = hashtagsList.map((hashtag) => hashtag.value);
-              updateHashtagMutate({ id: email.id, data: { ...email, tags } });
-            }}
-            onInterSecting={(entry) => {
-              if(onEmailMessIntersecting)
-                onEmailMessIntersecting(entry.target as HTMLDivElement, email)
-            }}
-            onUnInterSecting={() => {onUnIntersecting && onUnIntersecting(email.id)}}
-          />
+      {convertedEmailList.map((email, index) => (
+        <EmailMessContainer
+          ref={EmailsList.length - 1 === index ? lastEmailMessRef : undefined}
+          key={email.id}
+          type={checkIsReceiveEmail(email.id) ? 'receive' : 'send'}
+          userInfo={
+            new UserInfo(
+              ``,
+              email.email?.writer_id?.toString() ?? '',
+              email.email.from,
+            )
+          }
+          emailData={email}
+          onShowHistory={handleShowHistory}
+          isShowHeader={showHistory === email.id}
+          isShowActions={
+            searchParams.get('tab') === 'me' && !currRole?.startsWith('EMPLOYEE')
+              ? false
+              : true
+          }
+          onChangeStatus={changeEmailStatus}
+          index={index}
+          onUpdateHashtagClick={(hashtagsList) => {
+            const tags = hashtagsList.map((hashtag) => hashtag.value);
+            updateHashtagMutate({ id: email.id, data: { ...email, tags } });
+          }}
+          onInterSecting={(entry) => {
+            if (onEmailMessIntersecting)
+              onEmailMessIntersecting(entry.target as HTMLDivElement, email);
+          }}
+          onUnInterSecting={() => {
+            onUnIntersecting && onUnIntersecting(email.id);
+          }}
+        />
       ))}
       <ModalBase
         onClose={handleCloseModal}

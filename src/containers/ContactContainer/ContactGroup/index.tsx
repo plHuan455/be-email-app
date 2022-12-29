@@ -77,7 +77,7 @@ const ContactGroupContainer = () => {
           <TableActionsMenu
             sx={{ maxWidth: rem(52), minWidth: rem(52) }}
             options={[
-              { value: 0, label: 'Share', icon: <ShareIcon /> },
+              // { value: 0, label: 'Share', icon: <ShareIcon /> },
               { value: 1, label: 'Delete', icon: <DeleteIcon /> },
             ]}
             onItemClick={(value) => {
