@@ -115,9 +115,9 @@ const EmailMess: React.FC<Props> = ({
   const emailActionType = useMemo(() => {
     const isTimeNowLessThanSendTime = sentAt.getTime() > Date.now();
 
-    if (emailData.type === 'send') {
+    if (emailData.type === 'sender') {
       if (isTimeNowLessThanSendTime) return 'sendAfter';
-      return 'send';
+      return 'sender';
     }
     return 'receive';
   }, [emailData.type]);
@@ -130,7 +130,7 @@ const EmailMess: React.FC<Props> = ({
             <Icon icon="reply" />
           </Box>
         );
-      case 'send':
+      case 'sender':
         return (
           <Box className="flex justify-center">
             <SendIcon sx={{ color: '#999999' }} />
