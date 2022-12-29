@@ -1,4 +1,4 @@
-import EditContactSharingGroupsLayout from '@layouts/ContactSharingGroups/edis';
+import EditContactSharingGroupsLayout from '@layouts/ContactSharingGroups/edit';
 import React from 'react';
 
 const EditContactSharingGroupsPage = () => {

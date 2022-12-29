@@ -228,10 +228,10 @@ const EmailMess: React.FC<Props> = ({
       if (currRole?.startsWith('EMPLOYEE')) {
         if (approveAt.getTime() > Date.now())
           return (
-            <Box>
+            <Box className={`${type === 'send' && 'flex-1'}`}>
               <ControlEmailSend
                 variant="employeeViewApproveTime"
-                title="Email will be sent in: "
+                title="Email will be approved in: "
                 // scheduleAt={dayjs(sentAt).format('MMMM, DD YYYY - HH:mm')}
                 remainMinutes={Math.floor(
                   (approveAt.getTime() - Date.now()) / 1000 / 60,
@@ -328,12 +328,14 @@ const EmailMess: React.FC<Props> = ({
   const _renderEmailTitle = useMemo(() => {
     const emailTitle = emailData.email.subject;
     const limitShow = 250;
-    if (emailTitle?.length < limitShow)
+    if (!emailTitle) return <h1 className="text-stone-700 font-bold text-base"></h1>;
+    if (emailTitle?.length < limitShow) {
       return (
         <h1 className="text-stone-700 font-bold text-base">
           {emailData.email.subject}
         </h1>
       );
+    }
     return (
       <h1 className="text-stone-700 font-bold text-base">
         <span>{emailTitle?.substring(0, limitShow)}...</span>

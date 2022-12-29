@@ -17,17 +17,9 @@ import { Box } from '@mui/system';
 import { toast } from 'react-toastify';
 import { ContactType } from '../Contacts/interface';
 import Icon from '@components/atoms/Icon';
-import ContactSharingGroups from '@components/organisms/Contact/ContactSharingGroups';
+import { ContactSharingPersonalsType } from './Template';
 
-export interface ContactSharingGroupsType {
-  id: number;
-  group_name: string;
-  members: ContactType[];
-  share_by: string;
-  share_with: string[];
-}
-
-const ContactSharingGroupsContainer = () => {
+const ContactSharingPersonalsContainer = () => {
   // useNavigate
   const navigate = useNavigate();
 
@@ -58,6 +50,15 @@ const ContactSharingGroupsContainer = () => {
     onClose,
   } = useAlertDialog();
 
+  //   useMemo
+  const contactSharingPersonal: ContactSharingPersonalsType[] = useMemo(() => {
+    return contactsList.map((contact) => ({
+      ...contact,
+      share_by: 'giang@mail.giang',
+      share_with: ['giang@mail.com', 'truong@giang.do', 'do@giang.truong'],
+    }));
+  }, [contactsList]);
+
   const columns = useMemo(() => {
     const colsDef: GridColDef[] = [
       {
@@ -68,26 +69,43 @@ const ContactSharingGroupsContainer = () => {
         width: 60,
       },
       {
-        field: 'group_name',
-        headerName: 'Group Name',
+        field: 'avatar',
+        headerName: 'Avatar',
+        align: 'center',
+        headerAlign: 'center',
+        flex: 1,
+        renderCell: (params) =>
+          params.value ? (
+            <Avatar src={params.value} />
+          ) : (
+            <img
+              className="img-signature"
+              src={
+                'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=2000'
+              }
+            />
+          ),
+      },
+      {
+        field: 'first_name',
+        headerName: 'First Name',
         align: 'center',
         headerAlign: 'center',
         flex: 1,
       },
       {
-        field: 'members',
-        headerName: 'Amount',
+        field: 'last_name',
+        headerName: 'Last Name',
         align: 'center',
         headerAlign: 'center',
         flex: 1,
-        renderCell(params) {
-          return (
-            <div className="flex">
-              <Icon className="pr-2" icon="people" />
-              <span>{params.value.length}</span>
-            </div>
-          );
-        },
+      },
+      {
+        field: 'mail',
+        headerName: 'Email',
+        align: 'center',
+        headerAlign: 'center',
+        flex: 1,
       },
       {
         field: 'share_by',
@@ -126,7 +144,7 @@ const ContactSharingGroupsContainer = () => {
           <TableActionsMenu
             sx={{ maxWidth: rem(52), minWidth: rem(52) }}
             options={[
-              // { value: 0, label: 'Share', icon: <ShareIcon /> },
+              { value: 0, label: 'Share', icon: <ShareIcon /> },
               { value: 1, label: 'Delete', icon: <DeleteIcon /> },
             ]}
             onItemClick={(value) => {
@@ -197,8 +215,8 @@ const ContactSharingGroupsContainer = () => {
 
   return (
     <>
-      <ContactSharingGroups
-        rows={contactSharingGroups}
+      <Contacts
+        rows={contactSharingPersonal}
         columns={columns}
         handleCellClick={handleCellClick}
       />
@@ -214,52 +232,4 @@ const ContactSharingGroupsContainer = () => {
   );
 };
 
-const membersDefault: ContactType[] = [
-  {
-    id: 1,
-    avatar: '',
-    first_name: 'Contact',
-    last_name: 'Name 1',
-    mail: 'contact@mail.com',
-  },
-  {
-    id: 2,
-    avatar: '',
-    first_name: 'Contact',
-    last_name: 'Name 2',
-    mail: 'contact2@mail.com',
-  },
-  {
-    id: 3,
-    avatar: '',
-    first_name: 'Contact',
-    last_name: 'Name 3',
-    mail: 'contact3@mail.com',
-  },
-];
-
-const contactSharingGroups: ContactSharingGroupsType[] = [
-  {
-    id: 1,
-    group_name: 'Group Sharing 1',
-    members: membersDefault,
-    share_by: 'giangemployee@notification.trade',
-    share_with: ['giang@mail.com', 'truong@giang.do', 'do@giang.truong'],
-  },
-  {
-    id: 2,
-    group_name: 'Group Sharing 2',
-    members: membersDefault,
-    share_by: 'giangemployee2@notification.trade',
-    share_with: ['giang@mail.com', 'truong@giang.do', 'do@giang.truong'],
-  },
-  {
-    id: 3,
-    group_name: 'Group Sharing 3',
-    members: membersDefault,
-    share_by: 'giangemployee3@notification.trade',
-    share_with: ['giang@mail.com', 'truong@giang.do', 'do@giang.truong'],
-  },
-];
-
-export default ContactSharingGroupsContainer;
+export default ContactSharingPersonalsContainer;
