@@ -23,7 +23,6 @@ import EmailEmptyContainer from '@containers/EmailEmptyContainer';
 import EmailMainWrapper from '@layouts/EmailMainWrapper';
 import EmailComposePage from './Email/EmailComposePage';
 import ContactLayout from '@layouts/Contact';
-import ContactSharing from './Contact/ContactSharingGroups';
 import ContactGroups from './Contact/ContactGroup';
 import {
   AddMailTemplatePage,
