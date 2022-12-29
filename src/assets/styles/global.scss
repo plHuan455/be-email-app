@@ -135,6 +135,14 @@
     }
 }
 
+.pointer-events-none {
+    pointer-events: none;
+}
+
+.pointer-events-auto {
+    pointer-events: auto;
+}
+
 .visible {
     visibility: visible;
 }
@@ -400,6 +408,10 @@
 
 .h-\[88px\] {
     height: 88px;
+}
+
+.h-5\/6 {
+    height: 83.333333%;
 }
 
 .min-h-11 {

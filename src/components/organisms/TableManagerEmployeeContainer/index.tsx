@@ -256,12 +256,14 @@ const TableManagerEmployeeContainer = () => {
     if (values.avatar) {
       uploadAvatarFileMutate({
         avatar: values.avatar as File,
-        callback: (avatar) => createEmployeeMutate({ ...values, avatar }),
+        callback: (avatar) => {
+          // createEmployeeMutate({ ...values, avatar })
+        },
       });
       return;
     }
 
-    createEmployeeMutate({ ...values, avatar: undefined });
+    // createEmployeeMutate({ ...values, avatar: undefined });
   };
 
   const handleUpdateSubmit = (values: UpdateEmployeeFields) => {

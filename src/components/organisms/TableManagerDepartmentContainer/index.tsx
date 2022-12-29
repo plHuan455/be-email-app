@@ -22,7 +22,12 @@ import UpdateEmployeeModal, {
 } from '../TableManagerEmployeeContainer/UpdateEmployeeModal';
 import { createEmployeeSchema } from '@utils/schemas';
 import { uploadFile } from '@api/uploadFile';
-import { deleteUser, getUser, getUserWithEmail, updateEmployee } from '@api/user';
+import {
+  deleteUser,
+  getUserById,
+  getUserWithEmail,
+  updateEmployee,
+} from '@api/user';
 import es from 'date-fns/esm/locale/es/index.js';
 import { UpdateEmployeeParams } from '@api/user/interface';
 import AlertDialog, { useAlertDialog } from '@components/molecules/AlertDialog';

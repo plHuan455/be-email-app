@@ -50,7 +50,10 @@ const DepartmentContainer = () => {
           <div className="w-fit cursor-pointer">
             <Icon
               icon="edit"
-              onClick={() => navigate(`/manager/department/edit/${info.getValue()}`)}
+              onClick={(e) => {
+                e.stopPropagation();
+                navigate(`/manager/department/edit/${info.getValue()}`);
+              }}
             />
           </div>
         ),
@@ -60,13 +63,20 @@ const DepartmentContainer = () => {
     ],
     [],
   );
+
+  const rowClick = (row: any) => {
+    if (row && row.original) {
+      navigate(`/manager/department/${row.original.id}/employee`);
+    }
+  };
+
   return (
     <div className="px-4">
       <PageCrudData
-        disabledRowOnClick={true}
+        disabledRowOnClick={false}
         api="/v1/api/rbac/department"
         columns={columns}
-        //   rowOnClick={(row) => navigate(`edit/${row.original.id}`)}
+        rowOnClick={(row) => rowClick(row)}
       />
     </div>
   );

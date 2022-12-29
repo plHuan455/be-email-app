@@ -14,7 +14,6 @@ import ErrorBoundary from './ErrorBoudary';
 import ErrorPage from './ErrorPage';
 import EmailWrap from './Email';
 
-import ManagerEmployee from './Manager/ManagerEmployee';
 import SettingRoles from './Settings/SettingsRoles';
 import Manager from './Manager';
 import ChangePassword from './ChangePassword';
@@ -43,6 +42,11 @@ import ContactsPage from './Contact/Contacts';
 import { genCRUD } from '@utils/routerHelper';
 import AddContactsPage from './Contact/Contacts/add';
 import EditContactPage from './Contact/Contacts/edit';
+import {
+  AddEmployeePage,
+  EditEmployeePage,
+  ManagerEmployeePage,
+} from './Manager/ManagerEmployee';
 
 export const managerRouter: RouteObject[] = [
   {
@@ -61,7 +65,18 @@ export const managerRouter: RouteObject[] = [
           },
           { path: '/manager/department/add', element: <AddDepartmentPage /> },
           { path: '/manager/department/edit/:id', element: <EditDepartmentPage /> },
-          // { path: '/manager/department/employee', element: <ManagerEmployee /> },
+          {
+            path: '/manager/department/:id/employee',
+            element: <ManagerEmployeePage />,
+          },
+          {
+            path: '/manager/department/:id/employee/add',
+            element: <AddEmployeePage />,
+          },
+          {
+            path: '/manager/department/:id/employee/edit/:employee_id',
+            element: <EditEmployeePage />,
+          },
           // { path: '/manager/department/department', element: <ManagerDepartment /> },
         ],
       },

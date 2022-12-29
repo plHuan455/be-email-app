@@ -66,7 +66,8 @@ const PageCrudData: FC<PageCrudDataProps> = (props) => {
     [pagingModel, sortModel, debouceFilterModal, props.refreshKey],
     () => fetchingData(pagingModel),
     {
-      keepPreviousData: true,
+      keepPreviousData: false,
+      refetchOnMount: true,
     },
   );
 
