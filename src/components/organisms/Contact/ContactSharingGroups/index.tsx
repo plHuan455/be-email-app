@@ -1,0 +1,34 @@
+import { ContactSharingGroupsType } from '@containers/ContactContainer/ContactSharingGroupsContainer';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
+import React from 'react';
+
+interface ContactsProps {
+  rows: ContactSharingGroupsType[];
+  columns: GridColDef[];
+  handleCellClick: (any) => void;
+}
+
+const ContactSharingGroups: React.FC<ContactsProps> = ({
+  rows,
+  columns,
+  handleCellClick,
+}) => {
+  console.log(rows);
+  return (
+    <div className="px-6 flex-1 overflow-hidden flex flex-col">
+      <div style={{ height: '85%', width: '100%' }}>
+        <DataGrid
+          rows={rows}
+          columns={columns}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          style={{ backgroundColor: '#fff', borderRadius: 15 }}
+          // onRowClick={(params) => handleRowClick(params)}
+          onCellClick={(params) => handleCellClick(params)}
+        />
+      </div>
+    </div>
+  );
+};
+
+export default ContactSharingGroups;

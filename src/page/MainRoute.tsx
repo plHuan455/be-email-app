@@ -164,10 +164,14 @@ export const declareRouter: RouteObject[] = [
               edit: <EditContactPage />,
             },
           ),
-          {
-            path: '/contact/sharing/groups',
-            element: <ContactSharingGroupPage />,
-          },
+          genCRUD(
+            {
+              path: '/contact/sharing/groups',
+            },
+            {
+              index: <ContactSharingGroupPage />,
+            },
+          ),
           genCRUD(
             {
               path: '/contact/groups',
