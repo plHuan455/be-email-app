@@ -53,6 +53,7 @@ const menuSettingsListEmployee: MenuContactTypes[] = [
   },
   { name: 'Signature', navigate: '/manager/signature' },
   { name: 'Department', navigate: '/manager/department' },
+  { name: 'Hashtags', navigate: '/manager/hashtags' },
 ];
 
 const menuSettingsListManager: MenuContactTypes[] = [

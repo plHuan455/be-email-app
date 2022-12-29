@@ -49,6 +49,7 @@ import EditContactSharingGroupsPage from './Contact/ContactSharingGroups/edit';
 import ContactSharingDepartmentsPage from './Contact/ContactSharingDepartments';
 import ContactSharingPersonalsPage from './Contact/ContactSharingPersonals';
 import EditContactSharingPersonalsPage from './Contact/ContactSharingPersonals/edit';
+import ManagerHashtagsPage from './ManagerHashtagPage';
 
 export const managerRouter: RouteObject[] = [
   {
@@ -97,6 +98,10 @@ export const managerRouter: RouteObject[] = [
             element: <EditSignaturePage />,
           },
         ],
+      },
+      {
+        path: '/manager/hashtags',
+        element: <ManagerHashtagsPage />,
       },
     ],
   },
