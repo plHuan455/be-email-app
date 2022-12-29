@@ -46,6 +46,7 @@ import EditContactPage from './Contact/Contacts/edit';
 import AddContactGroup from './Contact/ContactGroup/add';
 import EditContactGroupPage from './Contact/ContactGroup/edit';
 import ContactSharingGroupPage from './Contact';
+import EditContactSharingGroupsPage from './Contact/ContactSharingGroups/edit';
 
 export const managerRouter: RouteObject[] = [
   {
@@ -170,6 +171,16 @@ export const declareRouter: RouteObject[] = [
             },
             {
               index: <ContactSharingGroupPage />,
+              edit: <EditContactSharingGroupsPage />,
+            },
+          ),
+          genCRUD(
+            {
+              path: '/contact/sharing/department',
+            },
+            {
+              index: <ContactSharingGroupPage />,
+              edit: <EditContactSharingGroupsPage />,
             },
           ),
           genCRUD(

@@ -4,7 +4,7 @@ import React from 'react';
 const EditContactSharingGroupsPage = () => {
   return (
     <>
-      <EditContactSharingGroupsLayout />
+      <EditContactSharingGroupsLayout headTitle="Edit Sharing Contact" />
     </>
   );
 };
