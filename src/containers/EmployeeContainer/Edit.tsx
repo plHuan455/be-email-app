@@ -26,6 +26,7 @@ const EditEmployeeContainer = () => {
       onSubmit={handleEdit}
       onCancel={handleCancel}
       onClear={handleDelete}
+      editMode
     />
   );
 };

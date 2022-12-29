@@ -14,11 +14,13 @@ import { toast, useToast } from 'react-toastify';
 import * as yup from 'yup';
 
 const schema = yup.object().shape({
-  user_name: yup.string().required('Name is required!'),
-  email: yup.string().required('Email is required!'),
+  first_name: yup.string().required('first_name is required!'),
+  last_name: yup.string().required('last_name is required!'),
+  identity: yup.string().required('identity is required!'),
+  email: yup.string().required('email is required!'),
   password: yup.string().required('password is required!'),
   position: yup.string().required('position is required!'),
-  phone_number: yup.number().required('Phone number is required!'),
+  phone_number: yup.number().required('phone_number is required!'),
   role_id: yup.string().required('role_id is required!'),
   // department_id: yup.string().required('role_id is required!'),
 });
@@ -26,7 +28,9 @@ const schema = yup.object().shape({
 const initEmployee = {
   id: -1,
   avatar: '',
-  user_name: '',
+  first_name: '',
+  last_name: '',
+  identity: '',
   email: '',
   password: '',
   phone_number: '',
@@ -100,18 +104,15 @@ export const useEditEmployeeManagement = () => {
   const hook = useEmployeeManagement();
   const { param, navigate, employee, setEmployee, files, uploadImage } = hook;
 
-  console.log('emp ->', param.employee_id);
   useQuery(
     ['getUserById', param.employee_id],
     () => getUserById(Number(param.employee_id)),
     {
       onSuccess: (res: any) => {
-        console.log('res -->', res.data);
-        const { identity, ...emp } = res.data;
-        setEmployee({ ...emp, user_name: identity });
+        const data = res.data;
+        setEmployee(data);
       },
       onError: (error: any) => {
-        console.log('err -->', error);
         navigate('..');
         console.error(new Error(error));
         toast.error('Cannot find this employee!');
@@ -128,10 +129,11 @@ export const useEditEmployeeManagement = () => {
       if (files.image && files.image.length > 0) {
         const picture = await uploadImage(files.image[0]);
         // update with img change
+        // await updateEmployee(id, params);
       } else {
         // update without img change
+        // await updateEmployee(id, params);
       }
-      // await updateEmployee(id, params);
       navigate('..');
       toast.success('Success');
     } catch (error: any) {
@@ -143,7 +145,7 @@ export const useEditEmployeeManagement = () => {
   const handleDelete = async () => {
     try {
       // call await delete
-      // await deleteEmployee(Number(param.id));
+      // await deleteEmployee(Number(param.employee_id));
       navigate('..');
       toast.success('Success');
     } catch (error: any) {

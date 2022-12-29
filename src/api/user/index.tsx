@@ -61,6 +61,7 @@ export interface UserProfileResponse {
   role_id: number;
   role: string;
   contact_id: number;
+  department_id: number;
 }
 
 //GET EMAIL WITH STATUS

@@ -73,10 +73,11 @@ const EmployeeContainer = () => {
   );
 
   const rowClick = (row) => {
-    if (row && row.original) {
+    const userRole = localStorage.getItem('current_role');
+
+    if (row && row.original && userRole === 'admin') {
       navigate(`/manager/department/${params.id}/employee/edit/${row.original.id}`);
     }
-    console.log('row data -->', row);
   };
 
   return (

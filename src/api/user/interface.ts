@@ -1,6 +1,8 @@
 export interface CreateEmployeeParams {
   avatar?: string;
-  user_name: string;
+  first_name: string;
+  last_name: string;
+  identity: string;
   email: string;
   password: string;
   phone_number: string;

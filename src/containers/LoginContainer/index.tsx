@@ -68,8 +68,12 @@ function LoginContainer() {
       signin({}, res.data, async () => {
         if (res.message === 'Login successful') {
           const { user_id } = res;
+          console.log('ress login->>>', res);
           localStorage.setItem('current_id', `${user_id}`);
           const currentUser = await getUserWithEmail(user_id ? user_id : 0);
+
+          console.log('ress currentUser->>>', currentUser);
+
           localStorage.setItem(
             'current_user_name',
             `${currentUser.data.first_name} ${currentUser.data.last_name}`,
@@ -77,6 +81,7 @@ function LoginContainer() {
           localStorage.setItem('current_user_avt', currentUser.data.avatar);
           // set current_email to 'email
           localStorage.setItem('current_email', email);
+          localStorage.setItem('department_id', `${currentUser.data.department_id}`);
           localStorage.setItem('current_role', currentUser.data.role);
           toast.success('Đăng nhập thành công!');
 

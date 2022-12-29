@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useMemo } from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import { styled } from '@mui/material/styles';
@@ -42,43 +42,6 @@ const TabsDataEmployee: TabItem[] = [
   //   url: '/sign',
   // },
 ];
-
-const TabsDataManager: TabItem[] = [
-  {
-    title: 'Email',
-    icon: <Icon rawColor="#999999" icon="email" />,
-    url: '/emails',
-  },
-  {
-    title: 'Contact',
-    icon: (
-      <PermContactCalendarIcon
-        sx={{
-          color: '#999999',
-        }}
-      />
-    ),
-    url: '/contact',
-  },
-  {
-    title: 'Department',
-    icon: <Department color="#999999" />,
-    url: '/manager/department',
-  },
-  {
-    title: 'Template',
-    icon: (
-      <ArticleIcon
-        sx={{
-          color: '#999999',
-        }}
-      />
-    ),
-    url: '/template',
-  },
-];
-
-const TabsData: TabItem[] = TabsDataManager;
 
 const iconsList: {
   [key: string]: SVGIconProps['icon'];
@@ -141,6 +104,52 @@ export default function IconTabsManager() {
 
   const navigate = useNavigate();
 
+  const listTabManager = useMemo(() => {
+    const userRole = localStorage.getItem('current_role');
+    const department_id = localStorage.getItem('department_id');
+
+    let departmentRoute = `/manager/department/${department_id}/employee`;
+    if (userRole === 'admin') {
+      departmentRoute = '/manager/department';
+    }
+    const arr: TabItem[] = [
+      {
+        title: 'Email',
+        icon: <Icon rawColor="#999999" icon="email" />,
+        url: '/emails',
+      },
+      {
+        title: 'Contact',
+        icon: (
+          <PermContactCalendarIcon
+            sx={{
+              color: '#999999',
+            }}
+          />
+        ),
+        url: '/contact',
+      },
+      {
+        title: 'Department',
+        icon: <Department color="#999999" />,
+        url: departmentRoute,
+      },
+      {
+        title: 'Template',
+        icon: (
+          <ArticleIcon
+            sx={{
+              color: '#999999',
+            }}
+          />
+        ),
+        url: '/template',
+      },
+    ];
+
+    return arr;
+  }, []);
+
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     console.log(newValue);
     setValue(newValue);
@@ -148,9 +157,9 @@ export default function IconTabsManager() {
   };
 
   const renderTabsData = () => {
-    if (!TabsData) return [];
+    if (!listTabManager) return [];
 
-    return TabsData.map((val, index) => {
+    return listTabManager.map((val, index) => {
       return (
         <Tooltip title={val.title} placement="right">
           <NavLink to={val.url}>

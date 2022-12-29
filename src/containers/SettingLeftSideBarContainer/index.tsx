@@ -14,7 +14,7 @@ const SettingLeftContainer = () => {
   const IS_EMPLOYEE_ROLE = role?.toUpperCase().startsWith('EMPLOYEE');
 
   const menuSettingsList: MenuContactTypes[] = useMemo(() => {
-    return IS_EMPLOYEE_ROLE ? menuSettingsListEmployee : menuSettingsListManager;
+    return IS_EMPLOYEE_ROLE ? menuSettingsListEmployee() : menuSettingsListManager;
   }, [IS_EMPLOYEE_ROLE]);
 
   return (
@@ -46,17 +46,28 @@ const SettingLeftContainer = () => {
   );
 };
 
-const menuSettingsListEmployee: MenuContactTypes[] = [
-  {
-    name: 'Profile',
-    navigate: '/manager/profile',
-  },
-  { name: 'Signature', navigate: '/manager/signature' },
-  { name: 'Department', navigate: '/manager/department' },
-];
+const menuSettingsListEmployee = () => {
+  const userRole = localStorage.getItem('current_role');
+  const department_id = localStorage.getItem('department_id');
+
+  let departmentRoute = `/manager/department/${department_id}/employee`;
+  if (userRole === 'admin') {
+    departmentRoute = '/manager/department';
+  }
+
+  const arr: MenuContactTypes[] = [
+    {
+      name: 'Profile',
+      navigate: '/manager/profile',
+    },
+    { name: 'Signature', navigate: '/manager/signature' },
+    { name: 'Department', navigate: departmentRoute },
+  ];
+  return arr;
+};
 
 const menuSettingsListManager: MenuContactTypes[] = [
-  ...menuSettingsListEmployee,
+  ...menuSettingsListEmployee(),
   { name: 'Role', navigate: '/manager/setting' },
 ];
 
