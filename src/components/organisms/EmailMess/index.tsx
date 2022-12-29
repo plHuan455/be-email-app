@@ -240,7 +240,7 @@ const EmailMess: React.FC<Props> = ({
             </Box>
           );
 
-        if (emailData.type === 'send' && sentAt.getTime() > Date.now())
+        if (emailData.type === 'sender' && sentAt.getTime() > Date.now())
           return (
             <Box>
               <ControlEmailSend

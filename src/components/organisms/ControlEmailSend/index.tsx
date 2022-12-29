@@ -34,10 +34,11 @@ const ControlEmailSend: React.FC<ControlEmailSendProps> = ({
     return () => clearInterval(handleInterval);
   }, [remainMinutes]);
 
-  const renderRemainText = remainMinutesState <= 0 ? 'Sending...' : `${remainMinutesState} minutes`;
+  const renderRemainText =
+    remainMinutesState <= 0 ? 'Sending...' : `${remainMinutesState} minutes`;
 
   return (
-    <Box className="t-controlEmailSend flex actions justify-end py-4 w-full">
+    <Box className="t-controlEmailSend flex actions justify-end py-1 w-full">
       <Box
         className="flex items-center px-4 rounded-[16px]"
         sx={{
@@ -45,7 +46,7 @@ const ControlEmailSend: React.FC<ControlEmailSendProps> = ({
           fontSize: rem(12),
           lineHeight: rem(13),
           color: '#181818',
-          py: variant === 'employeeViewApproveTime' ? rem(18): rem(8),
+          py: variant === 'employeeViewApproveTime' ? rem(18) : rem(8),
         }}>
         <Box className="justify-self-end">
           <p className="text-[#181818] text-[14px] font-normal">
