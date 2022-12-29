@@ -46,6 +46,7 @@ import AddContactGroup from './Contact/ContactGroup/add';
 import EditContactGroupPage from './Contact/ContactGroup/edit';
 import ContactSharingGroupPage from './Contact';
 import EditContactSharingGroupsPage from './Contact/ContactSharingGroups/edit';
+import ContactSharingDepartmentsPage from './Contact/ContactSharingDepartments';
 
 export const managerRouter: RouteObject[] = [
   {
@@ -178,7 +179,7 @@ export const declareRouter: RouteObject[] = [
               path: '/contact/sharing/department',
             },
             {
-              index: <ContactSharingGroupPage />,
+              index: <ContactSharingDepartmentsPage />,
               edit: <EditContactSharingGroupsPage />,
             },
           ),
