@@ -1,5 +1,6 @@
 import { Box, Button } from '@mui/material';
 import React, {
+  memo,
   ReactNode,
   useCallback,
   useEffect,
@@ -10,7 +11,6 @@ import React, {
 
 import avatarImg from '@assets/images/avatars/avatar-2.jpg';
 import { Email, UserInfo } from './Interface';
-import EmailMess from '../EmailMess';
 import {
   deleteEmail,
   EmailActions,
@@ -26,18 +26,17 @@ import {
   addDeletedEmail,
   addSpamEmail,
   addUnreadEmail,
-  setDeletedEmails,
   setEmailsList,
 } from '@redux/Email/reducer';
 import ModalBase from '@components/atoms/ModalBase';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { number } from 'yup';
 import { EmailUpdateQuery } from '@api/email/interface';
 import EmailMessContainer from '@containers/EmailMessContainer';
-import { emailData } from '@layouts/EmailStatusBar';
 import useLocalStorage from '@hooks/useLocalStorage';
+import EmailReplyMessContainer from '@containers/EmailReplyContainer/ReplyMess';
+import ReplyMessLayoutContainer from '@containers/EmailReplyContainer/ReplyMessLayout';
 
 interface ModalForm {
   title: string;
@@ -45,113 +44,6 @@ interface ModalForm {
   onSubmit?: () => void;
   onClose?: () => void;
 }
-
-const saveEmailList = [
-  {
-    id: '0',
-    title: 'M&A Testa to Metanode',
-    sender: new UserInfo(avatarImg, 'Elon Musk', 'elon.musk@tesla.com'),
-    sendTo: [
-      new UserInfo(avatarImg, 'name', 'mail@gmail.com'),
-      new UserInfo('', 'name1', 'mail1@gmail.com'),
-      new UserInfo(avatarImg, 'name2', 'mail2@gmail.com'),
-    ],
-    mailContent: '<p>Test</p><br><br><p>Test line 2</p>',
-    attachFiles: [
-      {
-        name: 'Metanode - White Paper v.1.5.2',
-        type: 'pdf',
-        url: 'meta.node/9YQC7us',
-      },
-      {
-        name: 'Metanode - SDK Bundle',
-        type: 'zip',
-        url: 'meta.node/34ED7uc',
-      },
-    ],
-    status: 'pending',
-    type: 'receive',
-    date: '2018-02-21 12:01:00',
-  },
-  {
-    id: '1',
-    title: 'M&A Testa to Metanode',
-    sender: new UserInfo(avatarImg, 'Elon Musk', 'elon.musk@tesla.com'),
-    sendTo: [
-      new UserInfo(avatarImg, 'name', 'mail@gmail.com'),
-      new UserInfo('', 'name1', 'mail1@gmail.com'),
-      new UserInfo(avatarImg, 'name2', 'mail2@gmail.com'),
-    ],
-    mailContent: '<p>Test</p><br><br><p>Test line 2</p>',
-    attachFiles: [
-      {
-        name: 'Metanode - White Paper v.1.5.2',
-        type: 'pdf',
-        url: 'meta.node/9YQC7us',
-      },
-      {
-        name: 'Metanode - SDK Bundle',
-        type: 'zip',
-        url: 'meta.node/34ED7uc',
-      },
-    ],
-    status: 'sending',
-    type: 'send',
-    date: '2018-02-21 12:01:00',
-  },
-  {
-    id: '2',
-    title: 'M&A Testa to Metanode',
-    sender: new UserInfo(avatarImg, 'Elon Musk', 'elon.musk@tesla.com'),
-    sendTo: [
-      new UserInfo(avatarImg, 'name', 'mail@gmail.com'),
-      new UserInfo('', 'name1', 'mail1@gmail.com'),
-      new UserInfo(avatarImg, 'name2', 'mail2@gmail.com'),
-    ],
-    mailContent: '<p>Test</p><br><br><p>Test line 2</p>',
-    attachFiles: [
-      {
-        name: 'Metanode - White Paper v.1.5.2',
-        type: 'pdf',
-        url: 'meta.node/9YQC7us',
-      },
-      {
-        name: 'Metanode - SDK Bundle',
-        type: 'zip',
-        url: 'meta.node/34ED7uc',
-      },
-    ],
-    status: 'pending',
-    type: 'receive',
-    date: '2018-02-21 12:01:00',
-  },
-  {
-    id: '3',
-    title: 'M&A Testa to Metanode',
-    sender: new UserInfo(avatarImg, 'Elon Musk', 'elon.musk@tesla.com'),
-    sendTo: [
-      new UserInfo(avatarImg, 'name', 'mail@gmail.com'),
-      new UserInfo('', 'name1', 'mail1@gmail.com'),
-      new UserInfo(avatarImg, 'name2', 'mail2@gmail.com'),
-    ],
-    mailContent: '<p>Test</p><br><br><p>Test line 2</p>',
-    attachFiles: [
-      {
-        name: 'Metanode - White Paper v.1.5.2',
-        type: 'pdf',
-        url: 'meta.node/9YQC7us',
-      },
-      {
-        name: 'Metanode - SDK Bundle',
-        type: 'zip',
-        url: 'meta.node/34ED7uc',
-      },
-    ],
-    status: 'declined',
-    type: 'receive',
-    date: '2018-02-21 12:01:00',
-  },
-];
 
 interface Props {
   pageParams?: { page: number; limit: number };
@@ -166,7 +58,7 @@ const Email: React.FC<Props> = ({
 }) => {
   const lastEmailMessRef = useRef<HTMLDivElement>(null);
 
-  const [showHistory, setShowHistory] = useState<number | null>(null);
+  const [showHistory, setShowHistory] = useState<number>(0);
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [modal, setModal] = useState<ModalForm>({
     title: 'Modal',
@@ -183,19 +75,6 @@ const Email: React.FC<Props> = ({
   // useSearchParams
   const [searchParams] = useSearchParams();
   const tabSearchParams = searchParams.get('tab');
-
-  const isShowActions = useMemo(() => {
-    // Nếu là Admin thì xét tab
-    if (CURRENT_ROLE.toLowerCase() === 'admin') {
-      // Nếu ở tab all thì ẩn actions
-      if (tabSearchParams === 'all') return false;
-      // không thì cho hiện
-      return true;
-    }
-
-    // Không phải admin thì cho show actions
-    return true;
-  }, [tabSearchParams, CURRENT_ROLE]);
 
   // queryClient
   const queryClient = useQueryClient();
@@ -274,35 +153,6 @@ const Email: React.FC<Props> = ({
     },
     [EmailsList],
   );
-
-  const handleSubmitStatusActions = async (
-    index: number,
-    toastOnSuccess: string,
-    actionType: 'delete' | 'spam' | 'favorite' | 'unread',
-  ) => {
-    const cloneEmailsList = [...EmailsList];
-
-    const emailId = cloneEmailsList[index].id;
-
-    const res = await EmailActions({
-      user_email_id: emailId,
-      action: actionType,
-    });
-
-    if (res.message === 'success') {
-      const deletedEmail = cloneEmailsList.splice(index, 1);
-
-      dispatch(addDeletedEmail(deletedEmail));
-      dispatch(setEmailsList(cloneEmailsList));
-
-      handleCloseModal();
-
-      toast.success(toastOnSuccess);
-    } else {
-      handleCloseModal();
-      toast.error('Hệ thống xảy ra lỗi!');
-    }
-  };
 
   const changeEmailStatus = useCallback(
     (status, index) => {
@@ -400,7 +250,7 @@ const Email: React.FC<Props> = ({
   const handleShowHistory = useCallback(
     (currEmail, value) => {
       if (showHistory !== currEmail.id) setShowHistory(value);
-      else setShowHistory(null);
+      else setShowHistory(0);
     },
     [showHistory],
   );
@@ -411,6 +261,7 @@ const Email: React.FC<Props> = ({
   }, [pageParams, EmailsList]);
 
   const currRole = localStorage.getItem('current_role')?.toUpperCase();
+
   return (
     <Box className="w-full flex flex-wrap flex-col">
       {isLoading && <EmailMessEmpty isLoading={isLoading} />}
@@ -479,8 +330,9 @@ const Email: React.FC<Props> = ({
           </div>
         </div>
       </ModalBase>
+      <EmailReplyMessContainer />
     </Box>
   );
 };
 
-export default Email;
+export default memo(Email);
