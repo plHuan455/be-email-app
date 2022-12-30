@@ -76,7 +76,8 @@ export type StatusOptions =
   | 'draft'
   | 'trash'
   | 'spam'
-  | 'sent';
+  | 'sent'
+  | 'important';
 
 type Props = {
   titleColor: string;

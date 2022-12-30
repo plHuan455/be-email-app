@@ -108,6 +108,13 @@ const EmailTabsData: EmailTabs[] = [
 ];
 const EmailTabsSecData: EmailTabs[] = [
   {
+    status: 'important',
+    title: '#important',
+    notiNumber: 0,
+    emailData: emailData,
+    color: '#f44336',
+  },
+  {
     status: 'sent',
     title: '#sent',
     notiNumber: 0,
@@ -165,13 +172,17 @@ const EmailStatusBar = (props: Props) => {
     queryFn: getAllCatalogTab,
     onSuccess(res) {
       if (!isEmpty(res.data)) {
-        const privHashTagData = res.data.splice(7).map<HashtagTabs>((hashTag) => ({
-          title: `#${hashTag.value}`,
-          value: hashTag.value,
-          status: 'hashtag',
-          notiNumber: hashTag.amount,
-          color: '#4BAAA2',
-        }));
+        const amountDefaultStatus = emailTabs.length + emailSecTabs.length;
+
+        const privHashTagData = res.data
+          .splice(amountDefaultStatus)
+          .map<HashtagTabs>((hashTag) => ({
+            title: `#${hashTag.value}`,
+            value: hashTag.value,
+            status: 'hashtag',
+            notiNumber: hashTag.amount,
+            color: '#4BAAA2',
+          }));
 
         setHashtagTabs(privHashTagData);
         localStorage.setItem('private_hashtag', JSON.stringify(privHashTagData));

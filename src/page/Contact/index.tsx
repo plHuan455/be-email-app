@@ -1,13 +1,14 @@
-import ContactContainer from '@containers/ContactContainer';
+import ContactSharingGroupsLayout from '@layouts/ContactSharingGroups';
+import Layout from '@layouts/Layout';
 
 interface ContactPageProps {}
 
-const ContactSharingPage: React.FC<ContactPageProps> = () => {
+const ContactSharingGroupPage: React.FC<ContactPageProps> = () => {
   return (
-    <div className="t-contactPage">
-      <ContactContainer />
-    </div>
+    <>
+      <ContactSharingGroupsLayout headTitle="Contact Sharing Groups" />
+    </>
   );
 };
 
-export default ContactSharingPage;
+export default ContactSharingGroupPage;

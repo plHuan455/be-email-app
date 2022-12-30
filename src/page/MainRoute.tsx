@@ -22,7 +22,6 @@ import EmailEmptyContainer from '@containers/EmailEmptyContainer';
 import EmailMainWrapper from '@layouts/EmailMainWrapper';
 import EmailComposePage from './Email/EmailComposePage';
 import ContactLayout from '@layouts/Contact';
-import ContactSharing from './Contact/ContactSharing';
 import ContactGroups from './Contact/ContactGroup';
 import {
   AddMailTemplatePage,
@@ -50,6 +49,14 @@ import {
 import BlackListPage from './BlackList';
 import BlackListUserPage from './BlackList/BlackListUser';
 import BlackListSystemPage from './BlackList/BlackListSystem';
+import AddContactGroup from './Contact/ContactGroup/add';
+import EditContactGroupPage from './Contact/ContactGroup/edit';
+import ContactSharingGroupPage from './Contact';
+import EditContactSharingGroupsPage from './Contact/ContactSharingGroups/edit';
+import ContactSharingDepartmentsPage from './Contact/ContactSharingDepartments';
+import ContactSharingPersonalsPage from './Contact/ContactSharingPersonals';
+import EditContactSharingPersonalsPage from './Contact/ContactSharingPersonals/edit';
+import ManagerHashtagsPage from './ManagerHashtagPage';
 
 export const managerRouter: RouteObject[] = [
   {
@@ -109,6 +116,10 @@ export const managerRouter: RouteObject[] = [
             element: <EditSignaturePage />,
           },
         ],
+      },
+      {
+        path: '/manager/hashtags',
+        element: <ManagerHashtagsPage />,
       },
     ],
   },
@@ -179,14 +190,43 @@ export const declareRouter: RouteObject[] = [
               edit: <EditContactPage />,
             },
           ),
-          {
-            path: '/contact/sharing',
-            element: <ContactSharing />,
-          },
-          {
-            path: '/contact/groups',
-            element: <ContactGroups />,
-          },
+          genCRUD(
+            {
+              path: '/contact/sharing/groups',
+            },
+            {
+              index: <ContactSharingGroupPage />,
+              edit: <EditContactSharingGroupsPage />,
+            },
+          ),
+          genCRUD(
+            {
+              path: '/contact/sharing/department',
+            },
+            {
+              index: <ContactSharingDepartmentsPage />,
+              edit: <EditContactSharingGroupsPage />,
+            },
+          ),
+          genCRUD(
+            {
+              path: '/contact/sharing/personals',
+            },
+            {
+              index: <ContactSharingPersonalsPage />,
+              edit: <EditContactSharingPersonalsPage />,
+            },
+          ),
+          genCRUD(
+            {
+              path: '/contact/groups',
+            },
+            {
+              index: <ContactGroups />,
+              add: <AddContactGroup />,
+              edit: <EditContactGroupPage />,
+            },
+          ),
         ],
       },
       {

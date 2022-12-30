@@ -62,6 +62,7 @@ const menuSettingsListEmployee = () => {
     },
     { name: 'Signature', navigate: '/manager/signature' },
     { name: 'Department', navigate: departmentRoute },
+    { name: 'Hashtag', navigate: '/manager/hashtags' },
   ];
   return arr;
 };

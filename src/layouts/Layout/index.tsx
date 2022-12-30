@@ -88,7 +88,7 @@ const MainHaveActions: React.FC<
 > = ({
   children,
   onComback,
-  isHaveHeader = false,
+  isHaveHeader = true,
   isHaveSearch = false,
   isFull = false,
   headTitle,

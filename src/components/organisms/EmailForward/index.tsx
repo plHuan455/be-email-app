@@ -205,7 +205,7 @@ const EmailForward: React.FC<Props> = ({
           cc: emailData.cc.map((item) => item.mail),
           bcc: emailData.bcc.map((item) => item.mail),
         },
-        tags : emailData.file,
+        hashtags : emailData.file,
       });
       toast.success(`Thành công!`);
       await reset();

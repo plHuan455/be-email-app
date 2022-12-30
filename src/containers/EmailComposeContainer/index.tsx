@@ -4,7 +4,7 @@ import EmailCompose2, {
   EmailComposeFields,
 } from '@components/templates/EmailCompose2';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
+import { useCallback, useContext, useEffect, useId, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import utc from 'dayjs/plugin/utc';
@@ -24,41 +24,6 @@ import { EmailComposeContext } from '@containers/MainWrapperContainer';
 import { getDepartments } from '@api/deparment';
 import { Button } from '@mui/material';
 dayjs.extend(utc);
-
-export const backUpData: InputContactBlock[] = [
-  {
-    contact_name: 'Phòng IT',
-    employeesList: [
-      new UserReceiveInfo('', 'giang', 'giangz0009@gmail.com', false),
-      new UserReceiveInfo('', 'huan', 'giangemployee2@notification.trade', false),
-      new UserReceiveInfo('', 'quan', 'quan@mail.mail', false),
-    ],
-  },
-  {
-    contact_name: 'Phòng FE',
-    employeesList: [
-      new UserReceiveInfo('', 'giangFE', 'giangFE@mail.mail', false),
-      new UserReceiveInfo('', 'huanFE', 'huanFE@mail.mail', false),
-      new UserReceiveInfo('', 'quanFE', 'quanFE@mail.mail', false),
-    ],
-  },
-  {
-    contact_name: 'Phòng BE',
-    employeesList: [
-      new UserReceiveInfo('', 'giangBE', 'giangBE@mail.mail', false),
-      new UserReceiveInfo('', 'huanBE', 'huanBE@mail.mail', false),
-      new UserReceiveInfo('', 'quanBE', 'quanBE@mail.mail', false),
-    ],
-  },
-  {
-    contact_name: 'Contact 1',
-    employeesList: [
-      new UserReceiveInfo('', 'giangCT', 'giangCT@mail.mail', false),
-      new UserReceiveInfo('', 'huanCT', 'huanCT@mail.mail', false),
-      new UserReceiveInfo('', 'quanCT', 'quanCT@mail.mail', false),
-    ],
-  },
-];
 
 const hashtagList = [
   {
@@ -113,8 +78,16 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
 
   const [attachFiles, setAttachFiles] = useState<(File | undefined)[]>([]);
 
-  const { method, tabColor, triggerClearData, onMinimizeEmailClick, onSendEmail, onCloseEmail } =
-    useContext(EmailComposeContext);
+  const {
+    inputContactBlocks,
+    setInputContactBlocks,
+    method,
+    tabColor,
+    triggerClearData,
+    onMinimizeEmailClick,
+    onSendEmail,
+    onCloseEmail
+  } = useContext(EmailComposeContext);
 
   if (!method) return null;
 
@@ -133,26 +106,30 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
   //   mutationFn: deleteEmail,
   // });
 
-  const [inputContactBlocks, setInputContactBlocks] = useState<InputContactBlock[]>(
-    [],
-  );
+  // const [inputContactBlocks, setInputContactBlocks] = useState<InputContactBlock[]>(
+  //   [],
+  // );
 
   useQuery(['getDepartments'], getDepartments, {
     onSuccess: (res) => {
-      const inputContactBlocks: InputContactBlock[] = res.data.map((dept) => ({
-        contact_name: dept.name,
-        employeesList: (dept.users || []).map(
-          (user) =>
-            new UserReceiveInfo(
-              user.avatar,
-              `${user.first_name} ${user.last_name}`,
-              user.email,
-              false,
-            ),
-        ),
-      }));
+      const inputContactBlocks: InputContactBlock[] = res.data.map(
+        (dept, index) => ({
+          id: index.toString(),
+          contact_name: dept?.name || '',
+          employeesList: (dept.users || []).map(
+            (user) =>
+              new UserReceiveInfo(
+                user.avatar,
+                `${user.first_name} ${user.last_name}`,
+                user.email,
+                false,
+              ),
+          ),
+        }),
+      );
 
       setInputContactBlocks(inputContactBlocks);
+      method.setValue('contactBlock', inputContactBlocks);
     },
     onError: (error) => {
       console.log(error);

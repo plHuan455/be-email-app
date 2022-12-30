@@ -20,7 +20,7 @@ const Email = () => {
       <Layout.ASide>
         <EmailStatusBar />
       </Layout.ASide>
-      <Layout.MainHaveActions>
+      <Layout.MainHaveActions isHaveHeader={false}>
         <Outlet />
       </Layout.MainHaveActions>
     </Layout.Content>

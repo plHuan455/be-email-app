@@ -4,7 +4,7 @@ import InformationDetailBlock, {
 } from '@components/molecules/InformationDetailBlock';
 import { Box, Typography } from '@mui/material';
 import avt from '../../../src/assets/images/avatars/avatar-2.jpg';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import {
   AttachFile,
   attachsToAttachFiles,
@@ -16,6 +16,7 @@ import { File, UserInfo } from '@components/organisms/Email/Interface';
 import MoreInfomationBar from '@layouts/MoreInformationBar';
 import styles from './styles.module.scss';
 import { attachs } from '@api/email';
+import dayjs from 'dayjs';
 
 const userReadList: UserRead[] = [
   {
@@ -87,7 +88,7 @@ type Props = {
 };
 
 const InformationBar = (props: Props) => {
-  const { EmailsList } = useSelector((state: RootState) => state.email);
+  const { EmailsList, currEmail: currEmailIntersecting } = useSelector((state: RootState) => state.email);
   const [isShowMoreInformation, setIsShowMoreInformation] = useState<boolean>(false);
   const [typeShowMoreInfomation, setTypeShowMoreInfomation] =
     useState<string>('files');
@@ -160,6 +161,28 @@ const InformationBar = (props: Props) => {
     }
   };
 
+  const convertedActiveData = useMemo<ActivityData[]>(() => {
+    const result =  [
+      {
+        status: 'Created At',
+        date: dayjs(currEmailIntersecting?.created_at).format('lll'),
+      },
+      {
+        status: 'Sent At',
+        date: dayjs(currEmailIntersecting?.send_at).format('lll'),
+      },
+    ]
+
+    if(currEmailIntersecting?.approve_at) {
+      result.push({
+        status: 'Approved At',
+        date: dayjs(currEmailIntersecting?.approve_at).format('lll'),
+      })
+    }
+
+    return result;
+  }, [currEmailIntersecting])
+
   return (
     <Box>
       <InformationDetailBlock
@@ -185,7 +208,7 @@ const InformationBar = (props: Props) => {
       <InformationDetailBlock
         title="Activity"
         isBorderBottom={true}
-        activityData={activityData}
+        activityData={convertedActiveData}
       />
       <InformationDetailBlock
         title="Files"

@@ -230,6 +230,7 @@ export interface EmailState {
   minimizeEmailList: MinimizeEmailTypes[];
   workingEmail: MinimizeEmailTypes;
   EmailsList: EmailResponse[];
+  currEmail?: EmailResponse;
   privateHashtags: HashtagTabs[];
   deletedEmailsList: EmailResponse[];
   spamEmailsList: EmailResponse[];
@@ -330,6 +331,10 @@ const EmailSlice = createSlice({
     setEmailsList(state, action) {
       return { ...state, EmailsList: action.payload };
     },
+    setCurrEmail(state, action: PayloadAction<EmailResponse | undefined>) {
+      state.currEmail = action.payload;
+      return state;
+    },
     removeEmailsList(state, action) {
       return action.payload;
     },
@@ -392,6 +397,7 @@ export const {
   setPrivateHashtag,
   setEmailStatus,
   setEmailsList,
+  setCurrEmail,
   setDeletedEmails,
   addSpamEmail,
   addUnreadEmail,

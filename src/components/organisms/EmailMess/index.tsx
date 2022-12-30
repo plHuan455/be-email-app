@@ -1,4 +1,5 @@
-import { Avatar, Box, Button } from '@mui/material';
+import { Avatar, Box, Button, Typography } from '@mui/material';
+import CreateIcon from '@mui/icons-material/Create';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import styles from './styles.module.scss';
 import AttachFiles from '@components/atoms/AttachFiles';
@@ -56,13 +57,14 @@ interface Props {
   onUndoEmail: () => void;
   onApproveNow: () => void;
   onSendEmail: () => void;
+  onContinueClick?: () => void;
 }
 
 export const attachsToAttachFiles: (attachs: attachs[]) => AttachFile[] = (
   attachs,
 ) =>
   attachs.map((file) => {
-    const clonePath = file.path;
+    const clonePath = file.path ?? "file 's not found";
 
     const fileName = clonePath.replace(/^.*[\\\/]/, '');
 
@@ -94,6 +96,7 @@ const EmailMess: React.FC<Props> = ({
   onUndoEmail,
   onApproveNow,
   onSendEmail,
+  onContinueClick,
 }) => {
   const [searchParams] = useSearchParams();
 
@@ -112,9 +115,9 @@ const EmailMess: React.FC<Props> = ({
   const emailActionType = useMemo(() => {
     const isTimeNowLessThanSendTime = sentAt.getTime() > Date.now();
 
-    if (emailData.type === 'send') {
+    if (emailData.type === 'sender') {
       if (isTimeNowLessThanSendTime) return 'sendAfter';
-      return 'send';
+      return 'sender';
     }
     return 'receive';
   }, [emailData.type]);
@@ -127,7 +130,7 @@ const EmailMess: React.FC<Props> = ({
             <Icon icon="reply" />
           </Box>
         );
-      case 'send':
+      case 'sender':
         return (
           <Box className="flex justify-center">
             <SendIcon sx={{ color: '#999999' }} />
@@ -150,8 +153,8 @@ const EmailMess: React.FC<Props> = ({
   }, [emailActionType]);
 
   const remapPrivateHashtag = useMemo<HashtagTabs[]>(() => {
-    return emailData.tags
-      ? emailData.tags.map((val) => ({
+    return emailData.hashtags
+      ? emailData.hashtags.map((val) => ({
           notiNumber: 0,
           status: 'hashtag',
           title: `#${val}`,
@@ -225,10 +228,10 @@ const EmailMess: React.FC<Props> = ({
       if (currRole?.startsWith('EMPLOYEE')) {
         if (approveAt.getTime() > Date.now())
           return (
-            <Box>
+            <Box className={`${type === 'send' && 'flex-1'}`}>
               <ControlEmailSend
                 variant="employeeViewApproveTime"
-                title="Email will be sent in: "
+                title="Email will be approved in: "
                 // scheduleAt={dayjs(sentAt).format('MMMM, DD YYYY - HH:mm')}
                 remainMinutes={Math.floor(
                   (approveAt.getTime() - Date.now()) / 1000 / 60,
@@ -237,7 +240,7 @@ const EmailMess: React.FC<Props> = ({
             </Box>
           );
 
-        if (emailData.type === 'send' && sentAt.getTime() > Date.now())
+        if (emailData.type === 'sender' && sentAt.getTime() > Date.now())
           return (
             <Box>
               <ControlEmailSend
@@ -325,16 +328,18 @@ const EmailMess: React.FC<Props> = ({
   const _renderEmailTitle = useMemo(() => {
     const emailTitle = emailData.email.subject;
     const limitShow = 250;
-    if (emailTitle.length < limitShow)
+    if (!emailTitle) return <h1 className="text-stone-700 font-bold text-base"></h1>;
+    if (emailTitle?.length < limitShow) {
       return (
         <h1 className="text-stone-700 font-bold text-base">
           {emailData.email.subject}
         </h1>
       );
+    }
     return (
       <h1 className="text-stone-700 font-bold text-base">
-        <span>{emailTitle.substring(0, limitShow)}...</span>
-        {isShowLimitTitle && <span>{emailTitle.substring(limitShow)}</span>}
+        <span>{emailTitle?.substring(0, limitShow)}...</span>
+        {isShowLimitTitle && <span>{emailTitle?.substring(limitShow)}</span>}
         <span
           onClick={handleNavigateShowLimitTitle}
           className="pl-2 inline-block text-[14px] hover:opacity-80"
@@ -405,7 +410,20 @@ const EmailMess: React.FC<Props> = ({
             {renderSendTo()}
           </div>
           {emailData.status.toLowerCase() !== 'null' && (
-            <EmailStatus emailStatus={emailData.status.toLowerCase()} />
+            <Box display="flex" alignItems="center">
+              {emailData?.status?.toLowerCase() === 'draft' && (
+                <Button
+                  sx={{ mr: rem(16), borderRadius: rem(20) }}
+                  onClick={onContinueClick}>
+                  <CreateIcon sx={{ fontSize: rem(20) }} />
+                  <Typography
+                    sx={{ ml: rem(8), fontSize: rem(14), fontWeight: 500 }}>
+                    Continue
+                  </Typography>
+                </Button>
+              )}
+              <EmailStatus emailStatus={emailData.status.toLowerCase()} />
+            </Box>
           )}
         </Box>
         {/* Email Content */}

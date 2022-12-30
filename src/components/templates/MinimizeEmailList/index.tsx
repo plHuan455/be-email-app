@@ -11,9 +11,10 @@ import { CustomFile } from '../EmailCompose2';
 export interface MinimizeEmailTypes {
   id?: number;
   cacheId?: number;
+  contactBlock?: InputContactBlock[];
   to?: InputContactBlock[];
-  cc?: UserInfo[];
-  bcc?: UserInfo[];
+  cc?: InputContactBlock[];
+  bcc?: InputContactBlock[];
   attachFiles?: {
     files: (CustomFile | undefined)[];
     fileUrls: (string | undefined)[];
@@ -54,7 +55,10 @@ const MinimizeEmailList: React.FC<MinimizeEmailListProps> = ({
             className="t-minimizeEmailList_itemWrapper"
             style={{ position: 'relative', marginLeft: rem(5), height: rem(46) }}
             initial={{ width: 0, marginLeft: 0 }}
-            animate={{ width: rem(260), marginLeft: rem(5) }}
+            animate={{ 
+              width: value.id === showMinimizeEmailId?.id && value.id !== undefined? 0 : rem(260),
+              marginLeft: rem(5)
+            }}
             exit={{ width: 0, marginLeft: 0 }}
             transition={{
               type: 'spring',

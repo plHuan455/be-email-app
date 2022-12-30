@@ -71,7 +71,7 @@ function MainWrapper({ children }: { children: React.ReactNode }) {
         body: payload.data.body,
       });
       setShow(true);
-      dispatch(unShiftNotificationList(payload.data));
+      dispatch(unShiftNotificationList({...payload.data, id: Date.now(), createdAt: new Date().toISOString()}));
     })
     .catch((err) => console.log('failed', err));
 
@@ -88,13 +88,14 @@ function MainWrapper({ children }: { children: React.ReactNode }) {
   };
 
   const handleLogout = useCallback(() => {
-    auth.signout(() => {
-      deleteDeviceKey();
-      localStorage.removeItem('device_key_id');
-      localStorage.removeItem('token');
-      localStorage.removeItem('device_token');
+    deleteDeviceKey().then(() => {
+      auth.signout(() => {
+        localStorage.removeItem('device_key_id');
+        localStorage.removeItem('token');
+        localStorage.removeItem('device_token');
+      });
+      toast.success('Bái bai!');
     });
-    toast.success('Bái bai!');
   }, [auth.signout]);
 
   const handleChangePage = (url: string) => () => {

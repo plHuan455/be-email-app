@@ -13,7 +13,7 @@ import { Editor } from 'react-draft-wysiwyg';
 import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
 import { Box, Button, Typography } from '@mui/material';
-import { toolbarCustom } from '@constants/constants';
+import { emailRegex, toolbarCustom } from '@constants/constants';
 import AttachFiles from '@components/atoms/AttachFiles';
 import EmailGreeting from '@components/molecules/EmailGreeting';
 import LogoWithLabel from '@components/atoms/LogoWithLabel';
@@ -30,7 +30,6 @@ import AttachFiles2, { FileInfoTypes } from '@components/molecules/AttachFiles2'
 import EmailPrivateHashtagContainer from '@containers/EmailPrivateHashtagContainer';
 import { useSelector } from 'react-redux';
 import { RootState } from '@redux/configureStore';
-import { backUpData } from '@containers/EmailComposeContainer';
 import { HashtagTabs } from '@redux/Email/reducer';
 import HashtagInput, {
   HashtagOptionTypes,
@@ -51,8 +50,8 @@ export interface CustomFile extends File {
 
 export interface EmailComposeFields {
   to: InputContactBlock[];
-  cc: UserInfo[];
-  bcc: UserInfo[];
+  cc: InputContactBlock[];
+  bcc: InputContactBlock[];
   contactBlock: InputContactBlock[];
   attachFiles: {
     fileUrls: (string | undefined)[];
@@ -96,6 +95,16 @@ interface EmailComposeProps {
   onSubmit: (values: EmailComposeFields) => void;
 }
 
+const getSelectedContact = (contactBlock: InputContactBlock[]) => {
+  return (field: 'to' | 'cc' | 'bcc') => {
+    return contactBlock.filter((contact) => {
+      return contact.employeesList.some(
+        (employ) => employ.field === field && employ.isChecked,
+      );
+    });
+  };
+};
+
 const EmailCompose2: React.FC<EmailComposeProps> = ({
   inputContactBlocks,
   method,
@@ -126,19 +135,37 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
 
   // states
 
-  const [toData, setToData] = useState(inputContactBlocks);
-  const [ccData, setCcData] = useState(inputContactBlocks);
-  const [bccData, setBccData] = useState(inputContactBlocks);
+  const defaultInputContactBlock = React.useMemo(() => {
+    return [...inputContactBlocks];
+  }, [inputContactBlocks]);
+
+  const [toData, setToData] = useState(defaultInputContactBlock);
+  const [ccData, setCcData] = useState(defaultInputContactBlock);
+  const [bccData, setBccData] = useState(defaultInputContactBlock);
+
+  const [toValue, setToValue] = useState<InputContactBlock[]>([]);
+  const [ccValue, setCcValue] = useState<InputContactBlock[]>([]);
+  const [bccValue, setBccValue] = useState<InputContactBlock[]>([]);
 
   // react hooks
   const fileInputRef = useRef<HTMLInputElement>(null);
   const composeScrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    setToData(inputContactBlocks);
-    setCcData(inputContactBlocks);
-    setBccData(inputContactBlocks);
-  }, [inputContactBlocks]);
+    const filter = getSelectedContact(defaultInputContactBlock);
+
+    const to = filter('to');
+    const cc = filter('cc');
+    const bcc = filter('bcc');
+
+    setToValue(to);
+    setCcValue(cc);
+    setBccValue(bcc);
+  }, [defaultInputContactBlock]);
+
+  useEffect(() => {
+    update();
+  }, [defaultInputContactBlock]);
 
   // functions
   const handleAttachFileClick = () => {
@@ -150,6 +177,16 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
   const filterContact =
     (field: 'to' | 'cc' | 'bcc') => (contactBlock: InputContactBlock) => {
       const employees = contactBlock.employeesList;
+
+      const isEmail = contactBlock.contact_name.match(emailRegex);
+
+      // Nếu là mail
+      if (isEmail) {
+        const employ = employees[0];
+        return employ
+          ? (employ.field === field && employ.isChecked) || !employ.isChecked
+          : false;
+      }
 
       if (employees.length === 0) return true;
 
@@ -180,9 +217,9 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
     const filterCc = filterContact('cc');
     const filterBcc = filterContact('bcc');
 
-    const afterFilterTo = inputContactBlocks.filter(filterTo);
-    const afterFilterCc = inputContactBlocks.filter(filterCc);
-    const afterFilterBcc = inputContactBlocks.filter(filterBcc);
+    const afterFilterTo = defaultInputContactBlock.filter(filterTo);
+    const afterFilterCc = defaultInputContactBlock.filter(filterCc);
+    const afterFilterBcc = defaultInputContactBlock.filter(filterBcc);
 
     setToData(afterFilterTo);
     setCcData(afterFilterCc);
@@ -225,17 +262,16 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                           forField={'to'}
                           defaultValue={[]}
                           data={toData}
-                          value={value}
-                          onChange={(_, value) => {
-                            // onChange(value);
-                            // update();
-                            // method.setValue('contactBlock', inputContactBlocks);
-                          }}
+                          value={toValue}
                           onChangeValue={(v) => {
                             // onChange(v);
                             onChange(value);
+                            setToData(v);
                             update();
-                            method.setValue('contactBlock', inputContactBlocks);
+                            method.setValue(
+                              'contactBlock',
+                              Array.from(new Set([...inputContactBlocks, ...v])),
+                            );
                           }}
                         />
                         <span
@@ -262,17 +298,17 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                         render={({ field: { value, onChange } }) => (
                           <AutoCompleteReceive
                             forField={'cc'}
-                            value={value}
+                            value={ccValue}
                             data={ccData}
                             defaultValue={value}
-                            onChange={(v) => {
-                              onChange(v);
-                              update();
-                              method.setValue('contactBlock', inputContactBlocks);
-                            }}
                             onChangeValue={(v) => {
+                              onChange(v);
+                              setCcValue(v);
                               update();
-                              method.setValue('contactBlock', inputContactBlocks);
+                              method.setValue(
+                                'contactBlock',
+                                Array.from(new Set([...inputContactBlocks, ...v])),
+                              );
                             }}
                           />
                         )}
@@ -287,18 +323,17 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                         render={({ field: { value, onChange } }) => (
                           <AutoCompleteReceive
                             forField={'bcc'}
-                            value={value}
+                            value={bccValue}
                             data={bccData}
                             defaultValue={value}
-                            onChange={(e, v) => {
-                              onChange(v);
-                              update();
-                              method.setValue('contactBlock', inputContactBlocks);
-                            }}
                             onChangeValue={(v) => {
                               onChange(v);
+                              setBccValue(v);
                               update();
-                              method.setValue('contactBlock', inputContactBlocks);
+                              method.setValue(
+                                'contactBlock',
+                                Array.from(new Set([...inputContactBlocks, ...v])),
+                              );
                             }}
                           />
                         )}
@@ -313,7 +348,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                         render={({ field: { value } }) => (
                           <AutoCompleteReceive
                             value={[]}
-                            data={backUpData}
+                            data={[]}
                             defaultValue={[]}
                             isReadOnly={true}
                           />
@@ -470,7 +505,6 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                     accept="file"
                     ref={fileInputRef}
                     onChange={(e) => {
-                      console.log(e);
                       if (e.target.files) {
                         const cloneAttachFile = method.getValues('attachFiles');
                         cloneAttachFile.files = [
@@ -479,6 +513,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                             (key) => e.target.files?.[key],
                           ),
                         ];
+                        e.target.value = '';
                         method.setValue('attachFiles', cloneAttachFile);
                         // if (attachFileRef.current) {
                         //   attachFileRef.current.scrollIntoView({ behavior: "smooth", block: "end", inline: "end" });

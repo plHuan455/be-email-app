@@ -8,7 +8,8 @@ interface IntersectionObserverOptions {
 
 const useIntersectionObserver = (
   ref: RefObject<Element>,
-  callback?: () => void,
+  onIntersecting?: (entry: IntersectionObserverEntry) => void,
+  onUnInterSecting?: () => void,
   options?: IntersectionObserverOptions
 ) => {
   const [isIntersecting, setIsIntersecting] = useState(false);
@@ -20,9 +21,12 @@ const useIntersectionObserver = (
       //   setIsIntersecting(false);
       // }
       setIsIntersecting(entry.isIntersecting);
-      if(entry.isIntersecting && callback) {
-        callback();
+      if(entry.isIntersecting && onIntersecting) {
+        onIntersecting(entry);
       } 
+      else {
+        onUnInterSecting && onUnInterSecting();
+      }
     }, options);
     if (ref.current) {
       observer.observe(ref.current);
