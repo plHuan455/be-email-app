@@ -1,37 +1,21 @@
 import EmailStatusHeader from '@components/molecules/EmailStatusHeader';
-import ModalEmailList, {
-  EmailList,
-  StatusOptions,
-} from '@components/molecules/ModalEmailList';
+import { EmailList, StatusOptions } from '@components/molecules/ModalEmailList';
 import { TabItem } from '@layouts/IconTabs';
-import { Avatar, Box, ButtonBase, Tab, Tabs, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { Box } from '@mui/material';
 import avt from '../../../src/assets/images/avatars/avatar-1.jpg';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  TitleOfInformationBlock,
-  UserName,
-} from '@components/molecules/InformationDetailBlock';
 import './index.scss';
-import { useGetEmail } from '@hooks/Email/useGetEmail';
 import CustomButton from '@components/atoms/CustomButton';
-import Plus from '@assets/icon/Plus';
-import { useNavigate } from 'react-router-dom';
 import SingleOTPInput from '@components/atoms/Input/PinInput/SingleInput';
-import Hashtag from '@components/atoms/Hashtag';
 import { toast } from 'react-toastify';
-import {
-  EmailTagsResponse,
-  getAllCatalogTab,
-  getAllEmailStatus,
-  getAllEmailTag,
-} from '@api/email';
+import { getAllCatalogTab } from '@api/email';
 import EmailTab from '@components/molecules/EmailTab';
 import { HashtagTabs, setPrivateHashtag } from '@redux/Email/reducer';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { isEmpty } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@redux/configureStore';
+import HashtagContainer from '@containers/HashtagContainer';
 
 type Props = {};
 
@@ -330,13 +314,14 @@ const EmailStatusBar = (props: Props) => {
         {hashtagTabs &&
           hashtagTabs.map((item, index) => {
             return (
-              <Hashtag
+              <HashtagContainer
                 color={item.color}
                 title={item.title}
                 catalog={item.value}
                 status={item.status}
                 // emailData={item.emailData}
                 index={index}
+                notiNumber={item.notiNumber ? item.notiNumber : 0}
               />
             );
           })}
