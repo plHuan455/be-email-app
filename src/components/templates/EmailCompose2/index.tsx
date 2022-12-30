@@ -412,8 +412,6 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                           if (value.files.length === 0) return <></>;
                           return (
                             <AttachFiles2
-                              emailIndex={index}
-                              fileUrls={value.fileUrls}
                               fileList={value.files}
                               inputId="react-compose-file-input"
                               onUploaded={(index, url) => {
