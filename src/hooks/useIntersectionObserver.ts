@@ -20,8 +20,8 @@ const useIntersectionObserver = (
       // } else {
       //   setIsIntersecting(false);
       // }
-      setIsIntersecting(entry.isIntersecting);
       if(entry.isIntersecting && onIntersecting) {
+        setIsIntersecting(entry.isIntersecting);
         onIntersecting(entry);
       } 
       else {
