@@ -88,7 +88,7 @@ const EmailMessContainerRef: React.ForwardRefRenderFunction<
   const { mutate: updateEmailStatus } = useMutation({
     mutationKey: ['update-email'],
     mutationFn: (status: 'PENDING' | 'approved' | 'DECLINED') =>
-      approveEmail({ user_email_id: emailData.email.id, status: status }),
+      approveEmail({ user_email_id: emailData.id, status: status }),
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: ['get-email-manager'] });
       dispatch(deleteIndexEmail(index));
