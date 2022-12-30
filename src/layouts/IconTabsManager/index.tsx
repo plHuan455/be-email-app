@@ -145,6 +145,17 @@ export default function IconTabsManager() {
         ),
         url: '/template',
       },
+      {
+        title: 'Blacklist',
+        icon: (
+          <PermContactCalendarIcon
+            sx={{
+              color: '#999999',
+            }}
+          />
+        ),
+        url: '/black-list/user',
+      },
     ];
 
     return arr;

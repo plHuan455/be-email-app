@@ -47,13 +47,16 @@ import {
   EditEmployeePage,
   ManagerEmployeePage,
 } from './Manager/ManagerEmployee';
+import BlackListPage from './BlackList';
+import BlackListUserPage from './BlackList/BlackListUser';
+import BlackListSystemPage from './BlackList/BlackListSystem';
 
 export const managerRouter: RouteObject[] = [
   {
     path: '/manager',
     element: <Manager />,
     children: [
-      { path: '/manager', element: <ManagerDepartmentPage /> },
+      // { path: '/manager', element: <ManagerDepartmentPage /> },
       { path: '/manager/setting', element: <SettingRoles /> },
       {
         path: '/manager/department',
@@ -194,7 +197,6 @@ export const declareRouter: RouteObject[] = [
         path: '/profile',
         element: <UserProfileContainer />,
       },
-
       {
         path: '/template',
         children: [
@@ -210,6 +212,20 @@ export const declareRouter: RouteObject[] = [
           {
             path: '/template/edit',
             element: <EditMailTemplatePage />,
+          },
+        ],
+      },
+      {
+        path: '/black-list',
+        element: <BlackListPage />,
+        children: [
+          {
+            path: '/black-list/user',
+            element: <BlackListUserPage />,
+          },
+          {
+            path: '/black-list/system',
+            element: <BlackListSystemPage />,
           },
         ],
       },

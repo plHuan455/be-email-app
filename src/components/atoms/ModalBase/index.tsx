@@ -25,6 +25,7 @@ const modalDefaultStyle = {
   borderRadius: '20px',
   boxShadow: 24,
   padding: '16px',
+  outline: 'none',
 };
 
 const ModalBase: React.FC<ModalBaseProps> = ({
@@ -65,7 +66,10 @@ const ModalBase: React.FC<ModalBaseProps> = ({
           </div>
           {Boolean(submitLabel) && (
             <div className="modal-button-bottom">
-              <Button className="button-create-mui" onClick={onSubmit} type={modalType}>
+              <Button
+                className="button-create-mui"
+                onClick={onSubmit}
+                type={modalType}>
                 {submitLabel}
               </Button>
             </div>
