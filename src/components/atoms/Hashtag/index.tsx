@@ -64,7 +64,9 @@ const Hashtag: React.FC<Props> = ({
           justifyContent: 'space-between',
           padding: '5px 4px',
         }}>
-        <NavLink to={`/emails/catalog/${catalog}`}>
+        <NavLink
+          to={`/emails/catalog/${catalog}`}
+          className="w-full flex justify-start">
           {({ isActive }) => {
             setModalStatus(isActive);
             return (
