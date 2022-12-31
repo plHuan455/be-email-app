@@ -108,17 +108,6 @@ const EmailContainer = () => {
   };
 
   return (
-    // <Box
-    //   sx={{
-    //     flex: 1,
-    //     height: '100vh',
-    //     overflow: 'scroll',
-    //     position: 'relative',
-    //     display: 'flex',
-    //     flexDirection: 'column',
-    //   }}>
-    //   <EmailsListActionsContainer />
-
     <>
       <Box
         sx={{
@@ -143,7 +132,7 @@ const EmailContainer = () => {
             borderRadius: '100%',
             margin: 0,
             padding: 0,
-            zIndex: 100,
+            zIndex: 80,
             minWidth: 'auto',
             boxShadow:
               '0px 3px 1px -2px rgb(0 0 0 / 20%), 0px 2px 2px 0px rgb(0 0 0 / 14%), 0px 1px 5px 0px rgb(0 0 0 / 12%)',
@@ -160,8 +149,6 @@ const EmailContainer = () => {
         </Button>
       )}
     </>
-    //   {/* {isCompose ? <EmailCompose /> : <Email />} */}
-    // </Box>
   );
 };
 

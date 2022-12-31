@@ -1,0 +1,14 @@
+.mainCompose {
+  animation: flyIn 0.4s forwards;
+}
+
+@keyframes flyIn {
+  from {
+    top: 100%;
+    opacity: 0;
+  }
+  to {
+    top: 50%;
+    opacity: 1;
+  }
+}
