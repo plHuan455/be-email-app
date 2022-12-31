@@ -17,7 +17,7 @@ import {
 } from './interface';
 import { number } from 'yup';
 export interface CreateEmailParam {
-  email: {
+  email?: {
     subject?: string;
     to?: string[];
     from?: string;
@@ -26,7 +26,7 @@ export interface CreateEmailParam {
     cc?: string[];
     bcc?: string[];
     is_favorite?: boolean;
-    attachs?: {path?: string}[];
+    attachs?: { path?: string }[];
   };
   action?: string;
   send_at?: string;
@@ -108,11 +108,7 @@ export const EmailActions = async (params: {
 
 export const deleteAllWithIdList = async (ids: number[]) => {
   const url = `${API_EMAIL_USER}/action`;
-  const res = await Promise.all(
-    ids.map((value) =>
-      deleteEmail(String(value)),
-    ),
-  );
+  const res = await Promise.all(ids.map((value) => deleteEmail(String(value))));
   return res;
 };
 

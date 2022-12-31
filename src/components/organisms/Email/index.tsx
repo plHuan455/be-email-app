@@ -101,8 +101,6 @@ const Email: React.FC<Props> = ({
       mutationKey: ['email-update-hashtag'],
       mutationFn: (params: { id: number; data: EmailUpdateQuery }) =>
         updateEmailWithQuery(params.id, {
-          email: params.data,
-          // send_at: params.data.send_at,
           hashtags: params.data.hashtags,
         }),
     });
@@ -291,7 +289,7 @@ const Email: React.FC<Props> = ({
             const hashtags = hashtagsList.map((hashtag) => hashtag.value);
             updateHashtagMutate({
               id: email.id,
-              data: { ...email.email, hashtags },
+              data: { hashtags },
             });
           }}
           onInterSecting={(entry) => {

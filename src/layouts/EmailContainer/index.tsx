@@ -137,7 +137,7 @@ const EmailContainer = () => {
         <Button
           sx={{
             position: 'absolute',
-            bottom: rem(25),
+            bottom: rem(60),
             left: 'calc(50% + 20px)',
             backgroundColor: 'white',
             borderRadius: '100%',

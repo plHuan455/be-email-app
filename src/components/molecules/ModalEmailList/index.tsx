@@ -138,7 +138,7 @@ const ModalEmailList: React.FC<Props> = ({
 
   const { data: dataGetEmailManagerByStatus, isLoading: isLoadingGetEmailData } =
     useQuery({
-      queryKey: ['get-email-manager', pathName, ...EmailsList, value],
+      queryKey: ['get-email-manager', pathName, value],
       queryFn: () => {
         setUserEmail([]);
         return getListCatalogWithQueryParam({
