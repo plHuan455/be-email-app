@@ -1,12 +1,14 @@
-import ContactSlideBar, { MenuContactTypes } from "@components/organisms/ContactSlideBar";
-import { Box } from "@mui/material";
+import ContactSlideBar, {
+  MenuContactTypes,
+} from '@components/organisms/ContactSlideBar';
+import { Box } from '@mui/material';
 import { Drawer } from '@mui/material';
-import { rem } from "@utils/functions";
+import { rem } from '@utils/functions';
 interface ContactProps {
   title: string;
   slideBarExpandIndex?: number;
   slideBarSelectedMenuItemIndex?: number;
-  contactList: MenuContactTypes[],
+  contactList: MenuContactTypes[];
   onSlideBarTitleClick: (index: number) => void;
   onSlideBarItemClick: (index: number) => void;
 }
@@ -24,13 +26,13 @@ const Contact: React.FC<ContactProps> = ({
       <ContactSlideBar
         selectedMenuItemIndex={slideBarSelectedMenuItemIndex}
         expandIndex={slideBarExpandIndex}
-        title={title} 
+        title={title}
         menuList={contactList}
-        onMenuTitleClick={onSlideBarTitleClick}
-        onMenuItemClick={onSlideBarItemClick}
+        onMenuItemClick={onSlideBarTitleClick}
+        onSubMenuItemClick={onSlideBarItemClick}
       />
     </Box>
-  )
-}
+  );
+};
 
 export default Contact;

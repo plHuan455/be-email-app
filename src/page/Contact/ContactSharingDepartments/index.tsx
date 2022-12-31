@@ -1,13 +1,20 @@
+import ContactSharingGroupsContainer from '@containers/ContactContainer/ContactSharingGroupsContainer';
 import ContactSharingGroupsLayout from '@layouts/ContactSharingGroups';
 import Layout from '@layouts/Layout';
+import { useNavigate } from 'react-router-dom';
 
-interface ContactPageProps {}
+const ContactSharingDepartmentsPage = () => {
+  const navigate = useNavigate();
 
-const ContactSharingDepartmentsPage: React.FC<ContactPageProps> = () => {
   return (
-    <>
-      <ContactSharingGroupsLayout headTitle="Contact Sharing Department" />
-    </>
+    <Layout.MainQueryClient
+      headTitle="Contact Sharing Department"
+      onClickAdd={() => navigate('add')}>
+      <ContactSharingGroupsContainer />
+    </Layout.MainQueryClient>
+    // <>
+    //   <ContactSharingGroupsLayout headTitle="Contact Sharing Department" />
+    // </>
   );
 };
 

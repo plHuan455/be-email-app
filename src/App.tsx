@@ -23,6 +23,7 @@ import MuiThemeCustomization from '@themes';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import RefactorRoute from '@page/RefactorRoute';
 
 // const options = {
 //   // you can also just use 'bottom center'
@@ -56,7 +57,8 @@ export default class App extends React.Component {
               <ProSidebarProvider>
                 <LocalizationProvider dateAdapter={AdapterDayjs}>
                   <QueryClientProvider client={queryClient}>
-                    <MainRoute />
+                    {/* <MainRoute /> */}
+                    <RefactorRoute />
                   </QueryClientProvider>
                 </LocalizationProvider>
               </ProSidebarProvider>

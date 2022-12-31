@@ -1,3 +1,4 @@
+import EditContactGroupContainer from '@containers/ContactContainer/ContactGroup/edit';
 import AddContactLayout from '@layouts/Contact/add';
 import EditContactLayout from '@layouts/Contact/edit';
 import EditContactGroupLayout from '@layouts/ContactGroup/edit';
@@ -12,7 +13,7 @@ const EditContactGroupPage = () => {
     <Layout.MainQueryClient
       headTitle="Edit Contact Group"
       onComback={() => navigate(-1)}>
-      <EditContactGroupLayout />
+      <EditContactGroupContainer />
     </Layout.MainQueryClient>
   );
 };

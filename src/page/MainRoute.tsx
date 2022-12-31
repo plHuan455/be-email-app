@@ -70,6 +70,7 @@ export const managerRouter: RouteObject[] = [
         children: [
           {
             index: true,
+
             path: '/manager/department',
             element: <ManagerDepartmentPage />,
           },

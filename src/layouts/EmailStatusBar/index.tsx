@@ -3,7 +3,6 @@ import ModalEmailList, {
   EmailList,
   StatusOptions,
 } from '@components/molecules/ModalEmailList';
-import { TabItem } from '@layouts/IconTabs';
 import { Avatar, Box, ButtonBase, Tab, Tabs, Typography } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import avt from '../../../src/assets/images/avatars/avatar-1.jpg';
@@ -42,7 +41,11 @@ export interface EmailItem {
   totalEmail: number;
 }
 
-interface EmailTabs extends TabItem {
+interface EmailTabs {
+  title?: string;
+  url?: string;
+  logo?: string;
+  icon?: React.ReactElement;
   status: StatusOptions;
   emailData: EmailList[];
   notiNumber?: number;

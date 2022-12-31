@@ -8,10 +8,10 @@ export const contactDummy: MenuContactTypes[] = [
     icon: <PersonOutlineOutlinedIcon />,
     navigate: '/contact/contacts',
     // menuItems: [
-    //   {name: 'test', id: 1, navigate: '/contact/sharing'},
-    //   {name: 'test 1', id: 1, navigate: '/contact/sharing'},
-    //   {name: 'test 2', id: 1, navigate: '/contact/sharing'},
-    // ]
+    //   { name: 'test', id: 1, navigate: '/contact/sharing' },
+    //   { name: 'test 1', id: 1, navigate: '/contact/sharing' },
+    //   { name: 'test 2', id: 1, navigate: '/contact/sharing' },
+    // ],
   },
   {
     name: 'Sharing',
@@ -37,6 +37,23 @@ export const contactDummy: MenuContactTypes[] = [
   {
     name: 'Groups',
     icon: <PersonOutlineOutlinedIcon />,
-    navigate: '/contact/groups',
+    menuItems: [
+      {
+        id: 1,
+        name: 'Department',
+        navigate: '/contact/sharing/department',
+      },
+      {
+        id: 2,
+        name: 'Groups',
+        navigate: '/contact/sharing/groups',
+      },
+      {
+        id: 3,
+        name: 'Personals',
+        navigate: '/contact/sharing/personals',
+      },
+    ],
+    // navigate: '/contact/groups',
   },
 ];

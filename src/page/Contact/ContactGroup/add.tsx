@@ -1,3 +1,4 @@
+import AddContactGroupContainer from '@containers/ContactContainer/ContactGroup/add';
 import { AddContactGroupLayout } from '@layouts/ContactGroup/add';
 import Layout from '@layouts/Layout';
 import React from 'react';
@@ -10,7 +11,7 @@ const AddContactGroup = () => {
     <Layout.MainQueryClient
       headTitle="Add Contact Group"
       onComback={() => navigate(-1)}>
-      <AddContactGroupLayout />
+      <AddContactGroupContainer />
     </Layout.MainQueryClient>
   );
 };

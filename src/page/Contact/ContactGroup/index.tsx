@@ -1,3 +1,4 @@
+import ContactGroupContainer from '@containers/ContactContainer/ContactGroup';
 import ContactGroupLayout from '@layouts/ContactGroup';
 import Layout from '@layouts/Layout';
 import { Box } from '@mui/material';
@@ -12,7 +13,7 @@ const ContactGroups: React.FC<ContactGroupsProps> = () => {
     <Layout.MainQueryClient
       headTitle="Contact Groups"
       onClickAdd={() => navigate('add')}>
-      <ContactGroupLayout />
+      <ContactGroupContainer />
     </Layout.MainQueryClient>
   );
 };

@@ -1,3 +1,4 @@
+import EditContactContainer from '@containers/ContactContainer/Contacts/edit';
 import AddContactLayout from '@layouts/Contact/add';
 import EditContactLayout from '@layouts/Contact/edit';
 import Layout from '@layouts/Layout';
@@ -9,7 +10,7 @@ const EditContactPage = () => {
 
   return (
     <Layout.MainQueryClient headTitle="Edit Contact" onComback={() => navigate(-1)}>
-      <EditContactLayout />
+      <EditContactContainer />
     </Layout.MainQueryClient>
   );
 };

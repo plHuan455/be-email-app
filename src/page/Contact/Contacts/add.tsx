@@ -1,3 +1,4 @@
+import AddContactsContainer from '@containers/ContactContainer/Contacts/add';
 import AddContactLayout from '@layouts/Contact/add';
 import Layout from '@layouts/Layout';
 import React from 'react';
@@ -8,7 +9,7 @@ const AddContactsPage = () => {
 
   return (
     <Layout.MainQueryClient headTitle="Add Contact" onComback={() => navigate(-1)}>
-      <AddContactLayout />
+      <AddContactsContainer />
     </Layout.MainQueryClient>
   );
 };

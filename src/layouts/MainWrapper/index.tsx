@@ -1,29 +1,18 @@
-import Breadcrumbs from '@components/molecules/Breadcrumbs';
-import useBreadcrumbs from '@hooks/useBreadCrumbs';
-import Header from '@layouts/Header';
-import SideBar from '@layouts/SideBar';
-import { Box, Container, Drawer } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Outlet, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
-import { makeStyles } from 'tss-react/mui';
-import { toast } from 'react-toastify';
-import { useAppDispatch, useAppSelector } from '@redux/configureStore';
+import { deleteDeviceKey } from '@api/deviceKey';
 import AvatarWithPopup from '@components/atoms/AvatarWithPopup';
 import { useAuth } from '@context/AppContext';
-import IconTabsManager from '@layouts/IconTabsManager';
-import MinimizeEmailList, {
-  MinimizeEmailTypes,
-} from '@components/templates/MinimizeEmailList';
-import { Email } from '@components/organisms/Email/Interface';
-import { setHashtags } from '@redux/Email/reducer';
-import { fetchToken, onMessageListener } from '../../messaging_init_in_sw';
-import { deleteDeviceKey } from '@api/deviceKey';
+import useBreadcrumbs from '@hooks/useBreadCrumbs';
+import Header from '@layouts/Header';
+import MainSidebar from '@layouts/MainSidebar';
+import CloseIcon from '@mui/icons-material/Close';
+import { Box, Drawer } from '@mui/material';
+import { useAppDispatch } from '@redux/configureStore';
 import { unShiftNotificationList } from '@redux/Notify/reducer';
-import { IS_EMPLOYEE_ROLE } from '@constants/localStore';
-import { useQuery } from '@tanstack/react-query';
-import { getHashtags } from '@api/email';
-import useLocalStorage from '@hooks/useLocalStorage';
+import React, { useCallback, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import { makeStyles } from 'tss-react/mui';
+import { onMessageListener } from '../../messaging_init_in_sw';
 
 const sideBarWidth = 75;
 const emailStatusWidth = 290;
@@ -71,7 +60,13 @@ function MainWrapper({ children }: { children: React.ReactNode }) {
         body: payload.data.body,
       });
       setShow(true);
-      dispatch(unShiftNotificationList({...payload.data, id: Date.now(), createdAt: new Date().toISOString()}));
+      dispatch(
+        unShiftNotificationList({
+          ...payload.data,
+          id: Date.now(),
+          createdAt: new Date().toISOString(),
+        }),
+      );
     })
     .catch((err) => console.log('failed', err));
 
@@ -166,8 +161,7 @@ function MainWrapper({ children }: { children: React.ReactNode }) {
       /> */}
       <Box className={cx(classes.body)}>
         <Box className={`${cx(classes.sideBar)} flex flex-col justify-between`}>
-          {/* {isInManagerPage ? <IconTabsManager /> : <IconTabs />} */}
-          <IconTabsManager />
+          <MainSidebar />
           <AvatarWithPopup
             popupStyles={{
               '& > .MuiPaper-root': {
@@ -206,7 +200,6 @@ function MainWrapper({ children }: { children: React.ReactNode }) {
           toggleIcon={<CloseIcon />}
           onToggleMobileSidebar={toggleMobileSideBar(false)}
         />
-        <SideBar />
       </Drawer>
     </React.Fragment>
   );

@@ -21,12 +21,12 @@ export const genCRUD = (
       router.children.push({
         path: 'edit',
         children: [
-          { 
+          {
             index: true,
             element: <Navigate to={router.path || '../'} />,
           },
-          { 
-            path: ':id', 
+          {
+            path: ':id',
             element: edit,
           },
         ],

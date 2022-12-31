@@ -23,7 +23,7 @@ interface MenuItem {
 export interface MenuContactTypes {
   name?: string;
   icon?: React.ReactNode;
-  menuItems?: MenuItem[];
+  menuItems?: any;
   navigate?: string;
 }
 
@@ -31,9 +31,10 @@ interface ContactSlideBarProps {
   title: string;
   expandIndex?: number;
   selectedMenuItemIndex?: number;
-  menuList: MenuContactTypes[];
-  onMenuTitleClick: (index: number) => void;
-  onMenuItemClick: (index: number) => void;
+  menuList: any[];
+
+  onMenuItemClick: (any) => void;
+  onSubMenuItemClick: (any) => void;
 }
 
 const ContactSlideBar: React.FC<ContactSlideBarProps> = ({
@@ -41,9 +42,10 @@ const ContactSlideBar: React.FC<ContactSlideBarProps> = ({
   expandIndex,
   selectedMenuItemIndex,
   menuList,
-  onMenuTitleClick,
   onMenuItemClick,
+  onSubMenuItemClick,
 }) => {
+  console.log('list -->', menuList);
   return (
     <Box className="o-contactSlideBar">
       <Drawer
@@ -66,17 +68,14 @@ const ContactSlideBar: React.FC<ContactSlideBarProps> = ({
           isSearch={false}
         />
         <List>
-          {menuList.map((menu, menuIndex) => (
-            <Box>
-              <NavLink to={menu.navigate ?? '#'}>
-                {({ isActive }) => (
+          {menuList &&
+            menuList.map((menu, menuIndex) => (
+              <Box>
+                <div>
                   <ListItemButton
-                    onClick={() => onMenuTitleClick(menuIndex)}
+                    onClick={() => onMenuItemClick({ index: menuIndex })}
                     sx={{
-                      backgroundColor:
-                        isActive && menu.navigate !== undefined
-                          ? '#e9e4ff'
-                          : 'transparent',
+                      backgroundColor: menu.active ? '#e9e4ff' : 'transparent',
                     }}>
                     <ListItemIcon
                       sx={{
@@ -90,40 +89,37 @@ const ContactSlideBar: React.FC<ContactSlideBarProps> = ({
                       {menu.icon}
                     </ListItemIcon>
                     <ListItemText primary={menu.name} />
-                    {menu.menuItems !== undefined &&
-                      (menuIndex === expandIndex ? <ExpandLess /> : <ExpandMore />)}
+                    {menu.menuItems &&
+                      (menu.isExpand ? <ExpandLess /> : <ExpandMore />)}
                   </ListItemButton>
-                )}
-              </NavLink>
-              {menu.menuItems !== undefined && (
-                <Collapse
-                  in={menuIndex === expandIndex}
-                  timeout="auto"
-                  unmountOnExit>
-                  <List component="div" disablePadding>
-                    {menu.menuItems.map((value, index) => (
-                      <NavLink to={value.navigate ?? '#'}>
-                        <ListItemButton
-                          sx={{
-                            pl: 4,
-                            backgroundColor:
-                              index === selectedMenuItemIndex &&
-                              expandIndex === menuIndex
+                </div>
+                {menu.menuItems && (
+                  <Collapse in={menu.isExpand} timeout="auto" unmountOnExit>
+                    <List component="div" disablePadding>
+                      {menu.menuItems.map((value, index) => (
+                        <div>
+                          <ListItemButton
+                            sx={{
+                              pl: 4,
+                              backgroundColor: value.active
                                 ? '#e9e4ff'
                                 : 'transparent',
-                          }}
-                          onClick={() => {
-                            onMenuItemClick(index);
-                          }}>
-                          <ListItemText primary={value.name} />
-                        </ListItemButton>
-                      </NavLink>
-                    ))}
-                  </List>
-                </Collapse>
-              )}
-            </Box>
-          ))}
+                            }}
+                            onClick={() => {
+                              onSubMenuItemClick({
+                                parentIndex: menuIndex,
+                                childIndex: index,
+                              });
+                            }}>
+                            <ListItemText primary={value.name} />
+                          </ListItemButton>
+                        </div>
+                      ))}
+                    </List>
+                  </Collapse>
+                )}
+              </Box>
+            ))}
         </List>
       </Drawer>
     </Box>
