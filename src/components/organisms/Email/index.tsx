@@ -9,34 +9,25 @@ import React, {
   useState,
 } from 'react';
 
-import avatarImg from '@assets/images/avatars/avatar-2.jpg';
 import { Email, UserInfo } from './Interface';
-import {
-  deleteEmail,
-  EmailActions,
-  EmailResponse,
-  updateEmailWithQuery,
-} from '@api/email';
+import { deleteEmail, EmailResponse, updateEmailWithQuery } from '@api/email';
 
 import { isEmpty } from 'lodash';
 import EmailMessEmpty from '../EmailMessEmpty';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@redux/configureStore';
-import {
-  addDeletedEmail,
-  addSpamEmail,
-  addUnreadEmail,
-  setEmailsList,
-} from '@redux/Email/reducer';
+import { addSpamEmail, addUnreadEmail, setEmailsList } from '@redux/Email/reducer';
 import ModalBase from '@components/atoms/ModalBase';
 import { useSearchParams } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { EmailUpdateQuery } from '@api/email/interface';
 import EmailMessContainer from '@containers/EmailMessContainer';
-import useLocalStorage from '@hooks/useLocalStorage';
-import EmailReplyMessContainer from '@containers/EmailReplyContainer/ReplyMess';
-import ReplyMessLayoutContainer from '@containers/EmailReplyContainer/ReplyMessLayout';
+import EmailReplyMessMain, {
+  useEmailReplyMess,
+} from '@containers/EmailReplyContainer/ReplyMess';
+import EmailActionLayoutContainer, {
+  useEmailActionLayout,
+} from '@containers/EmailActionsLayoutContainer';
 
 interface ModalForm {
   title: string;
@@ -69,8 +60,8 @@ const Email: React.FC<Props> = ({
     },
   });
 
-  // useLocalstorage
-  const [CURRENT_ROLE] = useLocalStorage('current_role', '');
+  const { isShowLayout, handleCloseLayout, handleOpenLayout } = useEmailReplyMess();
+  const { isShow, handleOnClose, handleOnOpen } = useEmailActionLayout();
 
   // useSearchParams
   const [searchParams] = useSearchParams();
@@ -227,15 +218,16 @@ const Email: React.FC<Props> = ({
             break;
         }
       } else {
-        const cloneEmailsList = [...EmailsList];
+        // const cloneEmailsList = [...EmailsList];
 
-        const reqData = { ...cloneEmailsList[index], status: status };
+        // const reqData = { ...cloneEmailsList[index], status: status };
 
-        cloneEmailsList.splice(index, 1, reqData);
+        // cloneEmailsList.splice(index, 1, reqData);
 
-        console.log('line 154', cloneEmailsList);
+        // console.log('line 154', cloneEmailsList);
 
-        dispatch(setEmailsList(cloneEmailsList));
+        // dispatch(setEmailsList(cloneEmailsList));
+        handleOnOpen();
       }
     },
     [EmailsList],
@@ -328,7 +320,13 @@ const Email: React.FC<Props> = ({
           </div>
         </div>
       </ModalBase>
-      <EmailReplyMessContainer />
+      <EmailReplyMessMain.Input onClickInput={handleOpenLayout} />
+      <EmailReplyMessMain.LayoutModal
+        isShow={isShowLayout}
+        onClose={handleCloseLayout}
+        onOpen={handleCloseLayout}
+      />
+      <EmailActionLayoutContainer isShow={isShow} onClose={handleOnClose} />
     </Box>
   );
 };

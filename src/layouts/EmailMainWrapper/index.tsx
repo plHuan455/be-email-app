@@ -77,23 +77,6 @@ const EmailMainWrapper = () => {
   return (
     <>
       <EmailContainer />
-
-      {/* {isEmpty(EmailsList) ? (
-        <InformationBarEmpty
-          isLoading={isLoadingGetEmailsList}
-          title="Information"
-          isBorderBottom={true}
-          sender={1}
-          // receiver={receiverData}
-        />
-      ) : (
-        <InformationBar
-          title="Information"
-          isBorderBottom={true}
-          sender={1}
-          // receiver={receiverData}
-        />
-      )} */}
     </>
   );
 };
