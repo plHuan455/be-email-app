@@ -11,9 +11,13 @@ interface MenuOptionTypes {
   icon?: React.ReactNode;
 }
 interface TableActionsMenuProps {
+  isAuto?: boolean; // if true, isOpen not working
+  isOpen?: boolean;
   sx?: SxProps<Theme>;
   options: MenuOptionTypes[];
   onItemClick: (value: string | number) => void;
+  onClose?: () => void;
+  onClick?: () => void;
 }
 
 const StyledMenu = styled((props: MenuProps) => (
@@ -37,8 +41,12 @@ const StyledMenu = styled((props: MenuProps) => (
 }));
 
 const TableActionsMenu: React.FC<TableActionsMenuProps> = ({
+  isAuto = true,
+  isOpen = false,
   sx,
   options,
+  onClick,
+  onClose,
   onItemClick,
 }) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
@@ -46,9 +54,11 @@ const TableActionsMenu: React.FC<TableActionsMenuProps> = ({
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
+    onClick && onClick();
   };
   const handleClose = () => {
     setAnchorEl(null);
+    onClose && onClose();
   };
 
   return (<div className="m-tableActionsMenu">
@@ -57,7 +67,7 @@ const TableActionsMenu: React.FC<TableActionsMenuProps> = ({
     </Button>
     <StyledMenu
       anchorEl={anchorEl}
-      open={open}
+      open={isAuto ? open : isOpen}
       onClose={handleClose}
     >
       {options.map(option => {
@@ -67,7 +77,7 @@ const TableActionsMenu: React.FC<TableActionsMenuProps> = ({
             key={`table-actions-menu-${option.value}`}
             onClick={() => {
               onItemClick(option.value)
-              handleClose();
+              if(isAuto) handleClose();
             }}
             disableRipple
           >
