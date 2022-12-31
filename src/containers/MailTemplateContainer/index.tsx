@@ -1,5 +1,14 @@
+import { emailTemplateList } from "@assets/dummyData/emaiTemplate";
+import EmailTemplateList from "@components/templates/EmailTemplateList";
+
 const MailTemplateContainer = () => {
-  return <div>123</div>;
+  return (
+    <>
+      <EmailTemplateList 
+        emailTemplateList={emailTemplateList}
+      />
+    </>
+  );
 };
 
 export default MailTemplateContainer;

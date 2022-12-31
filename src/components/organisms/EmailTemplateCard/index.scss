@@ -1,0 +1,15 @@
+.o-emailTemplateCard {
+
+  &_img {
+    width: 100%;
+    object-fit: cover;
+  }
+
+  &_title {
+    @include textOverflow(1);
+  }
+  
+  &_description {
+    @include textOverflow(2);
+  }
+}
