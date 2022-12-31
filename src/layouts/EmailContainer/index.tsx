@@ -16,12 +16,14 @@ const EmailContainer = () => {
 
   const containerRef = useRef<HTMLDivElement>(null);
   const preEmailId = useRef<number>();
+  const isFirstRender = useRef<boolean>(true);
   const preContainerScrollHeight = useRef<number>();
   const intersectingEmailMessStack = useRef<
     { target: HTMLDivElement; emailData: EmailResponse }[]
   >([]);
 
   const { EmailsList } = useAppSelector((state) => state.email);
+  const currEmail = useAppSelector(state => state.email.currEmail);
   const [pageParams, setPageParams] = useState<{ page: number; limit: number }>({
     page: 1,
     limit: 3,
@@ -44,6 +46,24 @@ const EmailContainer = () => {
       preEmailId.current = foundIntersecting.emailData.id;
     }
   };
+  
+
+  // update intersecting list when EmailList change
+  useEffect(() => {
+    if(isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+    intersectingEmailMessStack.current = intersectingEmailMessStack.current.map(value => {
+        const foundEmail = EmailsList.find(email => email.id === value.emailData.id);
+        if(foundEmail !== undefined && foundEmail?.id === currEmail?.id)  {
+          dispatch(setCurrEmail(foundEmail))
+        }
+        return {...value, emailData: foundEmail?? value.emailData}
+      }
+    )
+    handleChangeCurrEmail();
+  }, [EmailsList])
 
   useEffect(() => {
     const container = containerRef.current;
@@ -64,7 +84,7 @@ const EmailContainer = () => {
     }
     return () => {
       container?.removeEventListener('scroll', handleScroll);
-      dispatch(setCurrEmail(undefined));
+      // dispatch(setCurrEmail(undefined));
       // intersectingEmailMessStack.current = []
     };
   }, [containerRef, EmailsList]);
