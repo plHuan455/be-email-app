@@ -87,7 +87,7 @@ const EmailMessContainerRef: React.ForwardRefRenderFunction<
   // useMutation
   const { mutate: updateEmailStatus } = useMutation({
     mutationKey: ['update-email'],
-    mutationFn: (status: 'PENDING' | 'approved' | 'DECLINED') =>
+    mutationFn: (status: 'PENDING' | 'approved' | 'declined') =>
       approveEmail({ user_email_id: emailData.id, status: status }),
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: ['get-email-manager'] });
@@ -216,7 +216,7 @@ const EmailMessContainerRef: React.ForwardRefRenderFunction<
           'No one'
         }
       />,
-      () => updateEmailStatus('DECLINED'),
+      () => updateEmailStatus('declined'),
     );
   };
 
