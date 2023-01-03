@@ -250,6 +250,7 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
         employeesList: contact.employeesList.map(
           (employ) =>
             new UserReceiveInfo(
+              employ.id,
               employ.avatar,
               employ.name,
               employ.mail,
@@ -463,6 +464,7 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
             employeesList: contact.employeesList.map(
               (employ) =>
                 new UserReceiveInfo(
+                  employ.id,
                   employ.avatar,
                   employ.name,
                   employ.mail,
@@ -501,6 +503,7 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
             employeesList: contact.employeesList.map(
               (employ) =>
                 new UserReceiveInfo(
+                  employ.id,
                   employ.avatar,
                   employ.name,
                   employ.mail,
@@ -538,6 +541,7 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
             employeesList: contact.employeesList.map(
               (employ) =>
                 new UserReceiveInfo(
+                  employ.id,
                   employ.avatar,
                   employ.name,
                   employ.mail,

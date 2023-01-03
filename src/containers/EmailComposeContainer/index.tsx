@@ -116,6 +116,7 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
           employeesList: (dept.users || []).map(
             (user) =>
               new UserReceiveInfo(
+                user.id,
                 user.avatar,
                 `${user.first_name} ${user.last_name}`,
                 user.email,
