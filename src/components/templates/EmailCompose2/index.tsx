@@ -43,6 +43,7 @@ import React from 'react';
 import classNames from 'classnames';
 import _ from 'lodash';
 import SignatureTmpTemplate from '@layouts/SignatureTmpTemplate';
+import LoadingButton from '@mui/lab/LoadingButton';
 
 export interface CustomFile extends File {
   percentage: number;
@@ -72,6 +73,7 @@ interface EmailComposeProps {
   inputContactBlocks: InputContactBlock[];
   method: UseFormReturn<EmailComposeFields>;
   index?: number;
+  isSubmitting?: boolean;
   isFullScreen?: boolean;
   isShowCCForm?: boolean;
   attachFiles: (File | undefined)[];
@@ -109,6 +111,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
   inputContactBlocks,
   method,
   index,
+  isSubmitting = false,
   isFullScreen = false,
   selectedDate,
   isShowCCForm = false,
@@ -533,7 +536,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                   />
                   <AttachFileIcon className="text-[#7D7E80]" />
                 </Button>
-                <CustomButton
+                {/* <CustomButton
                   padding="8px 10px"
                   classNameLabel="pr-1"
                   label={selectedDate ? 'SEND' : 'SEND NOW'}
@@ -545,7 +548,30 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                   beforeIcon={<SendIcon fontSize="small" />}
                   isAfterIcon={Boolean(selectedDate)}
                   afterIcon={<AccessTimeIcon fontSize="small" />}
-                />
+                /> */}
+                <LoadingButton
+                  loading={isSubmitting}
+                  type="submit"
+                  loadingPosition='start'
+                  sx={{
+                    backgroundColor: "#554CFF",
+                    color: '#fff',
+                    padding: `${rem(6)} ${rem(16)}`,
+                    '&:hover': {
+                      backgroundColor: "#6d66fb",
+                    },
+                    '&.MuiLoadingButton-root.Mui-disabled': {
+                      color: '#c6c5c5',
+                      '& .MuiButton-startIcon': {
+                        mr: 0
+                      }
+                    }
+                  }}
+                  startIcon={<SendIcon fontSize="small" />}
+                  endIcon={selectedDate ? <AccessTimeIcon fontSize="small" /> : undefined}
+                >
+                  {selectedDate ? 'SEND' : 'SEND NOW'}
+                </LoadingButton>
               </Box>
             </Box>
             <ModalBase

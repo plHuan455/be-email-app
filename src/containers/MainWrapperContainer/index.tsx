@@ -36,6 +36,7 @@ import { emailRegex } from '@constants/constants';
 import { emailData } from '@layouts/EmailStatusBar';
 
 interface EmailComposeContextTypes {
+  isEmailSending?: boolean;
   inputContactBlocks: InputContactBlock[];
   setInputContactBlocks: React.Dispatch<React.SetStateAction<InputContactBlock[]>>;
   method?: UseFormReturn<EmailComposeFields>;
@@ -52,6 +53,7 @@ interface EmailComposeContextTypes {
 }
 
 export const EmailComposeContext = createContext<EmailComposeContextTypes>({
+  isEmailSending: false,
   inputContactBlocks: [],
   setInputContactBlocks: () => undefined,
   triggerClearData: false,
@@ -735,6 +737,7 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
 
   const emailContextValue = useMemo(() => {
     return {
+      isEmailSending: isEmailComposeSubmitting,
       inputContactBlocks,
       setInputContactBlocks,
       method,

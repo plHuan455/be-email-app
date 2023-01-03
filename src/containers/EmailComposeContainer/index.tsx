@@ -79,6 +79,7 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
   const [attachFiles, setAttachFiles] = useState<(File | undefined)[]>([]);
 
   const {
+    isEmailSending,
     inputContactBlocks,
     setInputContactBlocks,
     method,
@@ -326,6 +327,7 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
     <>
       <motion.div animate={ringAnimationControl} transition={{ duration: 0.2 }}>
         <EmailCompose2
+          isSubmitting={isEmailSending}
           inputContactBlocks={inputContactBlocks}
           method={method}
           attachFiles={attachFiles}
