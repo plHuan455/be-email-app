@@ -1,5 +1,5 @@
 import { useTranslation } from '@@packages/localization/src';
-import { removeHashtag } from '@api/hashtag';
+import { removeHashtag, updateHashtag } from '@api/hashtag';
 import Hashtag from '@components/atoms/Hashtag';
 import AlertDialog, { useAlertDialog } from '@components/molecules/AlertDialog';
 import EditHashtag from '@components/molecules/EditHashtag';
@@ -7,7 +7,7 @@ import ModalEmailList, { StatusOptions } from '@components/molecules/ModalEmailL
 import { Box } from '@mui/material';
 import { setEmailsList } from '@redux/Email/reducer';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
@@ -21,7 +21,9 @@ interface Props {
   catalog: string;
   color: string;
   index: number;
+  hashtagEditingIndex: number;
   notiNumber: number;
+  setHashtagEditingIndex: (value: number) => void;
 }
 
 const HashtagContainer: React.FC<Props> = ({
@@ -31,13 +33,14 @@ const HashtagContainer: React.FC<Props> = ({
   catalog,
   color = '#4BAAA2',
   notiNumber,
+  hashtagEditingIndex,
+  setHashtagEditingIndex,
 }) => {
   // NavLink
   const NAV_LINK_TO = `/emails/catalog/${catalog}`;
   // useState
   const [modalStatus, setModalStatus] = useState(false);
   const [isHover, setIsHover] = useState(false);
-  const [isEdit, setIsEdit] = useState(false);
   const [formData, setFormData] = useState({
     name: catalog,
   });
@@ -53,6 +56,11 @@ const HashtagContainer: React.FC<Props> = ({
 
   //   useNavigate
   const navigate = useNavigate();
+
+  // useMemo
+  const currentHashtag = useMemo(() => {
+    return catalog;
+  }, []);
 
   //   useAlertDialog
   const {
@@ -79,6 +87,20 @@ const HashtagContainer: React.FC<Props> = ({
     },
   });
 
+  const { mutate: editHashtag } = useMutation({
+    mutationKey: ['update-hashtag'],
+    mutationFn: (params: { current_hashtag: string; new_hashtag: string }) =>
+      updateHashtag(params),
+    onMutate: () => setIsLoading(true),
+    onSuccess: () => {
+      setIsLoading(false);
+      setHashtagEditingIndex(-1);
+      toast.success('Edit Successfully!');
+      queryClient.invalidateQueries({ queryKey: ['get-all-email-status'] });
+    },
+    onError: () => setIsLoading(false),
+  });
+
   //   Handle FNC
   const handleChangeModalStatus = () => {
     // setModalStatus(false);
@@ -98,7 +120,7 @@ const HashtagContainer: React.FC<Props> = ({
           break;
 
         default:
-          setIsEdit(true);
+          setHashtagEditingIndex(index);
           console.log('db Click');
           break;
       }
@@ -141,7 +163,7 @@ const HashtagContainer: React.FC<Props> = ({
 
   return (
     <Box key={index}>
-      {!isEdit ? (
+      {!(index === hashtagEditingIndex) ? (
         <Hashtag
           NAV_LINK_TO={NAV_LINK_TO}
           isHover={isHover}
@@ -158,12 +180,13 @@ const HashtagContainer: React.FC<Props> = ({
           formData={formData}
           onChange={(formData) => setFormData(formData)}
           onSubmit={() => {
-            console.log('edited Hashtag');
-            setIsEdit(false);
-            toast.success('Edit Successfully!');
+            editHashtag({
+              current_hashtag: currentHashtag,
+              new_hashtag: formData.name,
+            });
           }}
           onCancel={() => {
-            setIsEdit(false);
+            setHashtagEditingIndex(-1);
           }}
         />
       )}

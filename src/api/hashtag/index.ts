@@ -5,6 +5,7 @@ const HASHTAG_MAIN_API = '/v1/api/user/hashtag';
 
 const HASHTAG_API = {
   remove: `${HASHTAG_MAIN_API}/remove`,
+  rename: `${HASHTAG_MAIN_API}/rename`,
 };
 
 const removeHashtag = async (params: {
@@ -21,4 +22,17 @@ const removeHashtag = async (params: {
   return res.data;
 };
 
-export { removeHashtag };
+const updateHashtag = async (params: {
+  current_hashtag: string;
+  new_hashtag: string;
+}): Promise<AxiosResponse<any>> => {
+  const res = await ApiClient.put(HASHTAG_API.rename, undefined, {
+    ...params,
+    subject: 'all',
+    user_email_id: 0,
+  });
+
+  return res.data;
+};
+
+export { removeHashtag, updateHashtag };
