@@ -10,12 +10,14 @@ interface EmailTemplateCardProps {
   name: string;
   description: string;
   src: string;
+  onUpdateClick: () => void;
 }
 
 const EmailTemplateCard: React.FC<EmailTemplateCardProps> = ({
   src,
   name,
-  description
+  description,
+  onUpdateClick
 }) => {
   const [isHover, setIsHover] = useState<boolean>(false);
   const [isOpenMenuActions, setIsOpenMenuActions] = useState<boolean>(false);
@@ -79,7 +81,7 @@ const EmailTemplateCard: React.FC<EmailTemplateCardProps> = ({
             ]}
             onItemClick={(value) => {
               if (value === 0) {
-                // onDepartmentUpdateClick(row.id);
+                onUpdateClick();
               }
               if (value === 1) {
                 // onDepartmentDeleteClick(row.id);
