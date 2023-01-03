@@ -112,7 +112,11 @@ const EmailMess: React.FC<Props> = ({
   const sentAt = new Date(emailData.send_at);
   const approveAt = new Date(emailData.approve_at);
 
-  const cloneSendTo = !!emailData.email.to ? [...emailData.email.to] : [];
+  const cloneSendTo = [
+    ...(emailData.email.to ?? []),
+    ...(emailData.email.cc ?? []),
+    ...(emailData.email.bcc ?? []),
+  ];
 
   // useMemo
   const emailActionType = useMemo(() => {

@@ -1,3 +1,4 @@
+import { InputContactBlock } from '@components/molecules/AutoCompleteReceive';
 import EmailReplyMess from '@components/molecules/EmailReplyMess';
 import React, { useState } from 'react';
 import ReplyMessLayoutContainer from './ReplyMessLayout';
@@ -31,13 +32,24 @@ const Input: React.FC<InputProps> = ({ onClickInput }) => {
 
 interface LayoutModalProps {
   isShow: boolean;
+  receiversList: InputContactBlock[];
   onOpen: () => void;
   onClose: () => void;
 }
 
-const LayoutModal: React.FC<LayoutModalProps> = ({ isShow, onOpen, onClose }) => {
+const LayoutModal: React.FC<LayoutModalProps> = ({
+  isShow,
+  receiversList,
+  onOpen,
+  onClose,
+}) => {
   return (
-    <ReplyMessLayoutContainer isShow={isShow} onClose={onClose} onOpen={onOpen} />
+    <ReplyMessLayoutContainer
+      receiversList={receiversList}
+      isShow={isShow}
+      onClose={onClose}
+      onOpen={onOpen}
+    />
   );
 };
 
