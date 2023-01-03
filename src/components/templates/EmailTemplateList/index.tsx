@@ -2,6 +2,7 @@ import EmailTemplateCard from "@components/organisms/EmailTemplateCard";
 import { Typography, useTheme } from "@mui/material";
 import { Box } from "@mui/system"
 import { rem } from "@utils/functions";
+import { NavLink } from "react-router-dom";
 
 export interface EmailTemplateItem {
   id: number;
@@ -38,6 +39,13 @@ const EmailTemplateList: React.FC<EmailTemplateListProps> = ({
         display="flex"
         sx={{margin: rem(-12), flexWrap: 'wrap'}}
       >
+        {emailTemplateList.length === 0 && (
+          <Box sx={{py: rem(12), width: '100%'}}>
+            <Typography textAlign="center">
+              There's is no template <NavLink to="/template/add" style={{color: '#554cff'}}>add template</NavLink>
+            </Typography>
+          </Box>
+        )}
         {emailTemplateList.map(value => (
           <Box
             sx={{ 

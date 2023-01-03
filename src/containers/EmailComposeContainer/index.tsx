@@ -12,7 +12,7 @@ import draftToHtml from 'draftjs-to-html';
 import { convertToRaw } from 'draft-js';
 import dayjs, { Dayjs } from 'dayjs';
 import { useAppDispatch, useAppSelector } from '@redux/configureStore';
-import { getEditorStateFormHtmlString } from '@utils/functions';
+import { getEditorStateFormHtmlString, rem } from '@utils/functions';
 import AlertDialog, { useAlertDialog } from '@components/molecules/AlertDialog';
 dayjs.extend(utc);
 import { MinimizeEmailColor } from '@components/organisms/MinimizeEmail/interface';
@@ -386,7 +386,7 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
           setSelectedTemplate(undefined);
         }}
       >
-        <Box sx={{width: '80vw'}}>
+        <Box sx={{width: '80vw', minHeight: rem(100)}}>
           <EmailTemplateList
             selectedTemplateId={selectedTemplate?.id}
             onTemplateClick={handleApplyTemplate}
