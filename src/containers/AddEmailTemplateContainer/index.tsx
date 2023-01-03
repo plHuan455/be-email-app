@@ -5,6 +5,7 @@ import { EditorState } from "draft-js";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from 'yup';
+import { useMutation } from "@tanstack/react-query";
 
 interface AddEmailTemplateContainerProps {}
 
@@ -25,6 +26,14 @@ const AddEmailTemplateContainer: React.FC<AddEmailTemplateContainerProps> = () =
 
   const [isShowFormModal, setIsShowFormModal] = useState<boolean>(false);
 
+  const {mutate: createTemplateMutate, isLoading: isTemplateCreating} = useMutation({
+    mutationKey: ['add-email-template-create'],
+    mutationFn: () => {
+      // TODO: STORE THUMP IMAGE AND CREATE TEMPLATE
+      return new Promise(()=>{})
+    }
+  })
+
   const handleClearClick = () => {
     method.resetField('editor');
   }
@@ -38,22 +47,26 @@ const AddEmailTemplateContainer: React.FC<AddEmailTemplateContainerProps> = () =
   }
 
   const handleSubmit = async (values: AddEmailTemplateFields) => {
-    console.log(values);
     setIsShowFormModal(false);
 
     const element = document.querySelector('.public-DraftEditor-content > div');
-    console.log(element);
     if(!element) return;
 
     htmlToImage
       .toCanvas(element as HTMLElement)
       .then(async function(dataUrl) {
         document.getElementById('root')?.appendChild(dataUrl);
+        // preView image
         const image = dataUrl.toDataURL('image/png');
-        const link = document.createElement('a');
-        link.download = 'image.png';
-        link.href = image;
-        link.click();
+
+        // TODO: ADD ARGUMENTS
+        createTemplateMutate();
+
+        // download image
+        // const link = document.createElement('a');
+        // link.download = 'image.png';
+        // link.href = image;
+        // link.click();
       })
       .catch(err => console.log(err))
   }

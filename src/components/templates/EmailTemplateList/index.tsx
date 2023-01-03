@@ -12,10 +12,12 @@ export interface EmailTemplateItem {
 
 interface EmailTemplateListProps {
   emailTemplateList: EmailTemplateItem[];
+  onUpdateClick: (templateId: number) => void;
 }
 
 const EmailTemplateList: React.FC<EmailTemplateListProps> = ({
-  emailTemplateList
+  emailTemplateList,
+  onUpdateClick,
 }) => {
   const theme = useTheme();
   return (
@@ -44,6 +46,7 @@ const EmailTemplateList: React.FC<EmailTemplateListProps> = ({
               src={value.imgSrc}
               name={value.name}
               description={value.description}
+              onUpdateClick={() => onUpdateClick(value.id)}
             />
           </Box>
         ))}
