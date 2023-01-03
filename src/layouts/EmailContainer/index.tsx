@@ -18,6 +18,7 @@ const EmailContainer = () => {
   const preEmailId = useRef<number>();
   const isFirstRender = useRef<boolean>(true);
   const preContainerScrollHeight = useRef<number>();
+  const preContainerScroll = useRef<{height: number; top: number}>();
   const intersectingEmailMessStack = useRef<
     { target: HTMLDivElement; emailData: EmailResponse }[]
   >([]);
@@ -67,9 +68,9 @@ const EmailContainer = () => {
 
   useEffect(() => {
     const container = containerRef.current;
-    if (container && preContainerScrollHeight.current !== undefined) {
+    if (container && preContainerScroll.current !== undefined) {
       container.scrollTop =
-        container.scrollHeight - preContainerScrollHeight.current;
+        container.scrollHeight - preContainerScroll.current.height + preContainerScroll.current.top;
     }
   }, [pageParams]);
 
@@ -95,9 +96,12 @@ const EmailContainer = () => {
     const { scrollHeight, scrollTop, clientHeight } = container;
     setIsShowScrollButton(scrollTop + clientHeight + 100 < scrollHeight);
 
+    preContainerScroll.current = { 
+      height: container.scrollHeight,
+      top: container.scrollTop,
+    }
+    
     if (container.scrollTop === 0) {
-      preContainerScrollHeight.current = container.scrollHeight;
-
       // TODO: REMOVE THIS FAKE DELAY FAKE API
       setTimeout(() => {
         setPageParams((preState) => ({ ...preState, page: preState.page + 1 }));
