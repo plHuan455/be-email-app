@@ -164,8 +164,8 @@ const EmailMess: React.FC<Props> = ({
       ? emailData.hashtags.map((val) => ({
           notiNumber: 0,
           status: 'hashtag',
-          title: `#${val}`,
-          value: val,
+          title: `#${val.hashtag}`,
+          value: val.hashtag,
           color: '#4BAAA2',
         }))
       : [];

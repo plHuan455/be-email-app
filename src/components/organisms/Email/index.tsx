@@ -10,7 +10,12 @@ import React, {
 } from 'react';
 
 import { Email, UserInfo, UserReceiveInfo } from './Interface';
-import { deleteEmail, EmailResponse, updateEmailWithQuery } from '@api/email';
+import {
+  deleteEmail,
+  EmailResponse,
+  HashtagType,
+  updateEmailWithQuery,
+} from '@api/email';
 
 import { isEmpty } from 'lodash';
 import EmailMessEmpty from '../EmailMessEmpty';
@@ -304,7 +309,11 @@ const Email: React.FC<Props> = ({
           onChangeStatus={changeEmailStatus}
           index={index}
           onUpdateHashtagClick={(hashtagsList) => {
-            const hashtags = hashtagsList.map((hashtag) => hashtag.value);
+            const hashtags: HashtagType[] = hashtagsList.map((hashtag) => ({
+              hashtag: hashtag.value,
+              user_id: Number(localStorage.getItem('current_id') ?? '0'),
+              user_email: email.id,
+            }));
             updateHashtagMutate({
               id: email.id,
               data: { hashtags },

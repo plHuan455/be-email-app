@@ -1,10 +1,12 @@
 import { useTranslation } from '@@packages/localization/src';
+import { removeHashtag } from '@api/hashtag';
 import Hashtag from '@components/atoms/Hashtag';
 import AlertDialog, { useAlertDialog } from '@components/molecules/AlertDialog';
 import EditHashtag from '@components/molecules/EditHashtag';
 import ModalEmailList, { StatusOptions } from '@components/molecules/ModalEmailList';
 import { Box } from '@mui/material';
 import { setEmailsList } from '@redux/Email/reducer';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import React, { useCallback, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
@@ -40,6 +42,9 @@ const HashtagContainer: React.FC<Props> = ({
     name: catalog,
   });
 
+  // useQueryClient
+  const queryClient = useQueryClient();
+
   //   useTranslation
   const t = useTranslation();
 
@@ -61,6 +66,18 @@ const HashtagContainer: React.FC<Props> = ({
     setIsLoading,
     title: titleDialog,
   } = useAlertDialog();
+
+  // useMutation
+  const { mutate: deleteHashtag, isLoading: isRemovingHashtag } = useMutation({
+    mutationKey: ['remove-hashtag'],
+    mutationFn: (params: { hashtag: string; subject: 'all' | 'only' }) =>
+      removeHashtag(params),
+    onSuccess: () => {
+      onClose();
+      toast.success('Delete Successfully!');
+      queryClient.invalidateQueries({ queryKey: ['get-all-email-status'] });
+    },
+  });
 
   //   Handle FNC
   const handleChangeModalStatus = () => {
@@ -97,7 +114,7 @@ const HashtagContainer: React.FC<Props> = ({
     `,
         catalog,
       ),
-      () => console.log('Agree Delete'),
+      () => deleteHashtag({ hashtag: catalog, subject: 'all' }),
     );
   };
 
