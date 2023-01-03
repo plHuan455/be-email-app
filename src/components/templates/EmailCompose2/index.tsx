@@ -236,7 +236,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
           className="p-8 flex items-center justify-center w-full h-full"
           onSubmit={method.handleSubmit(onSubmit)}>
           <Box
-            className={`flex flex-col h-full w-full mx-auto shadow-xl bg-white rounded-3xl overflow-hidden z-5 transition-all ${
+            className={`flex flex-col h-full w-full mx-auto shadow-xl bg-white rounded-3xl overflow-hidden z-[80] transition-all ${
               isFullScreen && 'fixed top-0 left-0 bottom-0'
             }`}>
             <WindowComposeActions

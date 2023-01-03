@@ -380,7 +380,7 @@ const EmailMess: React.FC<Props> = ({
           <Box className="w-full flex">
             <Box className="flex-1">
               <EmailActions
-                isImportant={!!emailData.is_favorite}
+                isImportant={!!emailData.is_important}
                 type={type}
                 isActiveClick={true}
                 emailIndex={index}
@@ -396,6 +396,7 @@ const EmailMess: React.FC<Props> = ({
           <Avatar alt={userInfo.name} src={userInfo.avatar} />
         </Box>
         {_renderEmailActionTypeIcon}
+        <Box>{emailData.is_important && <Icon icon="star" color="#FAAF00" />}</Box>
       </Box>
       <Box
         sx={{ boxShadow: '0px 10px 23px -15px rgba(159,159,159,0.54)' }}

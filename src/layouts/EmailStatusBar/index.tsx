@@ -357,6 +357,7 @@ const EmailStatusBar = (props: Props) => {
         height: '100%',
         width: '100%',
         padding: '24px',
+        paddingInline: '12px',
         overflowX: 'hidden',
         overflowY: 'scroll',
         // borderRight: '1px solid #e5e7eb',

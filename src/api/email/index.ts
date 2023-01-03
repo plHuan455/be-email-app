@@ -25,9 +25,10 @@ export interface CreateEmailParam {
     text_html?: string;
     cc?: string[];
     bcc?: string[];
-    is_favorite?: boolean;
     attachs?: { path?: string }[];
   };
+  status?: string;
+  is_important?: boolean;
   action?: string;
   send_at?: string;
   hashtags?: HashtagType[] | string[];
@@ -52,7 +53,7 @@ export interface EmailResponse {
   email_id: string;
   send_at: string;
   created_at: string;
-  is_favorite?: boolean;
+  is_important?: boolean;
   email: {
     id: number;
     from: string;

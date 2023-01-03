@@ -12,7 +12,7 @@ export interface EmailUpdateQuery {
   send_at?: string;
   hashtags?: HashtagType[];
   status?: string;
-  is_favorite?: boolean;
+  is_important?: boolean;
 }
 
 export interface EmailCatalogResponse {
