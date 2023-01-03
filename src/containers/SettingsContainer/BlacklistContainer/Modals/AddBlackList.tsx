@@ -9,7 +9,7 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import * as yup from 'yup';
 
-const AddBlackListModal = ({ isOpen, onClose }) => {
+const AddBlackListModal = ({ isOpen, onClose, onAddSuccess }) => {
   const [email, setEmail] = useState('');
   const schema = yup.object().shape({
     email: yup.string().email().required('email is required!'),
@@ -20,7 +20,6 @@ const AddBlackListModal = ({ isOpen, onClose }) => {
     handleSubmit: _handleSubmit,
     formState: { errors },
   } = useForm({
-    // defaultValues: formData,
     resolver: schema && yupResolver(schema),
     mode: 'all',
   });
@@ -29,17 +28,15 @@ const AddBlackListModal = ({ isOpen, onClose }) => {
     try {
       // call create here
       const currentUserId = localStorage.getItem('current_id');
-      const params = { user_email: email, user_id: Number(currentUserId) };
+      const params = { user_email: email };
 
       await addMailToBlackList(params);
-      toast.success('Add to blacklist success!');
-      onClose && onClose();
-      // navigate('..');
+      toast.success('Add email to blacklist success!');
+      onAddSuccess && onAddSuccess();
     } catch (error: any) {
       console.error(new Error(error));
       toast.error(error?.response?.message || 'Has Error');
     }
-    console.log('email -->', email);
   };
 
   return (
