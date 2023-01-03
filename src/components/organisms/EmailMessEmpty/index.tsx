@@ -60,13 +60,13 @@ const EmailMessEmpty: React.FC<Props> = ({ isLoading = false }) => {
           <Skeleton
             animation={isLoading ? 'pulse' : false}
             variant="rounded"
-            className="rounded-md my-2 h-[28px]"
+            className="rounded-md my-2 h-[16px]"
           />
           {/* Email Send To */}
           <Skeleton
             animation={isLoading ? 'pulse' : false}
             variant="rounded"
-            className="rounded-md my-2 h-[28px]"
+            className="rounded-md my-2 h-[16px]"
           />
           {/* <EmailStatus emailStatus={'pending'} /> */}
         </Box>
@@ -75,7 +75,7 @@ const EmailMessEmpty: React.FC<Props> = ({ isLoading = false }) => {
           <Skeleton
             animation={isLoading ? 'pulse' : false}
             variant="rounded"
-            className="rounded-md h-[200px]"
+            className="rounded-md h-[190px]"
           />
           <Box>
             <Skeleton
