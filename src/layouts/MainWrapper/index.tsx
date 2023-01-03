@@ -71,7 +71,13 @@ function MainWrapper({ children }: { children: React.ReactNode }) {
         body: payload.data.body,
       });
       setShow(true);
-      dispatch(unShiftNotificationList({...payload.data, id: Date.now(), createdAt: new Date().toISOString()}));
+      dispatch(
+        unShiftNotificationList({
+          ...payload.data,
+          id: Date.now(),
+          createdAt: new Date().toISOString(),
+        }),
+      );
     })
     .catch((err) => console.log('failed', err));
 
@@ -88,7 +94,7 @@ function MainWrapper({ children }: { children: React.ReactNode }) {
   };
 
   const handleLogout = useCallback(() => {
-    deleteDeviceKey().then(() => {
+    deleteDeviceKey().finally(() => {
       auth.signout(() => {
         localStorage.removeItem('device_key_id');
         localStorage.removeItem('token');

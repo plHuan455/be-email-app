@@ -117,6 +117,7 @@ const EmailMessContainerRef: React.ForwardRefRenderFunction<
       approve_after: number;
     }) => await approveEmail(query),
     onSuccess(_, params) {
+      queryClient.invalidateQueries({ queryKey: ['get-email-manager'] });
       queryClient.invalidateQueries({ queryKey: ['get-emails-list'] });
 
       switch (params.status) {

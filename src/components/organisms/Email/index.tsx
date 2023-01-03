@@ -34,6 +34,8 @@ import EmailActionLayoutContainer, {
   useEmailActionLayout,
 } from '@containers/EmailActionsLayoutContainer';
 import { InputContactBlock } from '@components/molecules/AutoCompleteReceive';
+import { AddBlacklist } from '@api/blacklist';
+import { toast } from 'react-toastify';
 
 interface ModalForm {
   title: string;
@@ -106,8 +108,7 @@ const Email: React.FC<Props> = ({
       mutationKey: ['email-update-is-important'],
       mutationFn: (params: { id: number; data: EmailUpdateQuery }) =>
         updateEmailWithQuery(params.id, {
-          email: { ...params.data, is_favorite: !params.data.is_favorite },
-          send_at: params.data.send_at,
+          is_important: !params.data.is_important,
         }),
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['get-emails-list'] });
@@ -116,15 +117,31 @@ const Email: React.FC<Props> = ({
   const { mutate: updateEmailStatus, isLoading: isLoadingUpdateEmailStatus } =
     useMutation({
       mutationKey: ['email-update-status'],
-      mutationFn: (params: { id: number; data: EmailUpdateQuery }) =>
+      mutationFn: (params: {
+        id: number;
+        data?: EmailUpdateQuery;
+        status?: string;
+      }) =>
         updateEmailWithQuery(params.id, {
           email: { ...params.data },
-          send_at: params.data.send_at,
+          status: params.status,
+          send_at: params.data?.send_at,
         }),
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['get-emails-list'] });
+        queryClient.invalidateQueries({ queryKey: ['get-email-manager'] });
       },
     });
+
+  const { mutate: addBlacklist } = useMutation({
+    mutationKey: ['add-black-list'],
+    mutationFn: (user_email: string) => AddBlacklist(user_email),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['get-emails-list'] });
+      queryClient.invalidateQueries({ queryKey: ['get-email-manager'] });
+      toast.success('Add Blacklist successfully!');
+    },
+  });
 
   useEffect(() => {
     if (!isEmpty(EmailsList)) {
@@ -210,8 +227,7 @@ const Email: React.FC<Props> = ({
 
                 const spamEmail = cloneEmailsList.splice(index, 1);
 
-                dispatch(addSpamEmail(spamEmail));
-                dispatch(setEmailsList(cloneEmailsList));
+                addBlacklist(spamEmail[0].email.from);
 
                 handleCloseModal();
               },
@@ -231,7 +247,7 @@ const Email: React.FC<Props> = ({
 
             updateEmailStatus({
               id: email.id,
-              data: { ...email, status: 'unread' },
+              status: 'unread',
             });
             break;
           }

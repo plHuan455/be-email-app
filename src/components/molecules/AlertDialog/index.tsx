@@ -110,7 +110,7 @@ const AlertDialog: React.FC<AlertDialogProps> = ({
             {descriptionLabel}
           </DialogContentText>
         </DialogContent>
-        <DialogActions>
+        <DialogActions className="flex justify-around">
           {isShowDisagreeBtn && (
             <Button
               sx={{
