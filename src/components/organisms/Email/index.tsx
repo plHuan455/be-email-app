@@ -189,7 +189,7 @@ const Email: React.FC<Props> = ({
     return receiverList.map((receiver, index) => ({
       id: index.toString(),
       contact_name: receiver,
-      employeesList: [new UserReceiveInfo('', receiver, receiver, true, 'cc')],
+      employeesList: [new UserReceiveInfo(index.toString(), '', receiver, receiver, true, 'cc')],
     }));
   }, [EmailsList]);
 
