@@ -10,8 +10,11 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import { Controller, FormProvider, UseFormReturn } from 'react-hook-form';
 import { EmailComposeFields } from '@components/templates/EmailCompose2';
 import AttachFiles2 from '../AttachFiles2';
+import { InputContactBlock } from '../AutoCompleteReceive';
 
 import styles from './style.module.scss';
+import AutoCompleteReceive from '../AutoCompleteReceive';
+import classNames from 'classnames';
 
 interface Test {
   editor: { focus: () => void };
@@ -20,15 +23,21 @@ interface Test {
 interface Props {
   method: UseFormReturn<EmailComposeFields>;
   isShow: boolean;
+  receivesList: InputContactBlock[];
+
   onOpen: () => void;
   onClose: () => void;
+  onSubmit: (values: EmailComposeFields) => void;
 }
 
 const EmailReplyMessLayout: React.FC<Props> = ({
   method,
   isShow,
+  receivesList,
+
   onClose,
   onOpen,
+  onSubmit,
 }) => {
   // useRef
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -127,21 +136,68 @@ const EmailReplyMessLayout: React.FC<Props> = ({
         {/* Mask Layout */}
         <Box className="w-full h-full bg-slate-600/50" onClick={onClose}></Box>
         <Box
-          className={`${styles.mainCompose} absolute left-1/2 -translate-y-1/2 -translate-x-1/2 h-[80%]`}>
+          className={`${styles.mainCompose} absolute left-1/2 -translate-y-1/2 -translate-x-1/2 h-[90%]`}>
           <FormProvider {...method}>
             <Box className="min-w-[600px] h-full bg-white rounded-2xl border border-[#E3E3E3]">
               <Box className="p-4 flex flex-col h-full">
                 {/* Header */}
                 <Box>
-                  <EmailComposeFormGroup label="Re">
-                    <SingleOTPInputComponent className="outline-none w-full text-black text-[18px] font-bold h-full" />
+                  {/* <Controller
+                    name="cc"
+                    render={({ field: { value, onChange } }) => {
+                      return (
+                        <EmailComposeFormGroup
+                          classNameContent="flex items-center"
+                          label="To :">
+                          <AutoCompleteReceive
+                            className="max-h-[80px] overflow-scroll"
+                            isReadOnly
+                            fullWidth
+                            forField={'cc'}
+                            defaultValue={receivesList}
+                            data={receivesList}
+                            value={value}
+                            onChangeValue={(v) => {
+                              // onChange(v);
+                              onChange(value);
+                              // setToData(v);
+                              // update();
+                              // method.setValue(
+                              //   'contactBlock',
+                              //   Array.from(new Set([...inputContactBlocks, ...v])),
+                              // );
+                            }}
+                          />
+                        </EmailComposeFormGroup>
+                      );
+                    }}
+                  /> */}
+
+                  {/* SUBJECT */}
+                  <EmailComposeFormGroup label={'Subject:'}>
+                    <Controller
+                      name="subject"
+                      render={({ field: { value, onChange } }) => (
+                        <SingleOTPInputComponent
+                          value={value}
+                          onChange={(e) => {
+                            onChange(e.target.value);
+                          }}
+                          className="outline-none w-full text-black text-[18px] font-bold h-full"
+                        />
+                      )}
+                    />
                   </EmailComposeFormGroup>
+                  {/* <SingleOTPInputComponent className="outline-none w-full text-black text-[18px] font-bold h-full" /> */}
+                  {/* </EmailComposeFormGroup> */}
                 </Box>
                 {/* Content */}
                 <Box className="flex-1 overflow-scroll">{_renderReceiverList()}</Box>
                 {/* Footer */}
                 <Box className="py-2">
-                  <IconButton className="bg-transparent text-[#7D7E80] hover:text-[#5724C5] hover:bg-transparent">
+                  <IconButton
+                    onClick={method.handleSubmit(onSubmit)}
+                    className="bg-transparent text-[#7D7E80] hover:text-[#5724C5] hover:bg-transparent">
                     <SendOutlinedIcon fontSize="large" />
                   </IconButton>
                   <IconButton

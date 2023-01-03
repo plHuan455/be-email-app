@@ -41,11 +41,11 @@ const EmailActionsLayout: React.FC<Props> = ({ isShow, onClose }) => {
           </Box>
         </Box>
       </Box>
-      <EmailReplyMessMain.LayoutModal
+      {/* <EmailReplyMessMain.LayoutModal
         isShow={isShowLayout}
         onClose={handleCloseLayout}
         onOpen={handleOpenLayout}
-      />
+      /> */}
     </Box>
   );
 };

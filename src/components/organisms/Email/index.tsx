@@ -9,7 +9,7 @@ import React, {
   useState,
 } from 'react';
 
-import { Email, UserInfo } from './Interface';
+import { Email, UserInfo, UserReceiveInfo } from './Interface';
 import { deleteEmail, EmailResponse, updateEmailWithQuery } from '@api/email';
 
 import { isEmpty } from 'lodash';
@@ -28,6 +28,7 @@ import EmailReplyMessMain, {
 import EmailActionLayoutContainer, {
   useEmailActionLayout,
 } from '@containers/EmailActionsLayoutContainer';
+import { InputContactBlock } from '@components/molecules/AutoCompleteReceive';
 
 interface ModalForm {
   title: string;
@@ -142,6 +143,31 @@ const Email: React.FC<Props> = ({
     },
     [EmailsList],
   );
+
+  const receiversList: InputContactBlock[] = useMemo(() => {
+    if (isEmpty(EmailsList)) return [];
+
+    const newestEmail = EmailsList[EmailsList.length - 1].email;
+
+    const CURRENT_EMAIL = localStorage.getItem('current_email');
+
+    const receiverList = [
+      newestEmail.from,
+      ...(newestEmail.to ?? []),
+      ...(newestEmail.cc ?? []),
+      ...(newestEmail.bcc ?? []),
+    ];
+
+    const index = receiverList.indexOf(CURRENT_EMAIL ?? '');
+
+    receiverList.splice(index, 1);
+
+    return receiverList.map((receiver, index) => ({
+      id: index.toString(),
+      contact_name: receiver,
+      employeesList: [new UserReceiveInfo('', receiver, receiver, true, 'cc')],
+    }));
+  }, [EmailsList]);
 
   const changeEmailStatus = useCallback(
     (status, index) => {
@@ -323,6 +349,7 @@ const Email: React.FC<Props> = ({
       <EmailReplyMessMain.Input onClickInput={handleOpenLayout} />
       <EmailReplyMessMain.LayoutModal
         isShow={isShowLayout}
+        receiversList={receiversList}
         onClose={handleCloseLayout}
         onOpen={handleCloseLayout}
       />
