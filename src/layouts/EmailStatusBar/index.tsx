@@ -15,6 +15,7 @@ import { isEmpty } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@redux/configureStore';
 import HashtagContainer from '@containers/HashtagContainer';
+import { number } from 'yargs';
 
 type Props = {};
 
@@ -144,6 +145,8 @@ const EmailStatusBar = (props: Props) => {
 
   const [emailSecTabs, setEmailSecTab] = useState<EmailTabs[]>(EmailTabsSecData);
 
+  const [hashtagEditingIndex, setHashtagEditingIndex] = useState<number>(-1);
+
   // useDispatch
   const dispatch = useDispatch();
 
@@ -219,9 +222,12 @@ const EmailStatusBar = (props: Props) => {
       queryClient.invalidateQueries({ queryKey: ['get-all-email-status'] });
   }, [notificationList]);
 
-  const handleClickCreateHashTag = (e) => {
-    setIsCreateHashTag(true);
-  };
+  const handleChangeHashtagEditing = useCallback(
+    (value: number) => {
+      setHashtagEditingIndex(value);
+    },
+    [hashtagEditingIndex],
+  );
 
   const handleCreateHashTag = (e) => {
     if (newHashTagValue === '') {
@@ -322,7 +328,8 @@ const EmailStatusBar = (props: Props) => {
                 title={item.title}
                 catalog={item.value}
                 status={item.status}
-                // emailData={item.emailData}
+                hashtagEditingIndex={hashtagEditingIndex}
+                setHashtagEditingIndex={handleChangeHashtagEditing}
                 index={index}
                 notiNumber={item.notiNumber ? item.notiNumber : 0}
               />
@@ -345,7 +352,7 @@ const EmailStatusBar = (props: Props) => {
         )} */}
       </Box>
     );
-  }, [hashtagTabs]);
+  }, [hashtagTabs, hashtagEditingIndex]);
 
   return (
     <Box
@@ -353,6 +360,7 @@ const EmailStatusBar = (props: Props) => {
         height: '100%',
         width: '100%',
         padding: '24px',
+        paddingInline: '12px',
         overflowX: 'hidden',
         overflowY: 'scroll',
         // borderRight: '1px solid #e5e7eb',

@@ -167,15 +167,18 @@ const InformationBar = (props: Props) => {
         status: 'Created At',
         date: dayjs(currEmailIntersecting?.created_at).format('lll'),
       },
-      {
+    ]
+
+    if(currEmailIntersecting?.status.toUpperCase() !== 'DRAFT') {
+      result.push({
         status: 'Sent At',
         date: dayjs(currEmailIntersecting?.send_at).format('lll'),
-      },
-    ]
+      })
+    }
 
     if(currEmailIntersecting?.approve_at) {
       result.push({
-        status: 'Approved At',
+        status: currEmailIntersecting.status.toUpperCase() === 'DECLINED' ? 'Declined At' : 'Approved At',
         date: dayjs(currEmailIntersecting?.approve_at).format('lll'),
       })
     }

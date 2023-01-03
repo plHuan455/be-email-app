@@ -12,17 +12,13 @@ export interface FileInfoTypes {
 interface AttachFiles2Props {
   inputId: string;
   fileList: (CustomFile | undefined)[];
-  fileUrls: (string | undefined)[];
-  emailIndex?: number;
   onUploaded: (index: number, url: string) => void;
   onDelete: (index: number) => void;
   onDeleteAll: () => void;
 }
 
 const AttachFiles2: React.FC<AttachFiles2Props> = ({
-  emailIndex,
   fileList,
-  fileUrls,
   onUploaded,
   onDelete,
   onDeleteAll,

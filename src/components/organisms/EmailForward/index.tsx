@@ -179,18 +179,6 @@ const EmailForward: React.FC<Props> = ({
     );
   };
 
-  const onChangeReceiversData = useCallback((e, newValue) => {
-    setNewReceivers(newValue);
-  }, []);
-
-  const onChangeCcData = useCallback((e, newValue) => {
-    setCc(newValue);
-  }, []);
-
-  const onChangeBccData = useCallback((e, newValue) => {
-    setBcc(newValue);
-  }, []);
-
   const handleSubmitEmail = async (e) => {
     const canSubmit = await check();
     const emailData = getAll();
@@ -205,7 +193,7 @@ const EmailForward: React.FC<Props> = ({
           cc: emailData.cc.map((item) => item.mail),
           bcc: emailData.bcc.map((item) => item.mail),
         },
-        hashtags : emailData.file,
+        hashtags: emailData.file,
       });
       toast.success(`Thành công!`);
       await reset();
@@ -219,65 +207,6 @@ const EmailForward: React.FC<Props> = ({
     return (
       <>
         <Box>
-          {/* <Box className="py-3">
-            <EmailComposeFormGroup
-              className="py-1"
-              label="To:"
-              isHaveBorderBottom={false}>
-              <AutoCompleteReceive
-                isReadOnly={isReadOnlyReceivers}
-                data={newSendTo}
-                defaultValue={newSendToDefault}
-                isShowCcFromLabel={status === 'forward'}
-                onClickCcFromLabel={handleClickCcFromLabel}
-                onChange={onChangeReceiversData}
-              />
-            </EmailComposeFormGroup>
-          </Box> */}
-        </Box>
-        <Box>
-          {/* Cc, From */}
-          {/* {isShowCcFrom && (
-            <Box className="mb-2">
-              <EmailComposeFormGroup
-                className="py-1"
-                label="Cc:"
-                isHaveBorderBottom={false}>
-                <AutoCompleteReceive
-                  isReadOnly={isReadOnlyReceivers}
-                  data={newSendTo}
-                  defaultValue={newSendToDefault}
-                  isShowCcFromLabel={false}
-                  onClickCcFromLabel={handleClickCcFromLabel}
-                  onChange={onChangeCcData}
-                />
-              </EmailComposeFormGroup>
-              <EmailComposeFormGroup
-                className="py-1"
-                label="Bcc:"
-                isHaveBorderBottom={false}>
-                <AutoCompleteReceive
-                  isReadOnly={isReadOnlyReceivers}
-                  data={newSendTo}
-                  defaultValue={newSendToDefault}
-                  isShowCcFromLabel={false}
-                  onClickCcFromLabel={handleClickCcFromLabel}
-                  onChange={onChangeBccData}
-                />
-              </EmailComposeFormGroup>
-              <EmailComposeFormGroup
-                className="py-1"
-                label="From:"
-                isHaveBorderBottom={false}>
-                <AutoCompleteReceive
-                  data={fromData}
-                  defaultValue={fromData}
-                  isShowCcFromLabel={false}
-                  isReadOnly={true}
-                />
-              </EmailComposeFormGroup>
-            </Box>
-          )} */}
           <Box>
             <Editor
               toolbarHidden

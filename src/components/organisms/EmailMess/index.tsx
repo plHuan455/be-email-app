@@ -25,6 +25,9 @@ import ScheduleSendIcon from '@mui/icons-material/ScheduleSend';
 import SendIcon from '@mui/icons-material/Send';
 import { color } from 'd3-color';
 import { data } from 'autoprefixer';
+import EmailActionLayoutContainer, {
+  useEmailActionLayout,
+} from '@containers/EmailActionsLayoutContainer';
 export interface UserRead {
   name: string;
   time: string;
@@ -109,7 +112,11 @@ const EmailMess: React.FC<Props> = ({
   const sentAt = new Date(emailData.send_at);
   const approveAt = new Date(emailData.approve_at);
 
-  const cloneSendTo = !!emailData.email.to ? [...emailData.email.to] : [];
+  const cloneSendTo = [
+    ...(emailData.email.to ?? []),
+    ...(emailData.email.cc ?? []),
+    ...(emailData.email.bcc ?? []),
+  ];
 
   // useMemo
   const emailActionType = useMemo(() => {
@@ -157,8 +164,8 @@ const EmailMess: React.FC<Props> = ({
       ? emailData.hashtags.map((val) => ({
           notiNumber: 0,
           status: 'hashtag',
-          title: `#${val}`,
-          value: val,
+          title: `#${val.hashtag}`,
+          value: val.hashtag,
           color: '#4BAAA2',
         }))
       : [];
@@ -373,7 +380,7 @@ const EmailMess: React.FC<Props> = ({
           <Box className="w-full flex">
             <Box className="flex-1">
               <EmailActions
-                isImportant={!!emailData.is_favorite}
+                isImportant={!!emailData.is_important}
                 type={type}
                 isActiveClick={true}
                 emailIndex={index}
@@ -389,6 +396,7 @@ const EmailMess: React.FC<Props> = ({
           <Avatar alt={userInfo.name} src={userInfo.avatar} />
         </Box>
         {_renderEmailActionTypeIcon}
+        <Box>{emailData.is_important && <Icon icon="star" color="#FAAF00" />}</Box>
       </Box>
       <Box
         sx={{ boxShadow: '0px 10px 23px -15px rgba(159,159,159,0.54)' }}

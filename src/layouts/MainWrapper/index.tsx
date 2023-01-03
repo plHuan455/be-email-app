@@ -83,7 +83,7 @@ function MainWrapper({ children }: { children: React.ReactNode }) {
   };
 
   const handleLogout = useCallback(() => {
-    deleteDeviceKey().then(() => {
+    deleteDeviceKey().finally(() => {
       auth.signout(() => {
         localStorage.removeItem('device_key_id');
         localStorage.removeItem('token');

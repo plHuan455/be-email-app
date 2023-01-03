@@ -17,7 +17,7 @@ import {
 } from './interface';
 import { number } from 'yup';
 export interface CreateEmailParam {
-  email: {
+  email?: {
     subject?: string;
     to?: string[];
     from?: string;
@@ -25,12 +25,13 @@ export interface CreateEmailParam {
     text_html?: string;
     cc?: string[];
     bcc?: string[];
-    is_favorite?: boolean;
-    attachs?: {path?: string}[];
+    attachs?: { path?: string }[];
   };
+  status?: string;
+  is_important?: boolean;
   action?: string;
   send_at?: string;
-  hashtags?: string[];
+  hashtags?: HashtagType[] | string[];
 }
 
 export interface attachs {
@@ -39,13 +40,20 @@ export interface attachs {
   path: string;
 }
 
+export interface HashtagType {
+  id?: number;
+  user_email: number;
+  user_id: number;
+  hashtag: string;
+}
+
 export interface EmailResponse {
   id: number;
   user_id: string;
   email_id: string;
   send_at: string;
   created_at: string;
-  is_favorite?: boolean;
+  is_important?: boolean;
   email: {
     id: number;
     from: string;
@@ -61,7 +69,7 @@ export interface EmailResponse {
     attachs?: attachs[];
     tags: [];
   };
-  hashtags: string[];
+  hashtags?: HashtagType[];
   type: string;
   status: string;
   approve_at: string;
@@ -108,11 +116,7 @@ export const EmailActions = async (params: {
 
 export const deleteAllWithIdList = async (ids: number[]) => {
   const url = `${API_EMAIL_USER}/action`;
-  const res = await Promise.all(
-    ids.map((value) =>
-      deleteEmail(String(value)),
-    ),
-  );
+  const res = await Promise.all(ids.map((value) => deleteEmail(String(value))));
   return res;
 };
 
@@ -265,7 +269,7 @@ export const updateEmailWithQuery = async (
 // Approve Email
 export const approveEmail = async (queryParam: {
   user_email_id: number;
-  status: 'PENDING' | 'approved' | 'DECLINED' | 'DRAFT';
+  status: 'PENDING' | 'approved' | 'DECLINED' | 'DRAFT' | 'declined';
   note?: string;
   approve_after?: number;
 }): Promise<AxiosResponse<EmailResponse>> => {

@@ -1,5 +1,6 @@
 import { Box, Button } from '@mui/material';
 import React, {
+  memo,
   ReactNode,
   useCallback,
   useEffect,
@@ -8,13 +9,11 @@ import React, {
   useState,
 } from 'react';
 
-import avatarImg from '@assets/images/avatars/avatar-2.jpg';
-import { Email, UserInfo } from './Interface';
-import EmailMess from '../EmailMess';
+import { Email, UserInfo, UserReceiveInfo } from './Interface';
 import {
   deleteEmail,
-  EmailActions,
   EmailResponse,
+  HashtagType,
   updateEmailWithQuery,
 } from '@api/email';
 
@@ -22,22 +21,21 @@ import { isEmpty } from 'lodash';
 import EmailMessEmpty from '../EmailMessEmpty';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@redux/configureStore';
-import {
-  addDeletedEmail,
-  addSpamEmail,
-  addUnreadEmail,
-  setDeletedEmails,
-  setEmailsList,
-} from '@redux/Email/reducer';
+import { addSpamEmail, addUnreadEmail, setEmailsList } from '@redux/Email/reducer';
 import ModalBase from '@components/atoms/ModalBase';
-import { useParams, useSearchParams } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import { useSearchParams } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { number } from 'yup';
 import { EmailUpdateQuery } from '@api/email/interface';
 import EmailMessContainer from '@containers/EmailMessContainer';
-import { emailData } from '@layouts/EmailStatusBar';
-import useLocalStorage from '@hooks/useLocalStorage';
+import EmailReplyMessMain, {
+  useEmailReplyMess,
+} from '@containers/EmailReplyContainer/ReplyMess';
+import EmailActionLayoutContainer, {
+  useEmailActionLayout,
+} from '@containers/EmailActionsLayoutContainer';
+import { InputContactBlock } from '@components/molecules/AutoCompleteReceive';
+import { AddBlacklist } from '@api/blacklist';
+import { toast } from 'react-toastify';
 
 interface ModalForm {
   title: string;
@@ -46,115 +44,8 @@ interface ModalForm {
   onClose?: () => void;
 }
 
-const saveEmailList = [
-  {
-    id: '0',
-    title: 'M&A Testa to Metanode',
-    sender: new UserInfo(avatarImg, 'Elon Musk', 'elon.musk@tesla.com'),
-    sendTo: [
-      new UserInfo(avatarImg, 'name', 'mail@gmail.com'),
-      new UserInfo('', 'name1', 'mail1@gmail.com'),
-      new UserInfo(avatarImg, 'name2', 'mail2@gmail.com'),
-    ],
-    mailContent: '<p>Test</p><br><br><p>Test line 2</p>',
-    attachFiles: [
-      {
-        name: 'Metanode - White Paper v.1.5.2',
-        type: 'pdf',
-        url: 'meta.node/9YQC7us',
-      },
-      {
-        name: 'Metanode - SDK Bundle',
-        type: 'zip',
-        url: 'meta.node/34ED7uc',
-      },
-    ],
-    status: 'pending',
-    type: 'receive',
-    date: '2018-02-21 12:01:00',
-  },
-  {
-    id: '1',
-    title: 'M&A Testa to Metanode',
-    sender: new UserInfo(avatarImg, 'Elon Musk', 'elon.musk@tesla.com'),
-    sendTo: [
-      new UserInfo(avatarImg, 'name', 'mail@gmail.com'),
-      new UserInfo('', 'name1', 'mail1@gmail.com'),
-      new UserInfo(avatarImg, 'name2', 'mail2@gmail.com'),
-    ],
-    mailContent: '<p>Test</p><br><br><p>Test line 2</p>',
-    attachFiles: [
-      {
-        name: 'Metanode - White Paper v.1.5.2',
-        type: 'pdf',
-        url: 'meta.node/9YQC7us',
-      },
-      {
-        name: 'Metanode - SDK Bundle',
-        type: 'zip',
-        url: 'meta.node/34ED7uc',
-      },
-    ],
-    status: 'sending',
-    type: 'send',
-    date: '2018-02-21 12:01:00',
-  },
-  {
-    id: '2',
-    title: 'M&A Testa to Metanode',
-    sender: new UserInfo(avatarImg, 'Elon Musk', 'elon.musk@tesla.com'),
-    sendTo: [
-      new UserInfo(avatarImg, 'name', 'mail@gmail.com'),
-      new UserInfo('', 'name1', 'mail1@gmail.com'),
-      new UserInfo(avatarImg, 'name2', 'mail2@gmail.com'),
-    ],
-    mailContent: '<p>Test</p><br><br><p>Test line 2</p>',
-    attachFiles: [
-      {
-        name: 'Metanode - White Paper v.1.5.2',
-        type: 'pdf',
-        url: 'meta.node/9YQC7us',
-      },
-      {
-        name: 'Metanode - SDK Bundle',
-        type: 'zip',
-        url: 'meta.node/34ED7uc',
-      },
-    ],
-    status: 'pending',
-    type: 'receive',
-    date: '2018-02-21 12:01:00',
-  },
-  {
-    id: '3',
-    title: 'M&A Testa to Metanode',
-    sender: new UserInfo(avatarImg, 'Elon Musk', 'elon.musk@tesla.com'),
-    sendTo: [
-      new UserInfo(avatarImg, 'name', 'mail@gmail.com'),
-      new UserInfo('', 'name1', 'mail1@gmail.com'),
-      new UserInfo(avatarImg, 'name2', 'mail2@gmail.com'),
-    ],
-    mailContent: '<p>Test</p><br><br><p>Test line 2</p>',
-    attachFiles: [
-      {
-        name: 'Metanode - White Paper v.1.5.2',
-        type: 'pdf',
-        url: 'meta.node/9YQC7us',
-      },
-      {
-        name: 'Metanode - SDK Bundle',
-        type: 'zip',
-        url: 'meta.node/34ED7uc',
-      },
-    ],
-    status: 'declined',
-    type: 'receive',
-    date: '2018-02-21 12:01:00',
-  },
-];
-
 interface Props {
-  pageParams?: { page: number; limit: number };
+  pageParams: { page: number; limit: number };
   onEmailMessIntersecting?: (target: HTMLDivElement, emailId: EmailResponse) => void;
   onUnIntersecting?: (emailId: number) => void;
 }
@@ -166,7 +57,7 @@ const Email: React.FC<Props> = ({
 }) => {
   const lastEmailMessRef = useRef<HTMLDivElement>(null);
 
-  const [showHistory, setShowHistory] = useState<number | null>(null);
+  const [showHistory, setShowHistory] = useState<number>(0);
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [modal, setModal] = useState<ModalForm>({
     title: 'Modal',
@@ -177,25 +68,12 @@ const Email: React.FC<Props> = ({
     },
   });
 
-  // useLocalstorage
-  const [CURRENT_ROLE] = useLocalStorage('current_role', '');
+  const { isShowLayout, handleCloseLayout, handleOpenLayout } = useEmailReplyMess();
+  const { isShow, handleOnClose, handleOnOpen } = useEmailActionLayout();
 
   // useSearchParams
   const [searchParams] = useSearchParams();
   const tabSearchParams = searchParams.get('tab');
-
-  const isShowActions = useMemo(() => {
-    // Nếu là Admin thì xét tab
-    if (CURRENT_ROLE.toLowerCase() === 'admin') {
-      // Nếu ở tab all thì ẩn actions
-      if (tabSearchParams === 'all') return false;
-      // không thì cho hiện
-      return true;
-    }
-
-    // Không phải admin thì cho show actions
-    return true;
-  }, [tabSearchParams, CURRENT_ROLE]);
 
   // queryClient
   const queryClient = useQueryClient();
@@ -222,8 +100,6 @@ const Email: React.FC<Props> = ({
       mutationKey: ['email-update-hashtag'],
       mutationFn: (params: { id: number; data: EmailUpdateQuery }) =>
         updateEmailWithQuery(params.id, {
-          email: params.data,
-          // send_at: params.data.send_at,
           hashtags: params.data.hashtags,
         }),
     });
@@ -232,8 +108,7 @@ const Email: React.FC<Props> = ({
       mutationKey: ['email-update-is-important'],
       mutationFn: (params: { id: number; data: EmailUpdateQuery }) =>
         updateEmailWithQuery(params.id, {
-          email: { ...params.data, is_favorite: !params.data.is_favorite },
-          send_at: params.data.send_at,
+          is_important: !params.data.is_important,
         }),
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['get-emails-list'] });
@@ -242,15 +117,31 @@ const Email: React.FC<Props> = ({
   const { mutate: updateEmailStatus, isLoading: isLoadingUpdateEmailStatus } =
     useMutation({
       mutationKey: ['email-update-status'],
-      mutationFn: (params: { id: number; data: EmailUpdateQuery }) =>
+      mutationFn: (params: {
+        id: number;
+        data?: EmailUpdateQuery;
+        status?: string;
+      }) =>
         updateEmailWithQuery(params.id, {
           email: { ...params.data },
-          send_at: params.data.send_at,
+          status: params.status,
+          send_at: params.data?.send_at,
         }),
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['get-emails-list'] });
+        queryClient.invalidateQueries({ queryKey: ['get-email-manager'] });
       },
     });
+
+  const { mutate: addBlacklist } = useMutation({
+    mutationKey: ['add-black-list'],
+    mutationFn: (user_email: string) => AddBlacklist(user_email),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['get-emails-list'] });
+      queryClient.invalidateQueries({ queryKey: ['get-email-manager'] });
+      toast.success('Add Blacklist successfully!');
+    },
+  });
 
   useEffect(() => {
     if (!isEmpty(EmailsList)) {
@@ -275,34 +166,30 @@ const Email: React.FC<Props> = ({
     [EmailsList],
   );
 
-  const handleSubmitStatusActions = async (
-    index: number,
-    toastOnSuccess: string,
-    actionType: 'delete' | 'spam' | 'favorite' | 'unread',
-  ) => {
-    const cloneEmailsList = [...EmailsList];
+  const receiversList: InputContactBlock[] = useMemo(() => {
+    if (isEmpty(EmailsList)) return [];
 
-    const emailId = cloneEmailsList[index].id;
+    const newestEmail = EmailsList[EmailsList.length - 1].email;
 
-    const res = await EmailActions({
-      user_email_id: emailId,
-      action: actionType,
-    });
+    const CURRENT_EMAIL = localStorage.getItem('current_email');
 
-    if (res.message === 'success') {
-      const deletedEmail = cloneEmailsList.splice(index, 1);
+    const receiverList = [
+      newestEmail.from,
+      ...(newestEmail.to ?? []),
+      ...(newestEmail.cc ?? []),
+      ...(newestEmail.bcc ?? []),
+    ];
 
-      dispatch(addDeletedEmail(deletedEmail));
-      dispatch(setEmailsList(cloneEmailsList));
+    const index = receiverList.indexOf(CURRENT_EMAIL ?? '');
 
-      handleCloseModal();
+    receiverList.splice(index, 1);
 
-      toast.success(toastOnSuccess);
-    } else {
-      handleCloseModal();
-      toast.error('Hệ thống xảy ra lỗi!');
-    }
-  };
+    return receiverList.map((receiver, index) => ({
+      id: index.toString(),
+      contact_name: receiver,
+      employeesList: [new UserReceiveInfo('', receiver, receiver, true, 'cc')],
+    }));
+  }, [EmailsList]);
 
   const changeEmailStatus = useCallback(
     (status, index) => {
@@ -340,8 +227,7 @@ const Email: React.FC<Props> = ({
 
                 const spamEmail = cloneEmailsList.splice(index, 1);
 
-                dispatch(addSpamEmail(spamEmail));
-                dispatch(setEmailsList(cloneEmailsList));
+                addBlacklist(spamEmail[0].email.from);
 
                 handleCloseModal();
               },
@@ -361,7 +247,7 @@ const Email: React.FC<Props> = ({
 
             updateEmailStatus({
               id: email.id,
-              data: { ...email, status: 'unread' },
+              status: 'unread',
             });
             break;
           }
@@ -379,15 +265,16 @@ const Email: React.FC<Props> = ({
             break;
         }
       } else {
-        const cloneEmailsList = [...EmailsList];
+        // const cloneEmailsList = [...EmailsList];
 
-        const reqData = { ...cloneEmailsList[index], status: status };
+        // const reqData = { ...cloneEmailsList[index], status: status };
 
-        cloneEmailsList.splice(index, 1, reqData);
+        // cloneEmailsList.splice(index, 1, reqData);
 
-        console.log('line 154', cloneEmailsList);
+        // console.log('line 154', cloneEmailsList);
 
-        dispatch(setEmailsList(cloneEmailsList));
+        // dispatch(setEmailsList(cloneEmailsList));
+        handleOnOpen();
       }
     },
     [EmailsList],
@@ -400,20 +287,27 @@ const Email: React.FC<Props> = ({
   const handleShowHistory = useCallback(
     (currEmail, value) => {
       if (showHistory !== currEmail.id) setShowHistory(value);
-      else setShowHistory(null);
+      else setShowHistory(0);
     },
     [showHistory],
   );
 
   const convertedEmailList = useMemo(() => {
-    if (pageParams) return EmailsList.slice(-1 * pageParams.page * pageParams.limit);
-    return EmailsList;
+    return EmailsList.slice(-1 * pageParams.page * pageParams.limit);
   }, [pageParams, EmailsList]);
 
   const currRole = localStorage.getItem('current_role')?.toUpperCase();
+
+  // TODO REMOVE FAKE LOADING
+  const fakeLoading = EmailsList.length >= pageParams.page * pageParams.limit;
+
   return (
     <Box className="w-full flex flex-wrap flex-col">
-      {isLoading && <EmailMessEmpty isLoading={isLoading} />}
+      {/* TODO: UNCOMMENT THIS CODE WHEN HAVE API */}
+      {/* {isLoading && <EmailMessEmpty isLoading={isLoading} />} */}
+
+      {/* TODO: REMOVE THIS CODE WHEN HAVE API PAGE LIMIT*/}
+      {fakeLoading && <EmailMessEmpty isLoading={fakeLoading} />}
       {convertedEmailList.map((email, index) => (
         <EmailMessContainer
           ref={EmailsList.length - 1 === index ? lastEmailMessRef : undefined}
@@ -437,10 +331,14 @@ const Email: React.FC<Props> = ({
           onChangeStatus={changeEmailStatus}
           index={index}
           onUpdateHashtagClick={(hashtagsList) => {
-            const hashtags = hashtagsList.map((hashtag) => hashtag.value);
+            const hashtags: HashtagType[] = hashtagsList.map((hashtag) => ({
+              hashtag: hashtag.value,
+              user_id: Number(localStorage.getItem('current_id') ?? '0'),
+              user_email: email.id,
+            }));
             updateHashtagMutate({
               id: email.id,
-              data: { ...email.email, hashtags },
+              data: { hashtags },
             });
           }}
           onInterSecting={(entry) => {
@@ -479,8 +377,16 @@ const Email: React.FC<Props> = ({
           </div>
         </div>
       </ModalBase>
+      <EmailReplyMessMain.Input onClickInput={handleOpenLayout} />
+      <EmailReplyMessMain.LayoutModal
+        isShow={isShowLayout}
+        receiversList={receiversList}
+        onClose={handleCloseLayout}
+        onOpen={handleCloseLayout}
+      />
+      <EmailActionLayoutContainer isShow={isShow} onClose={handleOnClose} />
     </Box>
   );
 };
 
-export default Email;
+export default memo(Email);

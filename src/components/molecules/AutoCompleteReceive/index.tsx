@@ -38,6 +38,7 @@ export interface InputContactBlock {
 interface Props {
   value: InputContactBlock[];
   data: InputContactBlock[];
+  className?: string;
   defaultValue?: InputContactBlock[];
   isReadOnly?: boolean;
   onChange?:
@@ -54,6 +55,7 @@ interface Props {
 }
 
 const AutoCompleteReceive: React.FC<Props> = ({
+  className,
   value,
   data,
   defaultValue,
@@ -151,7 +153,7 @@ const AutoCompleteReceive: React.FC<Props> = ({
       value={value}
       onChange={onChange}
       readOnly={isReadOnly}
-      className="emailComposeTo"
+      className={`${className} emailComposeTo`}
       multiple
       id="email-compose"
       options={options}

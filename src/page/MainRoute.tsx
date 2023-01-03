@@ -247,8 +247,8 @@ export const declareRouter: RouteObject[] = [
             element: <AddEmailTemplatePage />,
           },
           {
-            path: '/template/edit',
-            element: <EditEmailTemplatePage />,
+            path: '/template/edit/:templateId',
+            element: <>hihi</>,
           },
         ],
       },

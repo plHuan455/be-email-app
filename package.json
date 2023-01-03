@@ -35,6 +35,7 @@
     "firebase": "^9.15.0",
     "framer-motion": "^7.6.19",
     "html-to-draftjs": "^1.5.0",
+    "html-to-image": "^1.11.3",
     "loaders.css": "^0.1.2",
     "lodash": "^4.17.21",
     "lottie-web": "^5.9.6",

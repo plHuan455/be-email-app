@@ -23,7 +23,6 @@
 // containers
 @import 'containers/SettingsContainer/SignatureContainer/index.scss';
 
-
 // molecules
 @import 'components/molecules/AlertDialog/index.scss';
 @import 'components/molecules/TableActionsMenu/index.scss';
@@ -31,6 +30,8 @@
 
 // organisms
 @import 'components/organisms/MinimizeEmail/index.scss';
+@import 'components/organisms/ContactSlideBar/index.scss';
+@import 'components/organisms/EmailTemplateCard/index.scss';
 
 // templates
 @import 'components/templates/MinimizeEmailList/index.scss';
@@ -471,12 +472,12 @@ body {
 }
 
 .rdw-editor-wrapper {
-  &>.rdw-editor-toolbar {
+  & > .rdw-editor-toolbar {
     border-color: transparent;
     justify-content: center;
 
-    &>.rdw-inline-wrapper {
-      &>.rdw-option-wrapper {
+    & > .rdw-inline-wrapper {
+      & > .rdw-option-wrapper {
         border-color: transparent;
         opacity: 0.5;
         margin-inline: 0;
@@ -494,12 +495,12 @@ body {
       opacity: 0.5;
     }
 
-    &>div:not(:last-child) {
+    & > div:not(:last-child) {
       border-right: 1px solid #c7c7c7;
     }
   }
 
-  &>.editor-class {
+  & > .editor-class {
     border-color: transparent;
   }
 }

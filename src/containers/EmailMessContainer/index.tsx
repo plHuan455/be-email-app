@@ -53,18 +53,19 @@ const EmailMessContainerRef: React.ForwardRefRenderFunction<
   const containerRef = useRef<HTMLDivElement>(null);
 
   useIntersectionObserver(
-    containerRef, 
-    (entry) => { if(onInterSecting) onInterSecting(entry)},
+    containerRef,
+    (entry) => {
+      if (onInterSecting) onInterSecting(entry);
+    },
     onUnInterSecting,
-  )
+  );
   // useState
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [valueApproveIn, setValueApproveIn] = useState<Dayjs>(
     dayjs('Thu Apr 07 2022 00:15:00'),
   );
 
-  const {onContinueClick} = useContext(EmailComposeContext);
-
+  const { onContinueClick } = useContext(EmailComposeContext);
 
   // useAlertDialog
   const {
@@ -87,7 +88,7 @@ const EmailMessContainerRef: React.ForwardRefRenderFunction<
   // useMutation
   const { mutate: updateEmailStatus } = useMutation({
     mutationKey: ['update-email'],
-    mutationFn: (status: 'PENDING' | 'approved' | 'DECLINED') =>
+    mutationFn: (status: 'PENDING' | 'approved' | 'declined') =>
       approveEmail({ user_email_id: emailData.id, status: status }),
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: ['get-email-manager'] });
@@ -116,6 +117,7 @@ const EmailMessContainerRef: React.ForwardRefRenderFunction<
       approve_after: number;
     }) => await approveEmail(query),
     onSuccess(_, params) {
+      queryClient.invalidateQueries({ queryKey: ['get-email-manager'] });
       queryClient.invalidateQueries({ queryKey: ['get-emails-list'] });
 
       switch (params.status) {
@@ -216,7 +218,7 @@ const EmailMessContainerRef: React.ForwardRefRenderFunction<
           'No one'
         }
       />,
-      () => updateEmailStatus('DECLINED'),
+      () => updateEmailStatus('declined'),
     );
   };
 
@@ -261,20 +263,22 @@ const EmailMessContainerRef: React.ForwardRefRenderFunction<
   };
 
   const handleContinueEmailClick = () => {
-    const {email} = emailData;
+    const { email } = emailData;
     console.log(`[TODO] CONTINUE DRAFT EMAIL ADD FIELDS (TO, BCC, CC, ATTACH_FILE)`);
     onContinueClick({
-        id: emailData.id,
-        subject: email.subject,
-        content: email.text_html,
-        hashtags: emailData.hashtags?.map(value => ({name: `#${value}`, value})),
-        // attachFiles: {
-        //   files: Array(email.attachs?.length ?? 0).fill(undefined),
-        //   fileUrls: email.attachs?.map(value => value.path) ?? []
-        // }
-      }
-    )
-  }
+      id: emailData.id,
+      subject: email.subject,
+      content: email.text_html,
+      hashtags: (emailData.hashtags ?? []).map((hashtag) => ({
+        name: hashtag.hashtag,
+        value: `#${hashtag.hashtag}`,
+      })),
+      // attachFiles: {
+      //   files: Array(email.attachs?.length ?? 0).fill(undefined),
+      //   fileUrls: email.attachs?.map(value => value.path) ?? []
+      // }
+    });
+  };
 
   return (
     <Box ref={containerRef}>

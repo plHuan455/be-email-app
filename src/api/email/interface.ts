@@ -1,4 +1,5 @@
 import { AttachFile } from '@components/organisms/EmailMess';
+import { HashtagType } from '.';
 
 export interface EmailUpdateQuery {
   to?: string[];
@@ -9,9 +10,9 @@ export interface EmailUpdateQuery {
   html_string?: string;
   forward?: string;
   send_at?: string;
-  hashtags?: string[];
+  hashtags?: HashtagType[];
   status?: string;
-  is_favorite?: boolean;
+  is_important?: boolean;
 }
 
 export interface EmailCatalogResponse {
