@@ -1,5 +1,5 @@
-import AddContactLayout from '@layouts/Contact/add';
-import EditContactLayout from '@layouts/Contact/edit';
+import EditContactContainer from '@containers/ContactContainer/Contacts/edit';
+
 import Layout from '@layouts/Layout';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -9,7 +9,7 @@ const EditContactPage = () => {
 
   return (
     <Layout.MainQueryClient headTitle="Edit Contact" onComback={() => navigate(-1)}>
-      <EditContactLayout />
+      <EditContactContainer />
     </Layout.MainQueryClient>
   );
 };

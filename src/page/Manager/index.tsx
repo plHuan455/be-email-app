@@ -1,17 +1,13 @@
-import EmailStatusBar from '@layouts/EmailStatusBar';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import EmailMainWrapper from '@layouts/EmailMainWrapper';
-import { useState } from 'react';
-import { Outlet } from 'react-router-dom';
-import { Box } from '@mui/material';
+import SubSidebar from '@components/organisms/SubSidebar';
+import { subMenuDepartment } from '@constants/subMenus';
 import Layout from '@layouts/Layout';
-import SettingLeftContainer from '@containers/SettingLeftSideBarContainer';
+import { Outlet } from 'react-router-dom';
 
 const Manager = () => {
   return (
     <Layout.Content>
       <Layout.ASide>
-        <SettingLeftContainer />
+        <SubSidebar menus={subMenuDepartment} title="Department" />
       </Layout.ASide>
       <Outlet />
     </Layout.Content>

@@ -1,14 +1,22 @@
-import ContactSharingGroupsLayout from '@layouts/ContactSharingGroups';
+import { subMenuContact } from '@constants/subMenus';
+import SubSidebar from '@components/organisms/SubSidebar';
 import Layout from '@layouts/Layout';
+import { Box } from '@mui/material';
+import { Outlet, useNavigate } from 'react-router-dom';
 
-interface ContactPageProps {}
+const ContactPageParent = () => {
+  const navigate = useNavigate();
 
-const ContactSharingGroupPage: React.FC<ContactPageProps> = () => {
   return (
-    <>
-      <ContactSharingGroupsLayout headTitle="Contact Sharing Groups" />
-    </>
+    <Layout.Content>
+      <Layout.ASide>
+        <Box className="l-contactLayout_slideBar">
+          <SubSidebar menus={subMenuContact} title="Contact" />
+        </Box>
+      </Layout.ASide>
+      <Outlet />
+    </Layout.Content>
   );
 };
 
-export default ContactSharingGroupPage;
+export default ContactPageParent;

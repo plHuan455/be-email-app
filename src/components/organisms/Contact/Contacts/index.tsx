@@ -9,7 +9,6 @@ interface ContactsProps {
 }
 
 const Contacts: React.FC<ContactsProps> = ({ rows, columns, handleCellClick }) => {
-  console.log(rows);
   return (
     <div className="px-6 flex-1 overflow-hidden flex flex-col">
       <div style={{ height: '85%', width: '100%' }}>

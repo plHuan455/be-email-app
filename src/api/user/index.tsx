@@ -61,6 +61,7 @@ export interface UserProfileResponse {
   role_id: number;
   role: string;
   contact_id: number;
+  department_id: number;
 }
 
 //GET EMAIL WITH STATUS
@@ -83,41 +84,43 @@ export const getAllUser = async (query?: {
 };
 
 // GET USER BY ID
-export const getUser = async (id: number): Promise<AxiosResponse<UserResponse>> => {
-  const url = `${USER__API__GET}/${id}`;
+export const getUserById = async (
+  id: number,
+): Promise<AxiosResponse<UserResponse>> => {
+  const url = `${USER_PROFILE}/${id}`;
   const res = await ApiClient.get(url);
   return res.data;
 };
 // CREATE EMPLOYEE
 export const createEmployee = async (params: CreateEmployeeParams) => {
   const url = USER__API;
-  const cloneParams = {
-    avatar: params.avatar,
-    email: params.email,
-    password: params.password,
-    position: params.position,
-    user_name: params.username,
-    department_id: Number(params.department),
-    role_id: Number(params.role),
-    phone_number: params.phone,
-  };
-  const res = await ApiClient.post(url, undefined, cloneParams);
+  // const cloneParams = {
+  //   avatar: params.avatar,
+  //   email: params.email,
+  //   password: params.password,
+  //   position: params.position,
+  //   user_name: params.username,
+  //   department_id: Number(params.department),
+  //   role_id: Number(params.role),
+  //   phone_number: params.phone,
+  // };
+  const res = await ApiClient.post(url, undefined, params);
   return res.data;
 };
 
 export const updateEmployee = async (id: number, params: UpdateEmployeeParams) => {
   const url = `${USER__API}/manager`;
-  const cloneParams = {
-    avatar: params.avatar,
-    email: params.email,
-    password: params.password,
-    position: params.position,
-    user_name: params.username,
-    department_id: Number(params.department),
-    role_id: Number(params.role),
-    phone_number: params.phone,
-  };
-  const res = await ApiClient.put(`${url}/${id}`, undefined, cloneParams);
+  // const cloneParams = {
+  //   avatar: params.avatar,
+  //   email: params.email,
+  //   password: params.password,
+  //   position: params.position,
+  //   user_name: params.username,
+  //   department_id: Number(params.department),
+  //   role_id: Number(params.role),
+  //   phone_number: params.phone,
+  // };
+  const res = await ApiClient.put(`${url}/${id}`, undefined, params);
   return res.data;
 };
 

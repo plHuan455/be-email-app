@@ -7,7 +7,7 @@ const EditDepartmentPage = () => {
   const { t } = useTranslation();
 
   return (
-    <Layout.MainQueryClient isHaveHeader headTitle={t('Signatures - Add')}>
+    <Layout.MainQueryClient isHaveHeader headTitle={t('Department / Edit')}>
       <EditDepartmentContainer />
     </Layout.MainQueryClient>
   );

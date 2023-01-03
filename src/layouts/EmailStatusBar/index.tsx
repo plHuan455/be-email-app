@@ -1,6 +1,5 @@
 import EmailStatusHeader from '@components/molecules/EmailStatusHeader';
 import { EmailList, StatusOptions } from '@components/molecules/ModalEmailList';
-import { TabItem } from '@layouts/IconTabs';
 import { Box } from '@mui/material';
 import avt from '../../../src/assets/images/avatars/avatar-1.jpg';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
@@ -26,7 +25,11 @@ export interface EmailItem {
   totalEmail: number;
 }
 
-interface EmailTabs extends TabItem {
+interface EmailTabs {
+  title?: string;
+  url?: string;
+  logo?: string;
+  icon?: React.ReactElement;
   status: StatusOptions;
   emailData: EmailList[];
   notiNumber?: number;

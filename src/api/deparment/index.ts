@@ -1,5 +1,4 @@
 import ApiClient from '@api/ApiClient';
-import { UpdateDepartmentFields } from '@components/organisms/TableManagerDepartmentContainer/UpdateDepartmentModal';
 import { DEPARTMENT_API_URL } from '@constants/departmentAPI';
 import { AxiosResponse } from 'axios';
 import { CreateDepartmentParams, DepartmentResponse } from './interface';
@@ -30,7 +29,7 @@ export const createDepartment = async (
 
 export const updateDepartment = async (
   id: number,
-  params: UpdateDepartmentFields,
+  params: any,
 ): Promise<AxiosResponse<DepartmentResponse>> => {
   const url = DEPARTMENT_API_URL;
   const res = await ApiClient.put(`${url}/${id}`, undefined, params);

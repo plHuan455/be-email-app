@@ -1,4 +1,4 @@
-import ContactGroupLayout from '@layouts/ContactGroup';
+import ContactGroupContainer from '@containers/ContactContainer/ContactGroup';
 import Layout from '@layouts/Layout';
 import { Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
@@ -12,7 +12,7 @@ const ContactGroups: React.FC<ContactGroupsProps> = () => {
     <Layout.MainQueryClient
       headTitle="Contact Groups"
       onClickAdd={() => navigate('add')}>
-      <ContactGroupLayout />
+      <ContactGroupContainer />
     </Layout.MainQueryClient>
   );
 };

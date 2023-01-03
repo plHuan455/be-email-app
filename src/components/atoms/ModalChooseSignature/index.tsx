@@ -10,7 +10,7 @@ import Icon from '../Icon';
 import { useSelector } from 'react-redux';
 import { getDefaultSignId } from '@redux/selector';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { rowsSign } from '@containers/SignatureContainer/Main';
+import { rowsSign } from '@containers/SettingsContainer/SignatureContainer/Main';
 
 interface Props {
   isOpen: boolean;
