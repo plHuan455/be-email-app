@@ -43,7 +43,7 @@ interface ModalForm {
 }
 
 interface Props {
-  pageParams?: { page: number; limit: number };
+  pageParams: { page: number; limit: number };
   onEmailMessIntersecting?: (target: HTMLDivElement, emailId: EmailResponse) => void;
   onUnIntersecting?: (emailId: number) => void;
 }
@@ -277,15 +277,21 @@ const Email: React.FC<Props> = ({
   );
 
   const convertedEmailList = useMemo(() => {
-    if (pageParams) return EmailsList.slice(-1 * pageParams.page * pageParams.limit);
-    return EmailsList;
+    return EmailsList.slice(-1 * pageParams.page * pageParams.limit);
   }, [pageParams, EmailsList]);
 
   const currRole = localStorage.getItem('current_role')?.toUpperCase();
 
+  // TODO REMOVE FAKE LOADING
+  const fakeLoading = EmailsList.length >= pageParams.page * pageParams.limit;
+
   return (
     <Box className="w-full flex flex-wrap flex-col">
-      {isLoading && <EmailMessEmpty isLoading={isLoading} />}
+      {/* TODO: UNCOMMENT THIS CODE WHEN HAVE API */}
+      {/* {isLoading && <EmailMessEmpty isLoading={isLoading} />} */}
+
+      {/* TODO: REMOVE THIS CODE WHEN HAVE API PAGE LIMIT*/}
+      {fakeLoading && <EmailMessEmpty isLoading={fakeLoading} />}
       {convertedEmailList.map((email, index) => (
         <EmailMessContainer
           ref={EmailsList.length - 1 === index ? lastEmailMessRef : undefined}

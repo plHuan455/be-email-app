@@ -97,7 +97,11 @@ const EmailContainer = () => {
 
     if (container.scrollTop === 0) {
       preContainerScrollHeight.current = container.scrollHeight;
-      setPageParams((preState) => ({ ...preState, page: preState.page + 1 }));
+
+      // TODO: REMOVE THIS FAKE DELAY FAKE API
+      setTimeout(() => {
+        setPageParams((preState) => ({ ...preState, page: preState.page + 1 }));
+      }, 1000)
     }
 
     handleChangeCurrEmail();
