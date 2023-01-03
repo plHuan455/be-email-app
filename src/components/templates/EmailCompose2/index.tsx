@@ -95,6 +95,7 @@ interface EmailComposeProps {
   onSetTimeAccept?: (date: Dayjs | null) => void;
   onSetTimeCancel?: () => void;
   onSubmit: (values: EmailComposeFields) => void;
+  onUseTemplateClick?: () => void;
 }
 
 const getSelectedContact = (contactBlock: InputContactBlock[]) => {
@@ -132,6 +133,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
   onSubmit,
   onSetTimeAccept,
   onSetTimeCancel,
+  onUseTemplateClick,
 }) => {
   // redux
   const defaultSignId = useSelector(getDefaultSignId);
@@ -493,7 +495,18 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
 
               {/* ACTIONS */}
               <Box className="flex justify-end items-center flex-1">
-                <UseTemplateButton />
+                <UseTemplateButton 
+                  settings={[
+                    {id: 1, name: 'Use template'},
+                    {id: 2, name: 'Insert file link'},
+                  ]}
+                  onSettingClick={(settingId) => {
+                    if(settingId === 1 && onUseTemplateClick) {
+                      onUseTemplateClick();
+                      return;
+                    }
+                  }}
+                />
                 {/* <Tooltip title="Insert link"> */}
                 <Button
                   className="bg-transparent p-2 hover:bg-transparent"

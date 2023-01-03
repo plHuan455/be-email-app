@@ -2,13 +2,22 @@ import { Box, Button, Menu, MenuItem, Typography } from '@mui/material';
 import React from 'react';
 import ArticleIcon from '@mui/icons-material/Article';
 
-interface Props {
-  className?: string;
+interface TemplateSetting {
+  name: string;
+  id: number;
 }
 
-const settings = ['Use templete', 'Insert file link'];
+interface Props {
+  className?: string;
+  settings: TemplateSetting[];
+  onSettingClick?: (settingId: number) => void;
+}
 
-const UseTemplateButton: React.FC<Props> = ({ className }) => {
+const UseTemplateButton: React.FC<Props> = ({
+  className,
+  settings,
+  onSettingClick,
+}) => {
   const [anchorElSelectTemplatePopup, setAnchorElSelectTemplatePopup] =
     React.useState(null);
 
@@ -77,12 +86,13 @@ const UseTemplateButton: React.FC<Props> = ({ className }) => {
         {settings.map((setting, index) => {
           return (
             <MenuItem
+              key={setting.id}
               className="w-full"
-              key={index}
               onClick={() => {
                 handleCloseTemplatePopup();
+                onSettingClick && onSettingClick(setting.id);
               }}>
-              <Typography textAlign="center">{setting}</Typography>
+              <Typography textAlign="center">{setting.name}</Typography>
             </MenuItem>
           );
         })}

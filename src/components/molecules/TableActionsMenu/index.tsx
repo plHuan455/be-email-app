@@ -15,9 +15,9 @@ interface TableActionsMenuProps {
   isOpen?: boolean;
   sx?: SxProps<Theme>;
   options: MenuOptionTypes[];
-  onItemClick: (value: string | number) => void;
+  onItemClick: (value: string | number, e: React.MouseEvent<HTMLElement>) => void;
   onClose?: () => void;
-  onClick?: () => void;
+  onClick?: (e: React.MouseEvent<HTMLElement>) => void;
 }
 
 const StyledMenu = styled((props: MenuProps) => (
@@ -54,7 +54,7 @@ const TableActionsMenu: React.FC<TableActionsMenuProps> = ({
 
   const handleClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
-    onClick && onClick();
+    onClick && onClick(event);
   };
   const handleClose = () => {
     setAnchorEl(null);
@@ -75,8 +75,8 @@ const TableActionsMenu: React.FC<TableActionsMenuProps> = ({
         return (
           <MenuItem
             key={`table-actions-menu-${option.value}`}
-            onClick={() => {
-              onItemClick(option.value)
+            onClick={(e) => {
+              onItemClick(option.value, e)
               if(isAuto) handleClose();
             }}
             disableRipple

@@ -41,10 +41,12 @@ export const useAlertDialog = (isOpenDefault: boolean = false) => {
     description: React.ReactNode;
     callback: () => void;
     onCloseCallBack?: () => void;
+    isShowDisagreeBtn?: boolean;
   }>({
     title: '',
     description: '',
     callback: () => {},
+    isShowDisagreeBtn: true,
   });
 
   const setAlertData = (
@@ -52,12 +54,14 @@ export const useAlertDialog = (isOpenDefault: boolean = false) => {
     description: React.ReactNode,
     callback: () => void,
     onCloseCallBack?: () => void,
+    isShowDisagreeBtn: boolean = true,
   ) => {
     alertDataRef.current = {
       title,
       description,
       callback,
       onCloseCallBack,
+      isShowDisagreeBtn,
     };
     setIsOpen(true);
   };
@@ -76,6 +80,7 @@ export const useAlertDialog = (isOpenDefault: boolean = false) => {
   return {
     isOpen,
     isLoading,
+    isShowAgreeBtn: alertDataRef.current.isShowDisagreeBtn,
     title: alertDataRef.current.title,
     description: alertDataRef.current.description,
     callback: alertDataRef.current.callback,
@@ -102,6 +107,7 @@ const AlertDialog: React.FC<AlertDialogProps> = ({
       TransitionComponent={Transition}
       keepMounted
       onClose={onClose}
+      sx={{zIndex: 1301}}
       aria-describedby="alert-dialog-slide-description">
       <div className="m-alertDialog">
         <DialogTitle>{titleLabel}</DialogTitle>

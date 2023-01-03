@@ -22,7 +22,10 @@ import { UserInfo, UserReceiveInfo } from '@components/organisms/Email/Interface
 import { InputContactBlock } from '@components/molecules/AutoCompleteReceive';
 import { EmailComposeContext } from '@containers/MainWrapperContainer';
 import { getDepartments } from '@api/deparment';
-import { Button } from '@mui/material';
+import { Box, Button } from '@mui/material';
+import ModalBase from '@components/atoms/ModalBase';
+import EmailTemplateList, { EmailTemplateItem } from '@components/templates/EmailTemplateList';
+import { emailTemplateList } from '@assets/dummyData/emaiTemplate';
 dayjs.extend(utc);
 
 const hashtagList = [
@@ -53,16 +56,7 @@ const currentUserEmail = localStorage.getItem('current_email');
 interface EmailComposeContainerProps {}
 
 const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
-  const {
-    isOpen: isAlertDialogOpen,
-    isLoading: isAlertDialogLoading,
-    title: alertDialogTitle,
-    description: alertDialogDescription,
-    setAlertData,
-    setIsLoading: setAlertDialog,
-    callback: alertDialogCallback,
-    onClose: onAlertDialogClose,
-  } = useAlertDialog();
+  const alertDialog = useAlertDialog();
 
   const privateHashtags = useAppSelector((state) => state.email.privateHashtags);
 
@@ -74,9 +68,11 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const { onFieldsChange } = useAutoStoreEmail(3000);
+  // const { onFieldsChange } = useAutoStoreEmail(3000);
 
   const [attachFiles, setAttachFiles] = useState<(File | undefined)[]>([]);
+  const [selectedTemplate, setSelectedTemplate] = useState<EmailTemplateItem>();
+  const [isOpenTemplateModal, setIsOpenTemplateModal] = useState<boolean>(false);
 
   const {
     isEmailSending,
@@ -309,6 +305,20 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
     onCloseEmail();
   }
 
+  const handleApplyTemplate = (template: EmailTemplateItem) => {
+    alertDialog.setAlertData(
+      'Apply template',
+      'If you apply this template, the current content of the email will be changed',
+      () => {
+        method.setValue('content', getEditorStateFormHtmlString(template.htmlString));
+        setSelectedTemplate(template);
+        alertDialog.onClose();
+        setIsOpenTemplateModal(false);
+      },
+      () => alertDialog.onClose(),
+    )
+  }
+
   const handleSubmit = (values: EmailComposeFields) => {
     onSendEmail({ ...values, sendAt: selectedDate });
   };
@@ -362,15 +372,40 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
           onSetTimeCancel={() => {
             setIsOpenCalendarSelect(false);
           }}
+          onUseTemplateClick={() => {
+            setIsOpenTemplateModal(true);
+          }}
         />
       </motion.div>
+      <ModalBase 
+        isOpen={isOpenTemplateModal} 
+        title="Select template"
+        submitLabel=''
+        onClose={() => {
+          setIsOpenTemplateModal(false);
+          setSelectedTemplate(undefined);
+        }}
+      >
+        <Box sx={{width: '80vw'}}>
+          <EmailTemplateList
+            selectedTemplateId={selectedTemplate?.id}
+            onTemplateClick={handleApplyTemplate}
+            isShowTemplateActionWhenHover={false}
+            emailTemplateList={emailTemplateList}  //TODO: REPLACE THE TEMPLATE LIST WHEN HAVE API
+          />
+          {/* <Box display="flex" justifyContent="flex-end" sx={{mt: rem(12)}}>
+            <Button sx={{minWidth: rem(70)}} onClick={handleApplyTemplate}>Apply template</Button>
+          </Box> */}
+        </Box>
+      </ModalBase>
       <AlertDialog
-        isShowDisagreeBtn={false}
-        isOpen={isAlertDialogOpen}
-        descriptionLabel={alertDialogDescription}
-        titleLabel={alertDialogTitle}
-        onClose={onAlertDialogClose}
-        onAgree={alertDialogCallback}
+        isShowDisagreeBtn={alertDialog.isShowAgreeBtn}
+        isOpen={alertDialog.isOpen}
+        descriptionLabel={alertDialog.description}
+        titleLabel={alertDialog.title}
+        onClose={alertDialog.onClose}
+        onAgree={alertDialog.callback}
+        onDisagree={alertDialog.onClose}
       />
     </>
   );
