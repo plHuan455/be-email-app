@@ -227,7 +227,7 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
         subject: values.subject,
         attachs: values.attachFiles.fileUrls.map((value) => ({ path: value })),
       },
-      hashtags: values.hashtags.map((value) => value.value),
+      // hashtags: values.hashtags.map((value) => value.value),
       send_at: values.sendAt?.toISOString() ?? dayjs().toISOString(),
     };
   };

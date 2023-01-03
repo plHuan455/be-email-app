@@ -30,13 +30,20 @@ export interface CreateEmailParam {
   };
   action?: string;
   send_at?: string;
-  hashtags?: string[];
+  hashtags?: HashtagType[];
 }
 
 export interface attachs {
   id: number;
   email_id: number;
   path: string;
+}
+
+export interface HashtagType {
+  id?: number;
+  user_email: number;
+  user_id: number;
+  hashtag: string;
 }
 
 export interface EmailResponse {
@@ -61,7 +68,7 @@ export interface EmailResponse {
     attachs?: attachs[];
     tags: [];
   };
-  hashtags: string[];
+  hashtags?: HashtagType[];
   type: string;
   status: string;
   approve_at: string;
