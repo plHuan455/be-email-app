@@ -16,7 +16,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { updateUserProfileSchema } from '@utils/schemas';
 import { uploadFile } from '@api/uploadFile';
 import { toast } from 'react-toastify';
-import { AddEmployeeField } from '@components/organisms/TableManagerEmployeeContainer/AddEmployeeModal';
 import Layout from '@layouts/Layout';
 import { getUserWithEmail } from '@api/user';
 

@@ -21,7 +21,7 @@
 @import 'components/atoms/ButtonGroup/index.scss';
 
 // containers
-@import 'containers/SignatureContainer/index.scss';
+@import 'containers/SettingsContainer/SignatureContainer/index.scss';
 
 
 // molecules
@@ -31,7 +31,6 @@
 
 // organisms
 @import 'components/organisms/MinimizeEmail/index.scss';
-@import 'components/organisms/ContactSlideBar/index.scss';
 
 // templates
 @import 'components/templates/MinimizeEmailList/index.scss';

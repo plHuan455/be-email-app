@@ -1,5 +1,4 @@
 import ContactGroupContainer from '@containers/ContactContainer/ContactGroup';
-import ContactGroupLayout from '@layouts/ContactGroup';
 import Layout from '@layouts/Layout';
 import { Box } from '@mui/material';
 import { useNavigate } from 'react-router-dom';

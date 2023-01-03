@@ -13,25 +13,31 @@ import ErrorPage from './ErrorPage';
 import Login from './Login';
 
 import EmailEmptyContainer from '@containers/EmailEmptyContainer';
-import ContactLayout from '@layouts/Contact';
 import EmailMainWrapper from '@layouts/EmailMainWrapper';
 import ChangePassword from './ChangePassword';
 import ContactGroups from './Contact/ContactGroup';
 import EmailComposePage from './Email/EmailComposePage';
-import {
-  AddMailTemplatePage,
-  EditMailTemplatePage,
-  MainMailTemplatePage,
-} from './MailTemplatePage';
 import Manager from './Manager';
-import SettingRoles from './Settings/SettingsRoles';
-import { AddSignaturePage, EditSignaturePage, SignaturePage } from './SignaturePage';
+import {
+  AddEmailTemplatePage,
+  EditEmailTemplatePage,
+  EmailTemplatePage,
+} from './Settings/EmailTemplate';
+import SettingRoles from './Settings/Roles';
+import {
+  AddSignaturePage,
+  EditSignaturePage,
+  SignaturePage,
+} from './Settings/Signature';
 import UserProfileContainer from './UserProfileContainer';
 // import MailTemplateContainer from '@containers/MailTemplateContainer';
 
 import MainWrapperContainer from '@containers/MainWrapperContainer';
 import { genCRUD } from '@utils/routerHelper';
-import ContactSharingGroupPage from './Contact';
+import {
+  default as ContactPageParent,
+  default as ContactSharingGroupPage,
+} from './Contact';
 import AddContactGroup from './Contact/ContactGroup/add';
 import EditContactGroupPage from './Contact/ContactGroup/edit';
 import ContactsPage from './Contact/Contacts';
@@ -51,9 +57,13 @@ import {
   EditEmployeePage,
   ManagerEmployeePage,
 } from './Manager/ManagerEmployee';
-import ManagerHashtagsPage from './ManagerHashtagPage';
-import ContactPage from './Contact';
-import ContactPageParent from './Contact';
+import {
+  AddEmailInformationPage,
+  EditEmailInformationPage,
+  EmailInformationPage,
+} from './Settings/EmailInformation';
+import SettingPage from './Settings';
+import BlackListPage from './Settings/BlackList';
 
 export const sideBarRoutes: RouteObject[] = [
   {
@@ -151,7 +161,7 @@ export const sideBarRoutes: RouteObject[] = [
       ),
       genCRUD(
         {
-          path: '/department/employee',
+          path: '/department/:id/employee',
         },
         {
           index: <ManagerEmployeePage />,
@@ -163,20 +173,28 @@ export const sideBarRoutes: RouteObject[] = [
   },
   {
     path: '/setting',
-    element: <Manager />,
+    element: <SettingPage />,
     children: [
       { path: '/setting/user-role', element: <SettingRoles /> },
-      { path: '/setting/email-infomation', element: <SettingRoles /> },
-      { path: '/setting/blacklist', element: <SettingRoles /> },
-
+      { path: '/setting/blacklist', element: <BlackListPage /> },
+      genCRUD(
+        {
+          path: '/setting/email-infomation',
+        },
+        {
+          index: <EmailInformationPage />,
+          add: <AddEmailInformationPage />,
+          edit: <EditEmailInformationPage />,
+        },
+      ),
       genCRUD(
         {
           path: '/setting/email-template',
         },
         {
-          index: <MainMailTemplatePage />,
-          add: <AddMailTemplatePage />,
-          edit: <EditMailTemplatePage />,
+          index: <EmailTemplatePage />,
+          add: <AddEmailTemplatePage />,
+          edit: <EditEmailTemplatePage />,
         },
       ),
       genCRUD(

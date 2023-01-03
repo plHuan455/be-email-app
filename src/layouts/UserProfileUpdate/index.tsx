@@ -1,10 +1,8 @@
 import { useTranslation } from '@@packages/localization/src';
-import { AuthResponse, AuthUpdate } from '@api/auth/interface';
+import { AuthUpdate } from '@api/auth/interface';
 import ArrowLeft from '@assets/icon/ArrowLeft';
-import Icon from '@components/atoms/Icon';
 import AvatarInput from '@components/atoms/Input/AvatarInput';
 import ValidateInput from '@components/atoms/Input/ValidateInput';
-import { AddEmployeeField } from '@components/organisms/TableManagerEmployeeContainer/AddEmployeeModal';
 import { Box, Button, Grid } from '@mui/material';
 import React from 'react';
 import { Controller, FormProvider, UseFormReturn } from 'react-hook-form';

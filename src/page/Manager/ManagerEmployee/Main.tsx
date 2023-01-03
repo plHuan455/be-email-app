@@ -10,12 +10,8 @@ const ManagerEmployeePage = () => {
   const params = useParams();
 
   const handleAddEmployee = () => {
-    const userRole = localStorage.getItem('current_role');
-    if (userRole === 'admin') {
-      navigate(`/manager/department/${params.id}/employee/add`);
-    } else {
-      toast.error('You dont have this permision!');
-    }
+    // tạm thời cho add, sau này phân quyền sau
+    navigate(`/department/${params.id}/employee/add`);
   };
 
   return (

@@ -1,6 +1,4 @@
 import EditContactSharingPersonalsContainer from '@containers/ContactContainer/ContactSharingPersonalsContainer/edit';
-import EditContactSharingGroupsLayout from '@layouts/ContactSharingGroups/edit';
-import EditContactSharingPersonalsLayout from '@layouts/ContactSharingPersonalsLayout/edit';
 import Layout from '@layouts/Layout';
 import { useNavigate } from 'react-router-dom';
 
@@ -15,9 +13,6 @@ const EditContactSharingPersonalsPage: React.FC<ContactPageProps> = () => {
       headTitle="Edit Contact Sharing Department">
       <EditContactSharingPersonalsContainer />
     </Layout.MainQueryClient>
-    // <>
-    //   <EditContactSharingPersonalsLayout headTitle="Edit Contact Sharing Department" />
-    // </>
   );
 };
 

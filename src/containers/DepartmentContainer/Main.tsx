@@ -52,7 +52,7 @@ const DepartmentContainer = () => {
               icon="edit"
               onClick={(e) => {
                 e.stopPropagation();
-                navigate(`/manager/department/edit/${info.getValue()}`);
+                navigate(`/department/department/edit/${info.getValue()}`);
               }}
             />
           </div>
@@ -66,7 +66,7 @@ const DepartmentContainer = () => {
 
   const rowClick = (row: any) => {
     if (row && row.original) {
-      navigate(`/manager/department/${row.original.id}/employee`);
+      navigate(`/department/${row.original.id}/employee`);
     }
   };
 

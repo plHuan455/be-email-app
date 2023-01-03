@@ -1,17 +1,17 @@
-import { subMenuContact } from '@constants/subMenus';
+import { subMenuSetting } from '@constants/subMenus';
 import SubSidebar from '@components/organisms/SubSidebar';
 import Layout from '@layouts/Layout';
 import { Box } from '@mui/material';
 import { Outlet, useNavigate } from 'react-router-dom';
 
-const ContactPageParent = () => {
+const SettingPage = () => {
   const navigate = useNavigate();
 
   return (
     <Layout.Content>
       <Layout.ASide>
         <Box className="l-contactLayout_slideBar">
-          <SubSidebar menus={subMenuContact} title="Contact" />
+          <SubSidebar menus={subMenuSetting} title="Settings" />
         </Box>
       </Layout.ASide>
       <Outlet />
@@ -19,4 +19,4 @@ const ContactPageParent = () => {
   );
 };
 
-export default ContactPageParent;
+export default SettingPage;

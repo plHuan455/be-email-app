@@ -128,20 +128,15 @@ function MainWrapper({ children }: { children: React.ReactNode }) {
     {
       id: 0,
       label: 'Profile',
-      path: '/manager/profile',
-      handleClick: handleChangePage('/manager/profile'),
+      path: '/profile',
+      handleClick: handleChangePage('/profile'),
     },
-    {
-      id: 1,
-      label: 'Setting',
-      path: '/setting',
-      handleClick: handleChangePage('/manager/profile'),
-    },
+
     {
       id: 2,
       label: 'Change Password',
-      path: '/manager/profile/change-password',
-      handleClick: handleChangePage('/manager/profile/change-password'),
+      path: '/profile/change-password',
+      handleClick: handleChangePage('/profile/change-password'),
     },
     {
       id: 3,

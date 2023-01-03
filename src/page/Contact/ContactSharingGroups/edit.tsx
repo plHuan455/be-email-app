@@ -1,5 +1,4 @@
 import EditContactSharingGroupContainer from '@containers/ContactContainer/ContactSharingGroupsContainer/edit';
-import EditContactSharingGroupsLayout from '@layouts/ContactSharingGroups/edit';
 import Layout from '@layouts/Layout';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';

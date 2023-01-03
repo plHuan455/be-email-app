@@ -1,20 +1,23 @@
 import { useTranslation } from '@@packages/localization/src';
-import { DepartmentContainer } from '@containers/DepartmentContainer';
+import { SignatureContainer } from '@containers/SettingsContainer/SignatureContainer';
 import Layout from '@layouts/Layout';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const ManagerDepartmentPage = () => {
+const SignaturePage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
 
   return (
     <Layout.MainQueryClient
-      headTitle={t('Department')}
       isHaveHeader
-      onClickAdd={() => navigate('/department/department/add')}>
-      <DepartmentContainer />
+      headTitle={t('Signatures')}
+      onClickAdd={() => {
+        navigate('add');
+      }}>
+      <SignatureContainer />
     </Layout.MainQueryClient>
   );
 };
 
-export default ManagerDepartmentPage;
+export default SignaturePage;

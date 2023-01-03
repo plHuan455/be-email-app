@@ -1,6 +1,5 @@
 import EditContactContainer from '@containers/ContactContainer/Contacts/edit';
-import AddContactLayout from '@layouts/Contact/add';
-import EditContactLayout from '@layouts/Contact/edit';
+
 import Layout from '@layouts/Layout';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';

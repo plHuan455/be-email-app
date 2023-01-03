@@ -73,10 +73,9 @@ const EmployeeContainer = () => {
   );
 
   const rowClick = (row) => {
-    const userRole = localStorage.getItem('current_role');
-
-    if (row && row.original && userRole === 'admin') {
-      navigate(`/manager/department/${params.id}/employee/edit/${row.original.id}`);
+    if (row && row.original) {
+      // tạm thời cho edit, sau này phần quyền sau
+      navigate(`/department/${params.id}/employee/edit/${row.original.id}`);
     }
   };
 

@@ -104,6 +104,9 @@ export default function MainSidebar() {
         case '/department':
           path = '/department/department';
           break;
+        case '/setting':
+          path = '/setting/user-role';
+          break;
 
         default:
           path = i.path;
