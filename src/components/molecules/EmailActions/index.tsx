@@ -32,6 +32,34 @@ export const RenderButtonIcon: React.FC<EmailActionIcon> = ({
   );
 };
 
+const EmailActionsListSender = {
+  reply: {
+    icon: 'reply',
+    label: 'Reply',
+    color: '#8E8E91',
+  },
+  replyAll: {
+    icon: 'replyAll',
+    label: 'Reply All',
+    color: '#8E8E91',
+  },
+  forward: {
+    icon: 'forward',
+    label: 'Forward',
+    color: '#8E8E91',
+  },
+  delete: {
+    icon: 'delete',
+    label: 'Delete',
+    color: '#D0676C',
+  },
+  star: {
+    icon: 'star',
+    label: 'Important',
+    color: '#8E8E91',
+  },
+};
+
 const EmailActionsList = {
   reply: {
     icon: 'reply',
@@ -87,27 +115,32 @@ const EmailActions: React.FC<Props> = ({
 }) => {
   return (
     <Box className={`flex mb-4 ${type === 'send' && 'flex-row-reverse'}`}>
-      {Object.keys(EmailActionsList).map((key, index) => {
-        const currVal = EmailActionsList[key];
-        return (
-          <Box
-            className={`py-1.5 px-3 text-[14px] font-medium flex items-center hover:bg-slate-200 hover:cursor-pointer rounded p-2`}
-            key={index}
-            onClick={() =>
-              isActiveClick && handleChangeStatus(currVal.icon, emailIndex)
-            }>
-            <RenderButtonIcon
-              item={currVal.icon}
-              color={
-                currVal.icon === 'star' && isImportant
-                  ? 'rgb(250, 175, 0)'
-                  : currVal.color
-              }
-            />
-            <span className="inline-block pl-2">{`${currVal.label}`}</span>
-          </Box>
-        );
-      })}
+      {Object.keys(type === 'send' ? EmailActionsListSender : EmailActionsList).map(
+        (key, index) => {
+          const currVal = (
+            type === 'send' ? EmailActionsListSender : EmailActionsList
+          )[key];
+
+          return (
+            <Box
+              className={`py-1.5 px-3 text-[14px] font-medium flex items-center hover:bg-slate-200 hover:cursor-pointer rounded p-2`}
+              key={index}
+              onClick={() =>
+                isActiveClick && handleChangeStatus(currVal.icon, emailIndex)
+              }>
+              <RenderButtonIcon
+                item={currVal.icon}
+                color={
+                  currVal.icon === 'star' && isImportant
+                    ? 'rgb(250, 175, 0)'
+                    : currVal.color
+                }
+              />
+              <span className="inline-block pl-2">{`${currVal.label}`}</span>
+            </Box>
+          );
+        },
+      )}
     </Box>
   );
 };

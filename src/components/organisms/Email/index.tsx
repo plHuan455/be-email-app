@@ -34,6 +34,8 @@ import EmailActionLayoutContainer, {
   useEmailActionLayout,
 } from '@containers/EmailActionsLayoutContainer';
 import { InputContactBlock } from '@components/molecules/AutoCompleteReceive';
+import { AddBlacklist } from '@api/blacklist';
+import { toast } from 'react-toastify';
 
 interface ModalForm {
   title: string;
@@ -131,6 +133,16 @@ const Email: React.FC<Props> = ({
       },
     });
 
+  const { mutate: addBlacklist } = useMutation({
+    mutationKey: ['add-black-list'],
+    mutationFn: (user_email: string) => AddBlacklist(user_email),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['get-emails-list'] });
+      queryClient.invalidateQueries({ queryKey: ['get-email-manager'] });
+      toast.success('Add Blacklist successfully!');
+    },
+  });
+
   useEffect(() => {
     if (!isEmpty(EmailsList)) {
       const EmailsListLength = EmailsList.length - 1;
@@ -215,8 +227,7 @@ const Email: React.FC<Props> = ({
 
                 const spamEmail = cloneEmailsList.splice(index, 1);
 
-                dispatch(addSpamEmail(spamEmail));
-                dispatch(setEmailsList(cloneEmailsList));
+                addBlacklist(spamEmail[0].email.from);
 
                 handleCloseModal();
               },

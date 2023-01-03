@@ -85,7 +85,8 @@ interface EmailStatusProps {
 }
 
 const EmailStatus: React.FC<EmailStatusProps> = ({ emailStatus, time }) => {
-  const mainEmailStatus = EMAILSTATUS[emailStatus.toLowerCase()];
+  const mainEmailStatus =
+    EMAILSTATUS[emailStatus.toLowerCase()] ?? EMAILSTATUS.pending;
 
   if (emailStatus === 'reply' || emailStatus === 'replyAll')
     return (
