@@ -30,7 +30,7 @@ export interface CreateEmailParam {
   };
   action?: string;
   send_at?: string;
-  hashtags?: HashtagType[];
+  hashtags?: HashtagType[] | string[];
 }
 
 export interface attachs {
