@@ -1,42 +1,36 @@
-import ModalEmailList, {
-  EmailList,
-  StatusOptions,
-} from '@components/molecules/ModalEmailList';
-import { Box, ButtonBase, Typography } from '@mui/material';
-import { setEmailsList } from '@redux/Email/reducer';
-import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { useNavigate, useParams } from 'react-router';
+import { ButtonBase, Typography } from '@mui/material';
+import React, { useEffect } from 'react';
+import { useParams } from 'react-router';
 import { NavLink } from 'react-router-dom';
+import Icon from '../Icon';
 
 interface Props {
+  NAV_LINK_TO: string;
   title: string;
-  status: StatusOptions;
   catalog: string;
-  color: string;
-  index: number;
+  notiNumber: number;
+  isHover: boolean;
+
+  setIsHover: React.Dispatch<React.SetStateAction<boolean>>;
+  setModalStatus: React.Dispatch<React.SetStateAction<boolean>>;
+
+  onClickHashTag: (e: any) => Promise<void>;
+  onDeleteHashTag: (e: any) => void;
 }
 
 const Hashtag: React.FC<Props> = ({
+  NAV_LINK_TO,
   title,
-  status,
-  index,
   catalog,
-  color = '#4BAAA2',
+  notiNumber,
+  isHover,
+
+  setIsHover,
+  setModalStatus,
+
+  onClickHashTag,
+  onDeleteHashTag,
 }) => {
-  const [modalStatus, setModalStatus] = useState(false);
-
-  // useNavigate
-  const navigate = useNavigate();
-
-  // useDispatch
-  const dispatch = useDispatch();
-
-  // Handler FNC
-  const handleClickPrivateTag = (catalog: string) => (e) => {
-    navigate(`/emails/catalog/${catalog}`);
-  };
-
   // useParams
   const params = useParams();
 
@@ -47,45 +41,62 @@ const Hashtag: React.FC<Props> = ({
     if (params.catalog.toLowerCase() === catalog.toLowerCase()) setModalStatus(true);
   }, [params]);
 
-  const handleChangeModalStatus = () => {
-    // setModalStatus(false);
-    dispatch(setEmailsList([]));
-    navigate('/');
-  };
-
   return (
-    <Box key={index}>
-      <ButtonBase
-        // onClick={handleClickPrivateTag(catalog)}
-        sx={{
-          width: '100%',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          padding: '5px 4px',
-        }}>
-        <NavLink to={`/emails/catalog/${catalog}`}>
-          {({ isActive }) => {
-            setModalStatus(isActive);
-            return (
+    <ButtonBase
+      sx={{
+        width: '100%',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '5px 4px',
+        position: 'relative',
+      }}
+      onMouseEnter={() => setIsHover(true)}
+      onMouseLeave={() => setIsHover(false)}>
+      <NavLink
+        to={NAV_LINK_TO}
+        className="w-full flex-1 flex justify-between "
+        onClick={onClickHashTag}>
+        {({ isActive }) => {
+          setModalStatus(isActive);
+          return (
+            <>
               <Typography
-                className="truncate"
+                className="truncate flex items-center"
                 component={'p'}
                 sx={{ color: '#4BAAA2', fontWeight: 'bold' }}>
                 {title}
               </Typography>
-            );
-          }}
-        </NavLink>
-      </ButtonBase>
-      <ModalEmailList
-        titleColor={color}
-        title={title}
-        catalog={catalog}
-        isActive={modalStatus}
-        handleChangeModalStatus={handleChangeModalStatus}
-      />
-    </Box>
+              {notiNumber > 0 && !isHover && (
+                <Typography
+                  component={'p'}
+                  sx={{
+                    backgroundColor: '#ABA8D4',
+                    width: '14px',
+                    height: '18px',
+                    fontSize: '10px',
+                    fontWeight: 700,
+                    borderRadius: '3px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#fff',
+                  }}>
+                  {notiNumber}
+                </Typography>
+              )}
+            </>
+          );
+        }}
+      </NavLink>
+      {isHover && (
+        <Icon
+          className="absolute top-1/2 right-0 -translate-y-1/2 z-4 px-2"
+          onClick={onDeleteHashTag}
+          icon="close"
+        />
+      )}
+    </ButtonBase>
   );
 };
 

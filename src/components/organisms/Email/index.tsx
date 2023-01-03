@@ -223,7 +223,8 @@ const Email: React.FC<Props> = ({
       mutationFn: (params: { id: number; data: EmailUpdateQuery }) =>
         updateEmailWithQuery(params.id, {
           email: params.data,
-          send_at: params.data.send_at,
+          // send_at: params.data.send_at,
+          hashtags: params.data.hashtags,
         }),
     });
   const { mutate: updateImportantMutate, isLoading: isUpdateImportantLoading } =
@@ -436,8 +437,11 @@ const Email: React.FC<Props> = ({
           onChangeStatus={changeEmailStatus}
           index={index}
           onUpdateHashtagClick={(hashtagsList) => {
-            const tags = hashtagsList.map((hashtag) => hashtag.value);
-            updateHashtagMutate({ id: email.id, data: { ...email, tags } });
+            const hashtags = hashtagsList.map((hashtag) => hashtag.value);
+            updateHashtagMutate({
+              id: email.id,
+              data: { ...email.email, hashtags },
+            });
           }}
           onInterSecting={(entry) => {
             if (onEmailMessIntersecting)
