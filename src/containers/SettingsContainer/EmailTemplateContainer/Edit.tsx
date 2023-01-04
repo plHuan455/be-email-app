@@ -9,7 +9,7 @@ import { useParams } from "react-router-dom";
 interface EditEmailTemplateContainerProps {}
 
 const EditEmailTemplateContainer: React.FC<EditEmailTemplateContainerProps> = () => {
-  const {templateId} = useParams();
+  const { id } = useParams();
 
   const method = useForm<EditEmailTemplateFields>({
     defaultValues: {
