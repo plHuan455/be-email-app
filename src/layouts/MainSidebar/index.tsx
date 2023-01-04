@@ -9,7 +9,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
 import Department from '@assets/icon/Department';
 import ArticleIcon from '@mui/icons-material/Article';
-import PermContactCalendarIcon from '@mui/icons-material/PermContactCalendar';
 import { IS_EMPLOYEE_ROLE } from '@constants/localStore';
 import { NavLink } from 'react-router-dom';
 import { sideBarRoutes } from '@page/RefactorRoute';
@@ -24,9 +23,9 @@ const iconSidebarMapping: {
   [key: string]: SVGIconProps['icon'];
 } = {
   '/emails': 'email',
-  '/contact': 'email',
-  '/department': 'email',
-  '/setting': 'email',
+  '/contact': 'contact',
+  '/department': 'department',
+  '/setting': 'managerAcccount',
 };
 
 const titleSidebarMapping: {
