@@ -4,13 +4,13 @@ interface IntersectionObserverOptions {
   root?: Element | null; // Tham chiếu đến một element sẽ làm root
   rootMargin?: string; // Khoảng cách giữa root và ref element
   threshold?: number | number[]; // Một mảng các ngưỡng (0 - 1) để xác định khi nào ref element sẽ hiển thị trên màn hình
-};
+}
 
 const useIntersectionObserver = (
   ref: RefObject<Element>,
   onIntersecting?: (entry: IntersectionObserverEntry) => void,
   onUnInterSecting?: () => void,
-  options?: IntersectionObserverOptions
+  options?: IntersectionObserverOptions,
 ) => {
   const [isIntersecting, setIsIntersecting] = useState(false);
   useEffect(() => {
@@ -20,11 +20,10 @@ const useIntersectionObserver = (
       // } else {
       //   setIsIntersecting(false);
       // }
-      if(entry.isIntersecting && onIntersecting) {
-        setIsIntersecting(entry.isIntersecting);
+      setIsIntersecting(entry.isIntersecting);
+      if (entry.isIntersecting && onIntersecting) {
         onIntersecting(entry);
-      } 
-      else {
+      } else {
         onUnInterSecting && onUnInterSecting();
       }
     }, options);
@@ -37,6 +36,6 @@ const useIntersectionObserver = (
   }, [ref, options]);
 
   return isIntersecting;
-}
+};
 
 export default useIntersectionObserver;

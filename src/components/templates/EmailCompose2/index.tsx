@@ -4,9 +4,6 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import CancelIcon from '@mui/icons-material/Cancel';
 import { SingleOTPInputComponent } from '@components/atoms/Input/PinInput/SingleInput';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
-import AutoCompleteReceive, {
-  InputContactBlock,
-} from '@components/molecules/AutoCompleteReceive';
 import EmailComposeFormGroup from '@components/molecules/EmailComposeFormGroup';
 import WindowComposeActions from '@components/molecules/WindowComposeActions';
 import { Editor } from 'react-draft-wysiwyg';
@@ -44,6 +41,11 @@ import classNames from 'classnames';
 import _ from 'lodash';
 import SignatureTmpTemplate from '@layouts/SignatureTmpTemplate';
 import LoadingButton from '@mui/lab/LoadingButton';
+import {
+  AutoCompleteReceive,
+  InputContactBlock,
+  useAutoCompleteReceive,
+} from '@components/molecules/Autocomplete';
 
 export interface CustomFile extends File {
   percentage: number;
@@ -98,16 +100,6 @@ interface EmailComposeProps {
   onUseTemplateClick?: () => void;
 }
 
-const getSelectedContact = (contactBlock: InputContactBlock[]) => {
-  return (field: 'to' | 'cc' | 'bcc') => {
-    return contactBlock.filter((contact) => {
-      return contact.employeesList.some(
-        (employ) => employ.field === field && employ.isChecked,
-      );
-    });
-  };
-};
-
 const EmailCompose2: React.FC<EmailComposeProps> = ({
   inputContactBlocks,
   method,
@@ -139,38 +131,19 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
   const defaultSignId = useSelector(getDefaultSignId);
 
   // states
+  const [options, setOptions] = useState(inputContactBlocks);
 
-  const defaultInputContactBlock = React.useMemo(() => {
-    return [...inputContactBlocks];
+  React.useEffect(() => {
+    setOptions(inputContactBlocks);
   }, [inputContactBlocks]);
 
-  const [toData, setToData] = useState(defaultInputContactBlock);
-  const [ccData, setCcData] = useState(defaultInputContactBlock);
-  const [bccData, setBccData] = useState(defaultInputContactBlock);
-
-  const [toValue, setToValue] = useState<InputContactBlock[]>([]);
-  const [ccValue, setCcValue] = useState<InputContactBlock[]>([]);
-  const [bccValue, setBccValue] = useState<InputContactBlock[]>([]);
+  const [toData, setToData] = useState([]);
+  const [ccData, setCcData] = useState([]);
+  const [bccData, setBccData] = useState([]);
 
   // react hooks
   const fileInputRef = useRef<HTMLInputElement>(null);
   const composeScrollRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const filter = getSelectedContact(defaultInputContactBlock);
-
-    const to = filter('to');
-    const cc = filter('cc');
-    const bcc = filter('bcc');
-
-    setToValue(to);
-    setCcValue(cc);
-    setBccValue(bcc);
-  }, [defaultInputContactBlock]);
-
-  useEffect(() => {
-    update();
-  }, [defaultInputContactBlock]);
 
   // functions
   const handleAttachFileClick = () => {
@@ -179,18 +152,15 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
     }
   };
 
-  const filterContact =
-    (field: 'to' | 'cc' | 'bcc') => (contactBlock: InputContactBlock) => {
-      const employees = contactBlock.employeesList;
-
-      const isEmail = contactBlock.contact_name.match(emailRegex);
+  const { to, cc, bcc, onUpdate } = useAutoCompleteReceive({
+    options: inputContactBlocks,
+    fields: ['to', 'cc', 'bcc'] as const,
+    filterFunc: (field) => (option) => {
+      const employees = option.subMenu;
 
       // Nếu là mail
-      if (isEmail) {
-        const employ = employees[0];
-        return employ
-          ? (employ.field === field && employ.isChecked) || !employ.isChecked
-          : false;
+      if (!employees) {
+        return (option.field === field && option.isSelected) || !option.isSelected;
       }
 
       if (employees.length === 0) return true;
@@ -199,9 +169,9 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
       let isSomeEmployEqualField = false;
 
       const isFullEmploySelected = employees.every((employ) => {
-        if (employ.isChecked) isSomeEmploySelected = true;
+        if (employ.isSelected) isSomeEmploySelected = true;
         if (employ.field === field) isSomeEmployEqualField = true;
-        return employ.isChecked;
+        return employ.isSelected;
       });
 
       // Nếu tất cả employ được chọn
@@ -215,21 +185,12 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
       // Nếu không có employ được chọn => return true
       // Còn lại => return false
       return isSomeEmploySelected || !isFullEmploySelected;
-    };
+    },
+  });
 
-  const update = () => {
-    const filterTo = filterContact('to');
-    const filterCc = filterContact('cc');
-    const filterBcc = filterContact('bcc');
-
-    const afterFilterTo = defaultInputContactBlock.filter(filterTo);
-    const afterFilterCc = defaultInputContactBlock.filter(filterCc);
-    const afterFilterBcc = defaultInputContactBlock.filter(filterBcc);
-
-    setToData(afterFilterTo);
-    setCcData(afterFilterCc);
-    setBccData(afterFilterBcc);
-  };
+  React.useEffect(() => {
+    onUpdate();
+  }, [toData, ccData, bccData, options]);
 
   return (
     <Box className="t-emailCompose w-full h-full py-10 mt-4">
@@ -260,23 +221,24 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                   render={({ field: { value, onChange } }) => {
                     return (
                       <EmailComposeFormGroup
-                        classNameContent="flex items-center"
+                        classNameContent="flex items-center justify-between"
                         label="To :">
                         <AutoCompleteReceive
-                          fullWidth
-                          forField={'to'}
-                          defaultValue={[]}
-                          data={toData}
-                          value={toValue}
-                          onChangeValue={(v) => {
-                            // onChange(v);
-                            onChange(value);
-                            setToData(v);
-                            update();
+                          className="flex-1"
+                          options={to.options}
+                          name="to"
+                          value={value}
+                          onChange={(v) => {
+                            onChange(v);
                             method.setValue(
                               'contactBlock',
                               Array.from(new Set([...inputContactBlocks, ...v])),
                             );
+                          }}
+                          onChangeOptions={(option) => {
+                            setOptions((options) => {
+                              return [...options, option];
+                            });
                           }}
                         />
                         <span
@@ -301,19 +263,37 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                       <Controller
                         name="cc"
                         render={({ field: { value, onChange } }) => (
+                          // <AutoCompleteReceive
+                          //   forField={'cc'}
+                          //   value={ccValue}
+                          //   data={ccData}
+                          //   defaultValue={value}
+                          //   onChangeValue={(v) => {
+                          //     onChange(v);
+                          //     setCcValue(v);
+                          //     update();
+                          //     method.setValue(
+                          //       'contactBlock',
+                          //       Array.from(new Set([...inputContactBlocks, ...v])),
+                          //     );
+                          //   }}
+                          // />
                           <AutoCompleteReceive
-                            forField={'cc'}
-                            value={ccValue}
-                            data={ccData}
-                            defaultValue={value}
-                            onChangeValue={(v) => {
+                            options={cc.options}
+                            name="cc"
+                            value={value}
+                            onChange={(v) => {
                               onChange(v);
-                              setCcValue(v);
-                              update();
+                              console.log(v);
                               method.setValue(
                                 'contactBlock',
                                 Array.from(new Set([...inputContactBlocks, ...v])),
                               );
+                            }}
+                            onChangeOptions={(option) => {
+                              setOptions((options) => {
+                                return [...options, option];
+                              });
                             }}
                           />
                         )}
@@ -326,25 +306,42 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                       <Controller
                         name="bcc"
                         render={({ field: { value, onChange } }) => (
+                          // <AutoCompleteReceive
+                          //   forField={'bcc'}
+                          //   value={bccValue}
+                          //   data={bccData}
+                          //   defaultValue={value}
+                          //   onChangeValue={(v) => {
+                          //     onChange(v);
+                          //     setBccValue(v);
+                          //     update();
+                          //     method.setValue(
+                          //       'contactBlock',
+                          //       Array.from(new Set([...inputContactBlocks, ...v])),
+                          //     );
+                          //   }}
+                          // />
                           <AutoCompleteReceive
-                            forField={'bcc'}
-                            value={bccValue}
-                            data={bccData}
-                            defaultValue={value}
-                            onChangeValue={(v) => {
+                            options={bcc.options}
+                            name="bcc"
+                            value={value}
+                            onChange={(v) => {
                               onChange(v);
-                              setBccValue(v);
-                              update();
                               method.setValue(
                                 'contactBlock',
                                 Array.from(new Set([...inputContactBlocks, ...v])),
                               );
                             }}
+                            onChangeOptions={(option) => {
+                              setOptions((options) => {
+                                return [...options, option];
+                              });
+                            }}
                           />
                         )}
                       />
                     </EmailComposeFormGroup>
-                    <EmailComposeFormGroup
+                    {/* <EmailComposeFormGroup
                       className="py-1"
                       label="From:"
                       isHaveBorderBottom={true}>
@@ -359,7 +356,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                           />
                         )}
                       />
-                    </EmailComposeFormGroup>
+                    </EmailComposeFormGroup> */}
                   </Box>
                 )}
 
@@ -495,13 +492,13 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
 
               {/* ACTIONS */}
               <Box className="flex justify-end items-center flex-1">
-                <UseTemplateButton 
+                <UseTemplateButton
                   settings={[
-                    {id: 1, name: 'Use template'},
-                    {id: 2, name: 'Insert file link'},
+                    { id: 1, name: 'Use template' },
+                    { id: 2, name: 'Insert file link' },
                   ]}
                   onSettingClick={(settingId) => {
-                    if(settingId === 1 && onUseTemplateClick) {
+                    if (settingId === 1 && onUseTemplateClick) {
                       onUseTemplateClick();
                       return;
                     }
@@ -565,24 +562,25 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                 <LoadingButton
                   loading={isSubmitting}
                   type="submit"
-                  loadingPosition='start'
+                  loadingPosition="start"
                   sx={{
-                    backgroundColor: "#554CFF",
+                    backgroundColor: '#554CFF',
                     color: '#fff',
                     padding: `${rem(6)} ${rem(16)}`,
                     '&:hover': {
-                      backgroundColor: "#6d66fb",
+                      backgroundColor: '#6d66fb',
                     },
                     '&.MuiLoadingButton-root.Mui-disabled': {
                       color: '#c6c5c5',
                       '& .MuiButton-startIcon': {
-                        mr: 0
-                      }
-                    }
+                        mr: 0,
+                      },
+                    },
                   }}
                   startIcon={<SendIcon fontSize="small" />}
-                  endIcon={selectedDate ? <AccessTimeIcon fontSize="small" /> : undefined}
-                >
+                  endIcon={
+                    selectedDate ? <AccessTimeIcon fontSize="small" /> : undefined
+                  }>
                   {selectedDate ? 'SEND' : 'SEND NOW'}
                 </LoadingButton>
               </Box>

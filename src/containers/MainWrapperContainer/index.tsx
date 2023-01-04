@@ -30,7 +30,7 @@ import MinimizeEmailList, {
 import AlertDialog, { useAlertDialog } from '@components/molecules/AlertDialog';
 import { deleteAllWithIdList } from '@api/email';
 import { attempt, update } from 'lodash';
-import { InputContactBlock } from '@components/molecules/AutoCompleteReceive';
+import { InputContactBlock } from '@components/molecules/Autocomplete';
 import { UserReceiveInfo } from '@components/organisms/Email/Interface';
 import { emailRegex } from '@constants/constants';
 import { emailData } from '@layouts/EmailStatusBar';
@@ -177,9 +177,9 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
     const field = { to, cc, bcc };
 
     contactBlock.forEach((contact) => {
-      contact.employeesList.forEach((employ) => {
+      (contact.subMenu ?? []).forEach((employ) => {
         if (employ.field) {
-          employ.isChecked && field[employ.field].push(employ.mail);
+          employ.isSelected && field[employ.field].push(employ.mail);
         }
       });
     });
@@ -190,7 +190,7 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
   const getSelectedContact = (contactBlock: InputContactBlock[]) => {
     return (field: 'to' | 'cc' | 'bcc') => {
       return contactBlock.filter((contact) => {
-        return contact.employeesList.some(
+        return (contact.subMenu ?? []).some(
           (employ) => employ.field === field && employ.isChecked,
         );
       });
@@ -247,9 +247,10 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
     setInputContactBlocks((cur) => {
       return (data.contactBlock ?? []).map((contact) => ({
         ...contact,
-        employeesList: contact.employeesList.map(
+        employeesList: (contact.subMenu ?? []).map(
           (employ) =>
             new UserReceiveInfo(
+              employ.id,
               employ.avatar,
               employ.name,
               employ.mail,
@@ -287,6 +288,7 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
   ) => {
     const { contactBlock } = values;
     const { to, cc, bcc } = convertContactField(contactBlock);
+
     if (to.length === 0 && cc.length === 0 && bcc.length === 0) {
       alertDialog.setAlertData(
         "Can't send email",
@@ -460,9 +462,10 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
           })
           .map((contact) => ({
             ...contact,
-            employeesList: contact.employeesList.map(
+            employeesList: (contact.subMenu ?? []).map(
               (employ) =>
                 new UserReceiveInfo(
+                  employ.id,
                   employ.avatar,
                   employ.name,
                   employ.mail,
@@ -498,9 +501,10 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
           })
           .map((contact) => ({
             ...contact,
-            employeesList: contact.employeesList.map(
+            employeesList: (contact.subMenu ?? []).map(
               (employ) =>
                 new UserReceiveInfo(
+                  employ.id,
                   employ.avatar,
                   employ.name,
                   employ.mail,
@@ -535,9 +539,10 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
           })
           .map((contact) => ({
             ...contact,
-            employeesList: contact.employeesList.map(
+            employeesList: (contact.subMenu ?? []).map(
               (employ) =>
                 new UserReceiveInfo(
+                  employ.id,
                   employ.avatar,
                   employ.name,
                   employ.mail,
@@ -723,7 +728,7 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
 
       // Stored to draft
       if (showMinimizeEmailId.id !== undefined) {
-        if(!isExistShowEmail() && isEmailDataEmpty) {
+        if (!isExistShowEmail() && isEmailDataEmpty) {
           deleteEmailMutate(String(showMinimizeEmailId.id));
           setShowMinimizeEmailId(undefined);
           return;
@@ -774,7 +779,7 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
   //     return Array(to - from + 1).fill(1).map((_, index) => index + from)
   //   }
   //   (async function deleteDraft(){
-  //     const idList = renderArray(118, 218);
+  //     const idList = renderArray(89, 145);
   //     await deleteAllWithIdList(idList);
   //   })()
   // }, [])

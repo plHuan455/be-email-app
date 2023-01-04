@@ -1,14 +1,14 @@
 import { EmailResponse } from '@api/email';
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import Email from '@components/organisms/Email';
 import EmailsListActionsContainer from '@containers/EmailsListActionsContainer';
 import { Box, Button } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '@redux/configureStore';
 import { setCurrEmail } from '@redux/Email/reducer';
 import { rem } from '@utils/functions';
-import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import useEmailCompose from '../../zustand/useEmailCompose';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 const EmailContainer = () => {
   const isCompose = useEmailCompose((state) => state.isCompose);
@@ -18,13 +18,13 @@ const EmailContainer = () => {
   const preEmailId = useRef<number>();
   const isFirstRender = useRef<boolean>(true);
   const preContainerScrollHeight = useRef<number>();
-  const preContainerScroll = useRef<{height: number; top: number}>();
+  const preContainerScroll = useRef<{ height: number; top: number }>();
   const intersectingEmailMessStack = useRef<
     { target: HTMLDivElement; emailData: EmailResponse }[]
   >([]);
 
   const { EmailsList } = useAppSelector((state) => state.email);
-  const currEmail = useAppSelector(state => state.email.currEmail);
+  const currEmail = useAppSelector((state) => state.email.currEmail);
   const [pageParams, setPageParams] = useState<{ page: number; limit: number }>({
     page: 1,
     limit: 3,
@@ -47,30 +47,34 @@ const EmailContainer = () => {
       preEmailId.current = foundIntersecting.emailData.id;
     }
   };
-  
 
   // update intersecting list when EmailList change
   useEffect(() => {
-    if(isFirstRender.current) {
+    if (isFirstRender.current) {
       isFirstRender.current = false;
       return;
     }
-    intersectingEmailMessStack.current = intersectingEmailMessStack.current.map(value => {
-        const foundEmail = EmailsList.find(email => email.id === value.emailData.id);
-        if(foundEmail !== undefined && foundEmail?.id === currEmail?.id)  {
-          dispatch(setCurrEmail(foundEmail))
+    intersectingEmailMessStack.current = intersectingEmailMessStack.current.map(
+      (value) => {
+        const foundEmail = EmailsList.find(
+          (email) => email.id === value.emailData.id,
+        );
+        if (foundEmail !== undefined && foundEmail?.id === currEmail?.id) {
+          dispatch(setCurrEmail(foundEmail));
         }
-        return {...value, emailData: foundEmail?? value.emailData}
-      }
-    )
+        return { ...value, emailData: foundEmail ?? value.emailData };
+      },
+    );
     handleChangeCurrEmail();
-  }, [EmailsList])
+  }, [EmailsList]);
 
   useEffect(() => {
     const container = containerRef.current;
     if (container && preContainerScroll.current !== undefined) {
       container.scrollTop =
-        container.scrollHeight - preContainerScroll.current.height + preContainerScroll.current.top;
+        container.scrollHeight -
+        preContainerScroll.current.height +
+        preContainerScroll.current.top;
     }
   }, [pageParams]);
 
@@ -96,16 +100,16 @@ const EmailContainer = () => {
     const { scrollHeight, scrollTop, clientHeight } = container;
     setIsShowScrollButton(scrollTop + clientHeight + 100 < scrollHeight);
 
-    preContainerScroll.current = { 
+    preContainerScroll.current = {
       height: container.scrollHeight,
       top: container.scrollTop,
-    }
-    
+    };
+
     if (container.scrollTop === 0) {
       // TODO: REMOVE THIS FAKE DELAY FAKE API
       setTimeout(() => {
         setPageParams((preState) => ({ ...preState, page: preState.page + 1 }));
-      }, 1000)
+      }, 1000);
     }
 
     handleChangeCurrEmail();

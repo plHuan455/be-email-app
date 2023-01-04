@@ -83,7 +83,7 @@ const AutoCompleteReceive: React.FC<Props> = ({
       const newContactBlock = {
         id: id,
         contact_name: value,
-        employeesList: [new UserReceiveInfo('', value, value, false)],
+        employeesList: [new UserReceiveInfo(id,'', value, value, false)],
       };
 
       setNewUserInfo(newContactBlock);

@@ -16,6 +16,8 @@ import {
   HashtagType,
   updateEmailWithQuery,
 } from '@api/email';
+import avatarImg from '@assets/images/avatars/avatar-2.jpg';
+import EmailMess from '../EmailMess';
 
 import { isEmpty } from 'lodash';
 import EmailMessEmpty from '../EmailMessEmpty';
@@ -187,7 +189,7 @@ const Email: React.FC<Props> = ({
     return receiverList.map((receiver, index) => ({
       id: index.toString(),
       contact_name: receiver,
-      employeesList: [new UserReceiveInfo('', receiver, receiver, true, 'cc')],
+      employeesList: [new UserReceiveInfo(index.toString(), '', receiver, receiver, true, 'cc')],
     }));
   }, [EmailsList]);
 

@@ -5,26 +5,23 @@ import EmailCompose2, {
 } from '@components/templates/EmailCompose2';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useContext, useEffect, useId, useMemo, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { toast } from 'react-toastify';
 import utc from 'dayjs/plugin/utc';
-import draftToHtml from 'draftjs-to-html';
-import { convertToRaw } from 'draft-js';
 import dayjs, { Dayjs } from 'dayjs';
 import { useAppDispatch, useAppSelector } from '@redux/configureStore';
 import { getEditorStateFormHtmlString, rem } from '@utils/functions';
 import AlertDialog, { useAlertDialog } from '@components/molecules/AlertDialog';
 dayjs.extend(utc);
-import { MinimizeEmailColor } from '@components/organisms/MinimizeEmail/interface';
 import { useNavigate } from 'react-router-dom';
 import useAutoStoreEmail from '../../hooks/Email/useAutoStoreEmail';
 import { UserInfo, UserReceiveInfo } from '@components/organisms/Email/Interface';
-import { InputContactBlock } from '@components/molecules/AutoCompleteReceive';
+import { InputContactBlock } from '@components/molecules/Autocomplete';
 import { EmailComposeContext } from '@containers/MainWrapperContainer';
 import { getDepartments } from '@api/deparment';
 import { Box, Button } from '@mui/material';
 import ModalBase from '@components/atoms/ModalBase';
-import EmailTemplateList, { EmailTemplateItem } from '@components/templates/EmailTemplateList';
+import EmailTemplateList, {
+  EmailTemplateItem,
+} from '@components/templates/EmailTemplateList';
 import { emailTemplateList } from '@assets/dummyData/emaiTemplate';
 dayjs.extend(utc);
 
@@ -83,7 +80,7 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
     triggerClearData,
     onMinimizeEmailClick,
     onSendEmail,
-    onCloseEmail
+    onCloseEmail,
   } = useContext(EmailComposeContext);
 
   if (!method) return null;
@@ -113,9 +110,11 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
         (dept, index) => ({
           id: index.toString(),
           contact_name: dept?.name || '',
-          employeesList: (dept.users || []).map(
+          isSelected: false,
+          subMenu: (dept.users || []).map(
             (user) =>
               new UserReceiveInfo(
+                user.id,
                 user.avatar,
                 `${user.first_name} ${user.last_name}`,
                 user.email,
@@ -303,21 +302,24 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
 
   const handleCloseEmail = () => {
     onCloseEmail();
-  }
+  };
 
   const handleApplyTemplate = (template: EmailTemplateItem) => {
     alertDialog.setAlertData(
       'Apply template',
       'If you apply this template, the current content of the email will be changed',
       () => {
-        method.setValue('content', getEditorStateFormHtmlString(template.htmlString));
+        method.setValue(
+          'content',
+          getEditorStateFormHtmlString(template.htmlString),
+        );
         setSelectedTemplate(template);
         alertDialog.onClose();
         setIsOpenTemplateModal(false);
       },
       () => alertDialog.onClose(),
-    )
-  }
+    );
+  };
 
   const handleSubmit = (values: EmailComposeFields) => {
     onSendEmail({ ...values, sendAt: selectedDate });
@@ -377,21 +379,20 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
           }}
         />
       </motion.div>
-      <ModalBase 
-        isOpen={isOpenTemplateModal} 
+      <ModalBase
+        isOpen={isOpenTemplateModal}
         title="Select template"
-        submitLabel=''
+        submitLabel=""
         onClose={() => {
           setIsOpenTemplateModal(false);
           setSelectedTemplate(undefined);
-        }}
-      >
-        <Box sx={{width: '80vw', minHeight: rem(100)}}>
+        }}>
+        <Box sx={{ width: '80vw', minHeight: rem(100) }}>
           <EmailTemplateList
             selectedTemplateId={selectedTemplate?.id}
             onTemplateClick={handleApplyTemplate}
             isShowTemplateActionWhenHover={false}
-            emailTemplateList={emailTemplateList}  //TODO: REPLACE THE TEMPLATE LIST WHEN HAVE API
+            emailTemplateList={emailTemplateList} //TODO: REPLACE THE TEMPLATE LIST WHEN HAVE API
           />
           {/* <Box display="flex" justifyContent="flex-end" sx={{mt: rem(12)}}>
             <Button sx={{minWidth: rem(70)}} onClick={handleApplyTemplate}>Apply template</Button>

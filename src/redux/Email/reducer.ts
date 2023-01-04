@@ -244,11 +244,11 @@ const initialState: EmailState = {
     localStorage.getItem(LOCAL_STORAGE_MINIMIZE_EMAILS) ?? '[]',
   ).map((value) => ({
     ...value,
-    to: value.to.map(to =>  ({
+    to: value.to.map((to) => ({
       contact_name: to.contact_name,
       employeesList: to.employeesList.map(
         (value) => new UserInfo(value.avatar, value.name, value.mail),
-      )
+      ),
     })),
     cc: value?.cc?.map(
       (value) => new UserInfo(value.avatar, value.name, value.mail),
@@ -344,51 +344,91 @@ const EmailSlice = createSlice({
     },
     // MINIMIZE EMAIL ACTIONS
     addMinimizeEmail(state, action: PayloadAction<MinimizeEmailTypes>) {
-      const foundMinimizeEmailIndex = state.minimizeEmailList.findIndex(value => 
-        (value.id === action.payload.id && value.id !== undefined)  || 
-        (value.cacheId === action.payload.cacheId && value.cacheId !== undefined)
+      const foundMinimizeEmailIndex = state.minimizeEmailList.findIndex(
+        (value) =>
+          (value.id === action.payload.id && value.id !== undefined) ||
+          (value.cacheId === action.payload.cacheId && value.cacheId !== undefined),
       );
-      if(foundMinimizeEmailIndex === -1) {
+      if (foundMinimizeEmailIndex === -1) {
         // Add
-        state.minimizeEmailList.push({...action.payload, color: MinimizeEmailColor.getColor()});
-      }
-      else {
+        state.minimizeEmailList.push({
+          ...action.payload,
+          color: MinimizeEmailColor.getColor(),
+        });
+      } else {
         // Update
-        state.minimizeEmailList[foundMinimizeEmailIndex] = {...action.payload, color: state.minimizeEmailList[foundMinimizeEmailIndex].color}
+        state.minimizeEmailList[foundMinimizeEmailIndex] = {
+          ...action.payload,
+          color: state.minimizeEmailList[foundMinimizeEmailIndex].color,
+        };
       }
-      localStorage.setItem(LOCAL_STORAGE_MINIMIZE_EMAILS, JSON.stringify(state.minimizeEmailList));
+      localStorage.setItem(
+        LOCAL_STORAGE_MINIMIZE_EMAILS,
+        JSON.stringify(state.minimizeEmailList),
+      );
       return state;
     },
-    updateMinimizeEmail(state, action: PayloadAction<{ id?: number; cacheId?: number, value: MinimizeEmailTypes }>) {
+    updateMinimizeEmail(
+      state,
+      action: PayloadAction<{
+        id?: number;
+        cacheId?: number;
+        value: MinimizeEmailTypes;
+      }>,
+    ) {
       const foundMinimizeEmailIndex = state.minimizeEmailList.findIndex(
-        value => (value.id === action.payload.id && value.id !== undefined) || (value.cacheId === action.payload.cacheId && value.cacheId !== undefined)
-      )
+        (value) =>
+          (value.id === action.payload.id && value.id !== undefined) ||
+          (value.cacheId === action.payload.cacheId && value.cacheId !== undefined),
+      );
       if (foundMinimizeEmailIndex === -1) return state;
       state.minimizeEmailList[foundMinimizeEmailIndex] = {
         ...state.minimizeEmailList[foundMinimizeEmailIndex],
         ...action.payload.value,
         id: action.payload.id,
-        cacheId: action.payload.cacheId
-      }
-      localStorage.setItem(LOCAL_STORAGE_MINIMIZE_EMAILS, JSON.stringify(state.minimizeEmailList));
+        cacheId: action.payload.cacheId,
+      };
+      localStorage.setItem(
+        LOCAL_STORAGE_MINIMIZE_EMAILS,
+        JSON.stringify(state.minimizeEmailList),
+      );
       return state;
     },
-    updateMinimizeEmailId(state, action: PayloadAction<{id: number; cacheId: number}>){
-      const foundMinimizeEmailIndex = state.minimizeEmailList.findIndex(value => value.cacheId === action.payload.cacheId);
-      if(foundMinimizeEmailIndex === -1) return state;
-      state.minimizeEmailList[foundMinimizeEmailIndex] = {...state.minimizeEmailList[foundMinimizeEmailIndex], id: action.payload.id, cacheId: undefined}
-      return state;
-    },
-    deleteMinimizeEmail(state, action: PayloadAction<{cacheId?: number; id?: number}>){
+    updateMinimizeEmailId(
+      state,
+      action: PayloadAction<{ id: number; cacheId: number }>,
+    ) {
       const foundMinimizeEmailIndex = state.minimizeEmailList.findIndex(
-        value => (value.id === action.payload.id && value.id !== undefined) || (value.cacheId === action.payload.cacheId && value.cacheId !== undefined)
-      )
-      if(foundMinimizeEmailIndex === -1) return state;
-      MinimizeEmailColor.provideColor(state.minimizeEmailList[foundMinimizeEmailIndex].color);
-      state.minimizeEmailList.splice(foundMinimizeEmailIndex, 1);
-      localStorage.setItem(LOCAL_STORAGE_MINIMIZE_EMAILS, JSON.stringify(state.minimizeEmailList));
+        (value) => value.cacheId === action.payload.cacheId,
+      );
+      if (foundMinimizeEmailIndex === -1) return state;
+      state.minimizeEmailList[foundMinimizeEmailIndex] = {
+        ...state.minimizeEmailList[foundMinimizeEmailIndex],
+        id: action.payload.id,
+        cacheId: undefined,
+      };
       return state;
-    }
+    },
+    deleteMinimizeEmail(
+      state,
+      action: PayloadAction<{ cacheId?: number; id?: number }>,
+    ) {
+      const foundMinimizeEmailIndex = state.minimizeEmailList.findIndex(
+        (value) =>
+          (value.id === action.payload.id && value.id !== undefined) ||
+          (value.cacheId === action.payload.cacheId && value.cacheId !== undefined),
+      );
+      if (foundMinimizeEmailIndex === -1) return state;
+      MinimizeEmailColor.provideColor(
+        state.minimizeEmailList[foundMinimizeEmailIndex].color,
+      );
+      state.minimizeEmailList.splice(foundMinimizeEmailIndex, 1);
+      localStorage.setItem(
+        LOCAL_STORAGE_MINIMIZE_EMAILS,
+        JSON.stringify(state.minimizeEmailList),
+      );
+      return state;
+    },
   },
 });
 
