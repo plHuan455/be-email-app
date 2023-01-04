@@ -9,6 +9,7 @@ import React, { memo, useEffect, useRef, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import useEmailCompose from '../../zustand/useEmailCompose';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import useScrollInfinity from '@hooks/useScrollInfinity';
 
 const EmailContainer = () => {
   const isCompose = useEmailCompose((state) => state.isCompose);
@@ -17,8 +18,6 @@ const EmailContainer = () => {
   const containerRef = useRef<HTMLDivElement>(null);
   const preEmailId = useRef<number>();
   const isFirstRender = useRef<boolean>(true);
-  const preContainerScrollHeight = useRef<number>();
-  const preContainerScroll = useRef<{ height: number; top: number }>();
   const intersectingEmailMessStack = useRef<
     { target: HTMLDivElement; emailData: EmailResponse }[]
   >([]);
@@ -29,6 +28,27 @@ const EmailContainer = () => {
     page: 1,
     limit: 3,
   });
+
+  const [enabled, setEnabled] = useState<boolean>(true);
+
+  const { scrollToPrePosition } = useScrollInfinity({
+    scrollContainer: containerRef.current,
+    enabled: enabled && (pageParams.page * pageParams.limit < EmailsList.length),
+    thresholdTop: 400,
+    onScrollTop: () => {
+      setEnabled(false);
+      console.count();
+      setPageParams((preState) => ({...preState, page: preState.page + 1}));
+      setTimeout(() => setEnabled(true), 3000);
+    },
+    onScroll: (target) => {
+      const container = target as HTMLDivElement;
+      const { scrollHeight, scrollTop, clientHeight } = container;
+      setIsShowScrollButton(scrollTop + clientHeight + 100 < scrollHeight);
+      handleChangeCurrEmail();
+    }
+  });
+
   const [isShowScrollBottom, setIsShowScrollButton] = useState<boolean>(false);
 
   const handleChangeCurrEmail = () => {
@@ -68,52 +88,18 @@ const EmailContainer = () => {
     handleChangeCurrEmail();
   }, [EmailsList]);
 
+  // WHEN SCROLL CONTAINER CHANGE SCROLL HEIGHT => SCROLL TO PREVIOUS EMAIL MESS 
   useEffect(() => {
-    const container = containerRef.current;
-    if (container && preContainerScroll.current !== undefined) {
-      container.scrollTop =
-        container.scrollHeight -
-        preContainerScroll.current.height +
-        preContainerScroll.current.top;
-    }
+    scrollToPrePosition();
   }, [pageParams]);
 
+  // SCROLL BOTTOM TOP WHEN MOUNT
   useEffect(() => {
     const container = containerRef.current;
     if (container) {
-      setTimeout(() => {
-        handleChangeCurrEmail();
-      }, 200);
       container.scrollTop = container.scrollHeight;
-      container.addEventListener('scroll', handleScroll);
     }
-    return () => {
-      container?.removeEventListener('scroll', handleScroll);
-      // dispatch(setCurrEmail(undefined));
-      // intersectingEmailMessStack.current = []
-    };
   }, [containerRef, EmailsList]);
-
-  function handleScroll(e?: Event) {
-    const container = e?.target as HTMLDivElement;
-
-    const { scrollHeight, scrollTop, clientHeight } = container;
-    setIsShowScrollButton(scrollTop + clientHeight + 100 < scrollHeight);
-
-    preContainerScroll.current = {
-      height: container.scrollHeight,
-      top: container.scrollTop,
-    };
-
-    if (container.scrollTop === 0) {
-      // TODO: REMOVE THIS FAKE DELAY FAKE API
-      setTimeout(() => {
-        setPageParams((preState) => ({ ...preState, page: preState.page + 1 }));
-      }, 1000);
-    }
-
-    handleChangeCurrEmail();
-  }
 
   const handleInterSecting = (target: HTMLDivElement, emailData: EmailResponse) => {
     intersectingEmailMessStack.current.push({ target, emailData });
