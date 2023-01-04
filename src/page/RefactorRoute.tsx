@@ -64,6 +64,7 @@ import {
 } from './Settings/EmailInformation';
 import SettingPage from './Settings';
 import BlackListPage from './Settings/BlackList';
+import { ManagerPositionPage } from './Manager/ManagerPositionPage';
 
 export const sideBarRoutes: RouteObject[] = [
   {
@@ -169,6 +170,16 @@ export const sideBarRoutes: RouteObject[] = [
           edit: <EditEmployeePage />,
         },
       ),
+      genCRUD(
+        {
+          path: '/department/:id/position',
+        },
+        {
+          index: <ManagerPositionPage />,
+          add: <AddEmployeePage />,
+          edit: <EditEmployeePage />,
+        },
+      ),
     ],
   },
   {
@@ -177,6 +188,20 @@ export const sideBarRoutes: RouteObject[] = [
     children: [
       { path: '/setting/user-role', element: <SettingRoles /> },
       { path: '/setting/blacklist', element: <BlackListPage /> },
+      {
+        path: '/setting/profile',
+        children: [
+          {
+            index: true,
+            path: '/setting/profile',
+            element: <UserProfileContainer />,
+          },
+          {
+            path: '/setting/profile/change-password',
+            element: <ChangePassword />,
+          },
+        ],
+      },
       genCRUD(
         {
           path: '/setting/email-infomation',
@@ -218,20 +243,6 @@ export const declareRouter: RouteObject[] = [
       {
         path: '/',
         element: <Navigate to={'/emails'} replace={true} />,
-      },
-      {
-        path: '/profile',
-        children: [
-          {
-            index: true,
-            path: '/profile',
-            element: <UserProfileContainer />,
-          },
-          {
-            path: '/profile/change-password',
-            element: <ChangePassword />,
-          },
-        ],
       },
       ...sideBarRoutes,
     ],

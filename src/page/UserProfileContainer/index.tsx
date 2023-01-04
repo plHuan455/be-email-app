@@ -128,7 +128,7 @@ const UserProfileContainer = () => {
   };
 
   const onChangePassword = (e) => {
-    navigate('/manager/profile/change-password');
+    navigate('/setting/profile/change-password');
   };
 
   const handleSubmitUpdateForm = (values: AuthUpdate) => {

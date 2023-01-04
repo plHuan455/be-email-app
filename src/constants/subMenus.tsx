@@ -69,16 +69,11 @@ export const subMenuDepartment: SubSidebarItem[] = [
   },
 ];
 
-export const subMenuSetting: SubSidebarItem[] = [
+export const subMenuSettingUser: SubSidebarItem[] = [
   {
-    name: 'User roles',
-    icon: <PersonOutlineOutlinedIcon />,
-    navigate: '/setting/user-role',
-  },
-  {
-    name: 'Email information',
+    name: 'User Info',
     icon: <Icon icon="accountCircle" />,
-    navigate: '/setting/email-infomation',
+    navigate: '/setting/profile',
   },
   {
     name: 'Email template',
@@ -95,4 +90,13 @@ export const subMenuSetting: SubSidebarItem[] = [
     icon: <Icon icon="signature" color="black" />,
     navigate: '/setting/signature',
   },
+];
+
+export const subMenuSettingManager: SubSidebarItem[] = [
+  {
+    name: 'User roles',
+    icon: <PersonOutlineOutlinedIcon />,
+    navigate: '/setting/user-role',
+  },
+  ...subMenuSettingUser,
 ];

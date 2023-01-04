@@ -74,7 +74,7 @@ const ChangePassword = () => {
   return (
     <Layout.MainHaveActions>
       <WrapContent className="bg-transparent">
-        <Box className=" bg-white p-10 py-16 rounded-xl w-[400px]">
+        <Box className=" bg-white p-10 py-12 rounded-xl w-[400px]">
           <Box className="flex items-center mb-8">
             <Box className="cursor-pointer h-[56px]">
               <span className="inline-block p-4" onClick={() => navigate(-1)}>
@@ -138,9 +138,9 @@ const ChangePassword = () => {
                 {t('Change Password')}
               </Button>
             </WrapActions>
+            <p className="text-center">2022 Metanode, Inc</p>
           </form>
         </Box>
-        <p>2022 Metanode, Inc</p>
       </WrapContent>
     </Layout.MainHaveActions>
   );
