@@ -4,7 +4,7 @@ import { Box } from '@mui/material';
 import { rem } from '@utils/functions';
 import { motion, usePresence, AnimatePresence } from 'framer-motion';
 import { useLocation } from 'react-router-dom';
-import { InputContactBlock } from '@components/molecules/AutoCompleteReceive';
+import { InputContactBlock } from '@components/molecules/Autocomplete';
 import { HashtagTabs } from '@redux/Email/reducer';
 import { CustomFile } from '../EmailCompose2';
 
@@ -55,9 +55,12 @@ const MinimizeEmailList: React.FC<MinimizeEmailListProps> = ({
             className="t-minimizeEmailList_itemWrapper"
             style={{ position: 'relative', marginLeft: rem(5), height: rem(46) }}
             initial={{ width: 0, marginLeft: 0 }}
-            animate={{ 
-              width: value.id === showMinimizeEmailId?.id && value.id !== undefined? 0 : rem(260),
-              marginLeft: rem(5)
+            animate={{
+              width:
+                value.id === showMinimizeEmailId?.id && value.id !== undefined
+                  ? 0
+                  : rem(260),
+              marginLeft: rem(5),
             }}
             exit={{ width: 0, marginLeft: 0 }}
             transition={{

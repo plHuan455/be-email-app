@@ -24,7 +24,8 @@ export interface InputContactBlock
 }
 
 interface AutoCompleteReceiveProps {
-  name: 'to' | 'cc' | 'bcc'
+  className?: string;
+  name: 'to' | 'cc' | 'bcc';
   value: InputContactBlock[];
   options: readonly InputContactBlock[];
   onChange?: (value: InputContactBlock[]) => void;
@@ -32,6 +33,7 @@ interface AutoCompleteReceiveProps {
 }
 
 const AutoCompleteReceive: React.FC<AutoCompleteReceiveProps> = ({
+  className,
   name,
   value,
   options,
@@ -74,20 +76,21 @@ const AutoCompleteReceive: React.FC<AutoCompleteReceiveProps> = ({
 
   return (
     <AutocompleteNested
+      className={`${className}`}
       name={name}
       options={exOption ? [...options, exOption] : options}
       value={value}
       onChange={handleChange}
-      placeholder={'Chọn mail'}
+      placeholder={'Select mail'}
       renderInput={(params) => (
         <TextField
           {...params}
           onChange={handleChangeInput}
-          placeholder={'Chọn group hoặc nhập mail'}
+          placeholder={'Select group or enter mail'}
         />
       )}
       renderSubInput={(params) => (
-        <TextField {...params} placeholder={'Chọn mail'} />
+        <TextField {...params} placeholder={'Select mail'} />
       )}
       getOptionLabel={(option) => option.contact_name}
       getSubOptionLabel={(option) => option.name}
@@ -141,7 +144,7 @@ const AutoCompleteReceive: React.FC<AutoCompleteReceiveProps> = ({
               {option.name}
             </p>
           </MenuItem>
-        )
+        );
       }}
       renderTags={(list, getTagProps, state) => {
         return list.map((receiver, index) => {
@@ -171,15 +174,20 @@ const AutoCompleteReceive: React.FC<AutoCompleteReceiveProps> = ({
             );
           }
 
-          const totalContact = receiver.subMenu?.length
-          const countSelected = receiver?.subMenu?.filter?.((sub) => sub.isSelected && sub.field === name)?.length || 0
+          const totalContact = receiver.subMenu?.length;
+          const countSelected =
+            receiver?.subMenu?.filter?.(
+              (sub) => sub.isSelected && sub.field === name,
+            )?.length || 0;
 
           return (
             <ContactReceive
               contactName={receiver.contact_name}
               haveCloseIcon={true}
               onDelete={props.onDelete}
-              endAnchor={totalContact ? `${countSelected}/${totalContact}`: undefined}
+              endAnchor={
+                totalContact ? `${countSelected}/${totalContact}` : undefined
+              }
             />
           );
         });
@@ -195,7 +203,7 @@ const AutoCompleteReceive: React.FC<AutoCompleteReceiveProps> = ({
               onDelete={props.onDelete}
               // endAnchor={`${countChecked}/${receiver.employeesList.length}`}
             />
-          )
+          );
         });
       }}
     />

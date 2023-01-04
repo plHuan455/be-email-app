@@ -310,9 +310,10 @@ function AutocompleteNested<
   }, [selectRef.current]);
 
   return (
-    <div>
+    <div className="w-full">
       <Autocomplete
         {...props}
+        sx={styleNoBorder}
         multiple
         ref={selectRef}
         open={open || openSub}
@@ -334,8 +335,11 @@ function AutocompleteNested<
           onClose={() => setOpenSub(false)}>
           <Autocomplete
             multiple
+            filterSelectedOptions
             disableCloseOnSelect
-            value={currentValue.subMenu.filter((subMenu) => subMenu.isSelected && subMenu.field === props.name)}
+            value={currentValue.subMenu.filter(
+              (subMenu) => subMenu.isSelected && subMenu.field === props.name,
+            )}
             options={currentValue.subMenu.filter(
               (subMenu) =>
                 (subMenu.isSelected && subMenu.field === props.name) ||
@@ -352,5 +356,11 @@ function AutocompleteNested<
     </div>
   );
 }
+
+const styleNoBorder = {
+  '& fieldset': {
+    border: 'none',
+  },
+};
 
 export default AutocompleteNested;
