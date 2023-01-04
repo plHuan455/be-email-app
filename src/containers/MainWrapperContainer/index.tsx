@@ -612,9 +612,14 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
     };
     const data = createApiData(values);
     const isEmailDataEmpty = checkEmailDataEmpty(values);
+    const isExistShow = isExistShowEmail();
 
     /** NOT HAVE DATA AND ISN'T CALL API STORE DRAFT  */
-    if (isEmailDataEmpty && !showMinimizeEmailId) {
+    if (isEmailDataEmpty && !isExistShow) {
+      // if(showMinimizeEmailId?.id) {
+      //   deleteEmailMutate(String(showMinimizeEmailId.id));
+      //   setShowMinimizeEmailId(undefined);
+      // }
       if (location.pathname === '/emails/compose') {
         handleTriggerClearData();
       }
@@ -623,7 +628,7 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
     }
 
     /** MINIMIZE EMAIL ABLE */
-    if (isExistShowEmail() || minimizeEmailList.length < 2) {
+    if (isExistShow || minimizeEmailList.length < 2) {
       const newCacheId = Date.now();
       if (showMinimizeEmailId?.id !== undefined) {
         dispatch(
@@ -718,6 +723,11 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
 
       // Stored to draft
       if (showMinimizeEmailId.id !== undefined) {
+        if(!isExistShowEmail() && isEmailDataEmpty) {
+          deleteEmailMutate(String(showMinimizeEmailId.id));
+          setShowMinimizeEmailId(undefined);
+          return;
+        }
         updateDraftMutate({
           id: showMinimizeEmailId.id,
           data: emailData,
@@ -764,7 +774,7 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
   //     return Array(to - from + 1).fill(1).map((_, index) => index + from)
   //   }
   //   (async function deleteDraft(){
-  //     const idList = renderArray(89, 145);
+  //     const idList = renderArray(118, 218);
   //     await deleteAllWithIdList(idList);
   //   })()
   // }, [])
