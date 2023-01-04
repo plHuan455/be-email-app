@@ -1,43 +1,63 @@
-import { RefObject, useCallback, useEffect } from "react";
+import React, { RefObject, useCallback, useEffect, useRef } from "react";
 
 interface UseScrollInfinityProps {
-  enabled?: boolean;
-  isScrollBottom?: boolean;
-  scrollContainerRef: RefObject<Element>;
-  threshold?: number; // sai so (px)
-  onScrollToLimit: () => void;
+  scrollContainer: HTMLElement | null,
+  enabled: boolean,
+  thresholdTop?: number,
+  onScrollTop?: (e: HTMLElement) => void,
+  onScroll?: (e: HTMLElement) => void,
 }
 
 const useScrollInfinity = ({
-  isScrollBottom = false, 
-  scrollContainerRef,
-  threshold = 80,
-  onScrollToLimit,
+  scrollContainer,
   enabled = true,
+  thresholdTop = 100,
+  onScrollTop,
+  onScroll,
 }: UseScrollInfinityProps) => {
-  
-  const handleScroll = (e: Event) => {
-    if(!enabled) return;
-    const container = e.target as HTMLElement;
-    if(isScrollBottom) {
-      if(container.scrollTop + container.clientHeight + threshold >= container.scrollHeight) {
-        onScrollToLimit();
+  const preContainerScroll = useRef<{height: number, top: number}>();
+  const scrollTimeOut = useRef<NodeJS.Timeout>();
+
+
+  useEffect(() => {
+    const scrollEventFuc = () => {
+      if(!scrollContainer) return;
+      preContainerScroll.current = {
+        height: scrollContainer.scrollHeight,
+        top: scrollContainer.scrollTop,
+      };
+      onScroll && onScroll(scrollContainer);
+
+      if(enabled && scrollContainer.scrollTop - thresholdTop <= 0) {
+        if(scrollTimeOut.current){
+          clearTimeout(scrollTimeOut.current);
+        }
+        onScrollTop && onScrollTop(scrollContainer);
       }
-      return;
     }
 
-    if(container.scrollTop - threshold <=  0) {
-      onScrollToLimit();
+    if(enabled) {
+      scrollTimeOut.current = setTimeout(() =>  scrollEventFuc(), 200)
+    }
+
+    if(scrollContainer) {
+      scrollContainer.addEventListener('scroll', scrollEventFuc);
+    }
+
+    return () => {
+      scrollContainer?.removeEventListener('scroll', scrollEventFuc);
+      if(scrollTimeOut.current) clearTimeout(scrollTimeOut.current);
+    };
+  }, [scrollContainer, enabled]);
+
+  const scrollToPrePosition = () => {
+    if (scrollContainer && preContainerScroll.current !== undefined) {
+      scrollContainer.scrollTop =
+        scrollContainer.scrollHeight - preContainerScroll.current.height + preContainerScroll.current.top;
     }
   }
 
-  useEffect(() => {
-    const container = scrollContainerRef.current;
-    if(container) {
-      container.addEventListener('scroll', handleScroll);
-      return () => container.removeEventListener('scroll', handleScroll);
-    }
-  }, [scrollContainerRef])
+  return {scrollToPrePosition}
 }
 
 export default useScrollInfinity;
