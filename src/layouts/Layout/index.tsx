@@ -83,6 +83,7 @@ const MainHaveActions: React.FC<
     isHaveSearch?: boolean;
     isFull?: boolean;
     headTitle?: string;
+    rightHeaderTabs?: React.ReactNode;
     onClickAdd?: React.MouseEventHandler<HTMLButtonElement>;
   }
 > = ({
@@ -92,6 +93,7 @@ const MainHaveActions: React.FC<
   isHaveSearch = false,
   isFull = false,
   headTitle,
+  rightHeaderTabs,
   onClickAdd,
 }) => {
   // useLocation
@@ -162,6 +164,7 @@ const MainHaveActions: React.FC<
                 )}
               </Box>
               {isHaveSearch && <SearchStartWithIcon />}
+              {rightHeaderTabs}
             </Box>
           )}
           {children}
@@ -191,6 +194,7 @@ const MainQueryClient: React.FC<
     isHaveSearch?: boolean;
     isFull?: boolean;
     headTitle?: string;
+    rightHeaderTabs?: React.ReactNode;
     onClickAdd?: React.MouseEventHandler<HTMLButtonElement>;
   }
 > = ({
@@ -199,6 +203,7 @@ const MainQueryClient: React.FC<
   isHaveHeader = true,
   isHaveSearch = false,
   isFull = false,
+  rightHeaderTabs,
   onClickAdd,
   headTitle,
 }) => {
@@ -209,7 +214,8 @@ const MainQueryClient: React.FC<
       isHaveSearch={isHaveSearch}
       isFull={isFull}
       headTitle={headTitle}
-      onClickAdd={onClickAdd}>
+      onClickAdd={onClickAdd}
+      rightHeaderTabs={rightHeaderTabs}>
       <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     </MainHaveActions>
   );
