@@ -15,6 +15,7 @@ const EmailContainer = () => {
   const dispatch = useAppDispatch();
 
   const containerRef = useRef<HTMLDivElement>(null);
+  const enableRef = useRef<boolean>(true);
   const preEmailId = useRef<number>();
   const isFirstRender = useRef<boolean>(true);
   const preContainerScrollHeight = useRef<number>();
@@ -107,9 +108,13 @@ const EmailContainer = () => {
 
     if (container.scrollTop === 0) {
       // TODO: REMOVE THIS FAKE DELAY FAKE API
+      if(enableRef.current === false) return;
+      enableRef.current = false;
       setTimeout(() => {
+        console.count();
         setPageParams((preState) => ({ ...preState, page: preState.page + 1 }));
-      }, 1000);
+        enableRef.current = true;
+      }, 1000)
     }
 
     handleChangeCurrEmail();
