@@ -1,5 +1,8 @@
+import Icon from '@components/atoms/Icon';
 import PersonOutlineOutlinedIcon from '@mui/icons-material/PersonOutlineOutlined';
 import ShareIcon from '@mui/icons-material/Share';
+import ArticleIcon from '@mui/icons-material/Article';
+import BlockIcon from '@mui/icons-material/Block';
 
 export interface SubSidebarItem {
   name: string;
@@ -61,7 +64,7 @@ export const subMenuContact: SubSidebarItem[] = [
 export const subMenuDepartment: SubSidebarItem[] = [
   {
     name: 'Department',
-    icon: <PersonOutlineOutlinedIcon />,
+    icon: <Icon icon="department" color="black" />,
     navigate: '/department/department',
   },
 ];
@@ -74,22 +77,22 @@ export const subMenuSetting: SubSidebarItem[] = [
   },
   {
     name: 'Email information',
-    icon: <PersonOutlineOutlinedIcon />,
+    icon: <Icon icon="accountCircle" />,
     navigate: '/setting/email-infomation',
   },
   {
     name: 'Email template',
-    icon: <PersonOutlineOutlinedIcon />,
+    icon: <ArticleIcon />,
     navigate: '/setting/email-template',
   },
   {
     name: 'Blacklist',
-    icon: <PersonOutlineOutlinedIcon />,
+    icon: <BlockIcon />,
     navigate: '/setting/blacklist',
   },
   {
     name: 'Signature',
-    icon: <PersonOutlineOutlinedIcon />,
+    icon: <Icon icon="signature" color="black" />,
     navigate: '/setting/signature',
   },
 ];
