@@ -9,6 +9,7 @@ import { styled } from '@mui/material/styles';
 import { autocompleteClasses } from '@mui/material/Autocomplete';
 import { HashtagTabs } from '@redux/Email/reducer';
 import { isEmpty } from 'lodash';
+import { rem } from '@utils/functions';
 
 const Root = styled('div')(
   ({ theme }) => `
@@ -230,7 +231,7 @@ const EmailPrivateHashtag: React.FC<Props> = ({
         </InputWrapper>
       </div>
       {groupedOptions.length > 0 ? (
-        <Listbox {...getListboxProps()}>
+        <Listbox {...getListboxProps()} sx={{bottom: `calc(100% - ${rem(16)})`, ml: rem(20), maxHeight: rem(200)}}>
           {(groupedOptions as typeof privateHashtagData).map((option, index) => (
             <li {...getOptionProps({ option, index })}>
               <span>{option.title}</span>
