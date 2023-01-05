@@ -16,6 +16,7 @@ const EmailContainer = () => {
   const dispatch = useAppDispatch();
 
   const containerRef = useRef<HTMLDivElement>(null);
+  const isScrolledWhenEmailListChange = useRef<boolean>(true);
   const preEmailId = useRef<number>();
   const isFirstRender = useRef<boolean>(true);
   const intersectingEmailMessStack = useRef<
@@ -88,16 +89,18 @@ const EmailContainer = () => {
     handleChangeCurrEmail();
   }, [EmailsList]);
 
-  // WHEN SCROLL CONTAINER CHANGE SCROLL HEIGHT => SCROLL TO PREVIOUS EMAIL MESS 
+  // WHEN THE SCROLL CONTAINER CHANGES THE SCROLL HEIGHT => SCROLL TO PREVIOUS EMAIL MESS 
   useEffect(() => {
     scrollToPrePosition();
   }, [pageParams]);
 
   // SCROLL BOTTOM TOP WHEN MOUNT
   useEffect(() => {
+    // console.log({isScrolledWhenEmailListChange.current});
     const container = containerRef.current;
-    if (container) {
+    if (container && isScrolledWhenEmailListChange.current && EmailsList.length !== 0) {
       container.scrollTop = container.scrollHeight;
+      isScrolledWhenEmailListChange.current = false;
     }
   }, [containerRef, EmailsList]);
 
