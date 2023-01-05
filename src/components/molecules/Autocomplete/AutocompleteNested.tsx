@@ -177,7 +177,6 @@ function AutocompleteNested<
 
     if (details?.option.subMenu && itemFocusRef.current) {
       setOpenSub(true);
-
       callBackRef.current = (callback) => {
         callback({ event, value, reason, details });
       };
@@ -327,6 +326,7 @@ function AutocompleteNested<
         renderInput={renderInput}
         renderOption={getRenderOption()}
         renderTags={renderTags}
+        autoHighlight
       />
       {currentValue?.subMenu && (
         <Menu
