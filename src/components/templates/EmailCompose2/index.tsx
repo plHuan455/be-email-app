@@ -197,7 +197,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
       <FormProvider {...method}>
         <form
           className="p-8 flex items-center justify-center w-full h-full"
-          onSubmit={method.handleSubmit(onSubmit)}>
+        >
           <Box
             className={`flex flex-col h-full w-full mx-auto shadow-xl bg-white rounded-3xl overflow-hidden z-[80] transition-all ${
               isFullScreen && 'fixed top-0 left-0 bottom-0'
@@ -561,7 +561,6 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                 /> */}
                 <LoadingButton
                   loading={isSubmitting}
-                  type="submit"
                   loadingPosition="start"
                   sx={{
                     backgroundColor: '#554CFF',
@@ -580,7 +579,9 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                   startIcon={<SendIcon fontSize="small" />}
                   endIcon={
                     selectedDate ? <AccessTimeIcon fontSize="small" /> : undefined
-                  }>
+                  }
+                  onClick={() => { method.handleSubmit(onSubmit)()}}
+                >
                   {selectedDate ? 'SEND' : 'SEND NOW'}
                 </LoadingButton>
               </Box>
