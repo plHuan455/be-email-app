@@ -129,14 +129,14 @@ function MainWrapper({ children }: { children: React.ReactNode }) {
       id: 0,
       label: 'Profile',
       path: '/profile',
-      handleClick: handleChangePage('/profile'),
+      handleClick: handleChangePage('/setting/profile'),
     },
 
     {
       id: 2,
       label: 'Change Password',
       path: '/profile/change-password',
-      handleClick: handleChangePage('/profile/change-password'),
+      handleClick: handleChangePage('/setting/profile/change-password'),
     },
     {
       id: 3,

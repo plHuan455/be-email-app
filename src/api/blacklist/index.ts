@@ -1,6 +1,6 @@
 import { AxiosResponse } from 'axios';
 import ApiClient from '@api/ApiClient';
-const BLACKLIST_API_URL = '/v1/api/user/blacklist';
+const BLACKLIST_API_URL = '/user/blacklist';
 
 interface AddMailToBlackListParams {
   user_id?: number;

@@ -204,7 +204,7 @@ const EmailPrivateHashtag: React.FC<Props> = ({
   // Handler FNC
   const handleInputHashtag = (e) => {
     const inputValue = e.target.value;
-    const isMatchHashtagType = inputValue.match(/([a-zA-Z]+\b)/);
+    const isMatchHashtagType = inputValue.match(/([a-zA-Z0-9]+\b)/);
 
     if (isMatchHashtagType) {
       setTempOption({

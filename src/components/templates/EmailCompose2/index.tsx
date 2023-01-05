@@ -229,6 +229,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                           name="to"
                           value={value}
                           onChange={(v) => {
+                            console.log(v);
                             onChange(v);
                             method.setValue(
                               'contactBlock',

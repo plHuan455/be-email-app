@@ -476,15 +476,16 @@ const EmailMess: React.FC<Props> = ({
           display="flex"
           alignItems="center">
           {_renderActionsPendingItems}
-          {emailData.status === 'APPROVED' && sentAt.getTime() > Date.now() && (
-            <ControlEmailSend
-              remainMinutes={Math.floor(
-                (sentAt.getTime() - new Date().getTime()) / 1000 / 60,
-              )}
-              onSend={onUndoEmail}
-              onUndo={onSendEmail}
-            />
-          )}
+          {emailData.status.toUpperCase() === 'APPROVED' &&
+            sentAt.getTime() > Date.now() && (
+              <ControlEmailSend
+                remainMinutes={Math.floor(
+                  (sentAt.getTime() - new Date().getTime()) / 1000 / 60,
+                )}
+                onSend={onUndoEmail}
+                onUndo={onSendEmail}
+              />
+            )}
         </Box>
       </Box>
       {/* Layer if status === 'Reply || ReplyAll' */}

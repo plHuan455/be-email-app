@@ -11,7 +11,7 @@ const ManagerDepartmentPage = () => {
     <Layout.MainQueryClient
       headTitle={t('Department')}
       isHaveHeader
-      onClickAdd={() => navigate('/department/department/add')}>
+      onClickAdd={() => navigate('/department/add')}>
       <DepartmentContainer />
     </Layout.MainQueryClient>
   );

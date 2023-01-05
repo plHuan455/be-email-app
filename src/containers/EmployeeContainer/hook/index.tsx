@@ -85,7 +85,12 @@ export const useCreateEmployeeManagement = () => {
       const avatar = await uploadImage(files.avatar[0]);
       // call create here
       const { id, ...params } = employee;
-      await createEmployee({ ...params, avatar, department_id: param.id! });
+      await createEmployee({
+        ...params,
+        avatar,
+        role_id: +params.role_id,
+        department_id: +param.id!,
+      });
       toast.success('Create employee success!');
       navigate('..');
     } catch (error: any) {

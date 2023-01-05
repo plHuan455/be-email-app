@@ -93,7 +93,7 @@ export const getUserById = async (
 };
 // CREATE EMPLOYEE
 export const createEmployee = async (params: CreateEmployeeParams) => {
-  const url = USER__API;
+  const url = USER__API_ALL;
   // const cloneParams = {
   //   avatar: params.avatar,
   //   email: params.email,

@@ -229,7 +229,7 @@ function LoginContainer() {
                   {t('Login')}
                 </Button>
               </WrapActions>
-              {isLogined && currentUserName && currentUserAvt && (
+              {isLogined && (
                 <WrapTextLink>
                   {/* Not you? return <Link to="/#/login">Login</Link> */}
                   Not you? return{' '}

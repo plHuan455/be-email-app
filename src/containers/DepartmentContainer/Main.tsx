@@ -74,7 +74,7 @@ const DepartmentContainer = () => {
     <div className="px-4">
       <PageCrudData
         disabledRowOnClick={false}
-        api="/v1/api/rbac/department"
+        api="/system/position/department"
         columns={columns}
         rowOnClick={(row) => rowClick(row)}
       />

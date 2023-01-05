@@ -2,6 +2,8 @@
 import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
 import { stringify } from 'qs';
 
+const ROOT_API = '/v1/api';
+
 type QueryObject = { [key: string]: string | number | boolean };
 
 export interface ApiResponse<T = any> {
@@ -32,7 +34,9 @@ export default class ApiClient {
     params?: object,
     query?: object,
   ): Promise<AxiosResponse> {
-    let requestUrl = query ? `${url}?${stringify(query)}` : url;
+    let requestUrl = query
+      ? `${ROOT_API}${url}?${stringify(query)}`
+      : `${ROOT_API}${url}`;
     const response = await axiosInstance.get(requestUrl, {
       params,
       headers: await this.getHeaders(),
@@ -46,7 +50,9 @@ export default class ApiClient {
     query?: object,
     params?: object,
   ): Promise<AxiosResponse> {
-    const requestUrl = query ? `${url}?${stringify(query)}` : url;
+    const requestUrl = query
+      ? `${ROOT_API}${url}?${stringify(query)}`
+      : `${ROOT_API}${url}`;
     const config: AxiosRequestConfig = {
       headers: await this.getHeaders(),
       // validateStatus,
@@ -60,7 +66,9 @@ export default class ApiClient {
     query?: object,
     params?: object,
   ): Promise<AxiosResponse> {
-    const requestUrl = query ? `${url}?${stringify(query)}` : url;
+    const requestUrl = query
+      ? `${ROOT_API}${url}?${stringify(query)}`
+      : `${ROOT_API}${url}`;
 
     const config: AxiosRequestConfig = {
       headers: await this.getHeaders(),
@@ -76,7 +84,9 @@ export default class ApiClient {
     query?: object,
     params?: object,
   ): Promise<AxiosResponse> {
-    const requestUrl = query ? `${url}?${stringify(query)}` : url;
+    const requestUrl = query
+      ? `${ROOT_API}${url}?${stringify(query)}`
+      : `${ROOT_API}${url}`;
 
     const config: AxiosRequestConfig = {
       headers: await this.getHeaders(),
@@ -88,7 +98,9 @@ export default class ApiClient {
   }
 
   static async delete(url: string, params: any): Promise<AxiosResponse> {
-    const requestUrl = params ? `${url}?${stringify(params)}` : url;
+    const requestUrl = params
+      ? `${ROOT_API}${url}?${stringify(params)}`
+      : `${ROOT_API}${url}`;
 
     const config: AxiosRequestConfig = {
       headers: await this.getHeaders('multipart/form-data'),
@@ -104,7 +116,7 @@ export default class ApiClient {
     fileKey: string,
     file: File,
   ): Promise<AxiosResponse> {
-    const requestUrl = `${url}?${stringify(query)}`;
+    const requestUrl = `${ROOT_API}${url}?${stringify(query)}`;
 
     const config: AxiosRequestConfig = {
       headers: await this.getHeaders('multipart/form-data'),

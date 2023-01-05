@@ -152,7 +152,7 @@ export const sideBarRoutes: RouteObject[] = [
     children: [
       genCRUD(
         {
-          path: '/department/department',
+          path: '/department',
         },
         {
           index: <ManagerDepartmentPage />,
@@ -162,7 +162,7 @@ export const sideBarRoutes: RouteObject[] = [
       ),
       genCRUD(
         {
-          path: '/department/:id/employee',
+          path: '/department/:idDepartment/employee',
         },
         {
           index: <ManagerEmployeePage />,
@@ -172,7 +172,7 @@ export const sideBarRoutes: RouteObject[] = [
       ),
       genCRUD(
         {
-          path: '/department/:id/position',
+          path: '/department/:idDepartment/position',
         },
         {
           index: <ManagerPositionPage />,
