@@ -46,7 +46,7 @@ const EmailMainWrapper = () => {
     queryFn: () => getAllEmailByCatalog(params),
     onSuccess: (res) => {
       console.log('EmailsList: \n', res.data, '\n===========================');
-      dispatch(setEmailsList(res.data));
+      dispatch(setEmailsList(res.data ?? []));
       return res.data;
     },
     onError: (res) => {
