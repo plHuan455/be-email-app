@@ -101,7 +101,7 @@ export default function MainSidebar() {
           path = '/contact/contacts';
           break;
         case '/department':
-          path = '/department/department';
+          path = '/department';
           break;
         case '/setting':
           path = '/setting/user-role';

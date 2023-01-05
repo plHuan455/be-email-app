@@ -2,6 +2,8 @@
 import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
 import { stringify } from 'qs';
 
+const ROOT_API = '/v1/api';
+
 type QueryObject = { [key: string]: string | number | boolean };
 
 export interface ApiResponse<T = any> {
@@ -32,7 +34,9 @@ export default class ApiClient {
     params?: object,
     query?: object,
   ): Promise<AxiosResponse> {
-    let requestUrl = query ? `/v1/api${url}?${stringify(query)}` : url;
+    let requestUrl = query
+      ? `${ROOT_API}${url}?${stringify(query)}`
+      : `${ROOT_API}${url}`;
     const response = await axiosInstance.get(requestUrl, {
       params,
       headers: await this.getHeaders(),
@@ -46,7 +50,9 @@ export default class ApiClient {
     query?: object,
     params?: object,
   ): Promise<AxiosResponse> {
-    const requestUrl = query ? `${url}?${stringify(query)}` : url;
+    const requestUrl = query
+      ? `${ROOT_API}${url}?${stringify(query)}`
+      : `${ROOT_API}${url}`;
     const config: AxiosRequestConfig = {
       headers: await this.getHeaders(),
       // validateStatus,
@@ -60,7 +66,9 @@ export default class ApiClient {
     query?: object,
     params?: object,
   ): Promise<AxiosResponse> {
-    const requestUrl = query ? `${url}?${stringify(query)}` : url;
+    const requestUrl = query
+      ? `${ROOT_API}${url}?${stringify(query)}`
+      : `${ROOT_API}${url}`;
 
     const config: AxiosRequestConfig = {
       headers: await this.getHeaders(),
@@ -76,7 +84,9 @@ export default class ApiClient {
     query?: object,
     params?: object,
   ): Promise<AxiosResponse> {
-    const requestUrl = query ? `${url}?${stringify(query)}` : url;
+    const requestUrl = query
+      ? `${ROOT_API}${url}?${stringify(query)}`
+      : `${ROOT_API}${url}`;
 
     const config: AxiosRequestConfig = {
       headers: await this.getHeaders(),

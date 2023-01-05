@@ -174,6 +174,7 @@ function AutocompleteNested<
 
     // Click hoặc Enter vào option
     // Nếu option có options con
+
     if (details?.option.subMenu && itemFocusRef.current) {
       setOpenSub(true);
 
@@ -326,6 +327,7 @@ function AutocompleteNested<
         renderInput={renderInput}
         renderOption={getRenderOption()}
         renderTags={renderTags}
+        autoHighlight
       />
       {currentValue?.subMenu && (
         <Menu
@@ -335,6 +337,7 @@ function AutocompleteNested<
           onClose={() => setOpenSub(false)}>
           <Autocomplete
             multiple
+            autoHighlight
             filterSelectedOptions
             disableCloseOnSelect
             value={currentValue.subMenu.filter(
