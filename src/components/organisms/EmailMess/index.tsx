@@ -173,7 +173,7 @@ const EmailMess: React.FC<Props> = ({
         color: '#4BAAA2',
       }))
       : [];
-  }, []);
+  }, [emailData]);
 
   const _renderAttachesFiles = useMemo(() => {
     if (!emailData.email.attachs) return null;
