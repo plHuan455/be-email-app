@@ -2,6 +2,7 @@ import { approveEmail, EmailResponse, undoEmail } from '@api/email';
 import ModalBase from '@components/atoms/ModalBase';
 import AlertDialog, { useAlertDialog } from '@components/molecules/AlertDialog';
 import AlertWithEmailAction from '@components/molecules/AlertWithEmailAction';
+import { ActionListTypes, ActionNameTypes } from '@components/molecules/EmailActions';
 import SettimeInput from '@components/molecules/SettimeInput';
 import { UserInfo } from '@components/organisms/Email/Interface';
 import EmailMess from '@components/organisms/EmailMess';
@@ -25,10 +26,12 @@ interface Props {
   type: 'receive' | 'send';
   isShowHeader?: boolean;
   isShowActions?: boolean;
+  hiddenActions?: ActionListTypes;
   index?: number;
   onUpdateHashtagClick?: (hashtags: HashtagTabs[]) => void;
   onInterSecting?: (entry: IntersectionObserverEntry) => void;
   onUnInterSecting?: () => void;
+  onActionsClick?: (action: ActionNameTypes) => void;
 }
 
 const EmailMessContainerRef: React.ForwardRefRenderFunction<
@@ -43,10 +46,12 @@ const EmailMessContainerRef: React.ForwardRefRenderFunction<
     type,
     isShowHeader,
     isShowActions,
+    hiddenActions = {}, 
     index,
     onUpdateHashtagClick,
     onInterSecting,
     onUnInterSecting,
+    onActionsClick
   },
   ref,
 ) => {
@@ -291,6 +296,7 @@ const EmailMessContainerRef: React.ForwardRefRenderFunction<
         index={index}
         isShowActions={isShowActions}
         isShowHeader={isShowHeader}
+        hiddenActions={hiddenActions}
         onUpdateHashtagClick={onUpdateHashtagClick}
         onDecline={handleOnDecline}
         onApprove={handleOnApprove}
@@ -299,6 +305,7 @@ const EmailMessContainerRef: React.ForwardRefRenderFunction<
         onApproveNow={handleApproveNow}
         onSendEmail={handleSendEmail}
         onContinueClick={handleContinueEmailClick}
+        onActionsClick={onActionsClick}
       />
       <AlertDialog
         titleLabel={alertDialogTitle}

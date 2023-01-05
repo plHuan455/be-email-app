@@ -38,6 +38,7 @@ import EmailActionLayoutContainer, {
 import { InputContactBlock } from '@components/molecules/AutoCompleteReceive';
 import { toast } from 'react-toastify';
 import { addMailToBlackList } from '@api/blacklist';
+import { ActionNameTypes } from '@components/molecules/EmailActions';
 
 interface ModalForm {
   title: string;
@@ -58,7 +59,6 @@ const Email: React.FC<Props> = ({
   onUnIntersecting,
 }) => {
   const lastEmailMessRef = useRef<HTMLDivElement>(null);
-
   const [showHistory, setShowHistory] = useState<number>(0);
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [modal, setModal] = useState<ModalForm>({
@@ -195,6 +195,58 @@ const Email: React.FC<Props> = ({
     }));
   }, [EmailsList]);
 
+  const handleActionClick = (action: ActionNameTypes, emailId: number) => {
+    const foundEmail = EmailsList.find(value => value.id === emailId)
+    if(!foundEmail) return;
+    switch (action) {
+      case 'delete': {
+        setModal((prevState) => ({
+          ...prevState,
+          title: 'Are you sure want to delete this email??',
+          content: <p>If click "OK", you'll delete it .</p>,
+          onSubmit: async () => {
+            deleteEmailAction(String(emailId));
+          },
+        }));
+        setIsOpenModal(true);
+        break;
+      }
+      case 'spam': {
+        setModal((prevState) => ({
+          ...prevState,
+          title: 'Bạn có chắc báo cáo người dùng này với hành vi làm phiền?',
+          content: (
+            <p>Nếu bấm có, Bạn sẽ thêm người dùng này vào danh sách chặn.</p>
+          ),
+          onSubmit() {
+            addBlacklist({ user_email: foundEmail.email.from });
+
+            handleCloseModal();
+          },
+        }));
+        setIsOpenModal(true);
+        break;
+      }
+      case 'unread': {
+        dispatch(addUnreadEmail(foundEmail));
+        dispatch(setEmailsList(EmailsList.filter(email => email.id !== emailId)));
+
+        updateEmailStatus({
+          id: foundEmail.id,
+          status: 'unread',
+        });
+        break;
+      }
+      case 'star': {
+        updateImportantMutate({ id: emailId, data: { ...foundEmail } });
+        break;
+      }
+
+      default:
+        break;
+    }
+  }
+
   const changeEmailStatus = useCallback(
     (status, id) => {
       if (
@@ -216,7 +268,6 @@ const Email: React.FC<Props> = ({
             setIsOpenModal(true);
             break;
           }
-
           case 'spam': {
             setModal((prevState) => ({
               ...prevState,
@@ -314,48 +365,60 @@ const Email: React.FC<Props> = ({
 
       {/* TODO: REMOVE THIS CODE WHEN HAVE API PAGE LIMIT*/}
       {fakeLoading && <EmailMessEmpty isLoading={fakeLoading} />}
-      {convertedEmailList.map((email, index) => (
-        <EmailMessContainer
-          ref={EmailsList.length - 1 === index ? lastEmailMessRef : undefined}
-          key={email.id}
-          type={checkIsReceiveEmail(email.id) ? 'receive' : 'send'}
-          userInfo={
-            new UserInfo(
-              ``,
-              email.email?.writer_id?.toString() ?? '',
-              email.email.from,
-            )
-          }
-          emailData={email}
-          onShowHistory={handleShowHistory}
-          isShowHeader={showHistory === email.id}
-          isShowActions={
-            searchParams.get('tab') === 'me' && !currRole?.startsWith('EMPLOYEE')
-              ? false
-              : true
-          }
-          onChangeStatus={changeEmailStatus}
-          index={index}
-          onUpdateHashtagClick={(hashtagsList) => {
-            const hashtags: HashtagType[] = hashtagsList.map((hashtag) => ({
-              hashtag: hashtag.value,
-              user_id: Number(localStorage.getItem('current_id') ?? '0'),
-              user_email: email.id,
-            }));
-            updateHashtagMutate({
-              id: email.id,
-              data: { hashtags },
-            });
-          }}
-          onInterSecting={(entry) => {
-            if (onEmailMessIntersecting)
-              onEmailMessIntersecting(entry.target as HTMLDivElement, email);
-          }}
-          onUnInterSecting={() => {
-            onUnIntersecting && onUnIntersecting(email.id);
-          }}
-        />
-      ))}
+      {convertedEmailList.map((email, index) => {
+        const status = email.status.toLowerCase();
+        const isEmployee = currRole?.startsWith('EMPLOYEE');
+        const isReceiver = checkIsReceiveEmail(email.id);
+
+        return (
+          <EmailMessContainer
+            ref={EmailsList.length - 1 === index ? lastEmailMessRef : undefined}
+            key={email.id}
+            type={isReceiver ? 'receive' : 'send'}
+            userInfo={
+              new UserInfo(
+                ``,
+                email.email?.writer_id?.toString() ?? '',
+                email.email.from,
+              )
+            }
+            emailData={email}
+            onShowHistory={handleShowHistory}
+            isShowHeader={showHistory === email.id}
+            hiddenActions={isEmployee ? {
+              replyAll: ['draft', 'trash', 'declined'].includes(status),
+              reply: ['draft', 'trash', 'declined'].includes(status),
+              forward: ['draft', 'trash', 'declined'].includes(status),
+              unread: !isReceiver || ['draft', 'trash'].includes(status),
+              spam: !isReceiver || ['draft', 'trash'].includes(status),
+            } : true}
+            isShowActions={
+              searchParams.get('tab') === 'me'
+            }
+            onChangeStatus={changeEmailStatus}
+            onActionsClick={(action) => handleActionClick(action, email.id)}
+            index={index}
+            onUpdateHashtagClick={(hashtagsList) => {
+              const hashtags: HashtagType[] = hashtagsList.map((hashtag) => ({
+                hashtag: hashtag.value,
+                user_id: Number(localStorage.getItem('current_id') ?? '0'),
+                user_email: email.id,
+              }));
+              updateHashtagMutate({
+                id: email.id,
+                data: { hashtags },
+              });
+            }}
+            onInterSecting={(entry) => {
+              if (onEmailMessIntersecting)
+                onEmailMessIntersecting(entry.target as HTMLDivElement, email);
+            }}
+            onUnInterSecting={() => {
+              onUnIntersecting && onUnIntersecting(email.id);
+            }}
+          />
+        )
+      })}
       <ModalBase
         onClose={handleCloseModal}
         onSubmit={modal.onSubmit}
