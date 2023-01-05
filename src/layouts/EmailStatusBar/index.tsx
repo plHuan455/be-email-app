@@ -9,11 +9,11 @@ import SingleOTPInput from '@components/atoms/Input/PinInput/SingleInput';
 import { toast } from 'react-toastify';
 import { getAllCatalogTab } from '@api/email';
 import EmailTab from '@components/molecules/EmailTab';
-import { HashtagTabs, setPrivateHashtag } from '@redux/Email/reducer';
+import { HashtagTabs, setHashtags, setPrivateHashtag } from '@redux/Email/reducer';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { isEmpty } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
-import { RootState } from '@redux/configureStore';
+import { RootState, useAppSelector } from '@redux/configureStore';
 import HashtagContainer from '@containers/HashtagContainer';
 import { number } from 'yargs';
 
@@ -135,11 +135,10 @@ const EmailTabsSecData: EmailTabs[] = [
 // const hashtagTabs:
 
 const EmailStatusBar = (props: Props) => {
+  const hashtagTabs = useAppSelector(state => state.email.privateHashtags);
+
   const [isCreateHashTag, setIsCreateHashTag] = useState<boolean>(false);
   const [newHashTagValue, setNewHashTagValue] = useState<string>('');
-  const [hashtagTabs, setHashtagTabs] = useState<HashtagTabs[]>(() => {
-    return JSON.parse(localStorage.getItem('private_hashtag') ?? JSON.stringify([]));
-  });
 
   const [emailTabs, setEmailTabs] = useState<EmailTabs[]>(EmailTabsData);
 
@@ -174,8 +173,8 @@ const EmailStatusBar = (props: Props) => {
             color: '#4BAAA2',
           }));
 
-        setHashtagTabs(privHashTagData);
-        localStorage.setItem('private_hashtag', JSON.stringify(privHashTagData));
+        dispatch(setHashtags(privHashTagData))
+        // setHashtagTabs(privHashTagData);
         dispatch(setPrivateHashtag(privHashTagData));
 
         setEmailTabs((prevState) => {
@@ -244,8 +243,8 @@ const EmailStatusBar = (props: Props) => {
         notiNumber: 0,
         color: '#4BAAA2',
       };
-
-      setHashtagTabs((prevState) => [...prevState, newValue]);
+      // setHashtagTabs((prevState) => [...prevState, newValue]);
+      dispatch(setHashtags([...hashtagTabs, newValue]))
       setIsCreateHashTag(false);
       setNewHashTagValue('');
       return toast.success('Create hashtag successful!');

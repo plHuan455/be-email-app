@@ -340,6 +340,7 @@ const EmailSlice = createSlice({
     },
     setHashtags(state, action: PayloadAction<HashtagTabs[]>) {
       state.privateHashtags = action.payload;
+      localStorage.setItem('private_hashtag', JSON.stringify(state.privateHashtags));
       return state;
     },
     // MINIMIZE EMAIL ACTIONS
