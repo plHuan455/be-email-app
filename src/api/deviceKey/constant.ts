@@ -1,1 +1,1 @@
-export const API_DEVICE_KEY = '/v1/api/user/notify';
+export const API_DEVICE_KEY = '/user/notify';

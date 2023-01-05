@@ -32,7 +32,7 @@ export default class ApiClient {
     params?: object,
     query?: object,
   ): Promise<AxiosResponse> {
-    let requestUrl = query ? `${url}?${stringify(query)}` : url;
+    let requestUrl = query ? `/v1/api${url}?${stringify(query)}` : url;
     const response = await axiosInstance.get(requestUrl, {
       params,
       headers: await this.getHeaders(),

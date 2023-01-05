@@ -1,1 +1,1 @@
-export const ROLE_API_URL = '/v1/api/rbac/role';
+export const ROLE_API_URL = '/rbac/role';

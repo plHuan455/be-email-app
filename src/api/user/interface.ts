@@ -7,8 +7,8 @@ export interface CreateEmployeeParams {
   password: string;
   phone_number: string;
   position: string;
-  role_id: string;
-  department_id: string;
+  role_id: number;
+  department_id: number;
 }
 
 export type UpdateEmployeeParams = Partial<CreateEmployeeParams>;

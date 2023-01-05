@@ -90,7 +90,7 @@ const UserBlacklistContainer = () => {
         <PageCrudData
           refreshKey={refreshKey}
           disabledRowOnClick={true}
-          api="/v1/api/user/blacklist"
+          api="/user/blacklist"
           columns={columns}
         />
       </div>

@@ -99,7 +99,7 @@ export interface EmailDeleteResponse {
   message?: string;
 }
 
-const API_EMAIL_USER = '/v1/api/email/user';
+const API_EMAIL_USER = '/email/user';
 
 // Email Action
 

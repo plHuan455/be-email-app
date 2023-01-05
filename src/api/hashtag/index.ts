@@ -1,7 +1,7 @@
 import ApiClient from '@api/ApiClient';
 import { AxiosResponse } from 'axios';
 
-const HASHTAG_MAIN_API = '/v1/api/user/hashtag';
+const HASHTAG_MAIN_API = '/user/hashtag';
 
 const HASHTAG_API = {
   remove: `${HASHTAG_MAIN_API}/remove`,

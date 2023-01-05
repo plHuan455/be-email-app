@@ -18,10 +18,10 @@ const ManagerPositionPage = () => {
   return (
     <>
       <Layout.MainQueryClient
-        headTitle={t('Employee')}
+        headTitle={t('Positions')}
         isHaveHeader
         onClickAdd={handleAddEmployee}
-        onComback={() => navigate(-1)}
+        onComback={() => navigate('/department')}
         rightHeaderTabs={
           <InnerLayoutHeaderTabs
             tabs={TAB_DEPARTMENT_LIST}

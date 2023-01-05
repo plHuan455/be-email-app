@@ -37,7 +37,7 @@ const EmployeeContainer = () => {
           <div>
             <img
               className="w-20 h-10 object-contain rounded-md"
-              src={info.getValue()}
+              src={`http://${info.getValue()}`}
             />
           </div>
         ),
@@ -75,7 +75,9 @@ const EmployeeContainer = () => {
   const rowClick = (row) => {
     if (row && row.original) {
       // tạm thời cho edit, sau này phần quyền sau
-      navigate(`/department/${params.id}/employee/edit/${row.original.id}`);
+      navigate(
+        `/department/${params.idDepartment}/employee/edit/${row.original.id}`,
+      );
     }
   };
 
@@ -83,7 +85,7 @@ const EmployeeContainer = () => {
     <div className="px-4">
       <PageCrudData
         disabledRowOnClick={false}
-        api={`/v1/api/rbac/department/users/${params.id}`}
+        api={`/rbac/department/users/${params.idDepartment}`}
         columns={columns}
         rowOnClick={(row) => rowClick(row)}
       />

@@ -22,12 +22,7 @@ const PositionContainer = () => {
         accessorKey: '',
         accessorFn: (row) => row.name,
         id: 'name',
-        cell: (info) => {
-          console.log(info.getValue());
-          const { positions } = info.getValue();
-          const { name } = positions;
-          return name;
-        },
+        cell: (info) => info.getValue(),
         header: () => <span>{t('Position Name')}</span>,
         footer: (props) => {
           return props.column.id;
@@ -35,13 +30,9 @@ const PositionContainer = () => {
       },
       {
         accessorKey: '',
-        accessorFn: (row) => row,
+        accessorFn: (row) => row.describe,
         id: 'describe',
-        cell: (info) => {
-          const { positions } = info.getValue();
-          const { describe } = positions;
-          return describe;
-        },
+        cell: (info) => info.getValue(),
         header: () => <span>Describe</span>,
         footer: (props) => props.column.id,
       },
@@ -51,7 +42,9 @@ const PositionContainer = () => {
   const rowClick = (row) => {
     if (row && row.original) {
       // tạm thời cho edit, sau này phần quyền sau
-      navigate(`/department/${params.id}/employee/edit/${row.original.id}`);
+      navigate(
+        `/department/${params.idDepartment}/employee/edit/${row.original.id}`,
+      );
     }
   };
 
@@ -59,7 +52,7 @@ const PositionContainer = () => {
     <div className="px-4">
       <PageCrudData
         disabledRowOnClick={false}
-        api={`/v1/api/rbac/department/${params.id}`}
+        api={`v1/api/system/position/department/${params.idDepartment}`}
         columns={columns}
         rowOnClick={(row) => rowClick(row)}
       />
