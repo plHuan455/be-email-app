@@ -177,11 +177,18 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
     const field = { to, cc, bcc };
 
     contactBlock.forEach((contact) => {
-      (contact.subMenu ?? []).forEach((employ) => {
-        if (employ.field) {
-          employ.isSelected && field[employ.field].push(employ.mail);
+      // Nếu là mail
+      if (contact.subMenu) {
+        contact.subMenu.forEach((employ) => {
+          if (employ.field) {
+            employ.isSelected && field[employ.field].push(employ.mail);
+          }
+        });
+      } else {
+        if (contact.field) {
+          contact.isSelected && field[contact.field].push(contact.contact_name);
         }
-      });
+      }
     });
 
     return field;

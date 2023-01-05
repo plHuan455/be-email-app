@@ -52,7 +52,7 @@ const PositionContainer = () => {
     <div className="px-4">
       <PageCrudData
         disabledRowOnClick={false}
-        api={`v1/api/system/position/department/${params.idDepartment}`}
+        api={`/system/position/department/${params.idDepartment}`}
         columns={columns}
         rowOnClick={(row) => rowClick(row)}
       />

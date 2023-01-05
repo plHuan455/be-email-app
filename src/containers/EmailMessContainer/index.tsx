@@ -2,7 +2,10 @@ import { approveEmail, EmailResponse, undoEmail } from '@api/email';
 import ModalBase from '@components/atoms/ModalBase';
 import AlertDialog, { useAlertDialog } from '@components/molecules/AlertDialog';
 import AlertWithEmailAction from '@components/molecules/AlertWithEmailAction';
-import { ActionListTypes, ActionNameTypes } from '@components/molecules/EmailActions';
+import {
+  ActionListTypes,
+  ActionNameTypes,
+} from '@components/molecules/EmailActions';
 import SettimeInput from '@components/molecules/SettimeInput';
 import { UserInfo } from '@components/organisms/Email/Interface';
 import EmailMess from '@components/organisms/EmailMess';
@@ -46,12 +49,12 @@ const EmailMessContainerRef: React.ForwardRefRenderFunction<
     type,
     isShowHeader,
     isShowActions,
-    hiddenActions = {}, 
+    hiddenActions = {},
     index,
     onUpdateHashtagClick,
     onInterSecting,
     onUnInterSecting,
-    onActionsClick
+    onActionsClick,
   },
   ref,
 ) => {
@@ -97,6 +100,7 @@ const EmailMessContainerRef: React.ForwardRefRenderFunction<
       approveEmail({ user_email_id: emailData.id, status: status }),
     onSuccess() {
       queryClient.invalidateQueries({ queryKey: ['get-email-manager'] });
+      queryClient.invalidateQueries({ queryKey: ['get-emails-list'] });
       dispatch(deleteIndexEmail(index));
       toast.success('Decline Successful!');
     },

@@ -318,7 +318,7 @@ const EmailStatusBar = (props: Props) => {
 
   const _renderPrivateHashtag = useMemo(() => {
     return (
-      <Box>
+      <Box className="flex-1">
         {hashtagTabs &&
           hashtagTabs.map((item, index) => {
             return (
@@ -355,13 +355,13 @@ const EmailStatusBar = (props: Props) => {
 
   return (
     <Box
+      className="flex flex-col"
       sx={{
-        height: '100%',
+        height: '100vh',
         width: '100%',
         padding: '24px',
         paddingInline: '12px',
         overflowX: 'hidden',
-        overflowY: 'scroll',
         // borderRight: '1px solid #e5e7eb',
       }}>
       <EmailStatusHeader
@@ -373,6 +373,7 @@ const EmailStatusBar = (props: Props) => {
         isSearch={true}
       />
       <Box
+        className="flex flex-col flex-1 overflow-scroll"
         sx={{
           paddingBottom: '10px',
           position: 'relative',

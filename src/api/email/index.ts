@@ -1,4 +1,5 @@
 import {
+  EMAIL_API_HASHTAG,
   EMAIL_API_MANAGER_UNDO,
   EMAIL_API_URL,
   EMAIL_CATALOG,
@@ -251,6 +252,18 @@ export const deleteEmail = async (
 ): Promise<CuSAxiosResponse<EmailDeleteResponse>> => {
   const url = EMAIL_API_URL;
   const res = await ApiClient.delete(`${url}/${id}`, undefined);
+  return res.data;
+};
+
+// Update Email With Query
+export const updateEmailHashtag = async (
+  id: number,
+  params: { hashtags: string[] },
+): Promise<ApiResponse<EmailResponse>> => {
+  const url = `${EMAIL_API_HASHTAG}/${id}`;
+
+  const res = await ApiClient.put(url, undefined, params);
+
   return res.data;
 };
 

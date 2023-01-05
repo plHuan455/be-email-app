@@ -98,7 +98,9 @@ export default class ApiClient {
   }
 
   static async delete(url: string, params: any): Promise<AxiosResponse> {
-    const requestUrl = params ? `${url}?${stringify(params)}` : url;
+    const requestUrl = params
+      ? `${ROOT_API}${url}?${stringify(params)}`
+      : `${ROOT_API}${url}`;
 
     const config: AxiosRequestConfig = {
       headers: await this.getHeaders('multipart/form-data'),
@@ -114,7 +116,7 @@ export default class ApiClient {
     fileKey: string,
     file: File,
   ): Promise<AxiosResponse> {
-    const requestUrl = `${url}?${stringify(query)}`;
+    const requestUrl = `${ROOT_API}${url}?${stringify(query)}`;
 
     const config: AxiosRequestConfig = {
       headers: await this.getHeaders('multipart/form-data'),

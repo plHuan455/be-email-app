@@ -14,6 +14,7 @@ import {
   deleteEmail,
   EmailResponse,
   HashtagType,
+  updateEmailHashtag,
   updateEmailWithQuery,
 } from '@api/email';
 import avatarImg from '@assets/images/avatars/avatar-2.jpg';
@@ -101,8 +102,8 @@ const Email: React.FC<Props> = ({
     useMutation({
       mutationKey: ['email-update-hashtag'],
       mutationFn: (params: { id: number; data: EmailUpdateQuery }) =>
-        updateEmailWithQuery(params.id, {
-          hashtags: params.data.hashtags,
+        updateEmailHashtag(params.id, {
+          hashtags: (params.data?.hashtags ?? []).map((value) => value.hashtag),
         }),
     });
   const { mutate: updateImportantMutate, isLoading: isUpdateImportantLoading } =
@@ -196,13 +197,18 @@ const Email: React.FC<Props> = ({
   }, [EmailsList]);
 
   const handleActionClick = (action: ActionNameTypes, emailId: number) => {
-    const foundEmail = EmailsList.find(value => value.id === emailId)
-    if(action !== 'delete' && action !== 'spam' && action !== 'unread' && action !== 'star') {
+    const foundEmail = EmailsList.find((value) => value.id === emailId);
+    if (
+      action !== 'delete' &&
+      action !== 'spam' &&
+      action !== 'unread' &&
+      action !== 'star'
+    ) {
       handleOnOpen();
       return;
     }
 
-    if(!foundEmail) return;
+    if (!foundEmail) return;
 
     switch (action) {
       case 'delete': {
@@ -221,9 +227,7 @@ const Email: React.FC<Props> = ({
         setModal((prevState) => ({
           ...prevState,
           title: 'Bạn có chắc báo cáo người dùng này với hành vi làm phiền?',
-          content: (
-            <p>Nếu bấm có, Bạn sẽ thêm người dùng này vào danh sách chặn.</p>
-          ),
+          content: <p>Nếu bấm có, Bạn sẽ thêm người dùng này vào danh sách chặn.</p>,
           onSubmit() {
             addBlacklist({ user_email: foundEmail.email.from });
 
@@ -235,7 +239,7 @@ const Email: React.FC<Props> = ({
       }
       case 'unread': {
         dispatch(addUnreadEmail(foundEmail));
-        dispatch(setEmailsList(EmailsList.filter(email => email.id !== emailId)));
+        dispatch(setEmailsList(EmailsList.filter((email) => email.id !== emailId)));
 
         updateEmailStatus({
           id: foundEmail.id,
@@ -251,7 +255,7 @@ const Email: React.FC<Props> = ({
       default:
         break;
     }
-  }
+  };
 
   const changeEmailStatus = useCallback(
     (status, id) => {
@@ -392,16 +396,18 @@ const Email: React.FC<Props> = ({
             emailData={email}
             onShowHistory={handleShowHistory}
             isShowHeader={showHistory === email.id}
-            hiddenActions={isEmployee ? {
-              replyAll: ['draft', 'trash', 'declined'].includes(status),
-              reply: ['draft', 'trash', 'declined'].includes(status),
-              forward: ['draft', 'trash', 'declined'].includes(status),
-              unread: !isReceiver || ['draft', 'trash'].includes(status),
-              spam: !isReceiver || ['draft', 'trash'].includes(status),
-            } : true}
-            isShowActions={
-              searchParams.get('tab') === 'me'
+            hiddenActions={
+              isEmployee
+                ? {
+                    replyAll: ['draft', 'trash', 'declined'].includes(status),
+                    reply: ['draft', 'trash', 'declined'].includes(status),
+                    forward: ['draft', 'trash', 'declined'].includes(status),
+                    unread: !isReceiver || ['draft', 'trash'].includes(status),
+                    spam: !isReceiver || ['draft', 'trash'].includes(status),
+                  }
+                : true
             }
+            isShowActions={searchParams.get('tab') === 'me'}
             onChangeStatus={changeEmailStatus}
             onActionsClick={(action) => handleActionClick(action, email.id)}
             index={index}
@@ -424,7 +430,7 @@ const Email: React.FC<Props> = ({
               onUnIntersecting && onUnIntersecting(email.id);
             }}
           />
-        )
+        );
       })}
       <ModalBase
         onClose={handleCloseModal}
