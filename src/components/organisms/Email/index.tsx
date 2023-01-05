@@ -189,12 +189,14 @@ const Email: React.FC<Props> = ({
     return receiverList.map((receiver, index) => ({
       id: index.toString(),
       contact_name: receiver,
-      employeesList: [new UserReceiveInfo(index.toString(), '', receiver, receiver, true, 'cc')],
+      employeesList: [
+        new UserReceiveInfo(index.toString(), '', receiver, receiver, true, 'cc'),
+      ],
     }));
   }, [EmailsList]);
 
   const changeEmailStatus = useCallback(
-    (status, index) => {
+    (status, id) => {
       if (
         status === 'delete' ||
         status === 'spam' ||
@@ -208,9 +210,7 @@ const Email: React.FC<Props> = ({
               title: 'Are you sure want to delete this email??',
               content: <p>If click "OK", you'll delete it .</p>,
               onSubmit: async () => {
-                const cloneEmailsList = [...EmailsList];
-
-                deleteEmailAction(cloneEmailsList[index].id.toString());
+                deleteEmailAction(id);
               },
             }));
             setIsOpenModal(true);
@@ -227,7 +227,11 @@ const Email: React.FC<Props> = ({
               onSubmit() {
                 const cloneEmailsList = [...EmailsList];
 
-                const spamEmail = cloneEmailsList.splice(index, 1);
+                const foundIndex = cloneEmailsList.findIndex(
+                  (email) => email.id === id,
+                );
+
+                const spamEmail = cloneEmailsList.splice(foundIndex, 1);
 
                 addBlacklist({ user_email: spamEmail[0].email.from });
 
@@ -240,15 +244,15 @@ const Email: React.FC<Props> = ({
           case 'unread': {
             const cloneEmailsList = [...EmailsList];
 
-            const email = cloneEmailsList[index];
+            const email = cloneEmailsList.find((email) => email.id === id);
 
-            const unreadEmail = cloneEmailsList.splice(index, 1);
+            const unreadEmail = cloneEmailsList.splice(id, 1);
 
             dispatch(addUnreadEmail(unreadEmail));
             dispatch(setEmailsList(cloneEmailsList));
 
             updateEmailStatus({
-              id: email.id,
+              id: email?.id ?? 0,
               status: 'unread',
             });
             break;
@@ -256,9 +260,9 @@ const Email: React.FC<Props> = ({
           case 'star': {
             const cloneEmailsList = [...EmailsList];
 
-            const email = cloneEmailsList[index];
+            const email = cloneEmailsList.find((email) => email.id === id);
 
-            updateImportantMutate({ id: email.id, data: { ...email } });
+            updateImportantMutate({ id: email?.id ?? 0, data: { ...email } });
 
             break;
           }

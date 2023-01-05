@@ -309,7 +309,7 @@ const EmailMess: React.FC<Props> = ({
       <EmailForward
         status={emailData.status}
         onChangeEmailStatus={() => {
-          onChangeStatus(defaultStatus, index);
+          onChangeStatus(defaultStatus, emailData.id);
         }}
         isReadOnlyReceivers={!(emailData.status === 'forward')}
         classNameLayer="absolute top-0 left-0 w-full h-full"
@@ -383,7 +383,7 @@ const EmailMess: React.FC<Props> = ({
                 isImportant={!!emailData.is_important}
                 type={type}
                 isActiveClick={true}
-                emailIndex={index}
+                emailId={emailData.id}
                 handleChangeStatus={onChangeStatus}
               />
             </Box>

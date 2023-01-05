@@ -102,12 +102,12 @@ interface Props {
   isImportant: boolean;
   isActiveClick: boolean;
   type: 'receive' | 'send';
-  emailIndex?: number;
-  handleChangeStatus?: (status, index) => void;
+  emailId?: number;
+  handleChangeStatus?: (status, id) => void;
 }
 
 const EmailActions: React.FC<Props> = ({
-  emailIndex = 0,
+  emailId = 0,
   type,
   handleChangeStatus = (a, b) => {},
   isImportant = false,
@@ -126,7 +126,7 @@ const EmailActions: React.FC<Props> = ({
               className={`py-1.5 px-3 text-[14px] font-medium flex items-center hover:bg-slate-200 hover:cursor-pointer rounded p-2`}
               key={index}
               onClick={() =>
-                isActiveClick && handleChangeStatus(currVal.icon, emailIndex)
+                isActiveClick && handleChangeStatus(currVal.icon, emailId)
               }>
               <RenderButtonIcon
                 item={currVal.icon}

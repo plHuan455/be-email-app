@@ -1,9 +1,9 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import { styled } from '@mui/material/styles';
 import logo from '../../assets/images/logo_without_text.png';
-import { Box, Tooltip } from '@mui/material';
+import { Box, IconButton, Tooltip } from '@mui/material';
 import Icon, { SVGIconProps } from '@components/atoms/Icon';
 import { useLocation, useNavigate } from 'react-router-dom';
 import LocalPhoneIcon from '@mui/icons-material/LocalPhone';
@@ -130,14 +130,13 @@ export default function MainSidebar() {
     return sideBarItems.map((val, index) => {
       if (!val) return null;
       return (
-        <Tooltip title={val.title} placement="right">
+        <Tooltip title={val.title} placement="right" key={index}>
           <NavLink to={val.url}>
-            <Tab
-              className={location.pathname.includes(val.url) ? 'active' : ''}
-              key={index}
-              icon={val.icon}
-              aria-label={val.title}
-            />
+            {({ isActive }) => (
+              <IconButton className={`${isActive && 'active'} hover:bg-transparent`}>
+                {val.icon}
+              </IconButton>
+            )}
           </NavLink>
         </Tooltip>
       );

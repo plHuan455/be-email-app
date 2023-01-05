@@ -20,7 +20,7 @@ import { toast } from 'react-toastify';
 interface Props {
   userInfo: UserInfo;
   emailData: EmailResponse;
-  onChangeStatus: (status: any, index: any) => void;
+  onChangeStatus: (status: any, id: any) => void;
   onShowHistory: Function;
   type: 'receive' | 'send';
   isShowHeader?: boolean;
