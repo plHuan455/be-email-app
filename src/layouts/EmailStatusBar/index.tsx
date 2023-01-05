@@ -373,7 +373,7 @@ const EmailStatusBar = (props: Props) => {
         isSearch={true}
       />
       <Box
-        className="flex flex-col flex-1 overflow-scroll"
+        className="flex flex-col flex-1"
         sx={{
           paddingBottom: '10px',
           position: 'relative',

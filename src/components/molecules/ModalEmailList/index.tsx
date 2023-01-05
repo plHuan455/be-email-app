@@ -204,7 +204,6 @@ const ModalEmailList: React.FC<Props> = ({
       className={isActive ? 'modal__active' : 'modal__inactive'}
       sx={{
         width: '100%',
-        height: 'calc(100vh - 165px)',
         position: 'absolute',
         transition: '.3s ease-in-out',
         backgroundColor: '#f7f7fc',
