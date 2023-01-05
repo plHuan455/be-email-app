@@ -197,7 +197,13 @@ const Email: React.FC<Props> = ({
 
   const handleActionClick = (action: ActionNameTypes, emailId: number) => {
     const foundEmail = EmailsList.find(value => value.id === emailId)
+    if(action !== 'delete' && action !== 'spam' && action !== 'unread' && action !== 'star') {
+      handleOnOpen();
+      return;
+    }
+
     if(!foundEmail) return;
+
     switch (action) {
       case 'delete': {
         setModal((prevState) => ({
@@ -249,6 +255,7 @@ const Email: React.FC<Props> = ({
 
   const changeEmailStatus = useCallback(
     (status, id) => {
+      return;
       if (
         status === 'delete' ||
         status === 'spam' ||
