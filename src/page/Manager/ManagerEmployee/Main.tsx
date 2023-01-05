@@ -13,7 +13,7 @@ const ManagerEmployeePage = () => {
 
   const handleAddEmployee = () => {
     // tạm thời cho add, sau này phân quyền sau
-    navigate(`/department/${params.id}/employee/add`);
+    navigate(`/department/${params.idDepartment}/employee/add`);
   };
 
   return (

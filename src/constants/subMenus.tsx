@@ -41,23 +41,24 @@ export const subMenuContact: SubSidebarItem[] = [
   {
     name: 'Groups',
     icon: <PersonOutlineOutlinedIcon />,
-    menuItems: [
-      {
-        id: 1,
-        name: 'Department',
-        navigate: '/contact/sharing/department',
-      },
-      {
-        id: 2,
-        name: 'Groups',
-        navigate: '/contact/sharing/groups',
-      },
-      {
-        id: 3,
-        name: 'Personals',
-        navigate: '/contact/sharing/personals',
-      },
-    ],
+    navigate: '/contact/groups',
+    // menuItems: [
+    //   {
+    //     id: 1,
+    //     name: 'Department',
+    //     navigate: '/contact/sharing/department',
+    //   },
+    //   {
+    //     id: 2,
+    //     name: 'Groups',
+    //     navigate: '/contact/sharing/groups',
+    //   },
+    //   {
+    //     id: 3,
+    //     name: 'Personals',
+    //     navigate: '/contact/sharing/personals',
+    //   },
+    // ],
   },
 ];
 
@@ -65,7 +66,7 @@ export const subMenuDepartment: SubSidebarItem[] = [
   {
     name: 'Department',
     icon: <Icon icon="department" color="black" />,
-    navigate: '/department/department',
+    navigate: '/department',
   },
 ];
 

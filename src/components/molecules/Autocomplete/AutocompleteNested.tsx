@@ -327,7 +327,6 @@ function AutocompleteNested<
         renderInput={renderInput}
         renderOption={getRenderOption()}
         renderTags={renderTags}
-        autoHighlight
       />
       {currentValue?.subMenu && (
         <Menu

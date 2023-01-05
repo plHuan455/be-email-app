@@ -15,6 +15,7 @@ import { SVGIconProps } from '../Icon';
 import avt from '../../../assets/images/avatars/avatar-2.jpg';
 import { RenderButtonIcon } from '@components/molecules/EmailActions';
 import styled from 'styled-components';
+import useLocalStorage from '@hooks/useLocalStorage';
 
 const iconsList: {
   [key: string]: SVGIconProps['icon'];
@@ -53,10 +54,10 @@ const AvatarWithPopup: React.FC<Props> = ({
   className,
   popupStyles = {},
 }) => {
-  const currentUserName = localStorage.getItem('current_user_name')?.toString();
-  const currentUserAvt = useMemo(() => {
-    return localStorage.getItem('current_user_avt')?.toString();
-  }, [localStorage.getItem('current_user_avt')?.toString()]);
+  const [currentUserName] = useLocalStorage('current_user_name', '');
+  const [currentUserAvt] = useLocalStorage('current_user_avt', '');
+
+  console.log(currentUserAvt);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const ref = useRef<any>();
 
@@ -87,7 +88,7 @@ const AvatarWithPopup: React.FC<Props> = ({
           ]}>
           <Avatar
             alt={currentUserName}
-            src={`http://${currentUserAvt}`}
+            src={`${currentUserAvt}`}
             sx={{ width: '45px', height: '45px' }}
           />
         </IconButton>
