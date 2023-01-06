@@ -404,6 +404,7 @@ const Email: React.FC<Props> = ({
         const isEmployee = currRole?.startsWith('EMPLOYEE');
         const isReceiver = checkIsReceiveEmail(email.id);
 
+        const isAdminTabMe = tabSearchParams === 'me' && !isEmployee;
         return (
           <EmailMessContainer
             ref={EmailsList.length - 1 === index ? lastEmailMessRef : undefined}
@@ -431,6 +432,16 @@ const Email: React.FC<Props> = ({
                     forward: ['draft', 'trash', 'declined'].includes(status),
                     unread: !isReceiver || ['draft', 'trash'].includes(status),
                     spam: !isReceiver || ['draft', 'trash'].includes(status),
+                  }
+                : isAdminTabMe
+                ? {
+                    replyAll: 1,
+                    reply: 1,
+                    forward: 1,
+                    unread: 1,
+                    spam: 1,
+                    delete: !['draft', 'trash'].includes(status),
+                    star: !['draft', 'trash'].includes(status),
                   }
                 : true
             }
