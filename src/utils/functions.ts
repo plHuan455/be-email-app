@@ -8,7 +8,7 @@ export const convertPathImage = (image?: string) => {
 };
 
 export const getHtmlStringFromEditorState = (data: any) => {
-  if(data === '' || data === undefined) return '<p></p>';
+  if(data === '' || data === undefined) return '<p></p>\n';
   return draftToHtml(convertToRaw(data.getCurrentContent()))
 }
 
