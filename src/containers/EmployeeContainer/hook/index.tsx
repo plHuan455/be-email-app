@@ -89,7 +89,7 @@ export const useCreateEmployeeManagement = () => {
         ...params,
         avatar,
         role_id: +params.role_id,
-        department_id: +param.id!,
+        department_id: +param.idDepartment!,
       });
       toast.success('Create employee success!');
       navigate('..');

@@ -5,7 +5,7 @@ import Layout from '@layouts/Layout';
 import { SelectChangeEvent, Typography } from '@mui/material';
 import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -13,6 +13,10 @@ import { convertPathImage } from '@utils/functions';
 import { useForm } from 'react-hook-form';
 import { Select } from '@components/molecules/Select';
 import { debounce } from 'lodash';
+import { useQuery } from '@tanstack/react-query';
+import { getRole } from '@api/role';
+import { getAllPositionInDepartment } from '@api/deparment';
+import { useParams } from 'react-router-dom';
 
 interface DepartmentTemplateProps extends CRUDComponentProps<DepartmentItemProps> {
   editMode?: boolean;
@@ -46,6 +50,8 @@ const DepartmentTemplate: React.FC<DepartmentTemplateProps> = ({
 }) => {
   const { t } = useTranslation();
 
+  const params = useParams();
+
   console.log('editMode -->', editMode);
   const {
     register,
@@ -55,6 +61,15 @@ const DepartmentTemplate: React.FC<DepartmentTemplateProps> = ({
     defaultValues: formData,
     resolver: schema && yupResolver(schema),
     mode: 'all',
+  });
+
+  const { data: rolesList } = useQuery({
+    queryKey: ['get-roles'],
+    queryFn: getRole,
+  });
+  const { data: positionsList } = useQuery({
+    queryKey: ['get-all-positions'],
+    queryFn: () => getAllPositionInDepartment(+(params.idDepartment ?? 0)),
   });
 
   const handleInputChange = useCallback(
@@ -184,7 +199,7 @@ const DepartmentTemplate: React.FC<DepartmentTemplateProps> = ({
           {!editMode && (
             <FormControl fullWidth className="py-2">
               <Typography sx={{ fontWeight: 700 }}>position</Typography>
-              <TextField
+              {/* <TextField
                 {...register('position')}
                 type={'position'}
                 error={Boolean(errors.position)}
@@ -194,6 +209,21 @@ const DepartmentTemplate: React.FC<DepartmentTemplateProps> = ({
                 defaultValue={formData.position}
                 onChange={handleInputChange}
                 size={'small'}
+              /> */}
+              <Select
+                {...register('position')}
+                error={Boolean(errors.position)}
+                helperText={errors.position?.message?.toString()}
+                id="position"
+                name="position"
+                onChange={handleChangeSelect}
+                size="small"
+                options={positionsList?.data ?? []}
+                mapping={{
+                  label: (opt) => opt.name,
+                  value: (opt) => opt.name,
+                  key: (opt) => opt.id,
+                }}
               />
             </FormControl>
           )}
@@ -212,13 +242,13 @@ const DepartmentTemplate: React.FC<DepartmentTemplateProps> = ({
                 helperText={errors.role_id?.message?.toString()}
                 id="role_id"
                 name="role_id"
-                defaultValue={formData.role_id}
+                defaultValue={!!formData.role_id ? Number(formData.role_id) : 2}
                 onChange={handleChangeSelect}
                 size="small"
-                options={companies}
+                options={rolesList?.data ?? []}
                 mapping={{
                   label: (opt) => opt.name,
-                  value: (opt) => opt.id.toString(),
+                  value: (opt) => opt.id,
                   key: (opt) => opt.id,
                 }}
               />
