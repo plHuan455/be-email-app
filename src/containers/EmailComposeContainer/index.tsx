@@ -1,4 +1,3 @@
-import { sendEmail, deleteEmail, getHashtags } from '@api/email';
 import { motion, useAnimation, useAnimationControls } from 'framer-motion';
 import EmailCompose2, {
   EmailComposeFields,

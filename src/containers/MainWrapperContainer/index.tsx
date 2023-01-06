@@ -1,7 +1,6 @@
 import {
   approveEmail,
   CreateEmailParam,
-  deleteEmail,
   sendEmail,
   updateEmailWithQuery,
 } from '@api/email';
@@ -28,7 +27,7 @@ import MinimizeEmailList, {
   MinimizeEmailTypes,
 } from '@components/templates/MinimizeEmailList';
 import AlertDialog, { useAlertDialog } from '@components/molecules/AlertDialog';
-import { deleteAllWithIdList } from '@api/email';
+// import { deleteAllWithIdList } from '@api/email';
 import { attempt, update } from 'lodash';
 import { InputContactBlock } from '@components/molecules/Autocomplete';
 import { UserReceiveInfo } from '@components/organisms/Email/Interface';
@@ -111,7 +110,7 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
   // MUTATIONS
   const { mutate: deleteEmailMutate } = useMutation({
     mutationKey: ['email-compose-delete-email'],
-    mutationFn: deleteEmail,
+    mutationFn: (id: number) => updateEmailWithQuery(id, {is_trash: true}),
   });
   const { mutate: storeDraftMutate, isLoading: isStoreDraftLoading } = useMutation({
     mutationKey: ['main-wrapper-container-store-draft', showMinimizeEmailId],
@@ -153,7 +152,7 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
         queryClient.invalidateQueries({ queryKey: ['get-all-email-status'] });
         setShowMinimizeEmailId((preState) => {
           if (preState?.id !== undefined) {
-            deleteEmailMutate(String(preState.id));
+            deleteEmailMutate(preState.id);
             dispatch(deleteMinimizeEmail({ id: preState.id }));
           }
           return undefined;
@@ -704,7 +703,7 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
       },
       () => {
         if (showMinimizeEmailId?.id) {
-          deleteEmailMutate(String(showMinimizeEmailId.id));
+          deleteEmailMutate(showMinimizeEmailId.id);
         }
       },
     );
@@ -738,7 +737,7 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
       // Stored to draft
       if (showMinimizeEmailId.id !== undefined) {
         if (!isExistShowEmail() && isEmailDataEmpty) {
-          deleteEmailMutate(String(showMinimizeEmailId.id));
+          deleteEmailMutate(showMinimizeEmailId.id);
           setShowMinimizeEmailId(undefined);
           return;
         }
