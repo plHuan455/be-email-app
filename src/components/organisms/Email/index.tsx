@@ -11,7 +11,6 @@ import React, {
 
 import { Email, UserInfo, UserReceiveInfo } from './Interface';
 import {
-  deleteEmail,
   EmailResponse,
   HashtagType,
   updateEmailHashtag,
@@ -85,19 +84,19 @@ const Email: React.FC<Props> = ({
   const { EmailsList, isLoading } = useSelector((state: RootState) => state.email);
   const dispatch = useDispatch();
 
-  const { mutate: deleteEmailAction, isLoading: isDeletingEmail } = useMutation({
-    mutationKey: ['email-delete'],
-    mutationFn: deleteEmail,
-    onSuccess: () => {
-      setIsOpenModal(false);
-      queryClient.invalidateQueries({
-        queryKey: ['get-email-manager'],
-      });
-      queryClient.invalidateQueries({
-        queryKey: ['get-emails-list'],
-      });
-    },
-  });
+  // const { mutate: deleteEmailAction, isLoading: isDeletingEmail } = useMutation({
+  //   mutationKey: ['email-delete'],
+  //   mutationFn: deleteEmail,
+  //   onSuccess: () => {
+  //     setIsOpenModal(false);
+  //     queryClient.invalidateQueries({
+  //       queryKey: ['get-email-manager'],
+  //     });
+  //     queryClient.invalidateQueries({
+  //       queryKey: ['get-emails-list'],
+  //     });
+  //   },
+  // });
 
   const { mutate: updateHashtagMutate, isLoading: isUpdateHashtagLoading } =
     useMutation({
@@ -110,7 +109,7 @@ const Email: React.FC<Props> = ({
   const { mutate: updateImportantMutate, isLoading: isUpdateImportantLoading } =
     useMutation({
       mutationKey: ['email-update-is-important'],
-      mutationFn: (params: { id: number; isImportant: boolean }) =>
+      mutationFn: (params: { id: number; isImportant?: boolean; }) =>
         updateEmailWithQuery(params.id, {
           is_important: params.isImportant,
         }),
@@ -118,6 +117,19 @@ const Email: React.FC<Props> = ({
         queryClient.invalidateQueries({ queryKey: ['get-emails-list'] });
       },
     });
+
+  const { mutate: moveToTrashMutate, isLoading: isMoveToTradingLoading } =
+    useMutation({
+      mutationKey: ['email-move-to-trash'],
+      mutationFn: (params: { id: number; isTrash?: boolean }) =>
+        updateEmailWithQuery(params.id, {
+          is_trash: params.isTrash,
+        }),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['get-emails-list'] });
+      },
+    });
+
   const { mutate: updateEmailStatus, isLoading: isLoadingUpdateEmailStatus } =
     useMutation({
       mutationKey: ['email-update-status'],
@@ -220,7 +232,7 @@ const Email: React.FC<Props> = ({
           title: 'Are you sure want to delete this email??',
           content: <p>If click "OK", you'll delete it .</p>,
           onSubmit: async () => {
-            deleteEmailAction(String(emailId));
+            moveToTrashMutate({ id: emailId, isTrash: true });
           },
         }));
         setIsOpenModal(true);
@@ -276,7 +288,7 @@ const Email: React.FC<Props> = ({
               title: 'Are you sure want to delete this email??',
               content: <p>If click "OK", you'll delete it .</p>,
               onSubmit: async () => {
-                deleteEmailAction(id);
+                // deleteEmailAction(id);
               },
             }));
             setIsOpenModal(true);

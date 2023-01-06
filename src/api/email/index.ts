@@ -30,6 +30,7 @@ export interface CreateEmailParam {
   };
   status?: string;
   is_important?: boolean;
+  is_trash?: boolean;
   action?: string;
   send_at?: string;
   hashtags?: HashtagType[] | string[];
@@ -115,11 +116,11 @@ export const EmailActions = async (params: {
   return res.data;
 };
 
-export const deleteAllWithIdList = async (ids: number[]) => {
-  const url = `${API_EMAIL_USER}/action`;
-  const res = await Promise.all(ids.map((value) => deleteEmail(String(value))));
-  return res;
-};
+// export const deleteAllWithIdList = async (ids: number[]) => {
+//   const url = `${API_EMAIL_USER}/action`;
+//   const res = await Promise.all(ids.map((value) => deleteEmail(String(value))));
+//   return res;
+// };
 
 // GET ALL CUR EMAIL TAG
 export const getAllEmailTag = async (): Promise<AxiosResponse<any[]>> => {
@@ -247,13 +248,13 @@ export const sendEmail = async (
 };
 
 //DELETE EMAIL
-export const deleteEmail = async (
-  id: string,
-): Promise<CuSAxiosResponse<EmailDeleteResponse>> => {
-  const url = EMAIL_API_URL;
-  const res = await ApiClient.delete(`${url}/${id}`, undefined);
-  return res.data;
-};
+// export const deleteEmail = async (
+//   id: string,
+// ): Promise<CuSAxiosResponse<EmailDeleteResponse>> => {
+//   const url = EMAIL_API_URL;
+//   const res = await ApiClient.delete(`${url}/${id}`, undefined);
+//   return res.data;
+// };
 
 // Update Email With Query
 export const updateEmailHashtag = async (
