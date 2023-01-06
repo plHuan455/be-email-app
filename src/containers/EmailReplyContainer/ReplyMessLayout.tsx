@@ -1,7 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { EmailComposeContext } from '@containers/MainWrapperContainer';
 import EmailReplyMessLayout from '@components/molecules/EmailReplyMessLayout';
-import { InputContactBlock } from '@components/molecules/AutoCompleteReceive';
+import { InputContactBlock } from '@components/molecules/Autocomplete';
 import { EmailComposeFields } from '@components/templates/EmailCompose2';
 import dayjs from 'dayjs';
 import { UserReceiveInfo } from '@components/organisms/Email/Interface';

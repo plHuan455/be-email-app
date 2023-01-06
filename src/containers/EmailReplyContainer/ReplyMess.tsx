@@ -1,4 +1,4 @@
-import { InputContactBlock } from '@components/molecules/AutoCompleteReceive';
+import { InputContactBlock } from '@components/molecules/Autocomplete';
 import EmailReplyMess from '@components/molecules/EmailReplyMess';
 import React, { useState } from 'react';
 import ReplyMessLayoutContainer from './ReplyMessLayout';
@@ -43,6 +43,7 @@ const LayoutModal: React.FC<LayoutModalProps> = ({
   onOpen,
   onClose,
 }) => {
+  console.log(receiversList);
   return (
     <ReplyMessLayoutContainer
       receiversList={receiversList}

@@ -294,7 +294,9 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
     values: EmailComposeFields & { sendAt?: Dayjs | null },
   ) => {
     const { contactBlock } = values;
+
     const { to, cc, bcc } = convertContactField(contactBlock);
+    console.log(to, cc, bcc);
 
     if (to.length === 0 && cc.length === 0 && bcc.length === 0) {
       alertDialog.setAlertData(

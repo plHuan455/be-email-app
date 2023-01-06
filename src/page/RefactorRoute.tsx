@@ -65,6 +65,7 @@ import {
 import SettingPage from './Settings';
 import BlackListPage from './Settings/BlackList';
 import { ManagerPositionPage } from './Manager/ManagerPositionPage';
+import ContactSharingGroupsPage from './Contact/ContactSharingGroups';
 
 export const sideBarRoutes: RouteObject[] = [
   {
@@ -112,7 +113,7 @@ export const sideBarRoutes: RouteObject[] = [
           path: '/contact/sharing/groups',
         },
         {
-          index: <ContactSharingGroupPage />,
+          index: <ContactSharingGroupsPage />,
           edit: <EditContactSharingGroupsPage />,
         },
       ),
