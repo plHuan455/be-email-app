@@ -212,7 +212,7 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
     return (
       to.length === 0 &&
       bcc.length === 0 &&
-      cc.length === 0 &&
+      // cc.length === 0 &&
       !values.subject &&
       values.attachFiles.fileUrls.length === 0 &&
       values.attachFiles.files.length === 0 &&
