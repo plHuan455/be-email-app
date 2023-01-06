@@ -1,12 +1,24 @@
 import ApiClient from '@api/ApiClient';
-import { DEPARTMENT_API_URL } from '@constants/departmentAPI';
+import { DEPARTMENT_API_URL, POSITION_API } from '@constants/departmentAPI';
 import { AxiosResponse } from 'axios';
-import { CreateDepartmentParams, DepartmentResponse } from './interface';
+import {
+  CreateDepartmentParams,
+  DepartmentResponse,
+  PositionResponse,
+} from './interface';
 
 export const getDepartments = async (): Promise<
   AxiosResponse<DepartmentResponse[]>
 > => {
   const url = `${DEPARTMENT_API_URL}`;
+  const res = await ApiClient.get(url);
+  return res.data;
+};
+
+export const getAllPositionInDepartment = async (
+  id: number,
+): Promise<AxiosResponse<PositionResponse[]>> => {
+  const url = `${POSITION_API}/${id}`;
   const res = await ApiClient.get(url);
   return res.data;
 };

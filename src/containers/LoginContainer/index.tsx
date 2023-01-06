@@ -165,7 +165,7 @@ function LoginContainer() {
               </WrapTitle>
             )}
 
-            {isLogined && currentUserName && currentUserAvt && (
+            {isLogined && (
               <WrapAvatar>
                 <Box
                   alignSelf={'center'}
@@ -177,7 +177,7 @@ function LoginContainer() {
                   }}>
                   <Avatar
                     sx={{ width: '75px', height: '75px' }}
-                    src={currentUserAvt}
+                    src={currentUserAvt ?? ''}
                     alt="avatar"
                   />
                 </Box>

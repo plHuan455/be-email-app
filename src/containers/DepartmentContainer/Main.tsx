@@ -52,7 +52,7 @@ const DepartmentContainer = () => {
               icon="edit"
               onClick={(e) => {
                 e.stopPropagation();
-                navigate(`/department/department/edit/${info.getValue()}`);
+                navigate(`/department/edit/${info.getValue()}`);
               }}
             />
           </div>
