@@ -17,8 +17,6 @@ import {
   updateEmailHashtag,
   updateEmailWithQuery,
 } from '@api/email';
-import avatarImg from '@assets/images/avatars/avatar-2.jpg';
-import EmailMess from '../EmailMess';
 
 import { isEmpty } from 'lodash';
 import EmailMessEmpty from '../EmailMessEmpty';
@@ -36,10 +34,10 @@ import EmailReplyMessMain, {
 import EmailActionLayoutContainer, {
   useEmailActionLayout,
 } from '@containers/EmailActionsLayoutContainer';
-import { InputContactBlock } from '@components/molecules/AutoCompleteReceive';
 import { toast } from 'react-toastify';
 import { addMailToBlackList } from '@api/blacklist';
 import { ActionNameTypes } from '@components/molecules/EmailActions';
+import { InputContactBlock } from '@components/molecules/Autocomplete';
 
 interface ModalForm {
   title: string;
@@ -175,10 +173,13 @@ const Email: React.FC<Props> = ({
   const receiversList: InputContactBlock[] = useMemo(() => {
     if (isEmpty(EmailsList)) return [];
 
+    // Lấy ra Email cuối cùng trong email List
     const newestEmail = EmailsList[EmailsList.length - 1].email;
 
+    // Lấy email của người dùng
     const CURRENT_EMAIL = localStorage.getItem('current_email');
 
+    // Lọc bỏ mail của người dùng trong receiversList
     const receiverList = [
       newestEmail.from,
       ...(newestEmail.to ?? []),
@@ -193,9 +194,8 @@ const Email: React.FC<Props> = ({
     return receiverList.map((receiver, index) => ({
       id: index.toString(),
       contact_name: receiver,
-      employeesList: [
-        new UserReceiveInfo(index.toString(), '', receiver, receiver, true, 'cc'),
-      ],
+      field: 'cc',
+      isSelected: true,
     }));
   }, [EmailsList]);
 

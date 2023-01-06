@@ -2,16 +2,16 @@ import ContactSharingGroupsContainer from '@containers/ContactContainer/ContactS
 import Layout from '@layouts/Layout';
 import { useNavigate } from 'react-router-dom';
 
-const ContactSharing = () => {
+const ContactSharingGroupsPage = () => {
   const navigate = useNavigate();
 
   return (
     <Layout.MainQueryClient
-      headTitle="Contact Sharing"
+      headTitle="Contact Sharing Groups"
       onClickAdd={() => navigate('add')}>
       <ContactSharingGroupsContainer />
     </Layout.MainQueryClient>
   );
 };
 
-export default ContactSharing;
+export default ContactSharingGroupsPage;

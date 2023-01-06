@@ -3,6 +3,7 @@ import SubSidebar from '@components/organisms/SubSidebar';
 import Layout from '@layouts/Layout';
 import { Box } from '@mui/material';
 import { Outlet, useNavigate } from 'react-router-dom';
+import ContactSharingGroupsContainer from '@containers/ContactContainer/ContactSharingGroupsContainer';
 
 const ContactPageParent = () => {
   const navigate = useNavigate();
@@ -15,6 +16,7 @@ const ContactPageParent = () => {
         </Box>
       </Layout.ASide>
       <Outlet />
+      {/* <ContactSharingGroupsContainer /> */}
     </Layout.Content>
   );
 };

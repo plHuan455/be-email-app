@@ -10,7 +10,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import { Controller, FormProvider, UseFormReturn } from 'react-hook-form';
 import { EmailComposeFields } from '@components/templates/EmailCompose2';
 import AttachFiles2 from '../AttachFiles2';
-import { InputContactBlock } from '../AutoCompleteReceive';
+import { InputContactBlock } from '../Autocomplete';
 
 import styles from './style.module.scss';
 import AutoCompleteReceive from '../AutoCompleteReceive';
