@@ -7,11 +7,32 @@ import {
   PositionResponse,
 } from './interface';
 
+export const getPositionById = async (
+  id: number,
+): Promise<AxiosResponse<PositionResponse[]>> => {
+  const url = `${POSITION_API}/${id}`;
+  const res = await ApiClient.get(url);
+  return res.data;
+};
+
+export const updatePosition = async (
+  id: number,
+  params: {
+    name: string;
+    describe: string;
+    department_id: number;
+  },
+): Promise<AxiosResponse<PositionResponse[]>> => {
+  const url = `${POSITION_API}/${id}`;
+  const res = await ApiClient.put(url, undefined, params);
+  return res.data;
+};
+
 export const addPositionInDepartment = async (params: {
   name: string;
   describe: string;
   department_id: number;
-}): Promise<AxiosResponse<DepartmentResponse[]>> => {
+}): Promise<AxiosResponse<PositionResponse[]>> => {
   const url = `${POSITION_API}`;
   const res = await ApiClient.post(url, undefined, params);
   return res.data;
