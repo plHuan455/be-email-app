@@ -26,7 +26,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@redux/configureStore';
 import { addSpamEmail, addUnreadEmail, setEmailsList } from '@redux/Email/reducer';
 import ModalBase from '@components/atoms/ModalBase';
-import { useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { EmailUpdateQuery } from '@api/email/interface';
 import EmailMessContainer from '@containers/EmailMessContainer';
@@ -60,6 +60,9 @@ const Email: React.FC<Props> = ({
   onUnIntersecting,
 }) => {
   const lastEmailMessRef = useRef<HTMLDivElement>(null);
+
+  const {catalog} = useParams();
+
   const [showHistory, setShowHistory] = useState<number>(0);
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [modal, setModal] = useState<ModalForm>({
@@ -109,9 +112,9 @@ const Email: React.FC<Props> = ({
   const { mutate: updateImportantMutate, isLoading: isUpdateImportantLoading } =
     useMutation({
       mutationKey: ['email-update-is-important'],
-      mutationFn: (params: { id: number; data: EmailUpdateQuery }) =>
+      mutationFn: (params: { id: number; isImportant: boolean }) =>
         updateEmailWithQuery(params.id, {
-          is_important: !params.data.is_important,
+          is_important: params.isImportant,
         }),
       onSuccess: () => {
         queryClient.invalidateQueries({ queryKey: ['get-emails-list'] });
@@ -248,7 +251,7 @@ const Email: React.FC<Props> = ({
         break;
       }
       case 'star': {
-        updateImportantMutate({ id: emailId, data: { ...foundEmail } });
+        updateImportantMutate({ id: emailId, isImportant: catalog === 'important' ? false : !foundEmail.is_important });
         break;
       }
 
@@ -324,7 +327,7 @@ const Email: React.FC<Props> = ({
 
             const email = cloneEmailsList.find((email) => email.id === id);
 
-            updateImportantMutate({ id: email?.id ?? 0, data: { ...email } });
+            updateImportantMutate({ id: email?.id ?? 0, isImportant: !email?.is_important });
 
             break;
           }
@@ -367,7 +370,7 @@ const Email: React.FC<Props> = ({
   const currRole = localStorage.getItem('current_role')?.toUpperCase();
 
   // TODO REMOVE FAKE LOADING
-  const fakeLoading = EmailsList.length >= pageParams.page * pageParams.limit;
+  const fakeLoading = EmailsList.length > pageParams.page * pageParams.limit;
 
   return (
     <Box className="w-full flex flex-wrap flex-col">
@@ -393,7 +396,7 @@ const Email: React.FC<Props> = ({
                 email.email.from,
               )
             }
-            emailData={email}
+            emailData={{...email, is_important: catalog === 'important' ? true : email.is_important}}
             onShowHistory={handleShowHistory}
             isShowHeader={showHistory === email.id}
             hiddenActions={
