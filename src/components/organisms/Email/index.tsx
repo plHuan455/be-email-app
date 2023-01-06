@@ -58,14 +58,14 @@ const Email: React.FC<Props> = ({
 }) => {
   const lastEmailMessRef = useRef<HTMLDivElement>(null);
 
-  const {catalog} = useParams();
+  const { catalog } = useParams();
 
   const [showHistory, setShowHistory] = useState<number>(0);
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
   const [modal, setModal] = useState<ModalForm>({
     title: 'Modal',
     content: <p>Modal Content</p>,
-    onSubmit() {},
+    onSubmit() { },
     onClose() {
       handleCloseModal();
     },
@@ -398,6 +398,7 @@ const Email: React.FC<Props> = ({
         const isEmployee = currRole?.startsWith('EMPLOYEE');
         const isReceiver = checkIsReceiveEmail(email.id);
 
+        const isAdminTabMe = tabSearchParams === 'me' && !isEmployee;
         return (
           <EmailMessContainer
             ref={EmailsList.length - 1 === index ? lastEmailMessRef : undefined}
@@ -410,19 +411,27 @@ const Email: React.FC<Props> = ({
                 email.email.from,
               )
             }
-            emailData={{...email, is_important: catalog === 'important' ? true : email.is_important}}
+            emailData={{ ...email, is_important: catalog === 'important' ? true : email.is_important }}
             onShowHistory={handleShowHistory}
             isShowHeader={showHistory === email.id}
             hiddenActions={
               isEmployee
                 ? {
-                    replyAll: ['draft', 'trash', 'declined'].includes(status),
-                    reply: ['draft', 'trash', 'declined'].includes(status),
-                    forward: ['draft', 'trash', 'declined'].includes(status),
-                    unread: !isReceiver || ['draft', 'trash'].includes(status),
-                    spam: !isReceiver || ['draft', 'trash'].includes(status),
-                  }
-                : true
+                  replyAll: ['draft', 'trash', 'declined'].includes(status),
+                  reply: ['draft', 'trash', 'declined'].includes(status),
+                  forward: ['draft', 'trash', 'declined'].includes(status),
+                  unread: !isReceiver || ['draft', 'trash'].includes(status),
+                  spam: !isReceiver || ['draft', 'trash'].includes(status),
+                }
+                : (isAdminTabMe ? {
+                  replyAll: 1,
+                  reply: 1,
+                  forward: 1,
+                  unread: 1,
+                  spam: 1,
+                  delete:  !['draft', 'trash'].includes(status),
+                  star:  !['draft', 'trash'].includes(status),
+                } : true)
             }
             isShowActions={searchParams.get('tab') === 'me'}
             onChangeStatus={changeEmailStatus}
