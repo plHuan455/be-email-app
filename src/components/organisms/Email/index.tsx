@@ -58,7 +58,7 @@ const Email: React.FC<Props> = ({
 }) => {
   const lastEmailMessRef = useRef<HTMLDivElement>(null);
 
-  const {catalog} = useParams();
+  const { catalog } = useParams();
 
   const [showHistory, setShowHistory] = useState<number>(0);
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
@@ -109,7 +109,7 @@ const Email: React.FC<Props> = ({
   const { mutate: updateImportantMutate, isLoading: isUpdateImportantLoading } =
     useMutation({
       mutationKey: ['email-update-is-important'],
-      mutationFn: (params: { id: number; isImportant?: boolean; }) =>
+      mutationFn: (params: { id: number; isImportant?: boolean }) =>
         updateEmailWithQuery(params.id, {
           is_important: params.isImportant,
         }),
@@ -265,7 +265,10 @@ const Email: React.FC<Props> = ({
         break;
       }
       case 'star': {
-        updateImportantMutate({ id: emailId, isImportant: catalog === 'important' ? false : !foundEmail.is_important });
+        updateImportantMutate({
+          id: emailId,
+          isImportant: catalog === 'important' ? false : !foundEmail.is_important,
+        });
         break;
       }
 
@@ -341,7 +344,10 @@ const Email: React.FC<Props> = ({
 
             const email = cloneEmailsList.find((email) => email.id === id);
 
-            updateImportantMutate({ id: email?.id ?? 0, isImportant: !email?.is_important });
+            updateImportantMutate({
+              id: email?.id ?? 0,
+              isImportant: !email?.is_important,
+            });
 
             break;
           }
@@ -406,11 +412,15 @@ const Email: React.FC<Props> = ({
             userInfo={
               new UserInfo(
                 ``,
-                email.email?.writer_id?.toString() ?? '',
+                // email.email?.writer_id?.toString() ??
+                '',
                 email.email.from,
               )
             }
-            emailData={{...email, is_important: catalog === 'important' ? true : email.is_important}}
+            emailData={{
+              ...email,
+              is_important: catalog === 'important' ? true : email.is_important,
+            }}
             onShowHistory={handleShowHistory}
             isShowHeader={showHistory === email.id}
             hiddenActions={

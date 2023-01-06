@@ -70,6 +70,15 @@ export const subMenuDepartment: SubSidebarItem[] = [
   },
 ];
 
+export const subMenuDepartmentManager: SubSidebarItem[] = [
+  ...subMenuDepartment,
+  {
+    name: 'Employee',
+    icon: <Icon icon="people" color="black" />,
+    navigate: '/employees',
+  },
+];
+
 export const subMenuSettingUser: SubSidebarItem[] = [
   {
     name: 'User Info',

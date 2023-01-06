@@ -237,7 +237,7 @@ const ModalEmailList: React.FC<Props> = ({
           onChange={handleChange}
           aria-label="basic tabs example">
           <Tab className="tab" label="Me" {...a11yProps(0)} />
-          {!currentPosition?.startsWith('EMPLOYEE') && (
+          {!currentPosition?.toUpperCase().startsWith('EMPLOYEE') && (
             <Tab className="tab" label="All" {...a11yProps(1)} />
           )}
         </Tabs>
