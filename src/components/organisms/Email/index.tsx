@@ -126,7 +126,9 @@ const Email: React.FC<Props> = ({
           is_trash: params.isTrash,
         }),
       onSuccess: () => {
+        setIsOpenModal(false);
         queryClient.invalidateQueries({ queryKey: ['get-emails-list'] });
+        queryClient.invalidateQueries({ queryKey: ['get-email-manager'] });
       },
     });
 
