@@ -64,7 +64,7 @@ import {
 } from './Settings/EmailInformation';
 import SettingPage from './Settings';
 import BlackListPage from './Settings/BlackList';
-import { ManagerPositionPage } from './Manager/ManagerPositionPage';
+import { AddPositionPage, ManagerPositionPage } from './Manager/ManagerPositionPage';
 import ContactSharingGroupsPage from './Contact/ContactSharingGroups';
 
 export const sideBarRoutes: RouteObject[] = [
@@ -177,7 +177,7 @@ export const sideBarRoutes: RouteObject[] = [
         },
         {
           index: <ManagerPositionPage />,
-          add: <AddEmployeePage />,
+          add: <AddPositionPage />,
           edit: <EditEmployeePage />,
         },
       ),

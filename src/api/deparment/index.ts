@@ -7,6 +7,16 @@ import {
   PositionResponse,
 } from './interface';
 
+export const addPositionInDepartment = async (params: {
+  name: string;
+  describe: string;
+  department_id: number;
+}): Promise<AxiosResponse<DepartmentResponse[]>> => {
+  const url = `${POSITION_API}`;
+  const res = await ApiClient.post(url, undefined, params);
+  return res.data;
+};
+
 export const getDepartments = async (): Promise<
   AxiosResponse<DepartmentResponse[]>
 > => {
@@ -18,7 +28,7 @@ export const getDepartments = async (): Promise<
 export const getAllPositionInDepartment = async (
   id: number,
 ): Promise<AxiosResponse<PositionResponse[]>> => {
-  const url = `${POSITION_API}/${id}`;
+  const url = `${POSITION_API}/department/${id}`;
   const res = await ApiClient.get(url);
   return res.data;
 };
