@@ -1,6 +1,7 @@
 import {
   approveEmail,
   CreateEmailParam,
+  deleteAllWithIdList,
   sendEmail,
   updateEmailWithQuery,
 } from '@api/email';
@@ -787,7 +788,7 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
   //     return Array(to - from + 1).fill(1).map((_, index) => index + from)
   //   }
   //   (async function deleteDraft(){
-  //     const idList = renderArray(89, 145);
+  //     const idList = renderArray(8, 136);
   //     await deleteAllWithIdList(idList);
   //   })()
   // }, [])

@@ -116,11 +116,11 @@ export const EmailActions = async (params: {
   return res.data;
 };
 
-// export const deleteAllWithIdList = async (ids: number[]) => {
-//   const url = `${API_EMAIL_USER}/action`;
-//   const res = await Promise.all(ids.map((value) => deleteEmail(String(value))));
-//   return res;
-// };
+export const deleteAllWithIdList = async (ids: number[]) => {
+  const url = `${API_EMAIL_USER}/action`;
+  const res = await Promise.all(ids.map((value) => updateEmailWithQuery(value, {is_trash: true})));
+  return res;
+};
 
 // GET ALL CUR EMAIL TAG
 export const getAllEmailTag = async (): Promise<AxiosResponse<any[]>> => {
