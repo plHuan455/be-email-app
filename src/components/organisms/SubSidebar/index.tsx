@@ -113,7 +113,7 @@ const SubSidebar: React.FC<SubSidebarProps> = ({ title, menus }) => {
   );
 
   return (
-    <Box className="o-contactSlideBar">
+    <Box className="o-contactSlideBar py-4 px-2">
       <Drawer
         variant="permanent"
         sx={{

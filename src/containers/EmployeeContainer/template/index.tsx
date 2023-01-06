@@ -63,6 +63,8 @@ const DepartmentTemplate: React.FC<DepartmentTemplateProps> = ({
     mode: 'all',
   });
 
+  console.log(errors);
+
   const { data: rolesList } = useQuery({
     queryKey: ['get-roles'],
     queryFn: getRole,

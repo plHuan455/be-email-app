@@ -55,7 +55,7 @@ export const useEmployeeManagement = () => {
   const { data: roles } = useQuery(['getRole'], getRole);
   console.log('role --->', roles);
 
-  const handleCancel = () => navigate('..');
+  const handleCancel = () => navigate(-1);
 
   return {
     navigate,
@@ -109,35 +109,42 @@ export const useEditEmployeeManagement = () => {
   const hook = useEmployeeManagement();
   const { param, navigate, employee, setEmployee, files, uploadImage } = hook;
 
-  useQuery(
-    ['getUserById', param.employee_id],
-    () => getUserById(Number(param.employee_id)),
-    {
-      onSuccess: (res: any) => {
-        const data = res.data;
-        setEmployee(data);
-      },
-      onError: (error: any) => {
-        navigate('..');
-        console.error(new Error(error));
-        toast.error('Cannot find this employee!');
-      },
-
-      enabled: !!param.employee_id,
+  useQuery(['getUserById', param.id], () => getUserById(Number(param.id)), {
+    onSuccess: (res: any) => {
+      const data = res.data;
+      setEmployee(data);
+      console.log(data);
     },
-  );
+    onError: (error: any) => {
+      navigate('..');
+      console.error(new Error(error));
+      toast.error('Cannot find this employee!');
+    },
+
+    enabled: !!param.id,
+  });
 
   const handleEdit = async () => {
     try {
       console.log('employee data --->', employee);
+      const { id, password, ...params } = employee;
       // call await update
       if (files.image && files.image.length > 0) {
-        const picture = await uploadImage(files.image[0]);
+        const avatar = await uploadImage(files.image[0]);
         // update with img change
-        // await updateEmployee(id, params);
+        await updateEmployee(id, {
+          ...params,
+          avatar,
+          role_id: +params.role_id,
+          department_id: +param.idDepartment!,
+        });
       } else {
         // update without img change
-        // await updateEmployee(id, params);
+        await updateEmployee(id, {
+          ...params,
+          role_id: +params.role_id,
+          department_id: +param.idDepartment!,
+        });
       }
       navigate('..');
       toast.success('Success');
