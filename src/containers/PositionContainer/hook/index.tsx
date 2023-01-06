@@ -1,4 +1,8 @@
-import { addPositionInDepartment } from '@api/deparment';
+import {
+  addPositionInDepartment,
+  getPositionById,
+  updatePosition,
+} from '@api/deparment';
 import { getRole } from '@api/role';
 import {
   createEmployee,
@@ -80,33 +84,35 @@ export const useEditPositionManagement = () => {
   const hook = usePositionManagement();
   const { param, navigate, position, setPosition } = hook;
 
-  useQuery(['getUserById', param.id], () => getUserById(Number(param.id)), {
-    onSuccess: (res: any) => {
-      const data = res.data;
-      setPosition(data);
-      console.log(data);
-    },
-    onError: (error: any) => {
-      navigate('..');
-      console.error(new Error(error));
-      toast.error('Cannot find this employee!');
-    },
+  useQuery(
+    ['get-position-by-id', param.id],
+    () => getPositionById(Number(param.id)),
+    {
+      onSuccess: (res: any) => {
+        const data = res.data;
+        setPosition(data);
+        console.log(data);
+      },
+      onError: (error: any) => {
+        navigate('..');
+        console.error(new Error(error));
+        toast.error('Cannot find this employee!');
+      },
 
-    enabled: !!param.id,
-  });
+      enabled: !!param.id,
+    },
+  );
 
   const handleEdit = async () => {
     try {
       console.log('position data --->', position);
       const { id, ...params } = position;
       // call await update
-      // await updateEmployee(id, {
-      //   ...params,
-      //   avatar,
-      //   role_id: +params.role_id,
-      //   department_id: +param.idDepartment!,
-      // });
-      navigate('..');
+      await updatePosition(id, {
+        ...params,
+        department_id: +param.idDepartment!,
+      });
+      navigate(-1);
       toast.success('Success');
     } catch (error: any) {
       console.error(new Error(error));

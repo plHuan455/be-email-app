@@ -1,9 +1,9 @@
 import { useTranslation } from '@@packages/localization/src';
-import { EditPositionContainer } from '@containers/PositionContainer';
+import { AddPositionContainer } from '@containers/PositionContainer';
 import Layout from '@layouts/Layout';
 import React, { useEffect } from 'react';
 
-const EditEmployeePage = () => {
+const EditPositionPage = () => {
   const { t } = useTranslation();
 
   useEffect(() => {
@@ -13,10 +13,10 @@ const EditEmployeePage = () => {
   }, []);
 
   return (
-    <Layout.MainQueryClient isHaveHeader headTitle={t('Employee / Edit')}>
-      <EditPositionContainer />
+    <Layout.MainQueryClient isHaveHeader headTitle={t('Position / Edit')}>
+      <AddPositionContainer />
     </Layout.MainQueryClient>
   );
 };
 
-export default EditEmployeePage;
+export default EditPositionPage;
