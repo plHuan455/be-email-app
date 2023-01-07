@@ -195,15 +195,13 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
   return (
     <Box className="t-emailCompose w-full h-full py-10 mt-4">
       <FormProvider {...method}>
-        <form
-          className="p-8 flex items-center justify-center w-full h-full"
-        >
+        <form className="p-8 flex items-center justify-center w-full h-full">
           <Box
             className={`flex flex-col h-full w-full mx-auto shadow-xl bg-white rounded-3xl overflow-hidden z-[80] transition-all ${
               isFullScreen && 'fixed top-0 left-0 bottom-0'
             }`}>
             <WindowComposeActions
-              className="p-3 pr-3pt-3 pr-3"
+              className="pt-3 px-3"
               sx={{
                 backgroundColor: tabBarColor || 'white',
                 transition: 'background .25s linear',
@@ -215,7 +213,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
             <Box
               className="bg-white flex-1 flex flex-col overflow-scroll"
               ref={composeScrollRef}>
-              <Box className="px-9 py-10 pt-2 flex-1 flex flex-col">
+              <Box className="px-9 py-10 pt-0 flex-1 flex flex-col">
                 <Controller
                   name="to"
                   render={({ field: { value, onChange } }) => {
@@ -377,7 +375,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
 
                 {/* Edit Content */}
                 <Box
-                  className="flex flex-col flex-1"
+                  className="flex flex-col relative"
                   sx={{
                     '& .public-DraftStyleDefault-block': {
                       marginBlock: 0,
@@ -387,8 +385,8 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                       '& .public-DraftEditorPlaceholder-inner': { height: '100%' },
                     },
                     '& .public-DraftEditor-content': {
-                      height: '200px',
-                      overflow: 'scroll',
+                      minHeight: '100px',
+                      // overflow: 'scroll',
                     },
                   }}>
                   <Controller
@@ -397,8 +395,8 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                       <Editor
                         editorState={value}
                         onEditorStateChange={(data) => onChange(data)}
-                        wrapperClassName="wrapper-class flex-1 flex flex-col"
-                        editorClassName="editor-class border flex-1"
+                        wrapperClassName="wrapper-class flex flex-col"
+                        editorClassName="editor-class border flex-1 max-h-[80vh]"
                         toolbarClassName="toolbar-class w-full"
                         placeholder="Enter content here..."
                         toolbar={toolbarCustom}
@@ -581,8 +579,9 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                   endIcon={
                     selectedDate ? <AccessTimeIcon fontSize="small" /> : undefined
                   }
-                  onClick={() => { method.handleSubmit(onSubmit)()}}
-                >
+                  onClick={() => {
+                    method.handleSubmit(onSubmit)();
+                  }}>
                   {selectedDate ? 'SEND' : 'SEND NOW'}
                 </LoadingButton>
               </Box>

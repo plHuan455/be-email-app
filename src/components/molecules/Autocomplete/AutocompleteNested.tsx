@@ -363,6 +363,10 @@ const styleNoBorder = {
   '& fieldset': {
     border: 'none',
   },
+
+  '.MuiInputBase-root': {
+    paddingBlock: '0px !important',
+  },
 };
 
 export default AutocompleteNested;
