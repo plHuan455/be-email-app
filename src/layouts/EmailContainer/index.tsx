@@ -34,20 +34,20 @@ const EmailContainer = () => {
 
   const { scrollToPrePosition } = useScrollInfinity({
     scrollContainer: containerRef.current,
-    enabled: enabled && (pageParams.page * pageParams.limit < EmailsList.length),
+    enabled: enabled && pageParams.page * pageParams.limit < EmailsList.length,
     thresholdTop: 400,
     onScrollTop: () => {
       setEnabled(false);
       console.count();
-      setPageParams((preState) => ({...preState, page: preState.page + 1}));
-      setTimeout(() => setEnabled(true), 3000);
+      setPageParams((preState) => ({ ...preState, page: preState.page + 1 }));
+      setTimeout(() => setEnabled(true), 2000);
     },
     onScroll: (target) => {
       const container = target as HTMLDivElement;
       const { scrollHeight, scrollTop, clientHeight } = container;
       setIsShowScrollButton(scrollTop + clientHeight + 100 < scrollHeight);
       handleChangeCurrEmail();
-    }
+    },
   });
 
   const [isShowScrollBottom, setIsShowScrollButton] = useState<boolean>(false);
@@ -89,7 +89,7 @@ const EmailContainer = () => {
     handleChangeCurrEmail();
   }, [EmailsList]);
 
-  // WHEN THE SCROLL CONTAINER CHANGES THE SCROLL HEIGHT => SCROLL TO PREVIOUS EMAIL MESS 
+  // WHEN THE SCROLL CONTAINER CHANGES THE SCROLL HEIGHT => SCROLL TO PREVIOUS EMAIL MESS
   useEffect(() => {
     scrollToPrePosition();
   }, [pageParams]);
@@ -98,7 +98,11 @@ const EmailContainer = () => {
   useEffect(() => {
     // console.log({isScrolledWhenEmailListChange.current});
     const container = containerRef.current;
-    if (container && isScrolledWhenEmailListChange.current && EmailsList.length !== 0) {
+    if (
+      container &&
+      isScrolledWhenEmailListChange.current &&
+      EmailsList.length !== 0
+    ) {
       container.scrollTop = container.scrollHeight;
       isScrolledWhenEmailListChange.current = false;
     }

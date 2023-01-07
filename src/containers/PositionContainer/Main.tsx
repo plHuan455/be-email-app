@@ -43,7 +43,7 @@ const PositionContainer = () => {
     if (row && row.original) {
       // tạm thời cho edit, sau này phần quyền sau
       navigate(
-        `/department/${params.idDepartment}/employee/edit/${row.original.id}`,
+        `/department/${params.idDepartment}/position/edit/${row.original.id}`,
       );
     }
   };

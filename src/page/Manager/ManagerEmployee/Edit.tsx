@@ -1,5 +1,5 @@
 import { useTranslation } from '@@packages/localization/src';
-import { EditPositionContainer } from '@containers/PositionContainer';
+import { EditEmployeeContainer } from '@containers/EmployeeContainer';
 import Layout from '@layouts/Layout';
 import React, { useEffect } from 'react';
 
@@ -14,7 +14,7 @@ const EditEmployeePage = () => {
 
   return (
     <Layout.MainQueryClient isHaveHeader headTitle={t('Employee / Edit')}>
-      <EditPositionContainer />
+      <EditEmployeeContainer />
     </Layout.MainQueryClient>
   );
 };

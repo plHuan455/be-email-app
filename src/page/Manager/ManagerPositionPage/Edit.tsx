@@ -1,5 +1,8 @@
 import { useTranslation } from '@@packages/localization/src';
-import { AddPositionContainer } from '@containers/PositionContainer';
+import {
+  AddPositionContainer,
+  EditPositionContainer,
+} from '@containers/PositionContainer';
 import Layout from '@layouts/Layout';
 import React, { useEffect } from 'react';
 
@@ -14,7 +17,7 @@ const EditPositionPage = () => {
 
   return (
     <Layout.MainQueryClient isHaveHeader headTitle={t('Position / Edit')}>
-      <AddPositionContainer />
+      <EditPositionContainer />
     </Layout.MainQueryClient>
   );
 };

@@ -73,8 +73,9 @@ const UserBlacklistContainer = () => {
       const currentUserId = localStorage.getItem('current_id');
       const params = { user_email: emailDelete, user_id: Number(currentUserId) };
 
-      await deleteEmailBlacklist(params);
+      await deleteEmailBlacklist(params.user_id);
       toast.success('Delete email from blacklist success!');
+      handleSuccess();
     } catch (error: any) {
       console.error(new Error(error));
       toast.error(error?.response?.message || 'Has Error');

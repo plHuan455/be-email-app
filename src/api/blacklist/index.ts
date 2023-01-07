@@ -16,9 +16,9 @@ export const addMailToBlackList = async (
 };
 
 export const deleteEmailBlacklist = async (
-  params: AddMailToBlackListParams,
+  id: number,
 ): Promise<AxiosResponse<any>> => {
-  const url = `${BLACKLIST_API_URL}`;
-  const res = await ApiClient.post(url, undefined, params);
+  const url = `${BLACKLIST_API_URL}/${id}`;
+  const res = await ApiClient.delete(url, undefined);
   return res.data;
 };
