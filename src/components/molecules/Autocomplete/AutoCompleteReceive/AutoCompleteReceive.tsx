@@ -81,17 +81,11 @@ const AutoCompleteReceive: React.FC<AutoCompleteReceiveProps> = ({
       options={exOption ? [...options, exOption] : options}
       value={value}
       onChange={handleChange}
-      placeholder={'Select mail'}
+      placeholder={''}
       renderInput={(params) => (
-        <TextField
-          {...params}
-          onChange={handleChangeInput}
-          placeholder={'Select group or enter mail'}
-        />
+        <TextField {...params} onChange={handleChangeInput} placeholder={''} />
       )}
-      renderSubInput={(params) => (
-        <TextField {...params} placeholder={'Select mail'} />
-      )}
+      renderSubInput={(params) => <TextField {...params} placeholder={''} />}
       getOptionLabel={(option) => option.contact_name}
       getSubOptionLabel={(option) => option.name}
       renderOption={(props, option, state) => {
