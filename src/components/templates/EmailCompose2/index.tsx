@@ -197,7 +197,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
       <FormProvider {...method}>
         <form className="p-8 flex items-center justify-center w-full h-full">
           <Box
-            className={`flex flex-col h-full w-full mx-auto shadow-xl bg-white rounded-3xl overflow-hidden z-[80] transition-all ${
+            className={`flex flex-col h-full w-full mx-auto shadow-xl bg-white rounded-3xl z-[80] transition-all ${
               isFullScreen && 'fixed top-0 left-0 bottom-0'
             }`}>
             <WindowComposeActions
@@ -210,9 +210,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
               onMaximizeClick={onMaximizeClick}
               onCloseClick={onCloseEmail}
             />
-            <Box
-              className="bg-white flex-1 flex flex-col overflow-scroll"
-              ref={composeScrollRef}>
+            <Box className="bg-white flex-1 flex flex-col" ref={composeScrollRef}>
               <Box className="px-9 py-10 pt-0 flex-1 flex flex-col">
                 <Controller
                   name="to"
@@ -375,7 +373,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
 
                 {/* Edit Content */}
                 <Box
-                  className="flex flex-col relative"
+                  className="flex flex-col"
                   sx={{
                     '& .public-DraftStyleDefault-block': {
                       marginBlock: 0,
@@ -395,11 +393,25 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                       <Editor
                         editorState={value}
                         onEditorStateChange={(data) => onChange(data)}
-                        wrapperClassName="wrapper-class flex flex-col"
-                        editorClassName="editor-class border flex-1 max-h-[80vh]"
-                        toolbarClassName="toolbar-class w-full"
+                        wrapperClassName="wrapper-class flex flex-col relative"
+                        editorClassName="editor-class border flex-1"
+                        toolbarClassName="toolbar-class w-full bg-white relative top-0 z-50"
                         placeholder="Enter content here..."
                         toolbar={toolbarCustom}
+                        onFocus={() => {
+                          const toolbar = document.querySelector(
+                            '.rdw-editor-toolbar',
+                          ) as HTMLElement;
+
+                          toolbar.style.position = 'sticky';
+                        }}
+                        onBlur={() => {
+                          const toolbar = document.querySelector(
+                            '.rdw-editor-toolbar',
+                          ) as HTMLElement;
+
+                          toolbar.style.position = 'relative';
+                        }}
                       />
                     )}
                   />
@@ -490,7 +502,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
               </Box>
 
               {/* ACTIONS */}
-              <Box className="flex justify-end items-center flex-1">
+              <Box className="flex justify-end items-center flex-1 rounded-br-3xl rounded-bl-3xl">
                 <UseTemplateButton
                   settings={[
                     { id: 1, name: 'Use template' },
