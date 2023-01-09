@@ -34,6 +34,7 @@ import { InputContactBlock } from '@components/molecules/Autocomplete';
 import { UserReceiveInfo } from '@components/organisms/Email/Interface';
 import { emailRegex } from '@constants/constants';
 import { emailData } from '@layouts/EmailStatusBar';
+import { AutoCompleteGroupValueTypes } from '@components/molecules/AutoCompleteGroup';
 
 interface EmailComposeContextTypes {
   isEmailSending?: boolean;
@@ -172,30 +173,37 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
     });
 
   // HANDLE FUNCTIONS
-  const convertContactField = (contactBlock: InputContactBlock[]) => {
-    const to: string[] = [];
-    const cc: string[] = [];
-    const bcc: string[] = [];
+  // const convertContactField = (contactBlock: InputContactBlock[]) => {
+  //   const to: string[] = [];
+  //   const cc: string[] = [];
+  //   const bcc: string[] = [];
 
-    const field = { to, cc, bcc };
+  //   const field = { to, cc, bcc };
 
-    contactBlock.forEach((contact) => {
-      // Nếu là mail
-      if (contact.subMenu) {
-        contact.subMenu.forEach((employ) => {
-          if (employ.field) {
-            employ.isSelected && field[employ.field].push(employ.mail);
-          }
-        });
-      } else {
-        if (contact.field) {
-          contact.isSelected && field[contact.field].push(contact.contact_name);
-        }
-      }
-    });
+  //   contactBlock.forEach((contact) => {
+  //     // Nếu là mail
+  //     if (contact.subMenu) {
+  //       contact.subMenu.forEach((employ) => {
+  //         if (employ.field) {
+  //           employ.isSelected && field[employ.field].push(employ.mail);
+  //         }
+  //       });
+  //     } else {
+  //       if (contact.field) {
+  //         contact.isSelected && field[contact.field].push(contact.contact_name);
+  //       }
+  //     }
+  //   });
 
-    return field;
-  };
+  //   return field;
+  // };
+
+  const convertContactField = (fieldData: AutoCompleteGroupValueTypes[]) => {
+    return fieldData.reduce<string[]>((preValue, value) => {
+      if(!value.isGroup) return [...preValue, value.name];
+      return [...preValue, ...value.data.map(email => email)]
+    }, [])
+  } 
 
   const getSelectedContact = (contactBlock: InputContactBlock[]) => {
     return (field: 'to' | 'cc' | 'bcc') => {
@@ -210,11 +218,11 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
   // HANDLE FUNCTIONS
   const checkEmailDataEmpty = (values: EmailComposeFields): boolean => {
     const { contactBlock } = values;
-    const { to, cc, bcc } = convertContactField(contactBlock);
+    // const { to, cc, bcc } = convertContactField(contactBlock);
 
     return (
-      to.length === 0 &&
-      bcc.length === 0 &&
+      values.to2.length === 0 &&
+      values.bcc2.length === 0 &&
       // cc.length === 0 &&
       !values.subject &&
       values.attachFiles.fileUrls.length === 0 &&
@@ -227,13 +235,13 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
     values: EmailComposeFields & { sendAt?: Dayjs | null | undefined },
     isDraft?: Boolean,
   ): CreateEmailParam => {
-    const { contactBlock } = values;
-    const { to, cc, bcc } = convertContactField(contactBlock);
+    // const { contactBlock } = values;
+    // const { to, cc, bcc } = convertContactField(contactBlock);
     return {
       email: {
-        to,
-        bcc,
-        cc,
+        to: convertContactField(values.to2),
+        bcc: convertContactField(values.bcc2),
+        cc: convertContactField(values.cc2),
         from: currentUserEmail ?? '',
         text_html: getHtmlStringFromEditorState(values.content),
         subject: values.subject,
@@ -296,10 +304,11 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
   const handleSendEmail = (
     values: EmailComposeFields & { sendAt?: Dayjs | null },
   ) => {
-    const { contactBlock } = values;
+    // const { contactBlock } = values;
 
-    const { to, cc, bcc } = convertContactField(contactBlock);
-    console.log(to, cc, bcc);
+    // const { to, cc, bcc } = convertContactField(contactBlock);
+    // console.log(to, cc, bcc);
+    const {to2: to, cc2: cc, bcc2: bcc} = values;
 
     if (to.length === 0 && cc.length === 0 && bcc.length === 0) {
       alertDialog.setAlertData(
