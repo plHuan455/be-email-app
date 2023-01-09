@@ -216,7 +216,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
               isFullScreen && 'fixed top-0 left-0 bottom-0'
             }`}>
             <WindowComposeActions
-              className="pt-3 px-3"
+              className="pt-3 px-3 rounded-tl-3xl rounded-tr-3xl"
               sx={{
                 backgroundColor: tabBarColor || 'white',
                 transition: 'background .25s linear',
@@ -490,7 +490,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
             </Box>
 
             {/* Footer */}
-            <Box className="p-6 bg-[#F1F1F6] flex items-center h-[88px]">
+            <Box className="p-6 bg-[#F1F1F6] flex items-center h-[88px] rounded-br-3xl rounded-bl-3xl">
               {/* manipulation */}
               <Box display="flex" alignItems="center">
                 <CustomButton
@@ -525,16 +525,30 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
               </Box>
 
               {/* ACTIONS */}
-              <Box className="flex justify-end items-center flex-1 rounded-br-3xl rounded-bl-3xl">
+              <Box className="flex justify-end items-center flex-1">
                 <Button
-                  sx={{width: rem(34), height: rem(40), px: rem(4), minWidth: 'auto', mr: rem(12), '&:hover': {backgroundColor: '#E0E0EA'}}}
+                  sx={{
+                    width: rem(34),
+                    height: rem(40),
+                    px: rem(4),
+                    minWidth: 'auto',
+                    mr: rem(12),
+                    '&:hover': { backgroundColor: '#E0E0EA' },
+                  }}
                   variant="text"
                   onClick={onUseTemplateClick}>
                   <ArticleIcon className="text-[#7D7E80]" />
                 </Button>
                 {/* <Tooltip title="Insert link"> */}
                 <Button
-                  sx={{width: rem(34), height: rem(40), px: rem(4), minWidth: 'auto', mr: rem(12), '&:hover': {backgroundColor: '#E0E0EA'}}}
+                  sx={{
+                    width: rem(34),
+                    height: rem(40),
+                    px: rem(4),
+                    minWidth: 'auto',
+                    mr: rem(12),
+                    '&:hover': { backgroundColor: '#E0E0EA' },
+                  }}
                   variant="text"
                   onClick={handleAttachFileClick}>
                   <input

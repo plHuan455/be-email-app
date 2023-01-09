@@ -1,4 +1,4 @@
-import { Avatar, Box, Button, Typography } from '@mui/material';
+import { Avatar, Badge, Box, Button, Typography } from '@mui/material';
 import CreateIcon from '@mui/icons-material/Create';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import styles from './styles.module.scss';
@@ -7,7 +7,10 @@ import EmailStatus from '@components/atoms/EmailStatus';
 import OptionalAvatar from '@components/atoms/OptionalAvatar';
 import utc from 'dayjs/plugin/utc';
 dayjs.extend(utc);
-import EmailActions, { ActionListTypes, ActionNameTypes } from '@components/molecules/EmailActions';
+import EmailActions, {
+  ActionListTypes,
+  ActionNameTypes,
+} from '@components/molecules/EmailActions';
 import { useCallback, useMemo, useState } from 'react';
 import EmailForward from '../EmailForward';
 import { attachs, EmailResponse } from '@api/email';
@@ -62,7 +65,7 @@ interface Props {
   onApproveNow: () => void;
   onSendEmail: () => void;
   onContinueClick?: () => void;
-  onActionsClick?:(action: ActionNameTypes) => void;
+  onActionsClick?: (action: ActionNameTypes) => void;
 }
 
 export const attachsToAttachFiles: (attachs: attachs[]) => AttachFile[] = (
@@ -84,45 +87,17 @@ export const attachsToAttachFiles: (attachs: attachs[]) => AttachFile[] = (
     };
   });
 
-const EmailMess: React.FC<Props> = ({
-  type,
+interface EmailMessRightSideBarProps {
+  userInfo: UserInfo;
+  emailData: EmailResponse;
+  sentAt: Date;
+}
+
+const EmailMessRightSideBar: React.FC<EmailMessRightSideBarProps> = ({
   userInfo,
   emailData,
-  onShowHistory,
-  isShowHeader = false,
-  hiddenActions = true,
-  isShowActions = false,
-  index,
-  onChangeStatus,
-  onUpdateHashtagClick,
-
-  onDecline,
-  onApprove,
-  onEmployeeCancel,
-  onUndoEmail,
-  onApproveNow,
-  onSendEmail,
-  onActionsClick,
-  onContinueClick,
+  sentAt,
 }) => {
-  const [searchParams] = useSearchParams();
-
-  const defaultStatus = useMemo(() => emailData.status, []);
-  const [newHashtagList, setNewHashtagList] = useState<HashtagTabs[] | undefined>(
-    undefined,
-  );
-  const [isShowLimitTitle, setIsShowLimitTitle] = useState<boolean>(false);
-
-  const sentAt = new Date(emailData.send_at);
-  const approveAt = new Date(emailData.approve_at);
-
-  const cloneSendTo = [
-    ...(emailData.email.to ?? []),
-    ...(emailData.email.cc ?? []),
-    ...(emailData.email.bcc ?? []),
-  ];
-
-  // useMemo
   const emailActionType = useMemo(() => {
     const isTimeNowLessThanSendTime = sentAt.getTime() > Date.now();
 
@@ -163,15 +138,93 @@ const EmailMess: React.FC<Props> = ({
     }
   }, [emailActionType]);
 
+  return (
+    <Box className={`px-4 flex flex-col gap-4`}>
+      <Box>
+        <Avatar alt={userInfo.name} src={userInfo.avatar} />
+      </Box>
+      {_renderEmailActionTypeIcon}
+      <Box>
+        <Icon
+          icon="star"
+          color={`${emailData.is_important ? '#FAAF00' : '#999999'}`}
+          width={22}
+          height={22}
+        />
+      </Box>
+      <Box className="flex flex-col justify-center gap-4">
+        <Badge
+          badgeContent={4}
+          color="error"
+          max={9}
+          sx={{
+            justifyContent: 'center',
+          }}>
+          <Icon width={30} height={30} icon="reply" />
+        </Badge>
+        <Badge
+          badgeContent={11}
+          color="error"
+          max={9}
+          sx={{
+            justifyContent: 'center',
+          }}>
+          <Icon width={30} height={30} icon="replyAll" />
+        </Badge>
+      </Box>
+    </Box>
+  );
+};
+
+const EmailMess: React.FC<Props> = ({
+  type,
+  userInfo,
+  emailData,
+  onShowHistory,
+  isShowHeader = false,
+  hiddenActions = true,
+  isShowActions = false,
+  index,
+  onChangeStatus,
+  onUpdateHashtagClick,
+
+  onDecline,
+  onApprove,
+  onEmployeeCancel,
+  onUndoEmail,
+  onApproveNow,
+  onSendEmail,
+  onActionsClick,
+  onContinueClick,
+}) => {
+  const [searchParams] = useSearchParams();
+
+  const defaultStatus = useMemo(() => emailData.status, []);
+  const [newHashtagList, setNewHashtagList] = useState<HashtagTabs[] | undefined>(
+    undefined,
+  );
+  const [isShowLimitTitle, setIsShowLimitTitle] = useState<boolean>(false);
+
+  const sentAt = new Date(emailData.send_at);
+  const approveAt = new Date(emailData.approve_at);
+
+  const cloneSendTo = [
+    ...(emailData.email.to ?? []),
+    ...(emailData.email.cc ?? []),
+    ...(emailData.email.bcc ?? []),
+  ];
+
+  // useMemo
+
   const remapPrivateHashtag = useMemo<HashtagTabs[]>(() => {
     return emailData.hashtags
       ? emailData.hashtags.map((val) => ({
-        notiNumber: 0,
-        status: 'hashtag',
-        title: `#${val.hashtag}`,
-        value: val.hashtag,
-        color: '#4BAAA2',
-      }))
+          notiNumber: 0,
+          status: 'hashtag',
+          title: `#${val.hashtag}`,
+          value: val.hashtag,
+          color: '#4BAAA2',
+        }))
       : [];
   }, [emailData]);
 
@@ -264,7 +317,21 @@ const EmailMess: React.FC<Props> = ({
               />
             </Box>
           );
-        else return null;
+        else {
+          console.log(sentAt);
+          return (
+            <Box>
+              <ControlEmailSend
+                variant="cancel"
+                scheduleAt={dayjs(sentAt).format('MMMM, DD YYYY - HH:mm')}
+                remainMinutes={Math.floor(
+                  (sentAt.getTime() - Date.now()) / 1000 / 60,
+                )}
+                onCancel={onEmployeeCancel}
+              />
+            </Box>
+          );
+        }
       } else {
         if (approveAt.getTime() > Date.now())
           return (
@@ -308,13 +375,15 @@ const EmailMess: React.FC<Props> = ({
     else return null;
   }, [sentAt, approveAt, emailData.status, currRole]);
 
+  console.log(emailData.status);
+
   const _renderStatusLayer = useMemo(() => {
     return (
       <EmailForward
         status={emailData.status}
         onChangeEmailStatus={() => {
           onChangeStatus(defaultStatus, emailData.id);
-          onActionsClick && onActionsClick(defaultStatus as ActionNameTypes)
+          onActionsClick && onActionsClick(defaultStatus as ActionNameTypes);
         }}
         isReadOnlyReceivers={!(emailData.status === 'forward')}
         classNameLayer="absolute top-0 left-0 w-full h-full"
@@ -399,13 +468,11 @@ const EmailMess: React.FC<Props> = ({
         )}
       </Box>
 
-      <Box className={`px-4 flex flex-col gap-2`}>
-        <Box>
-          <Avatar alt={userInfo.name} src={userInfo.avatar} />
-        </Box>
-        {_renderEmailActionTypeIcon}
-        <Box>{emailData.is_important && <Icon icon="star" color="#FAAF00" />}</Box>
-      </Box>
+      <EmailMessRightSideBar
+        emailData={emailData}
+        sentAt={sentAt}
+        userInfo={userInfo}
+      />
       <Box
         sx={{ boxShadow: '0px 10px 23px -15px rgba(159,159,159,0.54)' }}
         className={`flex-1 overflow-hidden bg-white ${
@@ -471,10 +538,7 @@ const EmailMess: React.FC<Props> = ({
           }}
         />
         {/* Actions */}
-        <Box
-          sx={{ backgroundColor: '#F1F1F6', minHeight: rem(86) }}
-          display="flex"
-          alignItems="center">
+        <Box sx={{ backgroundColor: '#F1F1F6' }} display="flex" alignItems="center">
           {_renderActionsPendingItems}
           {emailData.status.toUpperCase() === 'APPROVED' &&
             sentAt.getTime() > Date.now() && (

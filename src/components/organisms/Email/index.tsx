@@ -21,7 +21,12 @@ import { isEmpty } from 'lodash';
 import EmailMessEmpty from '../EmailMessEmpty';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@redux/configureStore';
-import { addSpamEmail, addUnreadEmail, setEmailsList } from '@redux/Email/reducer';
+import {
+  addSpamEmail,
+  addUnreadEmail,
+  setEmailsList,
+  setEmailStatus,
+} from '@redux/Email/reducer';
 import ModalBase from '@components/atoms/ModalBase';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -215,15 +220,15 @@ const Email: React.FC<Props> = ({
 
   const handleActionClick = (action: ActionNameTypes, emailId: number) => {
     const foundEmail = EmailsList.find((value) => value.id === emailId);
-    if (
-      action !== 'delete' &&
-      action !== 'spam' &&
-      action !== 'unread' &&
-      action !== 'star'
-    ) {
-      handleOnOpen();
-      return;
-    }
+    // if (
+    //   action !== 'delete' &&
+    //   action !== 'spam' &&
+    //   action !== 'unread' &&
+    //   action !== 'star'
+    // ) {
+    //   handleOnOpen();
+    //   return;
+    // }
 
     if (!foundEmail) return;
 
@@ -272,8 +277,18 @@ const Email: React.FC<Props> = ({
         break;
       }
 
-      default:
+      default: {
+        const cloneEmailsList = [...EmailsList];
+
+        const findIndex = cloneEmailsList.findIndex((email) => email.id === emailId);
+
+        const reqData = { ...cloneEmailsList[findIndex], status: action };
+
+        cloneEmailsList.splice(findIndex, 1, reqData);
+
+        dispatch(setEmailsList(cloneEmailsList));
         break;
+      }
     }
   };
 
@@ -497,14 +512,14 @@ const Email: React.FC<Props> = ({
           </div>
         </div>
       </ModalBase>
-      <EmailReplyMessMain.Input onClickInput={handleOpenLayout} />
+      {/* <EmailReplyMessMain.Input onClickInput={handleOpenLayout} />
       <EmailReplyMessMain.LayoutModal
         isShow={isShowLayout}
         receiversList={receiversList}
         onClose={handleCloseLayout}
         onOpen={handleCloseLayout}
-      />
-      <EmailActionLayoutContainer isShow={isShow} onClose={handleOnClose} />
+      /> */}
+      {/* <EmailActionLayoutContainer isShow={isShow} onClose={handleOnClose} /> */}
     </Box>
   );
 };
