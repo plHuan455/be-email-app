@@ -8,7 +8,7 @@ import { useCallback, useContext, useEffect, useId, useMemo, useState } from 're
 import utc from 'dayjs/plugin/utc';
 import dayjs, { Dayjs } from 'dayjs';
 import { useAppDispatch, useAppSelector } from '@redux/configureStore';
-import { getEditorStateFormHtmlString, rem } from '@utils/functions';
+import { getEditorStateFormHtmlString, getHtmlStringFromEditorState, rem } from '@utils/functions';
 import AlertDialog, { useAlertDialog } from '@components/molecules/AlertDialog';
 dayjs.extend(utc);
 import { useNavigate } from 'react-router-dom';
@@ -32,21 +32,12 @@ const currentUserEmail = localStorage.getItem('current_email');
 interface EmailComposeContainerProps { }
 
 const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
-  const alertDialog = useAlertDialog();
-
   const privateHashtags = useAppSelector((state) => state.email.privateHashtags);
 
-  const workingEmail = useAppSelector((state) => state.email.workingEmail);
 
   const [isOpenCalendarSelect, setIsOpenCalendarSelect] = useState(false);
   const [selectedDepartment, setSelectedDepartment] = useState<EmailComposeSelectedDepartmentTypes>();
   const [selectedEmployerModalList, setSelectedEmployerModalList] = useState<string[]>([]);
-
-  const queryClient = useQueryClient();
-  const dispatch = useAppDispatch();
-  const navigate = useNavigate();
-
-  // const { onFieldsChange } = useAutoStoreEmail(3000);
 
   const [attachFiles, setAttachFiles] = useState<(File | undefined)[]>([]);
   const [selectedTemplate, setSelectedTemplate] = useState<EmailTemplateItem>();
@@ -362,20 +353,12 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
   };
 
   const handleApplyTemplate = (template: EmailTemplateItem) => {
-    alertDialog.setAlertData(
-      'Apply template',
-      'If you apply this template, the current content of the email will be changed',
-      () => {
-        method.setValue(
-          'content',
-          getEditorStateFormHtmlString(template.htmlString),
-        );
-        setSelectedTemplate(template);
-        alertDialog.onClose();
-        setIsOpenTemplateModal(false);
-      },
-      () => alertDialog.onClose(),
+    method.setValue(
+      'content',
+      getEditorStateFormHtmlString(template.htmlString),
     );
+    setSelectedTemplate(template);
+    setIsOpenTemplateModal(false);
   };
 
   const handleDepartmentClick = (option: AutoCompleteGroupValueTypes, field: EmailComposeEmailFieldNames) => {
@@ -464,6 +447,8 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
   }
 
   const handleSubmit = (values: EmailComposeFields) => {
+    console.log(getHtmlStringFromEditorState(values.content));
+    return;
     onSendEmail({ ...values, sendAt: selectedDate });
   };
 
@@ -549,20 +534,8 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
             isShowTemplateActionWhenHover={false}
             emailTemplateList={emailTemplateList} //TODO: REPLACE THE TEMPLATE LIST WHEN HAVE API
           />
-          {/* <Box display="flex" justifyContent="flex-end" sx={{mt: rem(12)}}>
-            <Button sx={{minWidth: rem(70)}} onClick={handleApplyTemplate}>Apply template</Button>
-          </Box> */}
         </Box>
       </ModalBase>
-      <AlertDialog
-        isShowDisagreeBtn={alertDialog.isShowAgreeBtn}
-        isOpen={alertDialog.isOpen}
-        descriptionLabel={alertDialog.description}
-        titleLabel={alertDialog.title}
-        onClose={alertDialog.onClose}
-        onAgree={alertDialog.callback}
-        onDisagree={alertDialog.onClose}
-      />
     </>
   );
 };

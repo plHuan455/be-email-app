@@ -1,3 +1,4 @@
+import ArticleIcon from '@mui/icons-material/Article';
 import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import TableViewIcon from '@mui/icons-material/TableView';
 import SendIcon from '@mui/icons-material/Send';
@@ -525,21 +526,16 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
 
               {/* ACTIONS */}
               <Box className="flex justify-end items-center flex-1 rounded-br-3xl rounded-bl-3xl">
-                <UseTemplateButton
-                  settings={[
-                    { id: 1, name: 'Use template' },
-                    { id: 2, name: 'Insert file link' },
-                  ]}
-                  onSettingClick={(settingId) => {
-                    if (settingId === 1 && onUseTemplateClick) {
-                      onUseTemplateClick();
-                      return;
-                    }
-                  }}
-                />
+                <Button
+                  sx={{width: rem(34), height: rem(40), px: rem(4), minWidth: 'auto', mr: rem(12), '&:hover': {backgroundColor: '#E0E0EA'}}}
+                  variant="text"
+                  onClick={onUseTemplateClick}>
+                  <ArticleIcon className="text-[#7D7E80]" />
+                </Button>
                 {/* <Tooltip title="Insert link"> */}
                 <Button
-                  className="bg-transparent p-2 hover:bg-transparent"
+                  sx={{width: rem(34), height: rem(40), px: rem(4), minWidth: 'auto', mr: rem(12), '&:hover': {backgroundColor: '#E0E0EA'}}}
+                  variant="text"
                   onClick={handleAttachFileClick}>
                   <input
                     type="file"
