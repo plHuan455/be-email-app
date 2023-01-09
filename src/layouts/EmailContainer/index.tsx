@@ -40,7 +40,7 @@ const EmailContainer = () => {
       setEnabled(false);
       console.count();
       setPageParams((preState) => ({ ...preState, page: preState.page + 1 }));
-      setTimeout(() => setEnabled(true), 2000);
+      setTimeout(() => setEnabled(true), 1000);
     },
     onScroll: (target) => {
       const container = target as HTMLDivElement;
@@ -126,9 +126,14 @@ const EmailContainer = () => {
     if (containerRef.current) {
       const container = containerRef.current;
       containerRef.current.scrollTo({
-        top: container.scrollHeight,
+        top: containerRef.current.scrollTop + 1000,
         behavior: 'smooth',
       });
+
+      setTimeout(() => {
+        if(containerRef.current)
+          containerRef.current.scrollTop = container.scrollHeight;
+      }, 300)
     }
   };
 
