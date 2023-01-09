@@ -1,7 +1,7 @@
 import { CreateEmailParam, sendEmail } from '@api/email';
 import { AutoCompleteGroupValueTypes } from '@components/molecules/AutoCompleteGroup';
 import { CustomFile } from '@components/templates/EmailCompose2';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { getHtmlStringFromEditorState } from '@utils/functions';
 import dayjs, { Dayjs } from 'dayjs';
 import { EditorState } from 'draft-js';
@@ -36,6 +36,7 @@ const initialValue: EmailReplyInitialValue = {
 };
 
 const useEmailReply = () => {
+  const queryClient = useQueryClient();
   const [emailReply, setEmailReply] = useState(initialValue);
 
   const convertContactField = (fieldData: AutoCompleteGroupValueTypes[]) => {
@@ -49,16 +50,20 @@ const useEmailReply = () => {
     emailReply,
     setEmailReply,
     convertContactField,
+    queryClient,
   };
 };
 
 const useCreateEmailReply = () => {
   const hook = useEmailReply();
-  const { emailReply, setEmailReply, convertContactField } = hook;
+  const { emailReply, setEmailReply, convertContactField, queryClient } = hook;
 
   const { mutate: createEmailReply } = useMutation({
     mutationKey: ['create-email-reply'],
     mutationFn: sendEmail,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['get-emails-list'] });
+    },
   });
 
   const createApiData = (
@@ -82,8 +87,12 @@ const useCreateEmailReply = () => {
     };
   };
 
-  const handleCreateEmailReply = () => {
-    createEmailReply(createApiData(emailReply));
+  const handleCreateEmailReply = (
+    values: EmailReplyInitialValue,
+    cbFnc: () => void,
+  ) => {
+    createEmailReply(createApiData(values));
+    cbFnc();
   };
 
   return { ...hook, handleCreateEmailReply };

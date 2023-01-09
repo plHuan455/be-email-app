@@ -18,6 +18,9 @@ import { EmailReplyInitialValue, useCreateEmailReply } from './hook/useEmailRepl
 import { Controller, FormProvider, useForm } from 'react-hook-form';
 import AutoCompleteGroup from '@components/molecules/AutoCompleteGroup';
 import { emailRegex } from '@constants/constants';
+import AttachFiles2 from '@components/molecules/AttachFiles2';
+import AlertDialog, { useAlertDialog } from '@components/molecules/AlertDialog';
+import { toast } from 'react-toastify';
 
 interface Props {
   onChangeEmailStatus: Function;
@@ -32,12 +35,10 @@ const EmailForward: React.FC<Props> = ({
   isReadOnlyReceivers = true,
   emailData,
 }) => {
-  const [attachedFiles, setAttachedFile] = useState<any>([]);
-  const [attachFiles, setAttachFile] = useState<any>([]);
+  const alertDialog = useAlertDialog();
 
-  const [isShowCcFrom, setIsShowCcFrom] = useState(false);
-
-  const refInputAttachFile = useRef<HTMLInputElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const composeScrollRef = useRef<HTMLDivElement>(null);
 
   const { emailReply, setEmailReply, handleCreateEmailReply } =
     useCreateEmailReply();
@@ -68,76 +69,31 @@ const EmailForward: React.FC<Props> = ({
       ]);
   }, [emailData]);
 
-  const handleAttachFile = (e) => {
-    const checkRef = !!refInputAttachFile.current;
+  const handleSendEmailReply = (values: EmailReplyInitialValue) => {
+    const { to, cc, bcc } = values;
 
-    if (checkRef) {
-      refInputAttachFile.current.click();
+    if (to.length === 0 && cc.length === 0 && bcc.length === 0) {
+      alertDialog.setAlertData(
+        "Can't send email",
+        "Can't send email without receiver",
+        () => {
+          alertDialog.onClose();
+        },
+      );
+      return;
     }
-  };
 
-  const handleOnAttachedFiles = (e) => {
-    const files = e.target.files;
-
-    const customFiles = Object.keys(files).map((key) => {
-      const file = files[key];
-      const fileType = file.type;
-      file.preview = URL.createObjectURL(file);
-      const res = {
-        name: file.name,
-        type: '',
-        url: file.preview,
-      };
-
-      if (fileType) {
-        const splitFileType = fileType.split('/');
-        const [firstSplitFileType, secondSplitFileType, ...restFileType] =
-          splitFileType;
-        if (firstSplitFileType === 'image') res.type = 'image';
-        else if (secondSplitFileType === 'pdf') res.type = 'pdf';
-        else res.type = 'file';
-      }
-
-      return res;
+    handleCreateEmailReply(values, () => {
+      toast.success('Reply Successfully!');
+      onChangeEmailStatus();
     });
-
-    setAttachFile((prevState) => [...prevState, ...files]);
-    setAttachedFile((prevState) => [...prevState, ...customFiles]);
-
-    e.target.value = null;
   };
 
-  const handleDeleteAllAttachedFiles = useCallback(() => {
-    setAttachedFile([]);
-
-    {
-      attachFiles.length !== 0 &&
-        Object.keys(attachFiles).forEach((key) => {
-          const file = attachFiles[key];
-
-          URL.revokeObjectURL(file.preview);
-        });
+  const handleAttachFile = (e) => {
+    if (fileInputRef.current) {
+      fileInputRef.current.click();
     }
-
-    setAttachFile([]);
-  }, []);
-
-  const handleDeleteAttachedFile = useCallback(
-    (index) => {
-      const file = attachFiles[index];
-
-      URL.revokeObjectURL(file.preview);
-      setAttachFile((prevState) => {
-        prevState.splice(index, 1);
-        return [...prevState];
-      });
-      setAttachedFile((prevState) => {
-        prevState.splice(index, 1);
-        return [...prevState];
-      });
-    },
-    [attachFiles, attachedFiles],
-  );
+  };
 
   const renderReceiverList = () => {
     return (
@@ -207,14 +163,34 @@ const EmailForward: React.FC<Props> = ({
           />
         </Box>
         <Box>
-          {attachedFiles.length !== 0 && (
-            <AttachFiles
-              data={attachedFiles}
-              isDelete={true}
-              onDeleteAll={handleDeleteAllAttachedFiles}
-              onDeleteFile={handleDeleteAttachedFile}
-            />
-          )}
+          <Controller
+            name="attachFiles"
+            render={({ field: { value, onChange } }) => {
+              if (value.files.length === 0) return <></>;
+              return (
+                <AttachFiles2
+                  fileList={value.files}
+                  inputId="react-compose-file-input"
+                  onUploaded={(index, url) => {
+                    console.log('uploading');
+                    const cloneAttachFiles = { ...value };
+                    cloneAttachFiles.fileUrls[index] = url;
+                    cloneAttachFiles.files[index].percentage = 100;
+                    onChange(cloneAttachFiles);
+                  }}
+                  onDelete={(index) => {
+                    const cloneAttachFile = { ...value };
+                    cloneAttachFile.files.splice(index, 1);
+                    cloneAttachFile.fileUrls.splice(index, 1);
+                    onChange(cloneAttachFile);
+                  }}
+                  onDeleteAll={() => {
+                    onChange({ files: [], fileUrls: [] });
+                  }}
+                />
+              );
+            }}
+          />
         </Box>
       </Box>
     );
@@ -228,7 +204,7 @@ const EmailForward: React.FC<Props> = ({
       <Box
         className={`flex flex-col shadow-lg p-4 absolute top-1/2 left-1/2 right-[40px] w-[80vw] h-[80vh] -translate-y-1/2 -translate-x-1/2 bg-white rounded-[11px] border border-[#E3E3E3] `}
         onClick={(e) => e.stopPropagation()}>
-        <Box className="flex flex-col flex-1 overflow-scroll">
+        <Box className="flex flex-col flex-1 overflow-scroll" ref={composeScrollRef}>
           <FormProvider {...method}>
             <form className="flex flex-col">
               <Box>
@@ -253,7 +229,9 @@ const EmailForward: React.FC<Props> = ({
         <Box className="py-2 ">
           <Button
             className="bg-transparent text-[#7D7E80] hover:text-[#5724C5] hover:bg-transparent"
-            onClick={() => method.handleSubmit(handleCreateEmailReply)}>
+            onClick={() => {
+              method.handleSubmit(handleSendEmailReply)();
+            }}>
             <SendOutlinedIcon />
           </Button>
           <Button
@@ -264,14 +242,53 @@ const EmailForward: React.FC<Props> = ({
               name="file"
               id="file"
               hidden
-              ref={refInputAttachFile}
-              onChange={handleOnAttachedFiles}
+              ref={fileInputRef}
+              onChange={(e) => {
+                if (e.target.files) {
+                  const cloneAttachFile = method.getValues('attachFiles');
+                  cloneAttachFile.files = [
+                    ...cloneAttachFile.files,
+                    ...Object.keys(e.target.files).map(
+                      (key) => e.target.files?.[key],
+                    ),
+                  ];
+                  e.target.value = '';
+                  method.setValue('attachFiles', cloneAttachFile);
+                  // if (attachFileRef.current) {
+                  //   attachFileRef.current.scrollIntoView({ behavior: "smooth", block: "end", inline: "end" });
+                  // }
+                  setTimeout(() => {
+                    if (composeScrollRef.current) {
+                      composeScrollRef.current.scrollTo({
+                        top: composeScrollRef.current.scrollHeight,
+                      });
+                    }
+                  }, 300);
+                  // onChangeAttachFile([
+                  //   ...method.getValues('attachFiles'),
+                  //   ...Object.keys(e.target.files).map((key) => e.target.files?.[key])
+                  // ])
+                }
+              }}
               multiple
             />
             <AttachFileIcon className="text-[#7D7E80]" />
           </Button>
         </Box>
       </Box>
+      <AlertDialog
+        titleLabel={alertDialog.title}
+        descriptionLabel={alertDialog.description}
+        isOpen={alertDialog.isOpen}
+        onClose={() => {
+          alertDialog.onClose();
+          if (alertDialog.onCloseCallBack) {
+            alertDialog.onCloseCallBack();
+          }
+        }}
+        onAgree={alertDialog.callback}
+        onDisagree={alertDialog.onClose}
+      />
     </Box>
   );
 };
