@@ -8,6 +8,7 @@ import { InputContactBlock } from '@components/molecules/Autocomplete';
 import { HashtagTabs } from '@redux/Email/reducer';
 import { CustomFile } from '../EmailCompose2';
 import { AutoCompleteGroupValueTypes } from '@components/molecules/AutoCompleteGroup';
+import { useMemo } from 'react';
 
 export interface MinimizeEmailTypes {
   id?: number;
@@ -55,6 +56,7 @@ const MinimizeEmailList: React.FC<MinimizeEmailListProps> = ({
             className="t-minimizeEmailList_itemWrapper"
             style={{ position: 'relative', marginLeft: rem(5), height: rem(46) }}
             initial={{ width: 0, marginLeft: 0 }}
+            whileHover={{zIndex:200}}
             animate={{
               width:
                 value.id === showMinimizeEmailId?.id && value.id !== undefined

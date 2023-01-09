@@ -233,7 +233,7 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
     return (
       values.to2.length === 0 &&
       values.bcc2.length === 0 &&
-      // cc.length === 0 &&
+      values.cc2.length === 0 &&
       !values.subject &&
       values.attachFiles.fileUrls.length === 0 &&
       values.attachFiles.files.length === 0 &&
@@ -464,13 +464,13 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
       content: getHtmlStringFromEditorState(values.content),
     };
 
-    if (!isExistShowEmail() && minimizeEmailList.length >= 2) {
-      toast.error(
-        'Only a maximum of 2 emails can be hidden, please delete some to hide the email.',
-      );
-      clearTimeout(storeDraftTimeOutFunc.current);
-      return;
-    }
+    // if (!isExistShowEmail() && minimizeEmailList.length >= 2) {
+    //   toast.error(
+    //     'Only a maximum of 2 emails can be hidden, please delete some to hide the email.',
+    //   );
+    //   clearTimeout(storeDraftTimeOutFunc.current);
+    //   return;
+    // }
 
     // New Email
     if (showMinimizeEmailId === undefined) {
@@ -597,10 +597,6 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
 
     /** NOT HAVE DATA AND ISN'T CALL API STORE DRAFT  */
     if (isEmailDataEmpty && !isExistShow) {
-      // if(showMinimizeEmailId?.id) {
-      //   deleteEmailMutate(String(showMinimizeEmailId.id));
-      //   setShowMinimizeEmailId(undefined);
-      // }
       if (location.pathname === '/emails/compose') {
         handleTriggerClearData();
       }
@@ -608,74 +604,36 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
       return;
     }
 
-    /** MINIMIZE EMAIL ABLE */
-    if (isExistShow || minimizeEmailList.length < 2) {
-      const newCacheId = Date.now();
-      if (showMinimizeEmailId?.id !== undefined) {
-        dispatch(
-          addMinimizeEmail({
-            ...convertMinimizeEmailData,
-            id: showMinimizeEmailId.id,
-            cacheId: undefined,
-          }),
-        );
-        updateDraftMutate({ data, id: showMinimizeEmailId.id });
-      } else {
-        dispatch(
-          addMinimizeEmail({
-            ...convertMinimizeEmailData,
-            cacheId: showMinimizeEmailId?.cacheId ?? newCacheId,
-            id: undefined,
-          }),
-        );
-        storeDraftMutate({
-          data,
+    const newCacheId = Date.now();
+    if (showMinimizeEmailId?.id !== undefined) {
+      dispatch(
+        addMinimizeEmail({
+          ...convertMinimizeEmailData,
+          id: showMinimizeEmailId.id,
+          cacheId: undefined,
+        }),
+      );
+      updateDraftMutate({ data, id: showMinimizeEmailId.id });
+    } else {
+      dispatch(
+        addMinimizeEmail({
+          ...convertMinimizeEmailData,
           cacheId: showMinimizeEmailId?.cacheId ?? newCacheId,
-        });
-      }
-
-      setShowMinimizeEmailId(undefined);
-      setTabColor(undefined);
-      method.reset();
-      clearTimeout(storeDraftTimeOutFunc.current);
-      navigate('/emails/compose');
-      return;
+          id: undefined,
+        }),
+      );
+      storeDraftMutate({
+        data,
+        cacheId: showMinimizeEmailId?.cacheId ?? newCacheId,
+      });
     }
 
-    // CAN'T NOT MINIMIZE
-    if (location.pathname !== '/emails/compose') {
-      navigate('/emails/compose');
-      return;
-    }
-
-    alertDialog.setAlertData(
-      'Store email',
-      'Your current email will store to draft',
-      () => {
-        if (showMinimizeEmailId?.id) {
-          updateDraftMutate({
-            data,
-            id: showMinimizeEmailId.id,
-          });
-        } else {
-          storeDraftMutate({
-            data,
-            cacheId: showMinimizeEmailId?.cacheId ?? Date.now(),
-          });
-        }
-        setShowMinimizeEmailId(undefined);
-        method.reset();
-        clearTimeout(storeDraftTimeOutFunc.current);
-        alertDialog.onClose();
-        navigate('/emails/compose');
-      },
-      () => {
-        if (showMinimizeEmailId?.id) {
-          deleteEmailMutate(showMinimizeEmailId.id);
-        }
-      },
-    );
-    return;
+    setShowMinimizeEmailId(undefined);
+    setTabColor(undefined);
+    method.reset();
+    clearTimeout(storeDraftTimeOutFunc.current);
+    navigate('/emails/compose');
+    return; 
   };
 
   // Auto call this func after 3s
