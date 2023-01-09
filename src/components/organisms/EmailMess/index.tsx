@@ -318,7 +318,6 @@ const EmailMess: React.FC<Props> = ({
             </Box>
           );
         else {
-          console.log(sentAt.toString());
           return (
             <Box>
               <ControlEmailSend
@@ -380,7 +379,7 @@ const EmailMess: React.FC<Props> = ({
   const _renderStatusLayer = useMemo(() => {
     return (
       <EmailForward
-        status={emailData.status}
+        emailData={emailData}
         onChangeEmailStatus={() => {
           onChangeStatus(defaultStatus, emailData.id);
           onActionsClick && onActionsClick(defaultStatus as ActionNameTypes);
@@ -392,13 +391,6 @@ const EmailMess: React.FC<Props> = ({
             : emailData.status === 'replyAll'
             ? emailData.email.to
             : emailData.email.to
-        }
-        sendToDefault={
-          emailData.status === 'reply'
-            ? [emailData.email.from]
-            : emailData.status === 'replyAll'
-            ? emailData.email.to
-            : []
         }
       />
     );

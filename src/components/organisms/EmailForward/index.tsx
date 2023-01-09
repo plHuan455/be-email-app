@@ -5,96 +5,68 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import SendOutlinedIcon from '@mui/icons-material/SendOutlined';
 import AttachFileIcon from '@mui/icons-material/AttachFile';
 
-import AutoCompleteReceive from '@components/molecules/AutoCompleteReceive';
 import { SingleOTPInputComponent } from '@components/atoms/Input/PinInput/SingleInput';
-import CustomButton from '@components/atoms/CustomButton';
-import AttachButton from '@components/atoms/AttachButton';
 import AttachFiles from '@components/atoms/AttachFiles';
 
-import { EditorState, convertToRaw } from 'draft-js';
+import { EditorState, convertToRaw, convertFromHTML } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';
 
-import avatarImg from '@assets/images/avatars/avatar-1.jpg';
-import { Email, UserInfo } from '../Email/Interface';
+import { UserInfo } from '../Email/Interface';
 import EmailComposeFormGroup from '@components/molecules/EmailComposeFormGroup';
-import useEmailCompose from '../../../zustand/useEmailCompose';
-
-import draftToHtml from 'draftjs-to-html';
-import htmlToDraft from 'html-to-draftjs';
-import { toast } from 'react-toastify';
-import { sendEmail } from '@api/email';
-import AttachFiles2 from '@components/molecules/AttachFiles2';
+import { EmailResponse } from '@api/email';
+import { EmailReplyInitialValue, useCreateEmailReply } from './hook/useEmailReply';
+import { Controller, FormProvider, useForm } from 'react-hook-form';
+import AutoCompleteGroup from '@components/molecules/AutoCompleteGroup';
+import { emailRegex } from '@constants/constants';
 
 interface Props {
   onChangeEmailStatus: Function;
-  classNameLayer?: string;
-  classNameContent?: string;
   sendTo: string[];
-  sendToDefault: string[];
-  status: string;
+  emailData: EmailResponse;
   isReadOnlyReceivers?: boolean;
 }
 
-// const receiversList: UserInfo[] = [
-//   { avatar: avatarImg, mail: 'giangz0009@gmail.com', abbreviations: 'GI' },
-//   { avatar: '', mail: 'mail1@gmail.com', abbreviations: 'T2' },
-//   { avatar: avatarImg, mail: 'mail2@gmail.com', abbreviations: 'T3' },
-// ];
-
-const fromData: UserInfo[] = [new UserInfo(avatarImg, 'sender', 'sender@gmail.com')];
-
 const EmailForward: React.FC<Props> = ({
-  classNameLayer,
-  classNameContent,
   sendTo,
-  sendToDefault,
   onChangeEmailStatus,
   isReadOnlyReceivers = true,
-  status,
+  emailData,
 }) => {
   const [attachedFiles, setAttachedFile] = useState<any>([]);
   const [attachFiles, setAttachFile] = useState<any>([]);
-
-  const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
 
   const [isShowCcFrom, setIsShowCcFrom] = useState(false);
 
   const refInputAttachFile = useRef<HTMLInputElement>(null);
 
-  const {
-    subject,
-    cc,
-    bcc,
-    receivers,
-    getAll,
-    reset,
-    check,
-    setNewReceivers,
-    setCc,
-    setBcc,
-    setContent,
-    setSubject,
-  } = useEmailCompose();
+  const { emailReply, setEmailReply, handleCreateEmailReply } =
+    useCreateEmailReply();
 
-  const currentUserEmail = localStorage.getItem('current_email')
-    ? localStorage.getItem('current_email')
-    : '';
-
-  const newSendTo =
-    sendTo[0] === '' ? [] : sendTo.map((item) => new UserInfo('', item, item));
-  const newSendToDefault =
-    sendToDefault[0] === ''
-      ? []
-      : sendToDefault.map((item) => new UserInfo('', item, item));
+  const method = useForm<EmailReplyInitialValue>({
+    defaultValues: emailReply,
+  });
 
   useEffect(() => {
-    if (status === 'reply') setNewReceivers(newSendToDefault);
-    if (status === 'replyAll') setCc(newSendToDefault);
-  }, []);
+    method.setValue('subject', `[Reply]${emailData.email.subject}`);
 
-  const handleClickCcFromLabel = useCallback(() => {
-    setIsShowCcFrom((preState) => !preState);
-  }, []);
+    const convertToAutoCompleteGroup = (values: string[]) => {
+      return values.map((value) => ({
+        isGroup: false,
+        name: value,
+        data: [value],
+      }));
+    };
+
+    if (emailData.status === 'reply') {
+      method.setValue('to', convertToAutoCompleteGroup([emailData.email.from]));
+    }
+    if (emailData.status === 'replyAll')
+      method.setValue('cc', [
+        ...convertToAutoCompleteGroup(emailData.email.cc),
+        ...convertToAutoCompleteGroup(emailData.email.bcc),
+        ...convertToAutoCompleteGroup([emailData.email.from]),
+      ]);
+  }, [emailData]);
 
   const handleAttachFile = (e) => {
     const checkRef = !!refInputAttachFile.current;
@@ -167,46 +139,30 @@ const EmailForward: React.FC<Props> = ({
     [attachFiles, attachedFiles],
   );
 
-  const handleChangeSubject = (e) => {
-    setSubject(e.target.value);
-  };
-
-  const onEditorStateChange = (val) => {
-    setContent(draftToHtml(convertToRaw(editorState.getCurrentContent())));
-    setEditorState(val);
-    console.log(
-      'state --> line 146',
-      JSON.stringify(draftToHtml(convertToRaw(editorState.getCurrentContent()))),
-    );
-  };
-
-  const handleSubmitEmail = async (e) => {
-    const canSubmit = await check();
-    const emailData = getAll();
-    if (canSubmit) {
-      const res = await sendEmail({
-        email: {
-          subject: emailData.subject,
-          to: emailData.receivers.map((item) => item.mail),
-          content: emailData.content,
-          text_html: emailData.content,
-          from: currentUserEmail ? currentUserEmail : '',
-          cc: emailData.cc.map((item) => item.mail),
-          bcc: emailData.bcc.map((item) => item.mail),
-        },
-        hashtags: emailData.file,
-      });
-      toast.success(`Thành công!`);
-      await reset();
-      onChangeEmailStatus();
-    } else {
-      toast.error('Có lỗi xãy ra, vui lòng kiểm tra lại!');
-    }
-  };
-
   const renderReceiverList = () => {
     return (
       <Box className="flex-1">
+        <Box>
+          <EmailComposeFormGroup
+            className="flex items-center"
+            classNameContent="flex items-center justify-between"
+            label="To :">
+            <Controller
+              name="to"
+              render={({ field: { value, onChange } }) => (
+                <Box sx={{ flexGrow: 1 }}>
+                  <AutoCompleteGroup
+                    isDisable
+                    value={value}
+                    options={value}
+                    autoAddOptionMatchRegex={emailRegex}
+                    onChange={onChange}
+                  />
+                </Box>
+              )}
+            />
+          </EmailComposeFormGroup>
+        </Box>
         <Box
           sx={{
             '& .public-DraftStyleDefault-block': {
@@ -221,14 +177,33 @@ const EmailForward: React.FC<Props> = ({
               // overflow: 'scroll',
             },
           }}>
-          <Editor
-            // toolbarHidden
-            editorState={editorState}
-            onEditorStateChange={onEditorStateChange}
-            wrapperClassName="wrapper-class"
-            editorClassName="editor-class border"
-            toolbarClassName="toolbar-class"
-            placeholder="Write something..."
+          <Controller
+            name="content"
+            render={({ field: { value, onChange } }) => (
+              <Editor
+                // toolbarHidden
+                editorState={value}
+                onEditorStateChange={(data) => onChange(data)}
+                wrapperClassName="wrapper-class relative"
+                editorClassName="editor-class border"
+                toolbarClassName="toolbar-class bg-white relative top-0 z-50"
+                onFocus={() => {
+                  const toolbar = document.querySelector(
+                    '.rdw-editor-toolbar',
+                  ) as HTMLElement;
+
+                  toolbar.style.position = 'sticky';
+                }}
+                onBlur={() => {
+                  const toolbar = document.querySelector(
+                    '.rdw-editor-toolbar',
+                  ) as HTMLElement;
+
+                  toolbar.style.position = 'relative';
+                }}
+                placeholder="Write something..."
+              />
+            )}
           />
         </Box>
         <Box>
@@ -251,39 +226,50 @@ const EmailForward: React.FC<Props> = ({
       onClick={() => onChangeEmailStatus()}>
       <Box className="w-full h-full bg-slate-600/50"></Box>
       <Box
-        className={`shadow-lg p-4 absolute top-1/2 left-1/2 right-[40px] w-[80vw] h-[80vh] -translate-y-1/2 -translate-x-1/2 bg-white rounded-[11px] border border-[#E3E3E3] `}
+        className={`flex flex-col shadow-lg p-4 absolute top-1/2 left-1/2 right-[40px] w-[80vw] h-[80vh] -translate-y-1/2 -translate-x-1/2 bg-white rounded-[11px] border border-[#E3E3E3] `}
         onClick={(e) => e.stopPropagation()}>
-        <Box className="flex flex-col h-full">
-          <Box>
-            <EmailComposeFormGroup label="Re">
-              <SingleOTPInputComponent
-                className="outline-none w-full text-black text-[18px] font-bold h-full"
-                onChange={handleChangeSubject}
-              />
-            </EmailComposeFormGroup>
-          </Box>
-          {renderReceiverList()}
-          <Box className="py-2 ">
-            <Button
-              className="bg-transparent text-[#7D7E80] hover:text-[#5724C5] hover:bg-transparent"
-              onClick={handleSubmitEmail}>
-              <SendOutlinedIcon />
-            </Button>
-            <Button
-              className="bg-transparent p-2 hover:bg-transparent"
-              onClick={handleAttachFile}>
-              <input
-                type="file"
-                name="file"
-                id="file"
-                hidden
-                ref={refInputAttachFile}
-                onChange={handleOnAttachedFiles}
-                multiple
-              />
-              <AttachFileIcon className="text-[#7D7E80]" />
-            </Button>
-          </Box>
+        <Box className="flex flex-col flex-1 overflow-scroll">
+          <FormProvider {...method}>
+            <form className="flex flex-col">
+              <Box>
+                <Controller
+                  name="subject"
+                  render={({ field: { value, onChange } }) => (
+                    <EmailComposeFormGroup label="Re">
+                      <SingleOTPInputComponent
+                        className="outline-none w-full text-black text-[18px] font-bold h-full"
+                        onChange={onChange}
+                        value={value}
+                        disabled
+                      />
+                    </EmailComposeFormGroup>
+                  )}
+                />
+              </Box>
+              {renderReceiverList()}
+            </form>
+          </FormProvider>
+        </Box>
+        <Box className="py-2 ">
+          <Button
+            className="bg-transparent text-[#7D7E80] hover:text-[#5724C5] hover:bg-transparent"
+            onClick={() => method.handleSubmit(handleCreateEmailReply)}>
+            <SendOutlinedIcon />
+          </Button>
+          <Button
+            className="bg-transparent p-2 hover:bg-transparent"
+            onClick={handleAttachFile}>
+            <input
+              type="file"
+              name="file"
+              id="file"
+              hidden
+              ref={refInputAttachFile}
+              onChange={handleOnAttachedFiles}
+              multiple
+            />
+            <AttachFileIcon className="text-[#7D7E80]" />
+          </Button>
         </Box>
       </Box>
     </Box>
