@@ -318,7 +318,7 @@ const EmailMess: React.FC<Props> = ({
             </Box>
           );
         else {
-          console.log(sentAt);
+          console.log(sentAt.toString());
           return (
             <Box>
               <ControlEmailSend
@@ -386,8 +386,6 @@ const EmailMess: React.FC<Props> = ({
           onActionsClick && onActionsClick(defaultStatus as ActionNameTypes);
         }}
         isReadOnlyReceivers={!(emailData.status === 'forward')}
-        classNameLayer="absolute top-0 left-0 w-full h-full"
-        classNameContent="shadow-lg p-4 absolute z-10 top-1/2 right-[40px] w-[90%] -translate-y-1/2 bg-white rounded-[11px] border border-[#E3E3E3] "
         sendTo={
           emailData.status === 'reply'
             ? [emailData.email.from]
@@ -541,14 +539,22 @@ const EmailMess: React.FC<Props> = ({
         <Box sx={{ backgroundColor: '#F1F1F6' }} display="flex" alignItems="center">
           {_renderActionsPendingItems}
           {emailData.status.toUpperCase() === 'APPROVED' &&
-            sentAt.getTime() > Date.now() && (
-              <ControlEmailSend
-                remainMinutes={Math.floor(
-                  (sentAt.getTime() - new Date().getTime()) / 1000 / 60,
-                )}
-                onSend={onUndoEmail}
-                onUndo={onSendEmail}
-              />
+            !currRole?.startsWith('EMPLOYEE') &&
+            approveAt.getTime() > Date.now() && (
+              <Box className="py-4">
+                <ControlEmailSend
+                  remainMinutes={Math.floor(
+                    ((sentAt.getTime() > approveAt.getTime()
+                      ? sentAt.getTime()
+                      : approveAt.getTime()) -
+                      new Date().getTime()) /
+                      1000 /
+                      60,
+                  )}
+                  onSend={onSendEmail}
+                  onUndo={onUndoEmail}
+                />
+              </Box>
             )}
         </Box>
       </Box>

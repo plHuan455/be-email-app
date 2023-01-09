@@ -478,7 +478,6 @@ body {
     & > .rdw-inline-wrapper {
       & > .rdw-option-wrapper {
         border-color: transparent;
-        opacity: 0.5;
         margin-inline: 0;
       }
     }
@@ -486,12 +485,10 @@ body {
     & .rdw-dropdown-wrapper {
       border-color: transparent;
       width: 80px;
-      opacity: 0.5;
     }
 
     & .rdw-option-wrapper {
       margin-inline: 0;
-      opacity: 0.5;
     }
 
     & > div:not(:last-child) {

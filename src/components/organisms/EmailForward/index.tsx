@@ -23,6 +23,7 @@ import draftToHtml from 'draftjs-to-html';
 import htmlToDraft from 'html-to-draftjs';
 import { toast } from 'react-toastify';
 import { sendEmail } from '@api/email';
+import AttachFiles2 from '@components/molecules/AttachFiles2';
 
 interface Props {
   onChangeEmailStatus: Function;
@@ -205,66 +206,84 @@ const EmailForward: React.FC<Props> = ({
 
   const renderReceiverList = () => {
     return (
-      <>
-        <Box>
-          <Box>
-            <Editor
-              toolbarHidden
-              editorState={editorState}
-              onEditorStateChange={onEditorStateChange}
-              wrapperClassName="wrapper-class"
-              editorClassName="editor-class border"
-              toolbarClassName="toolbar-class"
-              placeholder="Write something..."
-            />
-          </Box>
-          <Box>
-            {attachedFiles.length !== 0 && (
-              <AttachFiles
-                data={attachedFiles}
-                isDelete={true}
-                onDeleteAll={handleDeleteAllAttachedFiles}
-                onDeleteFile={handleDeleteAttachedFile}
-              />
-            )}
-          </Box>
+      <Box className="flex-1">
+        <Box
+          sx={{
+            '& .public-DraftStyleDefault-block': {
+              marginBlock: 0,
+            },
+            '& .public-DraftEditorPlaceholder-root': {
+              height: '100%',
+              '& .public-DraftEditorPlaceholder-inner': { height: '100%' },
+            },
+            '& .public-DraftEditor-content': {
+              minHeight: '200px',
+              // overflow: 'scroll',
+            },
+          }}>
+          <Editor
+            // toolbarHidden
+            editorState={editorState}
+            onEditorStateChange={onEditorStateChange}
+            wrapperClassName="wrapper-class"
+            editorClassName="editor-class border"
+            toolbarClassName="toolbar-class"
+            placeholder="Write something..."
+          />
         </Box>
-      </>
+        <Box>
+          {attachedFiles.length !== 0 && (
+            <AttachFiles
+              data={attachedFiles}
+              isDelete={true}
+              onDeleteAll={handleDeleteAllAttachedFiles}
+              onDeleteFile={handleDeleteAttachedFile}
+            />
+          )}
+        </Box>
+      </Box>
     );
   };
 
   return (
-    <Box className={`${classNameLayer} `} onClick={() => onChangeEmailStatus()}>
-      <Box className={`${classNameContent}`} onClick={(e) => e.stopPropagation()}>
-        <Box>
-          <EmailComposeFormGroup label="Re">
-            <SingleOTPInputComponent
-              className="outline-none w-full text-black text-[18px] font-bold h-full"
-              onChange={handleChangeSubject}
-            />
-          </EmailComposeFormGroup>
-        </Box>
-        {renderReceiverList()}
-        <Box className="py-2">
-          <Button
-            className="bg-transparent text-[#7D7E80] hover:text-[#5724C5] hover:bg-transparent"
-            onClick={handleSubmitEmail}>
-            <SendOutlinedIcon fontSize="large" />
-          </Button>
-          <Button
-            className="bg-transparent p-2 hover:bg-transparent"
-            onClick={handleAttachFile}>
-            <input
-              type="file"
-              name="file"
-              id="file"
-              hidden
-              ref={refInputAttachFile}
-              onChange={handleOnAttachedFiles}
-              multiple
-            />
-            <AttachFileIcon className="text-[#7D7E80]" />
-          </Button>
+    <Box
+      className={`fixed z-[100] top-0 left-0 w-full h-full`}
+      onClick={() => onChangeEmailStatus()}>
+      <Box className="w-full h-full bg-slate-600/50"></Box>
+      <Box
+        className={`shadow-lg p-4 absolute top-1/2 left-1/2 right-[40px] w-[80vw] h-[80vh] -translate-y-1/2 -translate-x-1/2 bg-white rounded-[11px] border border-[#E3E3E3] `}
+        onClick={(e) => e.stopPropagation()}>
+        <Box className="flex flex-col h-full">
+          <Box>
+            <EmailComposeFormGroup label="Re">
+              <SingleOTPInputComponent
+                className="outline-none w-full text-black text-[18px] font-bold h-full"
+                onChange={handleChangeSubject}
+              />
+            </EmailComposeFormGroup>
+          </Box>
+          {renderReceiverList()}
+          <Box className="py-2 ">
+            <Button
+              className="bg-transparent text-[#7D7E80] hover:text-[#5724C5] hover:bg-transparent"
+              onClick={handleSubmitEmail}>
+              <SendOutlinedIcon />
+            </Button>
+            <Button
+              className="bg-transparent p-2 hover:bg-transparent"
+              onClick={handleAttachFile}>
+              <input
+                type="file"
+                name="file"
+                id="file"
+                hidden
+                ref={refInputAttachFile}
+                onChange={handleOnAttachedFiles}
+                multiple
+              />
+              <AttachFileIcon className="text-[#7D7E80]" />
+            </Button>
+          </Box>
         </Box>
       </Box>
     </Box>
