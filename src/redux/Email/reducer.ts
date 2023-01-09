@@ -309,9 +309,13 @@ const EmailSlice = createSlice({
     setEmailStatus(state, action) {
       const { index, status } = action.payload;
 
-      state.EmailsList[index].status = status;
+      console.log(index);
 
-      return { ...state, EmailsList: [...state.EmailsList] };
+      const cloneEmailsList = [...state.EmailsList];
+
+      cloneEmailsList[index].status = status;
+
+      return { ...state, EmailsList: [...cloneEmailsList] };
     },
     clearEmailsList(state) {
       return { ...state, EmailsList: [] };

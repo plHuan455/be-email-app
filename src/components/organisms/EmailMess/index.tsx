@@ -7,7 +7,10 @@ import EmailStatus from '@components/atoms/EmailStatus';
 import OptionalAvatar from '@components/atoms/OptionalAvatar';
 import utc from 'dayjs/plugin/utc';
 dayjs.extend(utc);
-import EmailActions, { ActionListTypes, ActionNameTypes } from '@components/molecules/EmailActions';
+import EmailActions, {
+  ActionListTypes,
+  ActionNameTypes,
+} from '@components/molecules/EmailActions';
 import { useCallback, useMemo, useState } from 'react';
 import EmailForward from '../EmailForward';
 import { attachs, EmailResponse } from '@api/email';
@@ -62,7 +65,7 @@ interface Props {
   onApproveNow: () => void;
   onSendEmail: () => void;
   onContinueClick?: () => void;
-  onActionsClick?:(action: ActionNameTypes) => void;
+  onActionsClick?: (action: ActionNameTypes) => void;
 }
 
 export const attachsToAttachFiles: (attachs: attachs[]) => AttachFile[] = (
@@ -166,12 +169,12 @@ const EmailMess: React.FC<Props> = ({
   const remapPrivateHashtag = useMemo<HashtagTabs[]>(() => {
     return emailData.hashtags
       ? emailData.hashtags.map((val) => ({
-        notiNumber: 0,
-        status: 'hashtag',
-        title: `#${val.hashtag}`,
-        value: val.hashtag,
-        color: '#4BAAA2',
-      }))
+          notiNumber: 0,
+          status: 'hashtag',
+          title: `#${val.hashtag}`,
+          value: val.hashtag,
+          color: '#4BAAA2',
+        }))
       : [];
   }, [emailData]);
 
@@ -308,13 +311,15 @@ const EmailMess: React.FC<Props> = ({
     else return null;
   }, [sentAt, approveAt, emailData.status, currRole]);
 
+  console.log(emailData.status);
+
   const _renderStatusLayer = useMemo(() => {
     return (
       <EmailForward
         status={emailData.status}
         onChangeEmailStatus={() => {
           onChangeStatus(defaultStatus, emailData.id);
-          onActionsClick && onActionsClick(defaultStatus as ActionNameTypes)
+          onActionsClick && onActionsClick(defaultStatus as ActionNameTypes);
         }}
         isReadOnlyReceivers={!(emailData.status === 'forward')}
         classNameLayer="absolute top-0 left-0 w-full h-full"
