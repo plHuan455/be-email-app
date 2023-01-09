@@ -27,10 +27,6 @@ import { AutoCompleteGroupValueTypes } from '@components/molecules/AutoCompleteG
 import { departmentListDummy } from '@assets/dummyData/departmnetDummy';
 dayjs.extend(utc);
 
-type SelectedEmailHashType = {
-  [key in EmailComposeEmailFieldNames]: {[key: string]: true};
-}
-
 const currentUserEmail = localStorage.getItem('current_email');
 
 interface EmailComposeContainerProps { }
@@ -45,7 +41,6 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
   const [isOpenCalendarSelect, setIsOpenCalendarSelect] = useState(false);
   const [selectedDepartment, setSelectedDepartment] = useState<EmailComposeSelectedDepartmentTypes>();
   const [selectedEmployerModalList, setSelectedEmployerModalList] = useState<string[]>([]);
-  const [selectedEmailHash, setSelectedEmailHash] = useState<SelectedEmailHashType>({to: {}, cc: {}, bcc: {}});
 
   const queryClient = useQueryClient();
   const dispatch = useAppDispatch();
@@ -61,6 +56,8 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
     isEmailSending,
     inputContactBlocks,
     setInputContactBlocks,
+    selectedEmailHash,
+    onChangeSelectedEmailHash,
     method,
     tabColor,
     triggerClearData,
@@ -425,7 +422,7 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
           delete cloneSelectedEmailHash[field][emailInfo.email];
         }
       })
-      setSelectedEmailHash(cloneSelectedEmailHash);
+      onChangeSelectedEmailHash(cloneSelectedEmailHash);
 
       if(foundDepartmentValueIndex === -1){
         if(selectedEmployerModalList.length !== 0){
@@ -463,7 +460,7 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
       delete cloneSelectedEmailHash[field][email];
     })
 
-    setSelectedEmailHash(cloneSelectedEmailHash);
+    onChangeSelectedEmailHash(cloneSelectedEmailHash);
   }
 
   const handleSubmit = (values: EmailComposeFields) => {
