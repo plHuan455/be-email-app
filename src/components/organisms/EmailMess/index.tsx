@@ -139,18 +139,37 @@ const EmailMessRightSideBar: React.FC<EmailMessRightSideBarProps> = ({
   }, [emailActionType]);
 
   return (
-    <Box className={`px-4 flex flex-col gap-2`}>
+    <Box className={`px-4 flex flex-col gap-4`}>
       <Box>
         <Avatar alt={userInfo.name} src={userInfo.avatar} />
       </Box>
       {_renderEmailActionTypeIcon}
-      <Box>{emailData.is_important && <Icon icon="star" color="#FAAF00" />}</Box>
       <Box>
-        <Badge badgeContent={4} color="secondary">
-          <Icon icon="reply" />
+        <Icon
+          icon="star"
+          color={`${emailData.is_important ? '#FAAF00' : '#999999'}`}
+          width={22}
+          height={22}
+        />
+      </Box>
+      <Box className="flex flex-col justify-center gap-4">
+        <Badge
+          badgeContent={4}
+          color="error"
+          max={9}
+          sx={{
+            justifyContent: 'center',
+          }}>
+          <Icon width={30} height={30} icon="reply" />
         </Badge>
-        <Badge badgeContent={4} color="secondary">
-          <Icon icon="replyAll" />
+        <Badge
+          badgeContent={11}
+          color="error"
+          max={9}
+          sx={{
+            justifyContent: 'center',
+          }}>
+          <Icon width={30} height={30} icon="replyAll" />
         </Badge>
       </Box>
     </Box>
@@ -298,7 +317,21 @@ const EmailMess: React.FC<Props> = ({
               />
             </Box>
           );
-        else return null;
+        else {
+          console.log(sentAt);
+          return (
+            <Box>
+              <ControlEmailSend
+                variant="cancel"
+                scheduleAt={dayjs(sentAt).format('MMMM, DD YYYY - HH:mm')}
+                remainMinutes={Math.floor(
+                  (sentAt.getTime() - Date.now()) / 1000 / 60,
+                )}
+                onCancel={onEmployeeCancel}
+              />
+            </Box>
+          );
+        }
       } else {
         if (approveAt.getTime() > Date.now())
           return (
