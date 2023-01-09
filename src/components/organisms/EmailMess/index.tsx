@@ -538,10 +538,7 @@ const EmailMess: React.FC<Props> = ({
           }}
         />
         {/* Actions */}
-        <Box
-          sx={{ backgroundColor: '#F1F1F6', minHeight: rem(86) }}
-          display="flex"
-          alignItems="center">
+        <Box sx={{ backgroundColor: '#F1F1F6' }} display="flex" alignItems="center">
           {_renderActionsPendingItems}
           {emailData.status.toUpperCase() === 'APPROVED' &&
             sentAt.getTime() > Date.now() && (
