@@ -1,5 +1,4 @@
-const colors = ['#f2f6fc', '#f2e4cb', '#e6ffee'];
-// const colors = ['red', 'green'];
+const colors = ['#f2f6fc', 'rgb(252, 185, 185)', 'rgb(162, 241, 230)', 'rgb(246, 247, 162)', 'rgb(247, 210, 255)', 'rgb(184, 228, 241)', 'rgb(255, 215, 143)', '#bffbd2'];
 export class MinimizeEmailColor {
   static colorList: string[] = [...colors];
   

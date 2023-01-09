@@ -1,15 +1,25 @@
 .t-minimizeEmailList {
   position: fixed;
   display: flex;
-  flex-wrap: nowrap;
+  justify-content: flex-end;
+  flex-wrap: wrap-reverse;
   bottom: 0;
   right: rem(40);
+  left: rem(70);
   z-index: 200;
+  pointer-events: none;
 
+  &_itemWrapper {
+    pointer-events: all;
+  }
+
+  &_itemWrapper ~ &_itemWrapper {
+    margin-top: rem(4);
+  }
   &_item {
     border-top-left-radius: rem(8);
     border-top-right-radius: rem(8);
-    box-shadow: 0px 8px 10px 1px rgb(0 0 0 / 14%), 0px 3px 14px 2px rgb(0 0 0 / 12%), 0px 5px 5px -3px rgb(0 0 0 / 20%);
+    box-shadow: 0px 8px 10px 1px rgb(0 0 0 / 7%), 4px -5px 14px 2px rgb(0 0 0 / 12%), 3px 0px 5px -3px rgb(0 0 0 / 20%);
   }
 }
 
