@@ -7,14 +7,14 @@ import { useLocation } from 'react-router-dom';
 import { InputContactBlock } from '@components/molecules/Autocomplete';
 import { HashtagTabs } from '@redux/Email/reducer';
 import { CustomFile } from '../EmailCompose2';
+import { AutoCompleteGroupValueTypes } from '@components/molecules/AutoCompleteGroup';
 
 export interface MinimizeEmailTypes {
   id?: number;
   cacheId?: number;
-  contactBlock?: InputContactBlock[];
-  to?: InputContactBlock[];
-  cc?: InputContactBlock[];
-  bcc?: InputContactBlock[];
+  to?: AutoCompleteGroupValueTypes[];
+  cc?: AutoCompleteGroupValueTypes[];
+  bcc?: AutoCompleteGroupValueTypes[];
   attachFiles?: {
     files: (CustomFile | undefined)[];
     fileUrls: (string | undefined)[];

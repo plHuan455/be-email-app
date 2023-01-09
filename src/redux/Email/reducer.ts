@@ -244,18 +244,6 @@ const initialState: EmailState = {
     localStorage.getItem(LOCAL_STORAGE_MINIMIZE_EMAILS) ?? '[]',
   ).map((value) => ({
     ...value,
-    to: value.to.map((to) => ({
-      contact_name: to.contact_name,
-      employeesList: to.employeesList.map(
-        (value) => new UserInfo(value.avatar, value.name, value.mail),
-      ),
-    })),
-    cc: value?.cc?.map(
-      (value) => new UserInfo(value.avatar, value.name, value.mail),
-    ),
-    bcc: value?.bcc?.map(
-      (value) => new UserInfo(value.avatar, value.name, value.mail),
-    ),
     color: MinimizeEmailColor.getColor(),
   })),
   EmailsList: [],

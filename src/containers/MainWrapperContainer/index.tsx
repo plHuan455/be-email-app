@@ -5,7 +5,7 @@ import {
   sendEmail,
   updateEmailWithQuery,
 } from '@api/email';
-import { EmailComposeFields } from '@components/templates/EmailCompose2';
+import { EmailComposeEmailFieldNames, EmailComposeFields } from '@components/templates/EmailCompose2';
 import MainWrapper from '@layouts/MainWrapper';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import dayjs, { Dayjs } from 'dayjs';
@@ -34,6 +34,11 @@ import { InputContactBlock } from '@components/molecules/Autocomplete';
 import { UserReceiveInfo } from '@components/organisms/Email/Interface';
 import { emailRegex } from '@constants/constants';
 import { emailData } from '@layouts/EmailStatusBar';
+import { AutoCompleteGroupValueTypes } from '@components/molecules/AutoCompleteGroup';
+
+type SelectedEmailHashType = {
+  [key in EmailComposeEmailFieldNames]: {[key: string]: true};
+}
 
 interface EmailComposeContextTypes {
   isEmailSending?: boolean;
@@ -42,6 +47,8 @@ interface EmailComposeContextTypes {
   method?: UseFormReturn<EmailComposeFields>;
   tabColor?: string;
   triggerClearData: boolean;
+  selectedEmailHash: SelectedEmailHashType;
+  onChangeSelectedEmailHash: (value: SelectedEmailHashType) => void;
   onSendEmail: (
     values: EmailComposeFields & { sendAt: Dayjs | null | undefined },
   ) => void;
@@ -57,6 +64,8 @@ export const EmailComposeContext = createContext<EmailComposeContextTypes>({
   inputContactBlocks: [],
   setInputContactBlocks: () => undefined,
   triggerClearData: false,
+  selectedEmailHash: {to: {}, cc: {}, bcc: {}},
+  onChangeSelectedEmailHash: () => {},
   onSendEmail: () => {},
   onNewComposeClick: () => {},
   onMinimizeEmailClick: () => {},
@@ -84,8 +93,11 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
   const method = useForm<EmailComposeFields>({
     defaultValues: {
       contactBlock: [],
-      to: [],
+      to2:[],
+      to:[],
+      cc2: [],
       cc: [],
+      bcc2: [],
       bcc: [],
       subject: '',
       content: getEditorStateFormHtmlString(),
@@ -107,6 +119,8 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
   const [inputContactBlocks, setInputContactBlocks] = useState<InputContactBlock[]>(
     [],
   );
+
+  const [selectedEmailHash, setSelectedEmailHash] = useState<SelectedEmailHashType>({to: {}, cc: {}, bcc: {}});
 
   // MUTATIONS
   const { mutate: deleteEmailMutate } = useMutation({
@@ -169,30 +183,37 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
     });
 
   // HANDLE FUNCTIONS
-  const convertContactField = (contactBlock: InputContactBlock[]) => {
-    const to: string[] = [];
-    const cc: string[] = [];
-    const bcc: string[] = [];
+  // const convertContactField = (contactBlock: InputContactBlock[]) => {
+  //   const to: string[] = [];
+  //   const cc: string[] = [];
+  //   const bcc: string[] = [];
 
-    const field = { to, cc, bcc };
+  //   const field = { to, cc, bcc };
 
-    contactBlock.forEach((contact) => {
-      // Nếu là mail
-      if (contact.subMenu) {
-        contact.subMenu.forEach((employ) => {
-          if (employ.field) {
-            employ.isSelected && field[employ.field].push(employ.mail);
-          }
-        });
-      } else {
-        if (contact.field) {
-          contact.isSelected && field[contact.field].push(contact.contact_name);
-        }
-      }
-    });
+  //   contactBlock.forEach((contact) => {
+  //     // Nếu là mail
+  //     if (contact.subMenu) {
+  //       contact.subMenu.forEach((employ) => {
+  //         if (employ.field) {
+  //           employ.isSelected && field[employ.field].push(employ.mail);
+  //         }
+  //       });
+  //     } else {
+  //       if (contact.field) {
+  //         contact.isSelected && field[contact.field].push(contact.contact_name);
+  //       }
+  //     }
+  //   });
 
-    return field;
-  };
+  //   return field;
+  // };
+
+  const convertContactField = (fieldData: AutoCompleteGroupValueTypes[]) => {
+    return fieldData.reduce<string[]>((preValue, value) => {
+      if(!value.isGroup) return [...preValue, value.name];
+      return [...preValue, ...value.data.map(email => email)]
+    }, [])
+  } 
 
   const getSelectedContact = (contactBlock: InputContactBlock[]) => {
     return (field: 'to' | 'cc' | 'bcc') => {
@@ -207,11 +228,11 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
   // HANDLE FUNCTIONS
   const checkEmailDataEmpty = (values: EmailComposeFields): boolean => {
     const { contactBlock } = values;
-    const { to, cc, bcc } = convertContactField(contactBlock);
+    // const { to, cc, bcc } = convertContactField(contactBlock);
 
     return (
-      to.length === 0 &&
-      bcc.length === 0 &&
+      values.to2.length === 0 &&
+      values.bcc2.length === 0 &&
       // cc.length === 0 &&
       !values.subject &&
       values.attachFiles.fileUrls.length === 0 &&
@@ -224,13 +245,13 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
     values: EmailComposeFields & { sendAt?: Dayjs | null | undefined },
     isDraft?: Boolean,
   ): CreateEmailParam => {
-    const { contactBlock } = values;
-    const { to, cc, bcc } = convertContactField(contactBlock);
+    // const { contactBlock } = values;
+    // const { to, cc, bcc } = convertContactField(contactBlock);
     return {
       email: {
-        to,
-        bcc,
-        cc,
+        to: convertContactField(values.to2),
+        bcc: convertContactField(values.bcc2),
+        cc: convertContactField(values.cc2),
         from: currentUserEmail ?? '',
         text_html: getHtmlStringFromEditorState(values.content),
         subject: values.subject,
@@ -250,37 +271,33 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
     );
   };
   const createDataForForm = (data: MinimizeEmailTypes) => {
-    const filter = getSelectedContact(data.contactBlock ?? []);
-    setInputContactBlocks((cur) => {
-      return (data.contactBlock ?? []).map((contact) => ({
-        ...contact,
-        employeesList: (contact.subMenu ?? []).map(
-          (employ) =>
-            new UserReceiveInfo(
-              employ.id,
-              employ.avatar,
-              employ.name,
-              employ.mail,
-              employ.isChecked,
-              employ.field,
-            ),
-        ),
-      }));
-    });
-
-    const to = filter('to');
-    const cc = filter('cc');
-    const bcc = filter('bcc');
-
     method.reset();
-    method.setValue('contactBlock', data.contactBlock ?? []);
-    method.setValue('to', to ?? []);
-    method.setValue('cc', cc ?? []);
-    method.setValue('bcc', bcc ?? []);
+    method.setValue('to2', data.to ?? []);
+    method.setValue('cc2', data.cc ?? []);
+    method.setValue('bcc2', data.bcc ?? []);
     method.setValue('content', getEditorStateFormHtmlString(data.content));
     method.setValue('subject', data.subject ?? '');
     method.setValue('attachFiles', data.attachFiles ?? { files: [], fileUrls: [] });
     method.setValue('hashtags', data.hashtags ?? []);
+
+    const cloneSelectedEmailHash:SelectedEmailHashType = {to: {}, cc: {}, bcc: {}};
+    data.to?.forEach(value => {
+      if(value.isGroup) {
+        value.data.forEach(email => cloneSelectedEmailHash.to[email] = true)
+      }
+    })
+    data.cc?.forEach(value => {
+      if(value.isGroup) {
+        value.data.forEach(email => cloneSelectedEmailHash.cc[email] = true)
+      }
+    })
+    data.bcc?.forEach(value => {
+      if(value.isGroup) {
+        value.data.forEach(email => cloneSelectedEmailHash.bcc[email] = true)
+      }
+    })
+
+    setSelectedEmailHash(cloneSelectedEmailHash);
   };
   const handleTriggerClearData = () => {
     clearTimeout(triggerTimeOutRef.current);
@@ -293,10 +310,11 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
   const handleSendEmail = (
     values: EmailComposeFields & { sendAt?: Dayjs | null },
   ) => {
-    const { contactBlock } = values;
+    // const { contactBlock } = values;
 
-    const { to, cc, bcc } = convertContactField(contactBlock);
-    console.log(to, cc, bcc);
+    // const { to, cc, bcc } = convertContactField(contactBlock);
+    // console.log(to, cc, bcc);
+    const {to2: to, cc2: cc, bcc2: bcc} = values;
 
     if (to.length === 0 && cc.length === 0 && bcc.length === 0) {
       alertDialog.setAlertData(
@@ -312,7 +330,6 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
   };
 
   const handleContinueClick = (values: MinimizeEmailTypes) => {
-    console.log(values);
     const currValue = method.getValues();
     const currData = createApiData(currValue);
     const isEmailDataEmpty = checkEmailDataEmpty(currValue);
@@ -349,6 +366,9 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
     const isEmailDataEmpty = checkEmailDataEmpty(method.getValues());
     const convertMinimizeEmailData = {
       ...values,
+      to: values.to2,
+      bcc: values.bcc2,
+      cc: values.cc2,
       content: getHtmlStringFromEditorState(values.content),
     };
     const apiParamData = createApiData(values);
@@ -438,6 +458,9 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
     const data = createApiData(values);
     const convertMinimizeEmailData = {
       ...values,
+      to: values.to2,
+      bcc: values.bcc2,
+      cc: values.cc2,
       content: getHtmlStringFromEditorState(values.content),
     };
 
@@ -462,28 +485,8 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
       );
       setShowMinimizeEmailId(undefined);
       setTabColor(undefined);
-      // method.setValue('contactBlock', inputContactBlocks)
+      setSelectedEmailHash({to: {}, cc: {}, bcc: {}})
       method.reset();
-      setInputContactBlocks((cur) => {
-        return cur
-          .filter((contact) => {
-            return !contact.contact_name.match(emailRegex);
-          })
-          .map((contact) => ({
-            ...contact,
-            employeesList: (contact.subMenu ?? []).map(
-              (employ) =>
-                new UserReceiveInfo(
-                  employ.id,
-                  employ.avatar,
-                  employ.name,
-                  employ.mail,
-                  false,
-                  undefined,
-                ),
-            ),
-          }));
-      });
       clearTimeout(storeDraftTimeOutFunc.current);
       return;
     }
@@ -492,7 +495,6 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
     // Stored to draft
     if (showMinimizeEmailId.id !== undefined) {
       updateDraftMutate({ id: showMinimizeEmailId.id, data });
-      setShowMinimizeEmailId(undefined);
       dispatch(
         addMinimizeEmail({
           ...convertMinimizeEmailData,
@@ -500,29 +502,11 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
           cacheId: undefined,
         }),
       );
+      setShowMinimizeEmailId(undefined);
       setTabColor(undefined);
+      setSelectedEmailHash({to: {}, cc: {}, bcc: {}})
       // method.setValue('contactBlock', inputContactBlocks)
       method.reset();
-      setInputContactBlocks((cur) => {
-        return cur
-          .filter((contact) => {
-            return !contact.contact_name.match(emailRegex);
-          })
-          .map((contact) => ({
-            ...contact,
-            employeesList: (contact.subMenu ?? []).map(
-              (employ) =>
-                new UserReceiveInfo(
-                  employ.id,
-                  employ.avatar,
-                  employ.name,
-                  employ.mail,
-                  false,
-                  undefined,
-                ),
-            ),
-          }));
-      });
       clearTimeout(storeDraftTimeOutFunc.current);
       return;
     }
@@ -539,28 +523,8 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
       );
       setShowMinimizeEmailId(undefined);
       setTabColor(undefined);
-      // method.setValue('contactBlock', inputContactBlocks)
+      setSelectedEmailHash({to: {}, cc: {}, bcc: {}})
       method.reset();
-      setInputContactBlocks((cur) => {
-        return cur
-          .filter((contact) => {
-            return !contact.contact_name.match(emailRegex);
-          })
-          .map((contact) => ({
-            ...contact,
-            employeesList: (contact.subMenu ?? []).map(
-              (employ) =>
-                new UserReceiveInfo(
-                  employ.id,
-                  employ.avatar,
-                  employ.name,
-                  employ.mail,
-                  false,
-                  undefined,
-                ),
-            ),
-          }));
-      });
       clearTimeout(storeDraftTimeOutFunc.current);
       return;
     }
@@ -622,6 +586,9 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
     const values = method.getValues();
     const convertMinimizeEmailData = {
       ...values,
+      to: values.to2,
+      cc: values.cc2,
+      bcc: values.bcc2,
       content: getHtmlStringFromEditorState(values.content),
     };
     const data = createApiData(values);
@@ -767,6 +734,8 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
       method,
       tabColor,
       triggerClearData,
+      selectedEmailHash,
+      onChangeSelectedEmailHash: setSelectedEmailHash,
       onSendEmail: handleSendEmail,
       onNewComposeClick: handleNewComposeClick,
       onMinimizeEmailClick: handleMinimizeEmailClick,
@@ -778,6 +747,8 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
     method,
     tabColor,
     triggerClearData,
+    selectedEmailHash,
+    setSelectedEmailHash,
     handleMinimizeEmailClick,
     handleNewComposeClick,
     handleCloseEmail,

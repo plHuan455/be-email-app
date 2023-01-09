@@ -1,6 +1,7 @@
 import { motion, useAnimation, useAnimationControls } from 'framer-motion';
 import EmailCompose2, {
-  EmailComposeFields,
+  EmailComposeEmailFieldNames,
+  EmailComposeFields, EmailComposeSelectedDepartmentTypes,
 } from '@components/templates/EmailCompose2';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useCallback, useContext, useEffect, useId, useMemo, useState } from 'react';
@@ -22,34 +23,13 @@ import EmailTemplateList, {
   EmailTemplateItem,
 } from '@components/templates/EmailTemplateList';
 import { emailTemplateList } from '@assets/dummyData/emaiTemplate';
+import { AutoCompleteGroupValueTypes } from '@components/molecules/AutoCompleteGroup';
+import { departmentListDummy } from '@assets/dummyData/departmnetDummy';
 dayjs.extend(utc);
-
-const hashtagList = [
-  {
-    id: 2,
-    name: 'hihi',
-    created_at: '2022-12-15T11:25:04.515Z',
-  },
-  {
-    id: 3,
-    name: 'metanode',
-    created_at: '2022-12-15T15:25:12.572Z',
-  },
-  {
-    id: 4,
-    name: 'hello',
-    created_at: '2022-12-15T15:48:54.342Z',
-  },
-  {
-    id: 5,
-    name: 'sale',
-    created_at: '2022-12-15T16:42:28.644Z',
-  },
-];
 
 const currentUserEmail = localStorage.getItem('current_email');
 
-interface EmailComposeContainerProps {}
+interface EmailComposeContainerProps { }
 
 const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
   const alertDialog = useAlertDialog();
@@ -59,6 +39,8 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
   const workingEmail = useAppSelector((state) => state.email.workingEmail);
 
   const [isOpenCalendarSelect, setIsOpenCalendarSelect] = useState(false);
+  const [selectedDepartment, setSelectedDepartment] = useState<EmailComposeSelectedDepartmentTypes>();
+  const [selectedEmployerModalList, setSelectedEmployerModalList] = useState<string[]>([]);
 
   const queryClient = useQueryClient();
   const dispatch = useAppDispatch();
@@ -74,6 +56,8 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
     isEmailSending,
     inputContactBlocks,
     setInputContactBlocks,
+    selectedEmailHash,
+    onChangeSelectedEmailHash,
     method,
     tabColor,
     triggerClearData,
@@ -103,33 +87,107 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
   //   [],
   // );
 
-  useQuery(['getDepartments'], getDepartments, {
-    onSuccess: (res) => {
-      const inputContactBlocks: InputContactBlock[] = res.data.map(
-        (dept, index) => ({
-          id: index.toString(),
-          contact_name: dept?.name || '',
-          isSelected: false,
-          subMenu: (dept.users || []).map(
-            (user) =>
-              new UserReceiveInfo(
-                user.id,
-                user.avatar,
-                `${user.first_name} ${user.last_name}`,
-                user.email,
-                false,
-              ),
-          ),
-        }),
-      );
 
-      setInputContactBlocks(inputContactBlocks);
-      method.setValue('contactBlock', inputContactBlocks);
+  // API
+  const {data: departmentData, isLoading} = useQuery({
+    queryKey: ['email-compose-get-departments'],
+    queryFn: async () => {
+      const res = await getDepartments();
+      return res.data;
     },
-    onError: (error) => {
-      console.log(error);
-    },
-  });
+  })
+  // const departmentData = departmentListDummy;
+
+  const {convertedToOptions = [], convertedCcOptions = [], convertedBccOptions = []} = useMemo(() => {
+    if(!departmentData) return {};
+    const toOptions: AutoCompleteGroupValueTypes[] = [];
+    const ccOptions: AutoCompleteGroupValueTypes[] = [];
+    const bccOptions: AutoCompleteGroupValueTypes[] = [];
+
+    departmentData?.forEach(department => {
+      const toEmails: string[] = [];
+      const ccEmails: string[] = [];
+      const bccEmails: string[] = [];
+      department.users?.forEach(user => {
+         if(!selectedEmailHash.bcc[user.email] && !selectedEmailHash.cc[user.email]){
+          toEmails.push(user.email);
+         }
+         if(!selectedEmailHash.to[user.email] && !selectedEmailHash.cc[user.email]){
+          bccEmails.push(user.email);
+         }
+         if(!selectedEmailHash.to[user.email] && !selectedEmailHash.bcc[user.email]){
+          ccEmails.push(user.email);
+         }
+      })
+
+      toOptions.push({
+        isGroup: true,
+        name: department.name,
+        id: department.id,
+        data: toEmails
+      })
+      ccOptions.push({
+        isGroup: true,
+        name: department.name,
+        id: department.id,
+        data: ccEmails
+      })
+      bccOptions.push({
+        isGroup: true,
+        name: department.name,
+        id: department.id,
+        data: bccEmails
+      })
+    })
+
+    return {
+      convertedToOptions: toOptions,
+      convertedCcOptions: ccOptions,
+      convertedBccOptions: bccOptions,
+    }
+  }, [departmentData, selectedEmailHash])
+
+  const convertedSelectEmployersModalRows = useMemo(() => {
+    if(selectedDepartment === undefined) return [];
+    const field = selectedDepartment.field;
+    return selectedDepartment.data.emailInfo
+      .filter(value => {
+        switch(field){
+          case 'to': return !selectedEmailHash.bcc[value.email] && !selectedEmailHash.cc[value.email];
+          case 'cc': return !selectedEmailHash.bcc[value.email] && !selectedEmailHash.to[value.email];
+          case 'bcc': return !selectedEmailHash.to[value.email] && !selectedEmailHash.cc[value.email];
+        }
+      })
+      .map(value => ({ identify: value.name, email: value.email, id: value.email })) ?? []
+  }, [selectedDepartment])
+
+  // useQuery(['getDepartments'], getDepartments, {
+  //   onSuccess: (res) => {
+  //     const inputContactBlocks: InputContactBlock[] = res.data.map(
+  //       (dept, index) => ({
+  //         id: index.toString(),
+  //         contact_name: dept?.name || '',
+  //         isSelected: false,
+  //         subMenu: (dept.users || []).map(
+  //           (user) =>
+  //             new UserReceiveInfo(
+  //               user.id,
+  //               user.avatar,
+  //               `${user.first_name} ${user.last_name}`,
+  //               user.email,
+  //               false,
+  //             ),
+  //         ),
+  //       }),
+  //     );
+
+  //     setInputContactBlocks(inputContactBlocks);
+  //     method.setValue('contactBlock', inputContactBlocks);
+  //   },
+  //   onError: (error) => {
+  //     console.log(error);
+  //   },
+  // });
 
   // const { mutate: submitEmailComposeMutate, isLoading: isEmailComposeSubmitting } =
   //   useMutation({
@@ -320,6 +378,91 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
     );
   };
 
+  const handleDepartmentClick = (option: AutoCompleteGroupValueTypes, field: EmailComposeEmailFieldNames) => {
+    const foundDepartment = departmentData?.find(value => value.id === option.id)
+    if (foundDepartment) {
+      const currValue = method.getValues(`${field}2`);
+      const foundCurrSelectedEmployers = currValue.find(value => value.id === option.id);
+      if(foundCurrSelectedEmployers) {
+        setSelectedEmployerModalList(foundCurrSelectedEmployers.data);        
+      }
+      else {
+        setSelectedEmployerModalList(foundDepartment.users?.map(value => value.email) ?? [])
+      }
+      setSelectedDepartment({
+        field,
+        data: {
+          id: foundDepartment.id,
+          name: foundDepartment.name,
+          emailInfo: foundDepartment.users?.map(value => ({ name: value.identity, email: value.email, id: value.id })) ?? []
+        }
+      })
+    }
+  }
+
+  const handleSelectedEmployersChange = (emails: string[]) => {
+    setSelectedEmployerModalList(emails);
+  }
+
+  const handleConfirmSelectEmployersModalClick = () => {
+    if (selectedDepartment) {
+      const {field, data: selectedDepartmentData} = selectedDepartment;
+
+      const currValue = method.getValues(`${field}2`);
+      const foundDepartmentValueIndex = currValue.findIndex(value => value.id === selectedDepartment.data.id);
+
+      // { [key: string]: true } // email: true
+      const cloneSelectedEmailHash = {...selectedEmailHash};
+
+      selectedDepartment.data.emailInfo.forEach(emailInfo => {
+        if(selectedEmployerModalList.includes(emailInfo.email)) {
+          cloneSelectedEmailHash[field][emailInfo.email] = true;
+        }
+        else {
+          delete cloneSelectedEmailHash[field][emailInfo.email];
+        }
+      })
+      onChangeSelectedEmailHash(cloneSelectedEmailHash);
+
+      if(foundDepartmentValueIndex === -1){
+        if(selectedEmployerModalList.length !== 0){
+          method.setValue(
+            `${field}2`,
+            [
+              ...currValue,
+              {
+                id: selectedDepartment.data.id,
+                isGroup: true,
+                name: selectedDepartment.data.name,
+                data: [...selectedEmployerModalList],
+              }
+            ]
+          )
+        }
+      } else {
+        if(selectedEmployerModalList.length === 0) {
+          console.log(foundDepartmentValueIndex);
+          // currValue.splice(foundDepartmentValueIndex, 1);
+        }
+        else {
+          currValue[foundDepartmentValueIndex].data = [...selectedEmployerModalList];
+        }
+        method.setValue(`${field}2`, currValue);
+      }
+    }
+    setSelectedDepartment(undefined);
+    setSelectedEmployerModalList([])
+  }
+
+  const handleDeleteDepartmentOnInput = (option: AutoCompleteGroupValueTypes, field: EmailComposeEmailFieldNames) => {
+    const cloneSelectedEmailHash = {...selectedEmailHash};
+    option.data.forEach(email => {
+      delete cloneSelectedEmailHash[field][email];
+    })
+
+    onChangeSelectedEmailHash(cloneSelectedEmailHash);
+  }
+
   const handleSubmit = (values: EmailComposeFields) => {
     onSendEmail({ ...values, sendAt: selectedDate });
   };
@@ -338,12 +481,19 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
     <>
       <motion.div animate={ringAnimationControl} transition={{ duration: 0.2 }}>
         <EmailCompose2
+          selectedDepartment={selectedDepartment}
+          selectedEmployerEmailList={selectedEmployerModalList}
           isSubmitting={isEmailSending}
           inputContactBlocks={inputContactBlocks}
+          isOpenSelectEmployersModal={Boolean(selectedDepartment)}
           method={method}
           attachFiles={attachFiles}
           isFullScreen={isFullScreen}
           isShowCCForm={isShowCCForm}
+          selectEmployersModalRows={convertedSelectEmployersModalRows}
+          toOptions={convertedToOptions}
+          ccOptions={convertedCcOptions}
+          bccOptions={convertedBccOptions}
           isShowCalendarModal={isShowCalendarModal}
           isOpenCalendarSelect={isOpenCalendarSelect}
           hashtagOptions={convertedHashtagOptions}
@@ -376,6 +526,12 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
           onUseTemplateClick={() => {
             setIsOpenTemplateModal(true);
           }}
+          onCloseSelectEmployersModal={() => setSelectedDepartment(undefined)}
+          onDepartmentClick={handleDepartmentClick}
+          onSelectEmployersChange={handleSelectedEmployersChange}
+          onConfirmSelectEmployersModalClick={handleConfirmSelectEmployersModalClick}
+          onSelectedDepartmentClick={handleDepartmentClick}
+          onDeleteDepartmentOnInput={handleDeleteDepartmentOnInput}
         />
       </motion.div>
       <ModalBase

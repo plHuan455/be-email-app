@@ -1,3 +1,4 @@
+import { DataGrid, GridColDef, GridValueGetterParams } from '@mui/x-data-grid';
 import TableViewIcon from '@mui/icons-material/TableView';
 import SendIcon from '@mui/icons-material/Send';
 import AccessTimeIcon from '@mui/icons-material/AccessTime';
@@ -18,7 +19,7 @@ import CustomButton from '@components/atoms/CustomButton';
 import UseTemplateButton from '@components/atoms/UseTemplateButton';
 import { UserInfo } from '@components/organisms/Email/Interface';
 import { Controller, FormProvider, UseFormReturn } from 'react-hook-form';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import ModalBase from '@components/atoms/ModalBase';
 import DateTimePicker from '@components/atoms/DateTimePicker';
 import dayjs, { Dayjs } from 'dayjs';
@@ -46,14 +47,22 @@ import {
   InputContactBlock,
   useAutoCompleteReceive,
 } from '@components/molecules/Autocomplete';
+import AutoCompleteGroup, {
+  AutoCompleteGroupValueTypes,
+} from '@components/molecules/AutoCompleteGroup';
 
 export interface CustomFile extends File {
   percentage: number;
 }
 
+export type EmailComposeEmailFieldNames = 'to' | 'cc' | 'bcc';
+
 export interface EmailComposeFields {
+  to2: AutoCompleteGroupValueTypes[];
   to: InputContactBlock[];
+  cc2: AutoCompleteGroupValueTypes[];
   cc: InputContactBlock[];
+  bcc2: AutoCompleteGroupValueTypes[];
   bcc: InputContactBlock[];
   contactBlock: InputContactBlock[];
   attachFiles: {
@@ -71,15 +80,31 @@ export interface EmailComposeFields {
 //   name: string;
 // }
 
+export interface EmailComposeSelectedDepartmentTypes {
+  field: EmailComposeEmailFieldNames;
+  data: {
+    id: number;
+    name: string;
+    emailInfo: { name: string; email: string; id: number }[];
+  };
+}
+
 interface EmailComposeProps {
   inputContactBlocks: InputContactBlock[];
   method: UseFormReturn<EmailComposeFields>;
   index?: number;
   isSubmitting?: boolean;
+  isOpenSelectEmployersModal?: boolean;
   isFullScreen?: boolean;
+  selectedDepartment?: EmailComposeSelectedDepartmentTypes;
+  selectedEmployerEmailList: string[];
   isShowCCForm?: boolean;
   attachFiles: (File | undefined)[];
   hashtagOptions: HashtagOptionTypes[];
+  toOptions: AutoCompleteGroupValueTypes[];
+  bccOptions: AutoCompleteGroupValueTypes[];
+  ccOptions: AutoCompleteGroupValueTypes[];
+  selectEmployersModalRows: { identify: string; email: string; id: string }[];
   selectedDate?: Dayjs | null;
   isShowCalendarModal?: boolean;
   isOpenCalendarSelect?: boolean;
@@ -98,6 +123,21 @@ interface EmailComposeProps {
   onSetTimeCancel?: () => void;
   onSubmit: (values: EmailComposeFields) => void;
   onUseTemplateClick?: () => void;
+  onDepartmentClick?: (
+    option: AutoCompleteGroupValueTypes,
+    field: EmailComposeEmailFieldNames,
+  ) => void;
+  onSelectEmployersChange?: (emails: string[]) => void;
+  onCloseSelectEmployersModal?: () => void;
+  onConfirmSelectEmployersModalClick?: () => void;
+  onSelectedDepartmentClick?: (
+    option: AutoCompleteGroupValueTypes,
+    field: EmailComposeEmailFieldNames,
+  ) => void;
+  onDeleteDepartmentOnInput?: (
+    option: AutoCompleteGroupValueTypes,
+    field: EmailComposeEmailFieldNames,
+  ) => void;
 }
 
 const EmailCompose2: React.FC<EmailComposeProps> = ({
@@ -106,10 +146,17 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
   index,
   isSubmitting = false,
   isFullScreen = false,
+  isOpenSelectEmployersModal = false,
   selectedDate,
   isShowCCForm = false,
   isShowCalendarModal = false,
   isOpenCalendarSelect = false,
+  selectedDepartment,
+  selectedEmployerEmailList = [],
+  selectEmployersModalRows,
+  toOptions,
+  ccOptions,
+  bccOptions,
   calendarValue,
   tabBarColor,
   onMinimizeClick,
@@ -126,6 +173,12 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
   onSetTimeAccept,
   onSetTimeCancel,
   onUseTemplateClick,
+  onDepartmentClick,
+  onCloseSelectEmployersModal,
+  onSelectEmployersChange,
+  onConfirmSelectEmployersModalClick,
+  onSelectedDepartmentClick,
+  onDeleteDepartmentOnInput,
 }) => {
   // redux
   const defaultSignId = useSelector(getDefaultSignId);
@@ -137,13 +190,14 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
     setOptions(inputContactBlocks);
   }, [inputContactBlocks]);
 
-  const [toData, setToData] = useState([]);
-  const [ccData, setCcData] = useState([]);
-  const [bccData, setBccData] = useState([]);
-
   // react hooks
   const fileInputRef = useRef<HTMLInputElement>(null);
   const composeScrollRef = useRef<HTMLDivElement>(null);
+
+  const columns: GridColDef[] = [
+    { field: 'identify', headerName: 'Identify', flex: 1 },
+    { field: 'email', headerName: 'Email', flex: 1 },
+  ];
 
   // functions
   const handleAttachFileClick = () => {
@@ -151,46 +205,6 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
       fileInputRef.current.click();
     }
   };
-
-  const { to, cc, bcc, onUpdate } = useAutoCompleteReceive({
-    options: inputContactBlocks,
-    fields: ['to', 'cc', 'bcc'] as const,
-    filterFunc: (field) => (option) => {
-      const employees = option.subMenu;
-
-      // Nếu là mail
-      if (!employees) {
-        return (option.field === field && option.isSelected) || !option.isSelected;
-      }
-
-      if (employees.length === 0) return true;
-
-      let isSomeEmploySelected = false;
-      let isSomeEmployEqualField = false;
-
-      const isFullEmploySelected = employees.every((employ) => {
-        if (employ.isSelected) isSomeEmploySelected = true;
-        if (employ.field === field) isSomeEmployEqualField = true;
-        return employ.isSelected;
-      });
-
-      // Nếu tất cả employ được chọn
-      if (isFullEmploySelected) {
-        // Nếu có employ thuộc field => return true
-        // Nếu không có employ thuộc filed => return false
-        return isSomeEmployEqualField;
-      }
-
-      // Nếu có ít nhất 1 employ được chọn => return true
-      // Nếu không có employ được chọn => return true
-      // Còn lại => return false
-      return isSomeEmploySelected || !isFullEmploySelected;
-    },
-  });
-
-  React.useEffect(() => {
-    onUpdate();
-  }, [toData, ccData, bccData, options]);
 
   return (
     <Box className="t-emailCompose w-full h-full py-10 mt-4">
@@ -211,46 +225,89 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
               onCloseClick={onCloseEmail}
             />
             <Box className="bg-white flex-1 flex flex-col" ref={composeScrollRef}>
-              <Box className="px-9 py-10 pt-0 flex-1 flex flex-col">
-                <Controller
-                  name="to"
-                  render={({ field: { value, onChange } }) => {
-                    return (
-                      <EmailComposeFormGroup
-                        classNameContent="flex items-center justify-between"
-                        label="To :">
-                        <AutoCompleteReceive
-                          className="flex-1"
-                          options={to.options}
-                          name="to"
+              <Box className="px-9 py-10 pt-2 flex-1 flex flex-col">
+                <EmailComposeFormGroup
+                  className="flex items-center"
+                  classNameContent="flex items-center justify-between"
+                  label="To :">
+                  <Controller
+                    name="to2"
+                    render={({ field: { value, onChange } }) => (
+                      <Box sx={{ flexGrow: 1 }}>
+                        <AutoCompleteGroup
                           value={value}
-                          onChange={(v) => {
-                            console.log(v);
-                            onChange(v);
-                            method.setValue(
-                              'contactBlock',
-                              Array.from(new Set([...inputContactBlocks, ...v])),
-                            );
+                          options={toOptions}
+                          autoAddOptionMatchRegex={emailRegex}
+                          onGroupClick={(e, option) => {
+                            if (option.id && option.isGroup) {
+                              onDepartmentClick && onDepartmentClick(option, 'to');
+                            }
                           }}
-                          onChangeOptions={(option) => {
-                            setOptions((options) => {
-                              return [...options, option];
-                            });
-                          }}
+                          onChange={onChange}
+                          onChipClick={(option) =>
+                            onSelectedDepartmentClick &&
+                            onSelectedDepartmentClick(option, 'to')
+                          }
+                          onChipDelete={(option) =>
+                            onDeleteDepartmentOnInput &&
+                            option.isGroup &&
+                            onDeleteDepartmentOnInput(option, 'to')
+                          }
                         />
-                        <span
-                          className={classNames(
-                            'flex items-center',
-                            'text-[#7E7E7E] text-[14px] border rounded-md p-2 py-1 cursor-pointer',
-                            isShowCCForm && 'font-bold border-2',
-                          )}
-                          onClick={onCCButtonClick}>
-                          Cc,Bcc
-                        </span>
-                      </EmailComposeFormGroup>
-                    );
-                  }}
-                />
+                      </Box>
+                    )}
+                  />
+                  <span
+                    className={classNames(
+                      'flex items-center',
+                      'text-[#7E7E7E] text-[14px] border rounded-md p-2 py-1 cursor-pointer',
+                      isShowCCForm && 'font-bold border-2',
+                    )}
+                    onClick={onCCButtonClick}>
+                    Cc,Bcc
+                  </span>
+                  <ModalBase
+                    isOpen={isOpenSelectEmployersModal}
+                    title="Select employers"
+                    submitLabel=""
+                    onClose={onCloseSelectEmployersModal}>
+                    <Box sx={{ width: '80vw' }}>
+                      <Typography sx={{ py: rem(4) }}>
+                        {selectedDepartment?.data.name}
+                      </Typography>
+                      <DataGrid
+                        sx={{ height: '50vh' }}
+                        rows={selectEmployersModalRows}
+                        columns={columns}
+                        checkboxSelection
+                        hideFooter
+                        selectionModel={selectedEmployerEmailList}
+                        onSelectionModelChange={(emails) => {
+                          onSelectEmployersChange &&
+                            onSelectEmployersChange(emails as string[]);
+                        }}
+                      />
+                      <Box
+                        display="flex"
+                        justifyContent="flex-end"
+                        sx={{ mt: rem(8) }}>
+                        <Button
+                          sx={{
+                            backgroundColor: '#dc3545',
+                            '&:hover': { backgroundColor: '#bf192a' },
+                          }}
+                          onClick={onCloseSelectEmployersModal}>
+                          Cancel
+                        </Button>
+                        <Button
+                          sx={{ ml: rem(20) }}
+                          onClick={onConfirmSelectEmployersModalClick}>
+                          OK
+                        </Button>
+                      </Box>
+                    </Box>
+                  </ModalBase>
+                </EmailComposeFormGroup>
                 {isShowCCForm && (
                   <Box className="mb-2">
                     <EmailComposeFormGroup
@@ -258,41 +315,31 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                       label="Cc:"
                       isHaveBorderBottom={true}>
                       <Controller
-                        name="cc"
+                        name="cc2"
                         render={({ field: { value, onChange } }) => (
-                          // <AutoCompleteReceive
-                          //   forField={'cc'}
-                          //   value={ccValue}
-                          //   data={ccData}
-                          //   defaultValue={value}
-                          //   onChangeValue={(v) => {
-                          //     onChange(v);
-                          //     setCcValue(v);
-                          //     update();
-                          //     method.setValue(
-                          //       'contactBlock',
-                          //       Array.from(new Set([...inputContactBlocks, ...v])),
-                          //     );
-                          //   }}
-                          // />
-                          <AutoCompleteReceive
-                            options={cc.options}
-                            name="cc"
-                            value={value}
-                            onChange={(v) => {
-                              onChange(v);
-                              console.log(v);
-                              method.setValue(
-                                'contactBlock',
-                                Array.from(new Set([...inputContactBlocks, ...v])),
-                              );
-                            }}
-                            onChangeOptions={(option) => {
-                              setOptions((options) => {
-                                return [...options, option];
-                              });
-                            }}
-                          />
+                          <Box sx={{ flexGrow: 1 }}>
+                            <AutoCompleteGroup
+                              value={value}
+                              options={ccOptions}
+                              autoAddOptionMatchRegex={emailRegex}
+                              onGroupClick={(e, option) => {
+                                if (option.id && option.isGroup) {
+                                  onDepartmentClick &&
+                                    onDepartmentClick(option, 'cc');
+                                }
+                              }}
+                              onChange={onChange}
+                              onChipClick={(option) =>
+                                onSelectedDepartmentClick &&
+                                onSelectedDepartmentClick(option, 'cc')
+                              }
+                              onChipDelete={(option) =>
+                                onDeleteDepartmentOnInput &&
+                                option.isGroup &&
+                                onDeleteDepartmentOnInput(option, 'cc')
+                              }
+                            />
+                          </Box>
                         )}
                       />
                     </EmailComposeFormGroup>
@@ -301,59 +348,34 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                       label="Bcc:"
                       isHaveBorderBottom={true}>
                       <Controller
-                        name="bcc"
+                        name="bcc2"
                         render={({ field: { value, onChange } }) => (
-                          // <AutoCompleteReceive
-                          //   forField={'bcc'}
-                          //   value={bccValue}
-                          //   data={bccData}
-                          //   defaultValue={value}
-                          //   onChangeValue={(v) => {
-                          //     onChange(v);
-                          //     setBccValue(v);
-                          //     update();
-                          //     method.setValue(
-                          //       'contactBlock',
-                          //       Array.from(new Set([...inputContactBlocks, ...v])),
-                          //     );
-                          //   }}
-                          // />
-                          <AutoCompleteReceive
-                            options={bcc.options}
-                            name="bcc"
-                            value={value}
-                            onChange={(v) => {
-                              onChange(v);
-                              method.setValue(
-                                'contactBlock',
-                                Array.from(new Set([...inputContactBlocks, ...v])),
-                              );
-                            }}
-                            onChangeOptions={(option) => {
-                              setOptions((options) => {
-                                return [...options, option];
-                              });
-                            }}
-                          />
+                          <Box sx={{ flexGrow: 1 }}>
+                            <AutoCompleteGroup
+                              value={value}
+                              options={ccOptions}
+                              autoAddOptionMatchRegex={emailRegex}
+                              onGroupClick={(e, option) => {
+                                if (option.id && option.isGroup) {
+                                  onDepartmentClick &&
+                                    onDepartmentClick(option, 'bcc');
+                                }
+                              }}
+                              onChange={onChange}
+                              onChipClick={(option) =>
+                                onSelectedDepartmentClick &&
+                                onSelectedDepartmentClick(option, 'bcc')
+                              }
+                              onChipDelete={(option) =>
+                                onDeleteDepartmentOnInput &&
+                                option.isGroup &&
+                                onDeleteDepartmentOnInput(option, 'bcc')
+                              }
+                            />
+                          </Box>
                         )}
                       />
                     </EmailComposeFormGroup>
-                    {/* <EmailComposeFormGroup
-                      className="py-1"
-                      label="From:"
-                      isHaveBorderBottom={true}>
-                      <Controller
-                        name="from"
-                        render={({ field: { value } }) => (
-                          <AutoCompleteReceive
-                            value={[]}
-                            data={[]}
-                            defaultValue={[]}
-                            isReadOnly={true}
-                          />
-                        )}
-                      />
-                    </EmailComposeFormGroup> */}
                   </Box>
                 )}
 

@@ -42,7 +42,7 @@ const SingleAvatar: React.FC<AvatarProps> = ({
       sx: {
         bgcolor: stringToColor(name),
       },
-      children: `${name}`,
+      children: `${name[0]}`,
     };
   }
 
