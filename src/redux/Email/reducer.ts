@@ -398,7 +398,6 @@ const EmailSlice = createSlice({
       state.minimizeEmailList[foundMinimizeEmailIndex] = {
         ...state.minimizeEmailList[foundMinimizeEmailIndex],
         id: action.payload.id,
-        cacheId: undefined,
       };
       return state;
     },
