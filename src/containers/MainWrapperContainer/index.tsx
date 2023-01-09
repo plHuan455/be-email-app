@@ -84,8 +84,11 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
   const method = useForm<EmailComposeFields>({
     defaultValues: {
       contactBlock: [],
-      to: [],
+      to2:[],
+      to:[],
+      cc2: [],
       cc: [],
+      bcc2: [],
       bcc: [],
       subject: '',
       content: getEditorStateFormHtmlString(),
