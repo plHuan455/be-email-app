@@ -415,8 +415,9 @@ const Email: React.FC<Props> = ({
       {/* TODO: REMOVE THIS CODE WHEN HAVE API PAGE LIMIT*/}
       {fakeLoading && <EmailMessEmpty isLoading={fakeLoading} />}
       {convertedEmailList.map((email, index) => {
+        const { is_important, is_trash } = email;
         const status = email.status.toLowerCase();
-        const isEmployee = currRole?.startsWith('EMPLOYEE');
+        const isEmployee = currRole?.toUpperCase().startsWith('EMPLOYEE');
         const isReceiver = checkIsReceiveEmail(email.id);
 
         const isAdminTabMe = tabSearchParams === 'me' && !isEmployee;
@@ -442,21 +443,53 @@ const Email: React.FC<Props> = ({
             hiddenActions={
               isEmployee
                 ? {
-                    replyAll: ['draft', 'trash', 'declined'].includes(status),
-                    reply: ['draft', 'trash', 'declined'].includes(status),
-                    forward: ['draft', 'trash', 'declined'].includes(status),
-                    unread: !isReceiver || ['draft', 'trash'].includes(status),
-                    spam: !isReceiver || ['draft', 'trash'].includes(status),
+                    replyAll:
+                      is_trash ||
+                      is_important ||
+                      ['draft', 'trash', 'declined'].includes(status),
+                    reply:
+                      is_trash ||
+                      is_important ||
+                      ['draft', 'trash', 'declined'].includes(status),
+                    forward:
+                      is_trash ||
+                      is_important ||
+                      ['draft', 'trash', 'declined'].includes(status),
+                    unread:
+                      is_trash ||
+                      is_important ||
+                      !isReceiver ||
+                      ['draft', 'trash'].includes(status),
+                    spam:
+                      is_trash ||
+                      is_important ||
+                      !isReceiver ||
+                      ['draft', 'trash'].includes(status),
                   }
                 : isAdminTabMe
                 ? {
-                    replyAll: 1,
-                    reply: 1,
-                    forward: 1,
-                    unread: 1,
-                    spam: 1,
-                    delete: !['draft', 'trash'].includes(status),
-                    star: !['draft', 'trash'].includes(status),
+                    replyAll:
+                      is_trash ||
+                      is_important ||
+                      ['draft', 'trash', 'declined'].includes(status),
+                    reply:
+                      is_trash ||
+                      is_important ||
+                      ['draft', 'trash', 'declined'].includes(status),
+                    forward:
+                      is_trash ||
+                      is_important ||
+                      ['draft', 'trash', 'declined'].includes(status),
+                    unread:
+                      is_trash ||
+                      is_important ||
+                      !isReceiver ||
+                      ['draft', 'trash'].includes(status),
+                    spam:
+                      is_trash ||
+                      is_important ||
+                      !isReceiver ||
+                      ['draft', 'trash'].includes(status),
                   }
                 : true
             }

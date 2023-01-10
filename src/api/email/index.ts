@@ -56,6 +56,7 @@ export interface EmailResponse {
   send_at: string;
   created_at: string;
   is_important?: boolean;
+  is_trash?: boolean;
   email: {
     id: number;
     from: string;
@@ -118,7 +119,9 @@ export const EmailActions = async (params: {
 
 export const deleteAllWithIdList = async (ids: number[]) => {
   const url = `${API_EMAIL_USER}/action`;
-  const res = await Promise.all(ids.map((value) => updateEmailWithQuery(value, {is_trash: true})));
+  const res = await Promise.all(
+    ids.map((value) => updateEmailWithQuery(value, { is_trash: true })),
+  );
   return res;
 };
 
