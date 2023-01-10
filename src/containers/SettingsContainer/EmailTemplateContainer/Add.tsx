@@ -10,6 +10,7 @@ import { uploadFile } from "@api/uploadFile";
 import { addHttp, getHtmlStringFromEditorState } from "@utils/functions";
 import { createTemplateService } from "@api/template";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 
 interface AddEmailTemplateContainerProps {}
 
@@ -19,6 +20,8 @@ const addEmailTemplateSchema = yup.object({
 })
 
 const AddEmailTemplateContainer: React.FC<AddEmailTemplateContainerProps> = () => {
+  const navigate = useNavigate();
+
   const method = useForm<AddEmailTemplateFields>({
     defaultValues: {
       editor: EditorState.createEmpty(),
@@ -44,9 +47,10 @@ const AddEmailTemplateContainer: React.FC<AddEmailTemplateContainerProps> = () =
     },
     onSuccess: () => {
       setIsShowFormModal(false);
+      navigate('/setting/email-template');
     },
     onError: () => {
-      toast.error('Cant\'t create template')
+      toast.error('Cant\'t create template');
     }
   })
 
