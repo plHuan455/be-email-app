@@ -19,9 +19,16 @@ import { useCallback, useEffect, useState } from 'react';
 interface SubSidebarProps {
   menus: SubSidebarItem[];
   title: string;
+  headerBtnTitle?: string;
+  onClickCompose?: () => void;
 }
 
-const SubSidebar: React.FC<SubSidebarProps> = ({ title, menus }) => {
+const SubSidebar: React.FC<SubSidebarProps> = ({
+  title,
+  menus,
+  headerBtnTitle = 'Compose',
+  onClickCompose,
+}) => {
   const navigate = useNavigate();
 
   const [listSubNav, setListSubNav] = useState<any>();
@@ -127,11 +134,12 @@ const SubSidebar: React.FC<SubSidebarProps> = ({ title, menus }) => {
         }}>
         <EmailStatusHeader
           title={title}
-          buttonTitle="Add Contact"
+          buttonTitle={headerBtnTitle ?? ''}
           color="#827CFF"
           bgButtonColor="#554CFF"
-          isComposeButton={false}
+          isComposeButton={true}
           isSearch={false}
+          onClickCompose={onClickCompose}
         />
         <List>
           {listSubNav &&

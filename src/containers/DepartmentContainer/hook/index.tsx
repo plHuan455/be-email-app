@@ -34,7 +34,7 @@ export const useDepartmentManagement = () => {
 
   const [department, setDepartment] = useState(initDepartment);
 
-  const handleCancel = () => navigate('..');
+  const handleCancel = () => navigate(-1);
 
   return {
     navigate,

@@ -19,11 +19,11 @@ type Props = {
   beforeIcon?: React.ReactNode;
   isHasSlash?: boolean;
   isFullWidth?: boolean;
-  type?: 'submit' | 'button'
+  type?: 'submit' | 'button';
   onClick?: React.MouseEventHandler<HTMLButtonElement> | undefined;
 };
 
-const CustomButton = ({type = 'button', ...props}: Props) => {
+const CustomButton = ({ type = 'button', ...props }: Props) => {
   return (
     <ButtonBase
       type={type}
@@ -42,20 +42,22 @@ const CustomButton = ({type = 'button', ...props}: Props) => {
       }}
       onClick={props.onClick}>
       {props.isBeforeIcon && props.beforeIcon}
-      <Typography
-        component={'p'}
-        className={props.classNameLabel}
-        sx={{
-          flex: 1,
-          textAlign: 'center',
-          borderRight: `${props.isHasSlash ? '1px solid #fff' : 'none'}`,
-          fontSize: `${props.textSize ? props.textSize : 12}px`,
-          fontWeight: `${props.fontWeight ? props.fontWeight : 500}`,
-          lineHeight: `${props.textSize ? props.textSize : 12}px`,
-          paddingRight: '10px',
-        }}>
-        {props.label}
-      </Typography>
+      {props.label && (
+        <Typography
+          component={'p'}
+          className={props.classNameLabel}
+          sx={{
+            flex: 1,
+            textAlign: 'center',
+            borderRight: `${props.isHasSlash ? '1px solid #fff' : 'none'}`,
+            fontSize: `${props.textSize ? props.textSize : 12}px`,
+            fontWeight: `${props.fontWeight ? props.fontWeight : 500}`,
+            lineHeight: `${props.textSize ? props.textSize : 12}px`,
+            paddingRight: '10px',
+          }}>
+          {props.label}
+        </Typography>
+      )}
       {props.isAfterIcon && props.afterIcon}
     </ButtonBase>
   );

@@ -24,6 +24,7 @@ type Props = {
   bgButtonColor: string;
   isSearch?: boolean;
   isComposeButton?: boolean;
+  onClickCompose?: () => void;
 };
 
 const EmailStatusHeader: React.FC<Props> = ({
@@ -33,12 +34,13 @@ const EmailStatusHeader: React.FC<Props> = ({
   isComposeButton,
   color,
   bgButtonColor,
+  onClickCompose,
 }) => {
   const navigate = useNavigate();
   const { onNewComposeClick } = useContext(EmailComposeContext);
 
   const handleComposeEmail = useCallback(() => {
-    onNewComposeClick();
+    onClickCompose ? onClickCompose() : onNewComposeClick();
   }, [onNewComposeClick]);
 
   return (

@@ -48,7 +48,12 @@ const Manager = () => {
         {isLoadingQueryData ? (
           <Loading isLoading={isLoadingQueryData} />
         ) : (
-          <SubSidebar menus={menus} title="Department" />
+          <SubSidebar
+            menus={menus}
+            title="Department"
+            headerBtnTitle=""
+            onClickCompose={() => navigate(`${ROOT_NAVIGATE}/add`)}
+          />
         )}
       </Layout.ASide>
       <Outlet />
