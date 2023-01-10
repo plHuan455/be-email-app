@@ -135,7 +135,7 @@ const EmailTabsSecData: EmailTabs[] = [
 // const hashtagTabs:
 
 const EmailStatusBar = (props: Props) => {
-  const hashtagTabs = useAppSelector(state => state.email.privateHashtags);
+  const hashtagTabs = useAppSelector((state) => state.email.privateHashtags);
 
   const [isCreateHashTag, setIsCreateHashTag] = useState<boolean>(false);
   const [newHashTagValue, setNewHashTagValue] = useState<string>('');
@@ -173,7 +173,7 @@ const EmailStatusBar = (props: Props) => {
             color: '#4BAAA2',
           }));
 
-        dispatch(setHashtags(privHashTagData))
+        dispatch(setHashtags(privHashTagData));
         // setHashtagTabs(privHashTagData);
         dispatch(setPrivateHashtag(privHashTagData));
 
@@ -244,7 +244,7 @@ const EmailStatusBar = (props: Props) => {
         color: '#4BAAA2',
       };
       // setHashtagTabs((prevState) => [...prevState, newValue]);
-      dispatch(setHashtags([...hashtagTabs, newValue]))
+      dispatch(setHashtags([...hashtagTabs, newValue]));
       setIsCreateHashTag(false);
       setNewHashTagValue('');
       return toast.success('Create hashtag successful!');

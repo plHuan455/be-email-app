@@ -444,52 +444,30 @@ const Email: React.FC<Props> = ({
               isEmployee
                 ? {
                     replyAll:
-                      is_trash ||
-                      is_important ||
-                      ['draft', 'trash', 'declined'].includes(status),
+                      is_trash || ['draft', 'trash', 'declined'].includes(status),
                     reply:
-                      is_trash ||
-                      is_important ||
-                      ['draft', 'trash', 'declined'].includes(status),
+                      is_trash || ['draft', 'trash', 'declined'].includes(status),
                     forward:
-                      is_trash ||
-                      is_important ||
-                      ['draft', 'trash', 'declined'].includes(status),
+                      is_trash || ['draft', 'trash', 'declined'].includes(status),
                     unread:
-                      is_trash ||
-                      is_important ||
-                      !isReceiver ||
-                      ['draft', 'trash'].includes(status),
+                      is_trash || !isReceiver || ['draft', 'trash'].includes(status),
                     spam:
-                      is_trash ||
-                      is_important ||
-                      !isReceiver ||
-                      ['draft', 'trash'].includes(status),
+                      is_trash || !isReceiver || ['draft', 'trash'].includes(status),
                   }
                 : isAdminTabMe
                 ? {
                     replyAll:
-                      is_trash ||
-                      is_important ||
-                      ['draft', 'trash', 'declined'].includes(status),
+                      is_trash || ['draft', 'trash', 'declined'].includes(status),
                     reply:
                       is_trash ||
                       is_important ||
                       ['draft', 'trash', 'declined'].includes(status),
                     forward:
-                      is_trash ||
-                      is_important ||
-                      ['draft', 'trash', 'declined'].includes(status),
+                      is_trash || ['draft', 'trash', 'declined'].includes(status),
                     unread:
-                      is_trash ||
-                      is_important ||
-                      !isReceiver ||
-                      ['draft', 'trash'].includes(status),
+                      is_trash || !isReceiver || ['draft', 'trash'].includes(status),
                     spam:
-                      is_trash ||
-                      is_important ||
-                      !isReceiver ||
-                      ['draft', 'trash'].includes(status),
+                      is_trash || !isReceiver || ['draft', 'trash'].includes(status),
                   }
                 : true
             }

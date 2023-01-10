@@ -105,9 +105,6 @@ const ModalEmailList: React.FC<Props> = ({
   const [value, setValue] = React.useState(0);
   const [selectedUserId, setSelectedUserId] = useState<number>();
   const [userEmails, setUserEmail] = useState<CatalogTabResponse[]>([]);
-  const [userAllEmails, setUserAllEmail] = useState<CatalogTabResponse[]>();
-
-  const { EmailsList } = useSelector((state: RootState) => state.email);
 
   const locate = useLocation();
   const pathName = locate.pathname;

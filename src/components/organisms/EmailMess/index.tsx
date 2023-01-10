@@ -374,8 +374,6 @@ const EmailMess: React.FC<Props> = ({
     else return null;
   }, [sentAt, approveAt, emailData.status, currRole]);
 
-  console.log(emailData.status);
-
   const _renderStatusLayer = useMemo(() => {
     return (
       <EmailForward
