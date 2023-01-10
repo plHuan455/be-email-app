@@ -1,35 +1,28 @@
-import { motion, useAnimation, useAnimationControls } from 'framer-motion';
+import { motion, useAnimationControls } from 'framer-motion';
 import EmailCompose2, {
   EmailComposeEmailFieldNames,
   EmailComposeFields,
   EmailComposeSelectedDepartmentTypes,
 } from '@components/templates/EmailCompose2';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useCallback, useContext, useEffect, useId, useMemo, useState } from 'react';
+import { useQuery,  } from '@tanstack/react-query';
+import { useContext, useEffect, useMemo, useState } from 'react';
 import utc from 'dayjs/plugin/utc';
 import dayjs, { Dayjs } from 'dayjs';
-import { useAppDispatch, useAppSelector } from '@redux/configureStore';
+import { useAppSelector } from '@redux/configureStore';
 import {
   getEditorStateFormHtmlString,
-  getHtmlStringFromEditorState,
   rem,
 } from '@utils/functions';
-import AlertDialog, { useAlertDialog } from '@components/molecules/AlertDialog';
 dayjs.extend(utc);
-import { useNavigate } from 'react-router-dom';
-import useAutoStoreEmail from '../../hooks/Email/useAutoStoreEmail';
-import { UserInfo, UserReceiveInfo } from '@components/organisms/Email/Interface';
-import { InputContactBlock } from '@components/molecules/Autocomplete';
 import { EmailComposeContext } from '@containers/MainWrapperContainer';
 import { getDepartments } from '@api/deparment';
-import { Box, Button } from '@mui/material';
+import { Box } from '@mui/material';
 import ModalBase from '@components/atoms/ModalBase';
 import EmailTemplateList, {
   EmailTemplateItem,
 } from '@components/templates/EmailTemplateList';
-import { emailTemplateList } from '@assets/dummyData/emaiTemplate';
 import { AutoCompleteGroupValueTypes } from '@components/molecules/AutoCompleteGroup';
-import { departmentListDummy } from '@assets/dummyData/departmnetDummy';
+import { getTemplateListService } from '@api/template';
 dayjs.extend(utc);
 
 const currentUserEmail = localStorage.getItem('current_email');
@@ -76,15 +69,6 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
 
   const [isShowCalendarModal, setIsShowCalendarModal] = useState<boolean>(false);
 
-  // const { mutate: deleteEmailMutate } = useMutation({
-  //   mutationKey: ['email-compose-delete-email'],
-  //   mutationFn: deleteEmail,
-  // });
-
-  // const [inputContactBlocks, setInputContactBlocks] = useState<InputContactBlock[]>(
-  //   [],
-  // );
-
   // API
   const { data: departmentData, isLoading } = useQuery({
     queryKey: ['email-compose-get-departments'],
@@ -93,8 +77,25 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
       return res.data;
     },
   });
+
+  const { data: templateData, isLoading: isTemplateDataGetting } = useQuery({
+    queryKey: ['email-template-get'],
+    queryFn: getTemplateListService,
+  })
+
+  const convertedEmailTemplateList = useMemo<EmailTemplateItem[] | undefined>(() => {
+    return templateData?.data.map(template => ({
+      id: template.id,
+      description: template.describe,
+      htmlString: template.text_html,
+      name: template.title,
+      imgSrc: ''
+    }))
+  }, [templateData]) 
+
   // const departmentData = departmentListDummy;
 
+  // // Convert data
   const {
     convertedToOptions = [],
     convertedCcOptions = [],
@@ -186,197 +187,12 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
     );
   }, [selectedDepartment]);
 
-  // useQuery(['getDepartments'], getDepartments, {
-  //   onSuccess: (res) => {
-  //     const inputContactBlocks: InputContactBlock[] = res.data.map(
-  //       (dept, index) => ({
-  //         id: index.toString(),
-  //         contact_name: dept?.name || '',
-  //         isSelected: false,
-  //         subMenu: (dept.users || []).map(
-  //           (user) =>
-  //             new UserReceiveInfo(
-  //               user.id,
-  //               user.avatar,
-  //               `${user.first_name} ${user.last_name}`,
-  //               user.email,
-  //               false,
-  //             ),
-  //         ),
-  //       }),
-  //     );
-
-  //     setInputContactBlocks(inputContactBlocks);
-  //     method.setValue('contactBlock', inputContactBlocks);
-  //   },
-  //   onError: (error) => {
-  //     console.log(error);
-  //   },
-  // });
-
-  // const { mutate: submitEmailComposeMutate, isLoading: isEmailComposeSubmitting } =
-  //   useMutation({
-  //     mutationKey: ['email-compose-submit'],
-  //     mutationFn: sendEmail,
-  //     onSuccess: (res) => {
-  //       toast.success('Email have been sent');
-  //       if (workingEmail.id !== undefined) {
-  //         deleteEmailMutate(workingEmail.id);
-  //       }
-  //       if (res?.data?.user_id)
-  //         navigate(`/emails/catalog/pending/${res.data.user_id}`);
-  //       queryClient.invalidateQueries({ queryKey: ['get-all-email-status'] });
-  //       method.reset();
-  //     },
-  //   });
-
-  // useEffect(() => {
-  //   if (!showMinimizeEmailId) return;
-  //   const foundMinimizeEmail = minimizeEmailList.find(
-  //     (value) => value.id === showMinimizeEmailId,
-  //   );
-  //   if (foundMinimizeEmail) {
-  //     method.setValue('to', foundMinimizeEmail.to ?? []);
-  //     method.setValue('cc', foundMinimizeEmail.cc ?? []);
-  //     method.setValue('bcc', foundMinimizeEmail.bcc ?? []);
-  //     method.setValue('subject', foundMinimizeEmail.subject ?? '');
-  //     method.setValue(
-  //       'content',
-  //       foundMinimizeEmail.content
-  //         ? getEditorStateFormHtmlString(foundMinimizeEmail.content ?? '')
-  //         : '',
-  //     );
-  //     method.setValue('sendAt', foundMinimizeEmail.sendAt ?? '');
-  //     method.setValue(
-  //       'attachFiles',
-  //       foundMinimizeEmail.attachFiles ?? { files: [], fileUrls: [] },
-  //     );
-  //     method.setValue('hashtags', foundMinimizeEmail?.hashtags ?? []);
-  //     setTabBarColor(foundMinimizeEmail?.color);
-  //   }
-  // }, [showMinimizeEmailId, minimizeEmailList, method]);
-
-  // useEffect(() => {
-  //   if (showMinimizeEmailId === undefined) {
-  //     method.reset();
-  //     setTabBarColor(undefined);
-  //   }
-  // }, [showMinimizeEmailId, method]);
-
-  // // Convert data
   const convertedHashtagOptions = useMemo(() => {
     return privateHashtags.map((value) => ({
       name: value.title,
       value: value.value,
     }));
   }, [privateHashtags]);
-
-  // // Handle functions
-  // const handleMinimizeClick = (id?: string) => {
-  //   if(minimizeEmailList.length > 2) {
-  //     toast.error('The minimized email limit is two');
-  //     return;
-  //   }
-
-  //   const values = method.getValues();
-  //   const cacheId = Date.now();
-  //   method.reset();
-
-  //   const newValue = {
-  //     ...values,
-  //     id: showMinimizeEmailId === undefined ? cacheId : showMinimizeEmailId,
-  //     content: values.content
-  //       ? draftToHtml(convertToRaw(values.content.getCurrentContent()))
-  //       : '',
-  //     color: tabBarColor ? tabBarColor : MinimizeEmailColor.getColor(),
-  //     attachFiles: values.attachFiles,
-  //     fileUrls: values.attachFiles.fileUrls,
-  //     cacheId: showMinimizeEmailId === undefined ? cacheId : showMinimizeEmailId
-  //   }
-  //   if(showMinimizeEmailId === undefined) {
-  //     dispatch(addMinimizeEmail(newValue));
-  //   }
-  //   else {
-  //     dispatch(updateMinimizeEmail({id: showMinimizeEmailId, value: newValue}))
-  //   }
-
-  //   onFieldsChange(values, showMinimizeEmailId, showMinimizeEmailId === undefined ? cacheId : undefined );
-
-  //   setIsFullScreen(false);
-  //   setTabBarColor(undefined);
-
-  //   dispatch(setShowMinimizeEmail(undefined));
-  //   dispatch(setWorkingEmail(undefined))
-
-  // };
-
-  // const handleSubmit = (values: EmailComposeFields) => {
-
-  //   if (
-  //     values.to.length === 0 &&
-  //     values.cc.length === 0 &&
-  //     values.bcc.length === 0
-  //   ) {
-  //     setAlertData("Can't send email", "Can't send email without receiver", () => {
-  //       onAlertDialogClose();
-  //     });
-  //     return;
-  //   }
-
-  //   console.log({
-  //     email: {
-  //       subject: values.subject,
-  //       to: values.to.reduce((curr: string[], next) => {
-  //         const mails = next.employeesList.map((employee) => employee.mail);
-
-  //         return [...curr, ...mails];
-  //       }, []),
-  //       text_html:
-  //         values.content === ''
-  //           ? ''
-  //           : draftToHtml(convertToRaw(values.content.getCurrentContent())),
-  //       bcc: values.bcc.map((value) => value.mail),
-  //       cc: values.cc.map((value) => value.mail),
-  //       attachs: (
-  //         values.attachFiles.fileUrls.filter(
-  //           (value) => value !== undefined,
-  //         ) as string[]
-  //       ).map((value) => ({ path: value })),
-  //       from: currentUserEmail ? currentUserEmail : '',
-  //     },
-  //     send_at: selectedDate
-  //       ? dayjs.utc(selectedDate).toISOString() ?? dayjs.utc().toISOString()
-  //       : dayjs.utc(selectedDate).toISOString(),
-  //     tags: values.hashtags.map(value => value.value)
-  //   });
-
-  //   submitEmailComposeMutate({
-  //     email: {
-  //       subject: values.subject,
-  //       to: values.to.reduce((curr: string[], next) => {
-  //         const mails = next.employeesList.map((employee) => employee.mail);
-
-  //         return [...curr, ...mails];
-  //       }, []),
-  //       text_html:
-  //         values.content === ''
-  //           ? ''
-  //           : draftToHtml(convertToRaw(values.content.getCurrentContent())),
-  //       bcc: values.bcc.map((value) => value.mail),
-  //       cc: values.cc.map((value) => value.mail),
-  //       attachs: (
-  //         values.attachFiles.fileUrls.filter(
-  //           (value) => value !== undefined,
-  //         ) as string[]
-  //       ).map((value) => ({ path: value })),
-  //       from: currentUserEmail ? currentUserEmail : '',
-  //     },
-  //     send_at: selectedDate
-  //       ? dayjs.utc(selectedDate).toISOString() ?? dayjs.utc().toISOString()
-  //       : dayjs.utc(selectedDate).toISOString(),
-  //     tags: values.hashtags.map(value => value.value)
-  //   });
-  // };
 
   const handleMinimizeEmailClick = () => {
     onMinimizeEmailClick();
@@ -492,8 +308,8 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
     onSendEmail({ ...values, sendAt: selectedDate });
   };
 
+  // Ring Animation
   const ringAnimationControl = useAnimationControls();
-
   useEffect(() => {
     if (triggerClearData) {
       ringAnimationControl.start({
@@ -567,12 +383,12 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
           setIsOpenTemplateModal(false);
           setSelectedTemplate(undefined);
         }}>
-        <Box sx={{ width: '80vw', minHeight: rem(100) }}>
+        <Box sx={{ width: '80vw', height: '75vh' }}>
           <EmailTemplateList
             selectedTemplateId={selectedTemplate?.id}
             onTemplateClick={handleApplyTemplate}
             isShowTemplateActionWhenHover={false}
-            emailTemplateList={emailTemplateList} //TODO: REPLACE THE TEMPLATE LIST WHEN HAVE API
+            emailTemplateList={convertedEmailTemplateList ?? []}
           />
         </Box>
       </ModalBase>

@@ -1,3 +1,4 @@
+import * as htmlToImage from "html-to-image";
 import draftToHtml from 'draftjs-to-html';
 import { convertToRaw, ContentState, EditorState, convertFromHTML } from 'draft-js';
 
@@ -25,6 +26,14 @@ export const addHttp = (url: string) => {
   if (url.match(/^https:\/\/|^http:\/\//g)) 
      return url;
   return `http://${url}`
+}
+
+export const createImgFileFromElement = async (querySelectorString: string, fileName: string): Promise<File | undefined>=> {
+  const element = document.querySelector(querySelectorString);
+    if(!element) return undefined;
+    const blob = await htmlToImage.toBlob(element as HTMLElement)
+    if(!blob) return undefined
+    return new File([blob], fileName.replace(/\s/g, '-'));
 }
 
 export const createCustomFiles = (files: FileList | File[] | null) => {

@@ -1,5 +1,5 @@
 import EmailTemplateCard from "@components/organisms/EmailTemplateCard";
-import { Typography, useTheme } from "@mui/material";
+import { Button, Typography, useTheme } from "@mui/material";
 import { Box } from "@mui/system"
 import { rem } from "@utils/functions";
 import { NavLink } from "react-router-dom";
@@ -17,7 +17,9 @@ interface EmailTemplateListProps {
   selectedTemplateId?: number;
   emailTemplateList: EmailTemplateItem[];
   onUpdateClick?: (templateId: number) => void;
+  onDeleteTemplate?: (templateId: number) => void;
   onTemplateClick?: (templateId: EmailTemplateItem) => void;
+  onEmptyAddTemplateClick?: () => void;
 }
 
 const EmailTemplateList: React.FC<EmailTemplateListProps> = ({
@@ -25,7 +27,9 @@ const EmailTemplateList: React.FC<EmailTemplateListProps> = ({
   selectedTemplateId,
   emailTemplateList,
   onUpdateClick,
+  onDeleteTemplate,
   onTemplateClick,
+  onEmptyAddTemplateClick,
 }) => {
   const theme = useTheme();
   return (
@@ -40,10 +44,13 @@ const EmailTemplateList: React.FC<EmailTemplateListProps> = ({
         sx={{margin: rem(-12), flexWrap: 'wrap'}}
       >
         {emailTemplateList.length === 0 && (
-          <Box sx={{py: rem(12), width: '100%'}}>
+          <Box sx={{py: rem(24), width: '100%'}} display="flex" alignItems="center"  justifyContent="center">
             <Typography textAlign="center">
-              There's is no template <NavLink to="/template/add" style={{color: '#554cff'}}>add template</NavLink>
+              There's is no template
             </Typography>
+            {Boolean(onEmptyAddTemplateClick) && <Button variant="text" sx={{color: '#554cff', padding: 0, ml: rem(4)}} onClick={() => onEmptyAddTemplateClick && onEmptyAddTemplateClick()}>
+              add template
+            </Button>}
           </Box>
         )}
         {emailTemplateList.map(value => (
@@ -66,6 +73,7 @@ const EmailTemplateList: React.FC<EmailTemplateListProps> = ({
               hoverLayerLabel={selectedTemplateId === value.id ? 'Selected' : 'Select'}
               description={value.description}
               onUpdateClick={() => {onUpdateClick && onUpdateClick(value.id)}}
+              onDeleteClick={() => {onDeleteTemplate && onDeleteTemplate(value.id)}}
               onClick={() => {onTemplateClick && onTemplateClick(value)}}
             />
           </Box>

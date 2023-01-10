@@ -6,6 +6,10 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import * as yup from 'yup';
 import { useMutation } from "@tanstack/react-query";
+import { uploadFile } from "@api/uploadFile";
+import { addHttp, getHtmlStringFromEditorState } from "@utils/functions";
+import { createTemplateService } from "@api/template";
+import { toast } from "react-toastify";
 
 interface AddEmailTemplateContainerProps {}
 
@@ -28,9 +32,21 @@ const AddEmailTemplateContainer: React.FC<AddEmailTemplateContainerProps> = () =
 
   const {mutate: createTemplateMutate, isLoading: isTemplateCreating} = useMutation({
     mutationKey: ['add-email-template-create'],
-    mutationFn: () => {
-      // TODO: STORE THUMP IMAGE AND CREATE TEMPLATE
-      return new Promise(()=>{})
+    mutationFn: async (params: {imgFile: File, name: string, htmlContent: string, description?: string}) => {
+      const imgUrl = await uploadFile(params.imgFile);
+      const res = await createTemplateService({
+        title: params.name,
+        describe: params.description ?? '',
+        text_html: params.htmlContent,
+        images:[{path: addHttp(imgUrl.data)}]
+      })
+      return res;
+    },
+    onSuccess: () => {
+      setIsShowFormModal(false);
+    },
+    onError: () => {
+      toast.error('Cant\'t create template')
     }
   })
 
@@ -47,26 +63,19 @@ const AddEmailTemplateContainer: React.FC<AddEmailTemplateContainerProps> = () =
   }
 
   const handleSubmit = async (values: AddEmailTemplateFields) => {
-    setIsShowFormModal(false);
+    // setIsShowFormModal(false);
 
     const element = document.querySelector('.public-DraftEditor-content > div');
     if(!element) return;
 
     htmlToImage
-      .toCanvas(element as HTMLElement)
+      .toBlob(element as HTMLElement)
       .then(async function(dataUrl) {
-        document.getElementById('root')?.appendChild(dataUrl);
-        // preView image
-        const image = dataUrl.toDataURL('image/png');
-
-        // TODO: ADD ARGUMENTS
-        createTemplateMutate();
-
-        // download image
-        // const link = document.createElement('a');
-        // link.download = 'image.png';
-        // link.href = image;
-        // link.click();
+        // // TODO: ADD ARGUMENTS
+        if(dataUrl) {
+          const file = new File([dataUrl], values.name.replace(/\s/g, '-'));
+          createTemplateMutate({imgFile: file, name: values.name, htmlContent: getHtmlStringFromEditorState(values.editor), description: values.description});
+        }
       })
       .catch(err => console.log(err))
   }
