@@ -231,9 +231,9 @@ const EmailMessContainerRef: React.ForwardRefRenderFunction<
     );
   };
 
-  const handleOnApprove = (data: EmailResponse) => (e) => {
+  const handleOnApprove = (data: EmailResponse) => {
     setIsOpenModal(true);
-  };
+  }
 
   const handleUndoEmail = () => {
     undoEmailMutate({ emailId: emailData.id });
@@ -293,7 +293,6 @@ const EmailMessContainerRef: React.ForwardRefRenderFunction<
     <Box ref={containerRef}>
       <EmailMess
         emailData={emailData}
-        onChangeStatus={onChangeStatus}
         onShowHistory={onShowHistory}
         type={type}
         userInfo={userInfo}
