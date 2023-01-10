@@ -27,7 +27,7 @@ const EmailTemplateContainer = () => {
       description: template.describe,
       htmlString: template.text_html,
       name: template.title,
-      imgSrc: ''
+      imgSrc: template.images[0]?.path ?? ''
     }))
   }, [templateData])
 
