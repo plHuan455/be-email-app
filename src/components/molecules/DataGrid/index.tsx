@@ -223,7 +223,7 @@ const DataTable: FC<DataTableProps> = (props) => {
   const { getHeaderGroups, getRowModel, getAllColumns } = tableState;
 
   return (
-    <Paper className="relative">
+    <Paper className="relative h-full">
       <CssBaseline />
       <TableToolbar
         searchComponent={

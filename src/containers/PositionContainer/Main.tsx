@@ -49,7 +49,7 @@ const PositionContainer = () => {
   };
 
   return (
-    <div className="px-4">
+    <div className="px-4 flex-1 pb-4">
       <PageCrudData
         disabledRowOnClick={false}
         api={`/system/position/department/${params.idDepartment}`}

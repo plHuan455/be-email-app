@@ -50,7 +50,7 @@ const SubSidebar: React.FC<SubSidebarProps> = ({ title, menus }) => {
     });
 
     setListSubNav(l);
-  }, []);
+  }, [menus]);
 
   const hanldeMenuItemClick = useCallback(
     (data: any) => {

@@ -1,5 +1,9 @@
 import ApiClient from '@api/ApiClient';
-import { DEPARTMENT_API_URL, POSITION_API } from '@constants/departmentAPI';
+import {
+  DEPARTMENT_API_URL,
+  POSITION_API,
+  DEPARTMENT_API,
+} from '@constants/departmentAPI';
 import { AxiosResponse } from 'axios';
 import {
   CreateDepartmentParams,
@@ -35,6 +39,14 @@ export const addPositionInDepartment = async (params: {
 }): Promise<AxiosResponse<PositionResponse[]>> => {
   const url = `${POSITION_API}`;
   const res = await ApiClient.post(url, undefined, params);
+  return res.data;
+};
+
+export const getDepartmentsByRole = async (): Promise<
+  AxiosResponse<DepartmentResponse[]>
+> => {
+  const url = `${DEPARTMENT_API}`;
+  const res = await ApiClient.get(url);
   return res.data;
 };
 
