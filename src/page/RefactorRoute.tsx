@@ -187,58 +187,6 @@ export const sideBarRoutes: RouteObject[] = [
       ),
     ],
   },
-  {
-    path: '/setting',
-    element: <SettingPage />,
-    children: [
-      { path: '/setting/user-role', element: <SettingRoles /> },
-      { path: '/setting/blacklist', element: <BlackListPage /> },
-      {
-        path: '/setting/profile',
-        children: [
-          {
-            index: true,
-            path: '/setting/profile',
-            element: <UserProfileContainer />,
-          },
-          {
-            path: '/setting/profile/change-password',
-            element: <ChangePassword />,
-          },
-        ],
-      },
-      genCRUD(
-        {
-          path: '/setting/email-infomation',
-        },
-        {
-          index: <EmailInformationPage />,
-          add: <AddEmailInformationPage />,
-          edit: <EditEmailInformationPage />,
-        },
-      ),
-      genCRUD(
-        {
-          path: '/setting/email-template',
-        },
-        {
-          index: <EmailTemplatePage />,
-          add: <AddEmailTemplatePage />,
-          edit: <EditEmailTemplatePage />,
-        },
-      ),
-      genCRUD(
-        {
-          path: '/setting/signature',
-        },
-        {
-          index: <SignaturePage />,
-          add: <AddSignaturePage />,
-          edit: <EditSignaturePage />,
-        },
-      ),
-    ],
-  },
 ];
 
 export const declareRouter: RouteObject[] = [
@@ -250,6 +198,58 @@ export const declareRouter: RouteObject[] = [
         element: <Navigate to={'/emails'} replace={true} />,
       },
       ...sideBarRoutes,
+      {
+        path: '/setting',
+        element: <SettingPage />,
+        children: [
+          { path: '/setting/user-role', element: <SettingRoles /> },
+          { path: '/setting/blacklist', element: <BlackListPage /> },
+          {
+            path: '/setting/profile',
+            children: [
+              {
+                index: true,
+                path: '/setting/profile',
+                element: <UserProfileContainer />,
+              },
+              {
+                path: '/setting/profile/change-password',
+                element: <ChangePassword />,
+              },
+            ],
+          },
+          genCRUD(
+            {
+              path: '/setting/email-infomation',
+            },
+            {
+              index: <EmailInformationPage />,
+              add: <AddEmailInformationPage />,
+              edit: <EditEmailInformationPage />,
+            },
+          ),
+          genCRUD(
+            {
+              path: '/setting/email-template',
+            },
+            {
+              index: <EmailTemplatePage />,
+              add: <AddEmailTemplatePage />,
+              edit: <EditEmailTemplatePage />,
+            },
+          ),
+          genCRUD(
+            {
+              path: '/setting/signature',
+            },
+            {
+              index: <SignaturePage />,
+              add: <AddSignaturePage />,
+              edit: <EditSignaturePage />,
+            },
+          ),
+        ],
+      },
     ],
     errorElement: <ErrorBoundary />,
   },

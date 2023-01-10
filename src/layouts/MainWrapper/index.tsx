@@ -127,6 +127,12 @@ function MainWrapper({ children }: { children: React.ReactNode }) {
   const settingManager: Setting[] = [
     {
       id: 0,
+      label: 'Setting',
+      path: '/setting',
+      handleClick: handleChangePage('/setting/profile'),
+    },
+    {
+      id: 1,
       label: 'Profile',
       path: '/profile',
       handleClick: handleChangePage('/setting/profile'),
