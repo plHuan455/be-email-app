@@ -1,5 +1,6 @@
 import {
   Autocomplete,
+  AutocompleteRenderGetTagProps,
   Avatar,
   Box,
   Chip,
@@ -29,6 +30,106 @@ interface AutoCompleteGroupProps {
   onChipClick?: (option: AutoCompleteGroupValueTypes) => void;
   onChipDelete?: (option: AutoCompleteGroupValueTypes) => void;
 }
+
+interface AutoCompleteGroupTagsProps {
+  values: AutoCompleteGroupValueTypes[];
+  getTagProps: AutocompleteRenderGetTagProps;
+  onChipClick?: (option: AutoCompleteGroupValueTypes) => void;
+  onChipDelete?: (option: AutoCompleteGroupValueTypes) => void;
+}
+
+const AutoCompleteGroupTags: React.FC<AutoCompleteGroupTagsProps> = ({
+  values,
+  getTagProps,
+  onChipClick,
+  onChipDelete,
+}) => {
+  const [isShowMore, setIsShowMore] = useState<boolean>(false);
+  const cloneValue = [...values];
+
+  return (
+    <>
+      {cloneValue.splice(0, 2).map((option, index: number) => {
+        const props = getTagProps({ index });
+        return (
+          <Chip
+            variant="outlined"
+            icon={option.isGroup ? <HomeWorkIcon /> : undefined}
+            label={`${option.name}${
+              option.isGroup ? ` (${option.data.length})` : ''
+            }`}
+            {...props}
+            onDelete={(e) => {
+              props.onDelete(e);
+              onChipDelete && onChipDelete(option);
+            }}
+            sx={{
+              color: '#7061e2',
+              fontWeight: 600,
+              borderColor: '#7061e2',
+            }}
+            onClick={() => {
+              onChipClick && onChipClick(option);
+            }}
+          />
+        );
+      })}
+      {cloneValue.length > 0 && !isShowMore && (
+        <Chip
+          variant="outlined"
+          label={`${cloneValue.length} more receivers`}
+          sx={{
+            color: '#7061e2',
+            fontWeight: 600,
+            borderColor: '#7061e2',
+            cursor: 'pointer',
+          }}
+          onClick={() => setIsShowMore(true)}
+        />
+      )}
+      {cloneValue.length > 0 && isShowMore && (
+        <>
+          {cloneValue.map((option, index) => {
+            const props = getTagProps({ index });
+            return (
+              <Chip
+                variant="outlined"
+                icon={option.isGroup ? <HomeWorkIcon /> : undefined}
+                label={`${option.name}${
+                  option.isGroup ? ` (${option.data.length})` : ''
+                }`}
+                {...props}
+                onDelete={(e) => {
+                  props.onDelete(e);
+                  onChipDelete && onChipDelete(option);
+                }}
+                sx={{
+                  color: '#7061e2',
+                  fontWeight: 600,
+                  borderColor: '#7061e2',
+                }}
+                onClick={() => {
+                  onChipClick && onChipClick(option);
+                }}
+              />
+            );
+          })}
+          <Chip
+            variant="outlined"
+            label={`Hidden`}
+            sx={{
+              color: '#7061e2',
+              fontWeight: 600,
+              borderColor: '#7061e2',
+              cursor: 'pointer',
+            }}
+            onClick={() => setIsShowMore(false)}
+          />
+        </>
+      )}
+    </>
+  );
+};
 
 interface OptionItemProps {
   children: React.ReactNode;
@@ -137,33 +238,14 @@ const AutoCompleteGroup: React.FC<AutoCompleteGroupProps> = ({
             fontSize: rem(18),
           },
         }}
-        renderTags={(value, getTagProps) =>
-          value.map((option, index: number) => {
-            const props = getTagProps({ index });
-            return (
-              <Chip
-                variant="outlined"
-                icon={option.isGroup ? <HomeWorkIcon /> : undefined}
-                label={`${option.name}${
-                  option.isGroup ? ` (${option.data.length})` : ''
-                }`}
-                {...props}
-                onDelete={(e) => {
-                  props.onDelete(e);
-                  onChipDelete && onChipDelete(option);
-                }}
-                sx={{
-                  color: '#7061e2',
-                  fontWeight: 600,
-                  borderColor: '#7061e2',
-                }}
-                onClick={() => {
-                  onChipClick && onChipClick(option);
-                }}
-              />
-            );
-          })
-        }
+        renderTags={(value, getTagProps) => (
+          <AutoCompleteGroupTags
+            values={value}
+            getTagProps={getTagProps}
+            onChipClick={onChipClick}
+            onChipDelete={onChipDelete}
+          />
+        )}
         renderOption={(props, option) => {
           return (
             <MenuItem

@@ -48,6 +48,7 @@ const EmailForward: React.FC<Props> = ({
   });
 
   useEffect(() => {
+    method.reset();
     method.setValue('subject', `[Reply]${emailData.email.subject}`);
 
     const convertToAutoCompleteGroup = (values: string[]) => {
@@ -61,12 +62,15 @@ const EmailForward: React.FC<Props> = ({
     if (emailData.status === 'reply') {
       method.setValue('to', convertToAutoCompleteGroup([emailData.email.from]));
     }
-    if (emailData.status === 'replyAll')
-      method.setValue('cc', [
-        ...convertToAutoCompleteGroup(emailData.email.cc),
-        ...convertToAutoCompleteGroup(emailData.email.bcc),
-        ...convertToAutoCompleteGroup([emailData.email.from]),
+    if (emailData.status === 'replyAll') {
+      const convertArr = new Set([
+        ...(emailData.email.cc ?? []),
+        ...(emailData.email.to ?? []),
+        ...(emailData.email.bcc ?? []),
       ]);
+
+      method.setValue('cc', convertToAutoCompleteGroup(Array.from(convertArr)));
+    }
   }, [emailData]);
 
   const handleSendEmailReply = (values: EmailReplyInitialValue) => {
@@ -104,7 +108,7 @@ const EmailForward: React.FC<Props> = ({
             classNameContent="flex items-center justify-between"
             label="To :">
             <Controller
-              name="to"
+              name={`${emailData.status === 'reply' ? 'to' : 'cc'}`}
               render={({ field: { value, onChange } }) => (
                 <Box sx={{ flexGrow: 1 }}>
                   <AutoCompleteGroup
