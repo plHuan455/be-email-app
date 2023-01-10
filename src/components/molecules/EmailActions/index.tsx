@@ -156,8 +156,8 @@ interface Props {
   hiddenActions?: ActionListTypes;
   type: 'receive' | 'send';
   emailId?: number;
-  handleChangeStatus?: (status, id) => void;
-  emailIndex?: number;
+  // handleChangeStatus?: (status, id) => void;
+  // emailIndex?: number;
   onActionClick?: (action: ActionNameTypes) => void;
 }
 
@@ -165,7 +165,7 @@ const EmailActions: React.FC<Props> = ({
   emailId = 0,
   type,
   hiddenActions = {},
-  handleChangeStatus = (a, b) => {},
+  // handleChangeStatus = (a, b) => {},
   isImportant = false,
   isActiveClick = true,
   onActionClick,
@@ -182,7 +182,7 @@ const EmailActions: React.FC<Props> = ({
               className={`py-1.5 px-3 text-[14px] font-medium flex items-center hover:bg-slate-200 hover:cursor-pointer rounded p-2`}
               key={index}
               onClick={() =>{
-                isActiveClick && handleChangeStatus(currVal.icon, emailId)
+                // isActiveClick && handleChangeStatus(currVal.icon, emailId)
                 onActionClick && onActionClick(key as ActionNameTypes)
               }}>
               <RenderButtonIcon

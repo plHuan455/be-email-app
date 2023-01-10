@@ -11,7 +11,7 @@ import EmailActions, {
   ActionListTypes,
   ActionNameTypes,
 } from '@components/molecules/EmailActions';
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import EmailForward from '../EmailForward';
 import { attachs, EmailResponse } from '@api/email';
 import { UserInfo } from '../Email/Interface';
@@ -31,6 +31,7 @@ import { data } from 'autoprefixer';
 import EmailActionLayoutContainer, {
   useEmailActionLayout,
 } from '@containers/EmailActionsLayoutContainer';
+import useIntersectionObserver from '@hooks/useIntersectionObserver';
 export interface UserRead {
   name: string;
   time: string;
@@ -49,7 +50,7 @@ function createMarkup(htmlString) {
 interface Props {
   emailData: EmailResponse;
   userInfo: UserInfo;
-  onChangeStatus: (status: any, index: any) => void;
+  // onChangeStatus: (status: any, index: any) => void;
   onShowHistory: Function;
   type: 'receive' | 'send';
   isShowHeader?: boolean;
@@ -58,14 +59,16 @@ interface Props {
   index?: number;
   onUpdateHashtagClick?: (hashtags: HashtagTabs[]) => void;
 
-  onDecline: (data: EmailResponse) => (e: any) => void;
-  onApprove: (data: EmailResponse) => (e: any) => void;
+  onDecline: (data: EmailResponse) => void;
+  onApprove: (data: EmailResponse) => void;
   onEmployeeCancel: () => void;
   onUndoEmail: () => void;
   onApproveNow: () => void;
   onSendEmail: () => void;
   onContinueClick?: () => void;
   onActionsClick?: (action: ActionNameTypes) => void;
+  onInterSecting?: (entry: IntersectionObserverEntry) => void;
+  onUnInterSecting?: () => void;
 }
 
 export const attachsToAttachFiles: (attachs: attachs[]) => AttachFile[] = (
@@ -185,7 +188,7 @@ const EmailMess: React.FC<Props> = ({
   hiddenActions = true,
   isShowActions = false,
   index,
-  onChangeStatus,
+  // onChangeStatus,
   onUpdateHashtagClick,
 
   onDecline,
@@ -196,8 +199,10 @@ const EmailMess: React.FC<Props> = ({
   onSendEmail,
   onActionsClick,
   onContinueClick,
+  onInterSecting,
+  onUnInterSecting
 }) => {
-  const [searchParams] = useSearchParams();
+  const containerRef = useRef<HTMLDivElement>(null);
 
   const defaultStatus = useMemo(() => emailData.status, []);
   const [newHashtagList, setNewHashtagList] = useState<HashtagTabs[] | undefined>(
@@ -207,6 +212,15 @@ const EmailMess: React.FC<Props> = ({
 
   const sentAt = new Date(emailData.send_at);
   const approveAt = new Date(emailData.approve_at);
+
+  useIntersectionObserver(
+    containerRef,
+    (entry) => {
+      if (onInterSecting) onInterSecting(entry);
+    },
+    onUnInterSecting,
+  );
+  
 
   const cloneSendTo = [
     ...(emailData.email.to ?? []),
@@ -350,11 +364,11 @@ const EmailMess: React.FC<Props> = ({
           return (
             <Box className="flex flex-1 justify-end">
               <Button
-                onClick={onDecline(emailData)}
+                onClick={() => onDecline(emailData)}
                 className="mx-1 bg-rose-600 py-1.5 px-5 hover:bg-rose-500">
                 DECLINE
               </Button>
-              <Button onClick={onApprove(emailData)} className="mx-1 py-1.5 px-5">
+              <Button onClick={() => onApprove(emailData)} className="mx-1 py-1.5 px-5">
                 APPROVE
               </Button>
             </Box>
@@ -379,7 +393,6 @@ const EmailMess: React.FC<Props> = ({
       <EmailForward
         emailData={emailData}
         onChangeEmailStatus={() => {
-          onChangeStatus(defaultStatus, emailData.id);
           onActionsClick && onActionsClick(defaultStatus as ActionNameTypes);
         }}
         isReadOnlyReceivers={!(emailData.status === 'forward')}
@@ -425,7 +438,9 @@ const EmailMess: React.FC<Props> = ({
     <Box
       className={`o-EmailMess w-full relative flex flex-wrap ${
         type === 'send' && styles.flexRowReverse
-      }`}>
+      }`}
+      ref={containerRef}
+    >
       <Box
         className={`w-full flex flex-wrap ${styles.emailHeader} ${
           isShowHeader && styles.showEmailHeader
@@ -447,9 +462,7 @@ const EmailMess: React.FC<Props> = ({
                 type={type}
                 isActiveClick={true}
                 emailId={emailData.id}
-                emailIndex={index}
                 onActionClick={onActionsClick}
-                handleChangeStatus={onChangeStatus}
               />
             </Box>
           </Box>

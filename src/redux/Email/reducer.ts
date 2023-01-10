@@ -306,6 +306,9 @@ const EmailSlice = createSlice({
 
       return { ...state, EmailsList: cloneEmailsList };
     },
+    deleteEmailId(state, action:PayloadAction<number>) {
+      state.EmailsList = state.EmailsList.filter(value => value.id !== action.payload)
+    },
     setEmailStatus(state, action) {
       const { index, status } = action.payload;
 
@@ -437,6 +440,7 @@ export const {
   setEmailIsLoading,
   setHashtags,
   deleteIndexEmail,
+  deleteEmailId,
   addMinimizeEmail,
   updateMinimizeEmail,
   updateMinimizeEmailId,

@@ -11,6 +11,7 @@ import { setEmailIsLoading, setEmailsList } from '@redux/Email/reducer';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getAllEmailByCatalog, getEmailsListWithQueryParams } from '@api/email';
 import { toast } from 'react-toastify';
+import EmailCategoryContainer from '@containers/EmailCategoryContainer';
 
 const receiverData: Receiver[] = [
   {
@@ -76,7 +77,7 @@ const EmailMainWrapper = () => {
 
   return (
     <>
-      <EmailContainer />
+      <EmailCategoryContainer />
     </>
   );
 };
