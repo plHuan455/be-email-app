@@ -25,7 +25,7 @@ const TableToolbar: FC<TableToolbarProps> = (props) => {
 
   //   const open = Boolean(anchorEl);
   return (
-    <Toolbar className="p-3">
+    <Toolbar className="p-3 min-h-[auto]">
       <div className="grid grid-cols-2 w-full h-full">
         <div className="flex-fill pb-2">
           {isFunction(props.onAddClicked) && (
