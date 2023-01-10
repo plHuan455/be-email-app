@@ -14,6 +14,7 @@ interface EmailTemplateCardProps {
   description: string;
   src: string;
   onUpdateClick: () => void;
+  onDeleteClick: () => void;
   onClick?: () => void;
 }
 
@@ -24,6 +25,7 @@ const EmailTemplateCard: React.FC<EmailTemplateCardProps> = ({
   name,
   description,
   onUpdateClick,
+  onDeleteClick,
   onClick,
 }) => {
   const [isHover, setIsHover] = useState<boolean>(false);
@@ -107,7 +109,7 @@ const EmailTemplateCard: React.FC<EmailTemplateCardProps> = ({
               onUpdateClick();
             }
             if (value === 1) {
-              // onDepartmentDeleteClick(row.id);
+              onDeleteClick()
             }
             setIsOpenMenuActions(false)
             setIsHover(false)

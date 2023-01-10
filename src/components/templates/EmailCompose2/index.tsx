@@ -407,7 +407,6 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                     },
                     '& .public-DraftEditor-content': {
                       minHeight: '100px',
-                      // overflow: 'scroll',
                     },
                   }}>
                   <Controller

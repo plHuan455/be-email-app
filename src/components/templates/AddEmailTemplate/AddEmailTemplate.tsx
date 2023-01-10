@@ -34,45 +34,54 @@ const AddEmailTemplate: React.FC<AddEmailTemplateProps> = ({
 
   return (
     <Box className="t-addEmailTemplate px-6">
-      <Box className="shadow-lg" sx={{borderRadius: rem(12), backgroundColor: 'white', overflow: 'hidden'}}>
+      <Box className="shadow-lg" sx={{borderRadius: rem(12), backgroundColor: 'white'}}>
         <FormProvider {...method}>
-          <form onSubmit={method.handleSubmit(onSubmit)} ref={formRef} id='test-export'>
-            <Box
-              className="flex flex-col flex-1"
-              sx={{
-                px: rem(12),
-                py: rem(16),
-                '& .toolbar-class': {
-                  padding: 0,
-                  border: 0
-                },
-                '& .public-DraftStyleDefault-block': {
-                  marginBlock: 0,
-                },
-                '& .public-DraftEditorPlaceholder-root': {
-                  height: '100%',
-                  '& .public-DraftEditorPlaceholder-inner': { height: '100%' },
-                },
-                '& .public-DraftEditor-content': {
-                  height: rem(400),
-                  overflow: 'scroll',
-                },
-              }}>
-              <Controller
-                name="editor"
-                render={({ field: { value, onChange } }) => (
-                  <Editor
-                    editorState={value}
-                    onEditorStateChange={(data) => onChange(data)}
-                    wrapperClassName="wrapper-class flex-1 flex flex-col"
-                    editorClassName="editor-class border flex-1"
-                    toolbarClassName="toolbar-class w-full"
-                    placeholder="Enter content here..."
-                    toolbar={toolbarCustom}
-                  />
-                )}
-              />
-            </Box>
+          <form className="flex flex-col flex-1" onSubmit={method.handleSubmit(onSubmit)} ref={formRef} id='test-export'>
+          <Box
+            className="flex flex-col"
+            sx={{
+              px: rem(12),
+              '& .public-DraftStyleDefault-block': {
+                marginBlock: 0,
+              },
+              '& .public-DraftEditorPlaceholder-root': {
+                height: '100%',
+                '& .public-DraftEditorPlaceholder-inner': { height: '100%' },
+              },
+              '& .public-DraftEditor-content': {
+                minHeight: rem(400),
+              },
+            }}
+          >
+            <Controller
+              name="editor"
+              render={({ field: { value, onChange } }) => (
+                <Editor
+                  editorState={value}
+                  onEditorStateChange={(data) => onChange(data)}
+                  wrapperClassName="wrapper-class flex flex-col relative"
+                  editorClassName="editor-class border flex-1"
+                  toolbarClassName="toolbar-class w-full bg-white relative top-0 z-50"
+                  placeholder="Enter content here..."
+                  toolbar={toolbarCustom}
+                  onFocus={() => {
+                    const toolbar = document.querySelector(
+                      '.rdw-editor-toolbar',
+                    ) as HTMLElement;
+
+                    toolbar.style.position = 'sticky';
+                  }}
+                  onBlur={() => {
+                    const toolbar = document.querySelector(
+                      '.rdw-editor-toolbar',
+                    ) as HTMLElement;
+
+                    toolbar.style.position = 'relative';
+                  }}
+                />
+              )}
+            />
+          </Box>
             <Box display="flex" justifyContent="flex-end" sx={{padding: rem(16), backgroundColor: '#F1F1F6'}}>
               <Button 
                 sx={{minWidth: rem(100), backgroundColor: '#ff3b3b', '&:hover': { backgroundColor: '#fe8787'}}}

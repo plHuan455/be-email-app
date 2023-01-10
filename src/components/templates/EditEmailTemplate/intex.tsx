@@ -34,7 +34,7 @@ const EditEmailTemplate: React.FC<EditEmailTemplateProps> = ({
 
   return (
     <Box className="t-editEmailTemplate px-6">
-      <Box className="shadow-lg" sx={{ borderRadius: rem(12), backgroundColor: 'white', overflow: 'hidden' }}>
+      <Box className="shadow-lg" sx={{ borderRadius: rem(12), backgroundColor: 'white' }}>
         <FormProvider {...method}>
           <form onSubmit={method.handleSubmit(onSubmit)} ref={formRef} id='test-export'>
             <Box
@@ -111,15 +111,8 @@ const EditEmailTemplate: React.FC<EditEmailTemplateProps> = ({
                 />
               </Box>
               <Box
-                className="t-editEmailTemplate_field"
+                className="t-editEmailTemplate_field flex flex-col"
                 sx={{
-                  '& .toolbar-class': {
-                    padding: 0,
-                    border: 0
-                  },
-                  '&:has(.public-DraftEditorPlaceholder-hasFocus)': {
-                    borderColor: '#554CFF'
-                  },
                   '& .public-DraftStyleDefault-block': {
                     marginBlock: 0,
                   },
@@ -128,12 +121,9 @@ const EditEmailTemplate: React.FC<EditEmailTemplateProps> = ({
                     '& .public-DraftEditorPlaceholder-inner': { height: '100%' },
                   },
                   '& .public-DraftEditor-content': {
-                    height: rem(400),
-                    overflow: 'scroll',
+                    minHeight: rem(300),
+                    // overflow: 'scroll',
                   },
-                  border: '1px solid rgba(0, 0, 0, 0.23)',
-                  borderRadius: rem(8),
-                  p: rem(12)
                 }}
               >
                 <Controller
@@ -142,11 +132,25 @@ const EditEmailTemplate: React.FC<EditEmailTemplateProps> = ({
                     <Editor
                       editorState={value}
                       onEditorStateChange={(data) => onChange(data)}
-                      wrapperClassName="wrapper-class flex-1 flex flex-col"
+                      wrapperClassName="wrapper-class flex flex-col relative"
                       editorClassName="editor-class border flex-1"
-                      toolbarClassName="toolbar-class w-full"
+                      toolbarClassName="toolbar-class w-full bg-white relative top-0 z-50"
                       placeholder="Enter content here..."
                       toolbar={toolbarCustom}
+                      onFocus={() => {
+                        const toolbar = document.querySelector(
+                          '.rdw-editor-toolbar',
+                        ) as HTMLElement;
+
+                        toolbar.style.position = 'sticky';
+                      }}
+                      onBlur={() => {
+                        const toolbar = document.querySelector(
+                          '.rdw-editor-toolbar',
+                        ) as HTMLElement;
+
+                        toolbar.style.position = 'relative';
+                      }}
                     />
                   )}
                 />
