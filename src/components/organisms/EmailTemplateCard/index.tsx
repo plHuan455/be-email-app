@@ -55,7 +55,7 @@ const EmailTemplateCard: React.FC<EmailTemplateCardProps> = ({
         sx={{ position: 'relative', width: '100%', aspectRatio: '4 / 3', backgroundColor: 'rgba(64,87,109,0.07)', pt: rem(12), px: rem(12), borderRadius: rem(8), overflow: 'hidden' }}
       >
         <Box sx={{ width: '100%', backgroundColor: 'white', height: '100%', overflow: 'hidden' }}>
-          <img className="o-emailTemplateCard_img" src={src} />
+          <img className="o-emailTemplateCard_img p-1" src={src} />
         </Box>
         {isHover && <Box
           className="o-emailTemplate_layer"

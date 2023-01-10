@@ -12,4 +12,5 @@ export interface ITemplateResponse {
   title: string;
   text_html: string;
   describe: string;
+  images: {path: string}[]
 }
