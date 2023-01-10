@@ -1,6 +1,9 @@
 import { CreateEmailParam, sendEmail } from '@api/email';
 import { AutoCompleteGroupValueTypes } from '@components/molecules/AutoCompleteGroup';
-import { CustomFile } from '@components/templates/EmailCompose2';
+import {
+  CustomFile,
+  EmailComposeEmailFieldNames,
+} from '@components/templates/EmailCompose2';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { getHtmlStringFromEditorState } from '@utils/functions';
 import dayjs, { Dayjs } from 'dayjs';
@@ -8,6 +11,9 @@ import { EditorState } from 'draft-js';
 import { useState } from 'react';
 import * as yup from 'yup';
 
+type SelectedEmailHashType = {
+  [key in EmailComposeEmailFieldNames]: { [key: string]: true };
+};
 export interface EmailReplyInitialValue {
   to: AutoCompleteGroupValueTypes[];
   cc: AutoCompleteGroupValueTypes[];
@@ -38,6 +44,11 @@ const initialValue: EmailReplyInitialValue = {
 const useEmailReply = () => {
   const queryClient = useQueryClient();
   const [emailReply, setEmailReply] = useState(initialValue);
+  const [selectedEmailHash, setSelectedEmailHash] = useState<SelectedEmailHashType>({
+    to: {},
+    cc: {},
+    bcc: {},
+  });
 
   const convertContactField = (fieldData: AutoCompleteGroupValueTypes[]) => {
     return fieldData.reduce<string[]>((preValue, value) => {
@@ -48,6 +59,8 @@ const useEmailReply = () => {
 
   return {
     emailReply,
+    selectedEmailHash,
+    setSelectedEmailHash,
     setEmailReply,
     convertContactField,
     queryClient,
