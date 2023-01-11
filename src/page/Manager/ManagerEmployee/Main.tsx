@@ -1,11 +1,12 @@
 import { useTranslation } from '@@packages/localization/src';
 import { DepartmentResponse } from '@api/deparment/interface';
+import ModalBase from '@components/atoms/ModalBase';
 import InnerLayoutHeaderTabs from '@components/molecules/InnerLayoutTabs';
 import { TAB_DEPARTMENT_LIST } from '@constants/InnerHeaderLayoutTab';
 import { EmployeeContainer } from '@containers/EmployeeContainer';
 import Layout from '@layouts/Layout';
 import { AxiosResponse } from 'axios';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 
 interface OutletContextType {
@@ -30,7 +31,7 @@ const ManagerEmployeePage = () => {
 
   const handleAddEmployee = () => {
     // tạm thời cho add, sau này phân quyền sau
-    navigate(`/department/${params.idDepartment}/employee/add`);
+    navigate(`/departments/department/${params.idDepartment}/employee/add`);
   };
 
   return (

@@ -3,11 +3,18 @@ import Icon from '@components/atoms/Icon';
 import PageCrudData from '@components/organisms/PageCrudData';
 
 import { ColumnDef } from '@tanstack/react-table';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import UpdateIcon from '@mui/icons-material/Update';
+import ModalBase from '@components/atoms/ModalBase';
+import { useMutation } from '@tanstack/react-query';
+import { getUserWithId } from '@api/user';
+import Loading from '@components/atoms/Loading';
+import ClientProfileLayout from '@layouts/ClientProfile';
 
 const EmployeeContainer = () => {
+  const [isOpenModel, setIsOpenModal] = useState<boolean>(false);
+
   const navigate = useNavigate();
   const { t } = useTranslation();
   const params = useParams();
@@ -20,13 +27,18 @@ const EmployeeContainer = () => {
     () => [
       {
         accessorKey: '',
-        accessorFn: (row) => row,
-        id: 'name',
-        cell: (info) => {
-          const { first_name, last_name } = info.getValue();
-          return first_name + ' ' + last_name;
-        },
-        header: () => <span>{t('Fullname')}</span>,
+        accessorFn: (row) => row.first_name,
+        id: 'first_name',
+        cell: (info) => info.getValue(),
+        header: () => <span>{t('First Name')}</span>,
+        footer: (props) => props.column.id,
+      },
+      {
+        accessorKey: '',
+        accessorFn: (row) => row.last_name,
+        id: 'last_name',
+        cell: (info) => info.getValue(),
+        header: () => <span>{t('Last Name')}</span>,
         footer: (props) => props.column.id,
       },
       {
@@ -72,17 +84,33 @@ const EmployeeContainer = () => {
     [],
   );
 
+  const {
+    mutate: mutateGetUserProfile,
+    data: dataMutateGetUserProfile,
+    isLoading: isLoadingGetUserProfile,
+  } = useMutation({
+    mutationKey: ['EmployeeContainer-get-user-profile'],
+    mutationFn: getUserWithId,
+  });
+
+  const handleOnUpdateClick = (id: number) => {
+    setIsOpenModal(false);
+    navigate(`/departments/department/${params.idDepartment}/employee/edit/${id}`);
+  };
+
   const rowClick = (row) => {
     if (row && row.original) {
       // tạm thời cho edit, sau này phần quyền sau
-      navigate(
-        `/department/${params.idDepartment}/employee/edit/${row.original.id}`,
-      );
+      // navigate(
+      //   `/departments/department/${params.idDepartment}/employee/profile/${row.original.id}`,
+      // );
+      mutateGetUserProfile(row.original.id);
+      setIsOpenModal(true);
     }
   };
 
   return (
-    <div className="px-4">
+    <div className="px-4 flex-1 pb-3">
       <PageCrudData
         refreshKey={params.idDepartment}
         disabledRowOnClick={false}
@@ -90,6 +118,21 @@ const EmployeeContainer = () => {
         columns={columns}
         rowOnClick={(row) => rowClick(row)}
       />
+      <ModalBase
+        style={{ width: '80vw', minHeight: '50vh' }}
+        isOpen={isOpenModel}
+        title=""
+        submitLabel=""
+        onClose={() => setIsOpenModal(false)}>
+        {isLoadingGetUserProfile ? (
+          <Loading isLoading={isLoadingGetUserProfile} />
+        ) : (
+          <ClientProfileLayout
+            clientProfileData={dataMutateGetUserProfile?.data}
+            onEdit={handleOnUpdateClick}
+          />
+        )}
+      </ModalBase>
     </div>
   );
 };

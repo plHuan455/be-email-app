@@ -70,7 +70,7 @@ function LoginContainer() {
           const { user_id } = res;
           console.log('ress login->>>', res);
           localStorage.setItem('current_id', `${user_id}`);
-          const currentUser = await getUserWithEmail(user_id ? user_id : 0);
+          const currentUser = await getUserWithId(user_id ? user_id : 0);
 
           console.log('ress currentUser->>>', currentUser);
 
@@ -263,7 +263,7 @@ import { toast } from 'react-toastify';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { login } from '@api/auth';
-import { getUserWithEmail } from '@api/user';
+import { getUserWithId } from '@api/user';
 
 export const Root = styled.div`
   width: 100%;

@@ -50,7 +50,7 @@ const ModalBase: React.FC<ModalBaseProps> = ({
         timeout: 500,
       }}>
       <Box sx={{ ...modalDefaultStyle, ...style }}>
-        <div className="modal-container">
+        <div className="modal-container h-full">
           <div className="modal-header">
             <div className="modal-title">{title}</div>
             <div className="modal-close-button" onClick={onClose}>
@@ -58,7 +58,7 @@ const ModalBase: React.FC<ModalBaseProps> = ({
             </div>
           </div>
           <div
-            className="modal-content"
+            className="modal-content flex-1"
             style={{
               paddingBottom: Boolean(submitLabel) ? '50px' : 0,
             }}>

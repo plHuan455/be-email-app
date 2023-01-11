@@ -69,7 +69,7 @@ export interface UserProfileResponse {
 }
 
 //GET EMAIL WITH STATUS
-export const getUserWithEmail = async (
+export const getUserWithId = async (
   id: number,
 ): Promise<AxiosResponse<UserProfileResponse>> => {
   const url = `${USER_PROFILE}/${id}`;
