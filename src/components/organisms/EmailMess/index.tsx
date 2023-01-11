@@ -501,7 +501,7 @@ const EmailMess: React.FC<Props> = ({
                   onClick={onContinueClick}>
                   <CreateIcon sx={{ fontSize: rem(20) }} />
                   <Typography
-                    sx={{ ml: rem(8), fontSize: rem(14), fontWeight: 500 }}>
+                    sx={{ ml: rem(8), fontSize: rem(14), fontWeight: 500, lineHeight: rem(20) }}>
                     Continue
                   </Typography>
                 </Button>

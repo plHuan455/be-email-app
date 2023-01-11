@@ -519,7 +519,7 @@ const EmailCategoryContainer = () => {
         <Box className="w-full flex flex-wrap flex-col">
           {fakeLoading && <EmailMessEmpty isLoading={fakeLoading} />}
           {convertedEmailList.map((value, index) => {
-            const { is_important, is_trash } = value;
+            const { is_trash } = value;
             const status = value.status.toLowerCase();
             const isEmployee = currRole?.toUpperCase().startsWith('EMPLOYEE');
             const isReceiver = checkIsReceiveEmail(value.id);
@@ -533,57 +533,27 @@ const EmailCategoryContainer = () => {
                   index={index}
                   isShowHeader={value.id === showHistoryEmailId}
                   hiddenActions={
-                    isEmployee
+                    isEmployee || isAdminTabMe
                       ? {
                         replyAll:
                           is_trash ||
-                          is_important ||
                           ['draft', 'trash', 'declined'].includes(status),
                         reply:
                           is_trash ||
-                          is_important ||
                           ['draft', 'trash', 'declined'].includes(status),
                         forward:
                           is_trash ||
-                          is_important ||
                           ['draft', 'trash', 'declined'].includes(status),
                         unread:
                           is_trash ||
-                          is_important ||
                           !isReceiver ||
                           ['draft', 'trash'].includes(status),
                         spam:
                           is_trash ||
-                          is_important ||
                           !isReceiver ||
                           ['draft', 'trash'].includes(status),
                       }
-                      : isAdminTabMe
-                        ? {
-                          replyAll:
-                            is_trash ||
-                            is_important ||
-                            ['draft', 'trash', 'declined'].includes(status),
-                          reply:
-                            is_trash ||
-                            is_important ||
-                            ['draft', 'trash', 'declined'].includes(status),
-                          forward:
-                            is_trash ||
-                            is_important ||
-                            ['draft', 'trash', 'declined'].includes(status),
-                          unread:
-                            is_trash ||
-                            is_important ||
-                            !isReceiver ||
-                            ['draft', 'trash'].includes(status),
-                          spam:
-                            is_trash ||
-                            is_important ||
-                            !isReceiver ||
-                            ['draft', 'trash'].includes(status),
-                        }
-                        : true
+                      : true
                   }
                   onUpdateHashtagClick={(hashtags) => handleUpdateHashTagClick(value.id, hashtags)}
                   onDecline={() => handleDeclineClick(value)}

@@ -108,7 +108,7 @@ const EmailStatus: React.FC<EmailStatusProps> = ({ emailStatus, time }) => {
           backgroundColor: mainEmailStatus.bgColor,
         }}>
         <RenderButtonIcon item={mainEmailStatus.item} color={'#ffffff'} />
-        <span className="inline-block pl-2">{mainEmailStatus.content}</span>
+        <span className="inline-block pl-2 leading-5">{mainEmailStatus.content}</span>
       </Box>
     );
 
