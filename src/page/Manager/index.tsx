@@ -14,35 +14,48 @@ const Manager = () => {
   const [currentRole] = useLocalStorage('current_role', '');
   const [menus, setMenus] = useState<SubSidebarItem[]>([]);
   const [departmentName, setDepartmentName] = useState<string>('Department');
+  const [compId, setCompId] = useState<number>(0);
 
   const navigate = useNavigate();
 
-  const ROOT_NAVIGATE = '/department';
+  const ROOT_NAVIGATE = '/departments';
 
   const { data: departmentQueryData, isLoading: isLoadingQueryData } = useQuery({
-    queryKey: ['get-departments'],
+    queryKey: ['manager-get-departments'],
     queryFn: getDepartmentsByRole,
     onSuccess: (res) => {
       const resData = res.data;
 
-      const convertToMenus: SubSidebarItem[] = resData.map((data) => {
-        const { name, id } = data;
+      console.log('get success!');
+
+      if (!isEmpty(res.data)) {
+        const { name, company_id } = res.data[0];
 
         setDepartmentName(name);
+        setCompId(company_id);
 
-        return {
-          name,
-          navigate: `${ROOT_NAVIGATE}/${id}/employee`,
-          icon: <Icon icon="department" color="black" />,
-        };
-      });
+        const convertToMenus: SubSidebarItem[] = resData.map((data) => {
+          const { name, id } = data;
 
-      setMenus(convertToMenus);
+          return {
+            name,
+            navigate: `${ROOT_NAVIGATE}/${id}/employee`,
+            icon: <Icon icon="department" color="black" />,
+          };
+        });
+
+        setMenus(convertToMenus);
+      }
+      return res.data;
     },
   });
 
+  console.log(departmentQueryData);
+
   useEffect(() => {
-    if (!isEmpty(menus)) navigate(menus[0].navigate ?? '');
+    if (!isEmpty(menus)) {
+      navigate(menus[0].navigate ?? '');
+    }
   }, [menus]);
 
   return (
@@ -55,11 +68,11 @@ const Manager = () => {
             menus={menus}
             title="Department"
             headerBtnTitle=""
-            onClickCompose={() => navigate(`${ROOT_NAVIGATE}/add`)}
+            onClickCompose={() => navigate(`${ROOT_NAVIGATE}/department/add`)}
           />
         )}
       </Layout.ASide>
-      <Outlet context={{ departmentName, setDepartmentName }} />
+      <Outlet context={{ departmentName, setDepartmentName, compId }} />
     </Layout.Content>
   );
 };

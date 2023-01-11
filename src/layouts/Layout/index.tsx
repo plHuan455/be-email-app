@@ -151,22 +151,16 @@ const MainHaveActions: React.FC<
                     {headTitle}
                   </Typography>
                 )}
-                {onClickAdd && (
-                  <IconButton
-                    className="bg-transparent hover:bg-transparent"
-                    size="small"
-                    onClick={onClickAdd}>
-                    <Icon
-                      icon={'plus'}
-                      rawColor={'#827CFF'}
-                      width={16}
-                      height={16}
-                    />
-                  </IconButton>
-                )}
+                {rightHeaderTabs}
               </Box>
-              {isHaveSearch && <SearchStartWithIcon onSearch={onSearch} />}
-              {rightHeaderTabs}
+              {onClickAdd && (
+                <IconButton
+                  className="bg-[#554CFF] hover:bg-[#554CFF] p-3"
+                  size="small"
+                  onClick={onClickAdd}>
+                  <Icon icon={'plus'} rawColor={'white'} width={16} height={16} />
+                </IconButton>
+              )}
             </Box>
           )}
           {children}
@@ -307,9 +301,15 @@ const GroupButton: React.FC<GroupButtonProps> = ({
           },
         },
       }}>
-      <Button disabled={disabledClear} color="error" size="large" onClick={onClear}>
-        {labelClear}
-      </Button>
+      {!disabledClear && (
+        <Button
+          disabled={disabledClear}
+          color="error"
+          size="large"
+          onClick={onClear}>
+          {labelClear}
+        </Button>
+      )}
       <Button
         disabled={disabledCancel}
         variant="text"

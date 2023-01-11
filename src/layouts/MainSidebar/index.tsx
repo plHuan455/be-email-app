@@ -24,7 +24,7 @@ const iconSidebarMapping: {
 } = {
   '/emails': 'email',
   '/contact': 'contact',
-  '/department': 'department',
+  '/departments': 'department',
   '/setting': 'managerAcccount',
 };
 

@@ -21,7 +21,6 @@ const ManagerPositionPage = () => {
         headTitle={t('Positions')}
         isHaveHeader
         onClickAdd={handleAddEmployee}
-        onComback={() => navigate('/department')}
         rightHeaderTabs={
           <InnerLayoutHeaderTabs
             tabs={TAB_DEPARTMENT_LIST}
