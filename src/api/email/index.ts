@@ -23,10 +23,10 @@ export interface CreateEmailParam {
     to?: string[];
     from?: string;
     content?: string;
-    text_html?: string;
+    html_body?: string;
     cc?: string[];
     bcc?: string[];
-    attachs?: { path?: string }[];
+    attachments?: { filename: string }[];
   };
   status?: string;
   is_important?: boolean;
@@ -66,10 +66,9 @@ export interface EmailResponse {
     subject: string;
     type: string;
     writer_id: number;
-    text_html: string;
+    html_body: string;
     content: string;
-    attachFiles?: AttachFile[];
-    attachs?: attachs[];
+    attachments?: { id: number, email_id: number; filename: string}[];
     tags: [];
   };
   hashtags?: HashtagType[];

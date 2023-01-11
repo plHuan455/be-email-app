@@ -442,7 +442,7 @@ const EmailCategoryContainer = () => {
     onContinueClick({
       id: value.id,
       subject: email.subject,
-      content: email.text_html,
+      content: email.html_body,
       hashtags: (value.hashtags ?? []).map((hashtag) => ({
         name: hashtag.hashtag,
         value: `#${hashtag.hashtag}`,

@@ -277,7 +277,7 @@ const EmailMessContainerRef: React.ForwardRefRenderFunction<
     onContinueClick({
       id: emailData.id,
       subject: email.subject,
-      content: email.text_html,
+      content: email.html_body,
       hashtags: (emailData.hashtags ?? []).map((hashtag) => ({
         name: hashtag.hashtag,
         value: `#${hashtag.hashtag}`,
