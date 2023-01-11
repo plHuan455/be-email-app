@@ -114,7 +114,10 @@ const InformationBar = (props: Props) => {
 
   const getAllAttachFiles: () => AttachFile[] = () => {
     const attachs: attachs[] = EmailsList.reduce((cur: attachs[], next) => {
-      if (next.email.attachs) return [...cur, ...next.email.attachs];
+      if (next.email.attachments) return [
+        ...cur, 
+        ...next.email.attachments.map(value => ({id: value.id, email_id: value.email_id, path: value.filename}))
+      ];
       return cur;
     }, []);
 

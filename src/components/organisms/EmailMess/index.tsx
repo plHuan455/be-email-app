@@ -243,10 +243,10 @@ const EmailMess: React.FC<Props> = ({
   }, [emailData]);
 
   const _renderAttachesFiles = useMemo(() => {
-    if (!emailData.email.attachs) return null;
+    if (!emailData.email.attachments) return null;
 
     const newAttachesFile: AttachFile[] = attachsToAttachFiles(
-      emailData.email.attachs,
+      emailData.email.attachments.map(value => ({id: value.id, email_id: value.email_id, path: value.filename})),
     );
 
     return <AttachFiles data={newAttachesFile} isUpload={false} />;
@@ -513,7 +513,7 @@ const EmailMess: React.FC<Props> = ({
         {/* Email Content */}
         <Box className="py-9">
           <Box>
-            <p dangerouslySetInnerHTML={createMarkup(emailData.email.text_html)} />
+            <p dangerouslySetInnerHTML={createMarkup(emailData.email.html_body)} />
           </Box>
         </Box>
         {/* Greeting */}
