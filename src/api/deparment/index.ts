@@ -45,7 +45,7 @@ export const addPositionInDepartment = async (params: {
 export const getDepartmentsByRole = async (): Promise<
   AxiosResponse<DepartmentResponse[]>
 > => {
-  const url = `${DEPARTMENT_API}`;
+  const url = `${DEPARTMENT_API}/usercompany`;
   const res = await ApiClient.get(url);
   return res.data;
 };

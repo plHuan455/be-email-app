@@ -14,7 +14,7 @@ import { rem } from '@utils/functions';
 import { NavLink, useNavigate } from 'react-router-dom';
 import EmailStatusHeader from '@components/molecules/EmailStatusHeader';
 import { SubSidebarItem } from '@constants/subMenus';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 interface SubSidebarProps {
   menus: SubSidebarItem[];
@@ -32,6 +32,18 @@ const SubSidebar: React.FC<SubSidebarProps> = ({
   const navigate = useNavigate();
 
   const [listSubNav, setListSubNav] = useState<any>();
+
+  const refActive = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (refActive.current) {
+      refActive.current.scrollIntoView({
+        behavior: 'smooth',
+        block: 'end',
+        inline: 'nearest',
+      });
+    }
+  }, [refActive.current]);
 
   useEffect(() => {
     const l = menus.map((parenItem, parentIdx) => {
@@ -123,6 +135,7 @@ const SubSidebar: React.FC<SubSidebarProps> = ({
     <Box className="o-contactSlideBar py-4 px-2">
       <Drawer
         variant="permanent"
+        className="flex flex-col"
         sx={{
           '& .MuiDrawer-paper': {
             position: 'static',
@@ -141,31 +154,58 @@ const SubSidebar: React.FC<SubSidebarProps> = ({
           isSearch={false}
           onClickCompose={onClickCompose}
         />
-        <List>
+        <List className="flex-1 overflow-scroll">
           {listSubNav &&
             listSubNav.map((menu, menuIndex) => (
               <Box>
                 <div>
-                  <ListItemButton
-                    onClick={() => hanldeMenuItemClick({ index: menuIndex })}
-                    sx={{
-                      backgroundColor: menu.active ? '#e9e4ff' : 'transparent',
-                    }}>
-                    <ListItemIcon
+                  {menu.navigate ? (
+                    <NavLink to={menu.navigate}>
+                      {({ isActive }) => (
+                        <ListItemButton
+                          ref={isActive ? refActive : null}
+                          sx={{
+                            backgroundColor: isActive ? '#e9e4ff' : 'transparent',
+                          }}>
+                          <ListItemIcon
+                            sx={{
+                              minWidth: 'auto',
+                              mr: rem(12),
+                              '& .MuiSvgIcon-root': {
+                                color: '#000000DE',
+                                fontSize: rem(18),
+                              },
+                            }}>
+                            {menu.icon}
+                          </ListItemIcon>
+                          <ListItemText primary={menu.name} />
+                          {menu.menuItems &&
+                            (menu.isExpand ? <ExpandLess /> : <ExpandMore />)}
+                        </ListItemButton>
+                      )}
+                    </NavLink>
+                  ) : (
+                    <ListItemButton
+                      onClick={() => hanldeMenuItemClick({ index: menuIndex })}
                       sx={{
-                        minWidth: 'auto',
-                        mr: rem(12),
-                        '& .MuiSvgIcon-root': {
-                          color: '#000000DE',
-                          fontSize: rem(18),
-                        },
+                        backgroundColor: menu.active ? '#e9e4ff' : 'transparent',
                       }}>
-                      {menu.icon}
-                    </ListItemIcon>
-                    <ListItemText primary={menu.name} />
-                    {menu.menuItems &&
-                      (menu.isExpand ? <ExpandLess /> : <ExpandMore />)}
-                  </ListItemButton>
+                      <ListItemIcon
+                        sx={{
+                          minWidth: 'auto',
+                          mr: rem(12),
+                          '& .MuiSvgIcon-root': {
+                            color: '#000000DE',
+                            fontSize: rem(18),
+                          },
+                        }}>
+                        {menu.icon}
+                      </ListItemIcon>
+                      <ListItemText primary={menu.name} />
+                      {menu.menuItems &&
+                        (menu.isExpand ? <ExpandLess /> : <ExpandMore />)}
+                    </ListItemButton>
+                  )}
                 </div>
                 {menu.menuItems && (
                   <Collapse in={menu.isExpand} timeout="auto" unmountOnExit>

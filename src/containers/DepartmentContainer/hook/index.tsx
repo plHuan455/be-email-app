@@ -56,9 +56,9 @@ export const useCreateDepartmentManagement = () => {
 
       // call create here
       const { id, ...params } = department;
-      await createDepartment(params);
-      toast.success('Create department success!');
-      navigate('/departments');
+      const res = await createDepartment(params);
+
+      return res;
     } catch (error: any) {
       console.error(new Error(error));
       toast.error(error?.response?.message || 'Has Error');

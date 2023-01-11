@@ -215,7 +215,9 @@ const MainQueryClient: React.FC<
       onClickAdd={onClickAdd}
       rightHeaderTabs={rightHeaderTabs}
       onSearch={onSearch}>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      {/* <QueryClientProvider client={queryClient}> */}
+      {children}
+      {/* </QueryClientProvider> */}
     </MainHaveActions>
   );
 };

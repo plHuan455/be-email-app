@@ -8,17 +8,19 @@ import Layout from '@layouts/Layout';
 import { useQuery } from '@tanstack/react-query';
 import { isEmpty } from 'lodash';
 import { useEffect, useState } from 'react';
-import { Outlet, useNavigate } from 'react-router-dom';
+import { Outlet, useNavigate, useParams } from 'react-router-dom';
 
 const Manager = () => {
   const [currentRole] = useLocalStorage('current_role', '');
   const [menus, setMenus] = useState<SubSidebarItem[]>([]);
-  const [departmentName, setDepartmentName] = useState<string>('Department');
-  const [compId, setCompId] = useState<number>(0);
+
+  const [isFirstTime, setIsFirstTime] = useState<boolean>(false);
 
   const navigate = useNavigate();
 
   const ROOT_NAVIGATE = '/departments';
+
+  const params = useParams();
 
   const { data: departmentQueryData, isLoading: isLoadingQueryData } = useQuery({
     queryKey: ['manager-get-departments'],
@@ -26,35 +28,27 @@ const Manager = () => {
     onSuccess: (res) => {
       const resData = res.data;
 
-      console.log('get success!');
+      const convertToMenus: SubSidebarItem[] = resData.map((data) => {
+        const { name, id } = data;
 
-      if (!isEmpty(res.data)) {
-        const { name, company_id } = res.data[0];
+        return {
+          name,
+          navigate: `${ROOT_NAVIGATE}/department/${id}/employee`,
+          icon: <Icon icon="department" color="black" />,
+        };
+      });
 
-        setDepartmentName(name);
-        setCompId(company_id);
-
-        const convertToMenus: SubSidebarItem[] = resData.map((data) => {
-          const { name, id } = data;
-
-          return {
-            name,
-            navigate: `${ROOT_NAVIGATE}/${id}/employee`,
-            icon: <Icon icon="department" color="black" />,
-          };
-        });
-
-        setMenus(convertToMenus);
-      }
-      return res.data;
+      setMenus(convertToMenus);
+      return res;
     },
   });
 
-  console.log(departmentQueryData);
-
   useEffect(() => {
     if (!isEmpty(menus)) {
-      navigate(menus[0].navigate ?? '');
+      if (!isFirstTime) {
+        navigate(menus[0].navigate ?? '');
+        setIsFirstTime(true);
+      }
     }
   }, [menus]);
 
@@ -72,7 +66,7 @@ const Manager = () => {
           />
         )}
       </Layout.ASide>
-      <Outlet context={{ departmentName, setDepartmentName, compId }} />
+      <Outlet context={{ departmentQueryData }} />
     </Layout.Content>
   );
 };

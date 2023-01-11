@@ -33,7 +33,7 @@ const titleSidebarMapping: {
 } = {
   '/emails': 'Email',
   '/contact': 'Contact',
-  '/department': 'Department',
+  '/departments': 'Department',
   '/setting': 'Setting',
 };
 
@@ -100,8 +100,8 @@ export default function MainSidebar() {
         case '/contact':
           path = '/contact/contacts';
           break;
-        case '/department':
-          path = '/department';
+        case '/departments':
+          path = '/departments';
           break;
         case '/setting':
           path = '/setting/profile';

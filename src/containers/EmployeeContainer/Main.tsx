@@ -84,6 +84,7 @@ const EmployeeContainer = () => {
   return (
     <div className="px-4">
       <PageCrudData
+        refreshKey={params.idDepartment}
         disabledRowOnClick={false}
         api={`/rbac/department/users/${params.idDepartment}`}
         columns={columns}
