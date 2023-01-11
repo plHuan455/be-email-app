@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import * as yup from 'yup';
 import { useMutation } from "@tanstack/react-query";
 import { uploadFile } from "@api/uploadFile";
-import { addHttp, getHtmlStringFromEditorState } from "@utils/functions";
+import { addHttp, getEditorStateFormHtmlString, getHtmlStringFromEditorState } from "@utils/functions";
 import { createTemplateService } from "@api/template";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -67,7 +67,6 @@ const AddEmailTemplateContainer: React.FC<AddEmailTemplateContainerProps> = () =
   }
 
   const handleSubmit = async (values: AddEmailTemplateFields) => {
-    // setIsShowFormModal(false);
 
     const element = document.querySelector('.public-DraftEditor-content > div');
     if(!element) return;
@@ -77,7 +76,7 @@ const AddEmailTemplateContainer: React.FC<AddEmailTemplateContainerProps> = () =
       .then(async function(dataUrl) {
         // // TODO: ADD ARGUMENTS
         if(dataUrl) {
-          const file = new File([dataUrl], values.name.replace(/\s/g, '-'));
+          const file = new File([dataUrl], `${values.name.replace(/\s/g, '-')}-${Date.now()}`);
           createTemplateMutate({imgFile: file, name: values.name, htmlContent: getHtmlStringFromEditorState(values.editor), description: values.description});
         }
       })
