@@ -3,13 +3,19 @@ import InnerLayoutHeaderTabs from '@components/molecules/InnerLayoutTabs';
 import { TAB_DEPARTMENT_LIST } from '@constants/InnerHeaderLayoutTab';
 import { EmployeeContainer } from '@containers/EmployeeContainer';
 import Layout from '@layouts/Layout';
-import { useNavigate, useParams } from 'react-router-dom';
-import { toast } from 'react-toastify';
+import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
+
+interface OutletContextType {
+  departmentName: string;
+  setDepartmentName: React.Dispatch<React.SetStateAction<string>>;
+}
 
 const ManagerEmployeePage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const params = useParams();
+
+  const { departmentName } = useOutletContext<OutletContextType>();
 
   const handleAddEmployee = () => {
     // tạm thời cho add, sau này phân quyền sau
@@ -19,10 +25,9 @@ const ManagerEmployeePage = () => {
   return (
     <>
       <Layout.MainQueryClient
-        headTitle={t('Employee')}
+        headTitle={t(departmentName)}
         isHaveHeader
         onClickAdd={handleAddEmployee}
-        onComback={() => navigate(`/department`)}
         rightHeaderTabs={
           <InnerLayoutHeaderTabs
             tabs={TAB_DEPARTMENT_LIST}

@@ -13,6 +13,7 @@ import { Outlet, useNavigate } from 'react-router-dom';
 const Manager = () => {
   const [currentRole] = useLocalStorage('current_role', '');
   const [menus, setMenus] = useState<SubSidebarItem[]>([]);
+  const [departmentName, setDepartmentName] = useState<string>('Department');
 
   const navigate = useNavigate();
 
@@ -26,6 +27,8 @@ const Manager = () => {
 
       const convertToMenus: SubSidebarItem[] = resData.map((data) => {
         const { name, id } = data;
+
+        setDepartmentName(name);
 
         return {
           name,
@@ -56,7 +59,7 @@ const Manager = () => {
           />
         )}
       </Layout.ASide>
-      <Outlet />
+      <Outlet context={{ departmentName, setDepartmentName }} />
     </Layout.Content>
   );
 };
