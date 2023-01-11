@@ -27,6 +27,7 @@ import { getDepartments } from '@api/deparment';
 import { useQuery } from '@tanstack/react-query';
 import {
   EmailComposeEmailFieldNames,
+  EmailComposeModalRowTypes,
   EmailComposeSelectedDepartmentTypes,
 } from '@components/templates/EmailCompose2';
 import classNames from 'classnames';
@@ -80,7 +81,7 @@ const EmailForward: React.FC<Props> = ({
     },
   });
 
-  const convertedSelectEmployersModalRows = useMemo(() => {
+  const convertedSelectEmployersModalRows = useMemo<EmailComposeModalRowTypes[]>(() => {
     if (selectedDepartment === undefined) return [];
     const field = selectedDepartment.field;
     return (
@@ -105,7 +106,8 @@ const EmailForward: React.FC<Props> = ({
           }
         })
         .map((value) => ({
-          identify: value.name,
+          lastName: value.lastName,
+          firstName: value.firstName,
           email: value.email,
           id: value.email,
         })) ?? []
@@ -199,8 +201,9 @@ const EmailForward: React.FC<Props> = ({
   }, [emailData]);
 
   const columns: GridColDef[] = [
-    { field: 'identify', headerName: 'Identify', flex: 1 },
-    { field: 'email', headerName: 'Email', flex: 1 },
+    { field: 'lastName', headerName: 'Last Name', flex: 1 },
+    { field: 'firstName', headerName: 'First Name', flex: 1 },
+    { field: 'email', headerName: 'Email', flex: 3 },
   ];
 
   const handleSendEmailReply = (values: EmailReplyInitialValue) => {
@@ -253,7 +256,8 @@ const EmailForward: React.FC<Props> = ({
           name: foundDepartment.name,
           emailInfo:
             foundDepartment.users?.map((value) => ({
-              name: value.identity,
+              lastName: value.last_name,
+              firstName: value.first_name,
               email: value.email,
               id: value.id,
             })) ?? [],
