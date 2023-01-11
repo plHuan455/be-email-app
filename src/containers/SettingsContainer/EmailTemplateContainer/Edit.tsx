@@ -10,7 +10,7 @@ import { useForm } from "react-hook-form";
 import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
-interface EditEmailTemplateContainerProps {}
+interface EditEmailTemplateContainerProps { }
 
 const EditEmailTemplateContainer: React.FC<EditEmailTemplateContainerProps> = () => {
   const { id } = useParams();
@@ -19,17 +19,17 @@ const EditEmailTemplateContainer: React.FC<EditEmailTemplateContainerProps> = ()
     defaultValues: {
       name: '',
       description: '',
-      editor: getEditorStateFormHtmlString() 
+      editor: getEditorStateFormHtmlString()
     }
   })
 
   const alertDialog = useAlertDialog();
 
-  const {data: templateData, isLoading: isTemplateGetting} = useQuery({
+  const { data: templateData, isLoading: isTemplateGetting } = useQuery({
     queryKey: ['edit-email-template-get', id],
     queryFn: () => getTemplateService(Number(id)),
     onSuccess: (res) => {
-      const {describe, text_html, title} = res.data;
+      const { describe, text_html, title } = res.data;
       method.setValue('name', title);
       method.setValue('description', describe);
       method.setValue('editor', getEditorStateFormHtmlString(text_html));
@@ -39,14 +39,17 @@ const EditEmailTemplateContainer: React.FC<EditEmailTemplateContainerProps> = ()
 
   const { mutate: updateTemplateMutate, isLoading: isTemplateUpdating } = useMutation({
     mutationKey: ['edit-email-template-update'],
-    mutationFn: async (params: {id: number; name: string; description: string; htmlContent: string; file?: File}) => {
-      const imgSrc = params.file ? await uploadFile(params.file) : undefined ;
+    mutationFn: async (params: { id: number; name: string; description: string; htmlContent: string; file?: File }) => {
+      const imgSrc = params.file ? 
+        await uploadFile(params.file) : 
+        { data: templateData?.data?.images[0]?.path };
+
       return updateTemplateService(
         params.id,
         {
           title: params.name,
           describe: params.description,
-          images: imgSrc ? [{path: addHttp(imgSrc.data)}] : undefined,
+          images: imgSrc.data ? [{ path: addHttp(imgSrc.data) }] : undefined,
           text_html: params.htmlContent,
         }
       )
@@ -64,7 +67,8 @@ const EditEmailTemplateContainer: React.FC<EditEmailTemplateContainerProps> = ()
   }
 
   const handleUpdateTemplate = (values: EditEmailTemplateFields) => {
-    if(id === undefined) return;
+    if(!templateData) return;
+    if (id === undefined) return;
 
     alertDialog.setAlertData(
       'Update template',
@@ -72,8 +76,13 @@ const EditEmailTemplateContainer: React.FC<EditEmailTemplateContainerProps> = ()
       async () => {
         // TODO: CONVERT VALUES AND PASS TO ARGUMENT
         const htmlContent = getHtmlStringFromEditorState(values.editor);
-        const file = htmlContent === templateData?.data.text_html ? 
-          undefined : await createImgFileFromElement('.public-DraftEditor-content > div', values.name.replace(/\s+/g, '-'));
+        const file = htmlContent === templateData?.data.text_html
+          ? undefined
+          : await createImgFileFromElement(
+            '.public-DraftEditor-content > div',
+            `${values.name.replace(/\s+/g, '-')}-${Date.now()}`
+          );
+
         await updateTemplateMutate({
           id: Number(id),
           description: values.description ?? '',
@@ -89,12 +98,12 @@ const EditEmailTemplateContainer: React.FC<EditEmailTemplateContainerProps> = ()
 
   return (
     <>
-      <EditEmailTemplate 
+      <EditEmailTemplate
         method={method}
         onClearClick={handleClearClick}
         onSubmit={handleUpdateTemplate}
       />
-      <AlertDialog 
+      <AlertDialog
         isOpen={alertDialog.isOpen}
         titleLabel={alertDialog.title}
         descriptionLabel={alertDialog.description}
