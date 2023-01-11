@@ -86,8 +86,15 @@ export interface EmailComposeSelectedDepartmentTypes {
   data: {
     id: number;
     name: string;
-    emailInfo: { name: string; email: string; id: number }[];
+    emailInfo: { lastName: string; firstName: string; email: string; id: number }[];
   };
+}
+
+export interface EmailComposeModalRowTypes { 
+  lastName: string;
+  firstName: string;
+  email: string;
+  id: string
 }
 
 interface EmailComposeProps {
@@ -105,7 +112,7 @@ interface EmailComposeProps {
   toOptions: AutoCompleteGroupValueTypes[];
   bccOptions: AutoCompleteGroupValueTypes[];
   ccOptions: AutoCompleteGroupValueTypes[];
-  selectEmployersModalRows: { identify: string; email: string; id: string }[];
+  selectEmployersModalRows: EmailComposeModalRowTypes[];
   selectedDate?: Dayjs | null;
   isShowCalendarModal?: boolean;
   isOpenCalendarSelect?: boolean;
@@ -196,8 +203,10 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
   const composeScrollRef = useRef<HTMLDivElement>(null);
 
   const columns: GridColDef[] = [
-    { field: 'identify', headerName: 'Identify', flex: 1 },
-    { field: 'email', headerName: 'Email', flex: 1 },
+    // { field: 'identify', headerName: 'Identify', flex: 1 },
+    { field: 'firstName', headerName: 'First Name', flex: 1 },
+    { field: 'lastName', headerName: 'Last Name', flex: 1 },
+    { field: 'email', headerName: 'Email', flex: 3 },
   ];
 
   // functions

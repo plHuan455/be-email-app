@@ -2,6 +2,7 @@ import { motion, useAnimationControls } from 'framer-motion';
 import EmailCompose2, {
   EmailComposeEmailFieldNames,
   EmailComposeFields,
+  EmailComposeModalRowTypes,
   EmailComposeSelectedDepartmentTypes,
 } from '@components/templates/EmailCompose2';
 import { useQuery,  } from '@tanstack/react-query';
@@ -155,7 +156,7 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
     }))
   }, [templateData]) 
 
-  const convertedSelectEmployersModalRows = useMemo(() => {
+  const convertedSelectEmployersModalRows = useMemo<EmailComposeModalRowTypes[]>(() => {
     if (selectedDepartment === undefined) return [];
     const field = selectedDepartment.field;
     return (
@@ -180,8 +181,9 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
           }
         })
         .map((value) => ({
-          identify: value.name,
           email: value.email,
+          lastName: value.lastName,
+          firstName: value.firstName,
           id: value.email,
         })) ?? []
     );
@@ -232,7 +234,8 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
           name: foundDepartment.name,
           emailInfo:
             foundDepartment.users?.map((value) => ({
-              name: value.identity,
+              firstName: value.first_name,
+              lastName: value.last_name,
               email: value.email,
               id: value.id,
             })) ?? [],
