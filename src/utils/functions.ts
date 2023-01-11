@@ -1,4 +1,5 @@
 import * as htmlToImage from "html-to-image";
+import htmlToDraft from 'html-to-draftjs';
 import draftToHtml from 'draftjs-to-html';
 import { convertToRaw, ContentState, EditorState, convertFromHTML } from 'draft-js';
 
@@ -15,12 +16,17 @@ export const getHtmlStringFromEditorState = (data: any) => {
 
 export const getEditorStateFormHtmlString = (data?: string) => {
   if(!data) return EditorState.createEmpty();
-  const blocksFromHTML = convertFromHTML(data);
-  const state = ContentState.createFromBlockArray(
-    blocksFromHTML.contentBlocks,
-    blocksFromHTML.entityMap,
-  );
-  return EditorState.createWithContent(state)
+  // const blocksFromHTML = convertFromHTML(data);
+  // const state = ContentState.createFromBlockArray(
+  //   blocksFromHTML.contentBlocks,
+  //   blocksFromHTML.entityMap,
+  // );
+  // return EditorState.createWithContent(state)
+  const blocksFromHtml = htmlToDraft(data);
+  const { contentBlocks, entityMap } = blocksFromHtml;
+  const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap);
+  const editorState = EditorState.createWithContent(contentState);
+  return editorState;
 }
 export const addHttp = (url: string) => {
   if (url.match(/^https:\/\/|^http:\/\//g)) 

@@ -64,6 +64,7 @@ const AddEmailTemplate: React.FC<AddEmailTemplateProps> = ({
                   toolbarClassName="toolbar-class w-full bg-white relative top-0 z-50"
                   placeholder="Enter content here..."
                   toolbar={toolbarCustom}
+                  handlePastedText={() => false}
                   onFocus={() => {
                     const toolbar = document.querySelector(
                       '.rdw-editor-toolbar',

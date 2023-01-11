@@ -83,16 +83,6 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
     queryFn: getTemplateListService,
   })
 
-  const convertedEmailTemplateList = useMemo<EmailTemplateItem[] | undefined>(() => {
-    return templateData?.data.map(template => ({
-      id: template.id,
-      description: template.describe,
-      htmlString: template.text_html,
-      name: template.title,
-      imgSrc: template.images[0]?.path ?? ''
-    }))
-  }, [templateData]) 
-
   // const departmentData = departmentListDummy;
 
   // // Convert data
@@ -154,6 +144,16 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
       convertedBccOptions: bccOptions,
     };
   }, [departmentData, selectedEmailHash]);
+
+  const convertedEmailTemplateList = useMemo<EmailTemplateItem[] | undefined>(() => {
+    return templateData?.data.map(template => ({
+      id: template.id,
+      description: template.describe,
+      htmlString: template.text_html,
+      name: template.title,
+      imgSrc: template.images?.[0]?.path ?? ''
+    }))
+  }, [templateData]) 
 
   const convertedSelectEmployersModalRows = useMemo(() => {
     if (selectedDepartment === undefined) return [];
