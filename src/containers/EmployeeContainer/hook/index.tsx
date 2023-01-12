@@ -35,8 +35,8 @@ const initEmployee = {
   password: '',
   phone_number: '',
   position: '',
-  role_id: '',
-  department_id: '',
+  role_id: localStorage.getItem('current_role_id') ?? '',
+  department_id: localStorage.getItem('current_department_id') ?? '',
 };
 
 const initFiles: { [key: string]: FileList | undefined } = {
@@ -82,17 +82,17 @@ export const useCreateEmployeeManagement = () => {
         return;
       }
       console.log('employee data --->', employee);
-      // const avatar = await uploadImage(files.avatar[0]);
+      const avatar = await uploadImage(files.avatar[0]);
       // call create here
       const { id, ...params } = employee;
-      // await createEmployee({
-      //   ...params,
-      //   avatar,
-      //   role_id: +params.role_id,
-      //   department_id: +param.idDepartment!,
-      // });
+      await createEmployee({
+        ...params,
+        avatar,
+        role_id: +params.role_id,
+        department_id: +param.idDepartment!,
+      });
       toast.success('Create employee success!');
-      // navigate('..');
+      navigate(-1);
     } catch (error: any) {
       console.error(new Error(error));
       toast.error(error?.response?.message || 'Has Error');

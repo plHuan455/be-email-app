@@ -2,7 +2,6 @@ import { useTranslation } from '@@packages/localization/src';
 import { deleteDepartment, getDepartmentsByRole } from '@api/deparment';
 import ModalBase from '@components/atoms/ModalBase';
 import AlertDialog, { useAlertDialog } from '@components/molecules/AlertDialog';
-import { LayoutMoreActionInputType } from '@components/molecules/LayoutMoreActionsMenu';
 import SubSidebar from '@components/organisms/SubSidebar';
 import { SubSidebarItem } from '@constants/subMenus';
 import Layout from '@layouts/Layout';
@@ -16,6 +15,7 @@ import { toast } from 'react-toastify';
 // Icon
 import Icon from '@components/atoms/Icon';
 import PeopleIcon from '@mui/icons-material/People';
+import { LayoutMoreActionInputType } from '@components/molecules/LayoutMoreActionsMenu';
 
 const Manager = () => {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
@@ -135,23 +135,23 @@ const Manager = () => {
             <h1 className="font-semibold text-[20px] text-center">{name}</h1>
           </Grid>
           <Grid xs={12}>
-            <p>
-              <b className="min-w-[100px]">Description:</b>
+            <p className="pl-6">
+              <b className="min-w-[100px] inline-block">Description:</b>
               <span>{description}</span>
             </p>
           </Grid>
           <Grid xs={12}>
-            <p>
-              <b className="min-w-[100px]">Address:</b>
+            <p className="pl-6">
+              <b className="min-w-[100px] inline-block">Address:</b>
               <span>{address}</span>
             </p>
           </Grid>
           <Grid xs={12}>
-            <p>
-              <b className="min-w-[100px]">Employees:</b>
-              <span>
+            <p className="pl-6">
+              <b className="min-w-[100px] inline-block">Employees:</b>
+              <span className="inline-flex items-center">
                 {users?.length}
-                <PeopleIcon sx={{ color: '#999999' }} />
+                <PeopleIcon className="pl-2" sx={{ color: '#999999' }} />
               </span>
             </p>
           </Grid>
@@ -194,7 +194,7 @@ const Manager = () => {
         submitLabel=""
         onClose={() => setIsOpenModal(false)}
         style={{
-          minWidth: '30vw',
+          minWidth: '20vw',
           minHeight: '30vh',
         }}>
         {_renderModalContent}

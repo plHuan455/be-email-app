@@ -247,6 +247,7 @@ const DepartmentTemplate: React.FC<DepartmentTemplateProps> = ({
                 name="role_id"
                 onChange={handleChangeSelect}
                 size="small"
+                value={+formData.role_id}
                 options={rolesList?.data ?? []}
                 mapping={{
                   label: (opt) => opt.name,

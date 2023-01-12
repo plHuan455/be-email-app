@@ -74,6 +74,7 @@ export const useCreateDepartmentManagement = () => {
 export const useEditDepartmentManagement = () => {
   const hook = useDepartmentManagement();
   const { param, navigate, department, setDepartment } = hook;
+  const queryClient = useQueryClient();
 
   console.log('param -->', param.id);
   useQuery(
@@ -106,7 +107,8 @@ export const useEditDepartmentManagement = () => {
       console.log('department data --->', department);
       const { id, company_id, ...params } = department;
       await updateDepartment(id, params);
-      navigate('..');
+      queryClient.invalidateQueries({ queryKey: ['manager-get-departments'] });
+      navigate(-1);
       toast.success('Success');
     } catch (error: any) {
       console.error(new Error(error));

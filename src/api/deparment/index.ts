@@ -11,6 +11,14 @@ import {
   PositionResponse,
 } from './interface';
 
+export const deletePositionById = async (
+  id: number,
+): Promise<AxiosResponse<PositionResponse[]>> => {
+  const url = `${POSITION_API}/${id}`;
+  const res = await ApiClient.delete(url, undefined);
+  return res.data;
+};
+
 export const getPositionById = async (
   id: number,
 ): Promise<AxiosResponse<PositionResponse[]>> => {

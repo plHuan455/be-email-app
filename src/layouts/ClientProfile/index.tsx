@@ -47,7 +47,7 @@ const ClientProfileLayout: React.FC<Props> = ({
               <Avatar
                 sx={{ width: '80px', height: '80px' }}
                 className="justify-center items-center mx-auto my-4"
-                src={avatar}
+                src={`http://${avatar}`}
                 alt={`${first_name} ${last_name}`}
               />
             </Grid>

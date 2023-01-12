@@ -26,6 +26,8 @@ const modalDefaultStyle = {
   boxShadow: 24,
   padding: '16px',
   outline: 'none',
+  display: 'flex',
+  flexDirection: 'column',
 };
 
 const ModalBase: React.FC<ModalBaseProps> = ({
@@ -50,20 +52,20 @@ const ModalBase: React.FC<ModalBaseProps> = ({
         timeout: 500,
       }}>
       <Box sx={{ ...modalDefaultStyle, ...style }}>
-        <div className="modal-container h-full">
+        <div className="modal-container h-full flex-1">
           <div className="modal-header">
             <div className="modal-title">{title}</div>
             <div className="modal-close-button" onClick={onClose}>
               X
             </div>
           </div>
-          <div
+          {/* <div
             className="modal-content flex-1"
             style={{
               paddingBottom: Boolean(submitLabel) ? '50px' : 0,
             }}>
-            <div className="modal-content-scroll">{children}</div>
-          </div>
+          </div> */}
+          <div className="modal-content-scroll h-full flex-1">{children}</div>
           {Boolean(submitLabel) && (
             <div className="modal-button-bottom">
               <Button
