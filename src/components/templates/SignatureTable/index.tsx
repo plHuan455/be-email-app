@@ -1,5 +1,5 @@
 import TableActionsMenu from "@components/molecules/TableActionsMenu";
-import { Box, Typography } from "@mui/material";
+import { Box, Checkbox, Typography } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { rem } from "@utils/functions";
 import { useMemo } from "react";
@@ -17,19 +17,39 @@ export interface SignatureTableItemTypes {
 }
 
 interface SignatureTableProps {
+  selectedId?: number,
   api: string;
+  onCheckboxClick: (value: SignatureResponse) => void;
   onDeleteActionClick: (id: number) => void;
   onUpdateActionClick: (id: number) => void;
 }
 
 const SignatureTable: React.FC<SignatureTableProps> = ({
+  selectedId,
   api,
+  onCheckboxClick,
   onDeleteActionClick,
   onUpdateActionClick,
 }) => {
 
   const columns = useMemo<ColumnDef<SignatureResponse, any>[]>(() => {
     return [
+      {
+        id: 'checkbox',
+        accessorFn: (row) => row,
+        cell: (info) => (
+          <Box sx={{textAlign: 'center'}}>
+            <Checkbox
+              sx={{padding: 0}}
+              checked={info.getValue().id === selectedId} 
+              onChange={(_, checked) => onCheckboxClick(info.getValue())}
+            />
+          </Box>
+        ),
+        header: () => <Typography variant="body1" align="center">Selected</Typography>,
+        footer: (props) => props.column.id,
+        size: 100
+      },
       {
         accessorKey: 'id',
         accessorFn: (row) => row.id,
@@ -83,7 +103,7 @@ const SignatureTable: React.FC<SignatureTableProps> = ({
         footer: (props) => props.column.id,
       },
     ]
-  }, []);
+  }, [selectedId]);
   
   return (
     <Box className="t-signatureTable px-6">
