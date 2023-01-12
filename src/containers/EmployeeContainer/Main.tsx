@@ -15,6 +15,7 @@ import AlertDialog, { useAlertDialog } from '@components/molecules/AlertDialog';
 
 const EmployeeContainer = () => {
   const [isOpenModel, setIsOpenModal] = useState<boolean>(false);
+  const [refreshKey, setRefreshKey] = useState(Date.now());
 
   const navigate = useNavigate();
   const { t } = useTranslation();
@@ -113,6 +114,7 @@ const EmployeeContainer = () => {
     onSuccess: () => {
       setIsOpenModal(false);
       onClose();
+      setRefreshKey(Date.now());
     },
   });
 
@@ -155,7 +157,7 @@ const EmployeeContainer = () => {
   return (
     <div className="px-4 flex-1 pb-3">
       <PageCrudData
-        refreshKey={params.idDepartment}
+        refreshKey={params.idDepartment + refreshKey.toString()}
         disabledRowOnClick={false}
         api={`/rbac/department/users/${params.idDepartment}`}
         columns={columns}

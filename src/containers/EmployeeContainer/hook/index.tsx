@@ -82,17 +82,17 @@ export const useCreateEmployeeManagement = () => {
         return;
       }
       console.log('employee data --->', employee);
-      const avatar = await uploadImage(files.avatar[0]);
+      // const avatar = await uploadImage(files.avatar[0]);
       // call create here
       const { id, ...params } = employee;
-      await createEmployee({
-        ...params,
-        avatar,
-        role_id: +params.role_id,
-        department_id: +param.idDepartment!,
-      });
+      // await createEmployee({
+      //   ...params,
+      //   avatar,
+      //   role_id: +params.role_id,
+      //   department_id: +param.idDepartment!,
+      // });
       toast.success('Create employee success!');
-      navigate('..');
+      // navigate('..');
     } catch (error: any) {
       console.error(new Error(error));
       toast.error(error?.response?.message || 'Has Error');

@@ -57,6 +57,7 @@ const DepartmentTemplate: React.FC<DepartmentTemplateProps> = ({
     register,
     handleSubmit: _handleSubmit,
     formState: { errors },
+    setValue,
   } = useForm({
     defaultValues: formData,
     resolver: schema && yupResolver(schema),
@@ -244,7 +245,6 @@ const DepartmentTemplate: React.FC<DepartmentTemplateProps> = ({
                 helperText={errors.role_id?.message?.toString()}
                 id="role_id"
                 name="role_id"
-                defaultValue={!!formData.role_id ? Number(formData.role_id) : 2}
                 onChange={handleChangeSelect}
                 size="small"
                 options={rolesList?.data ?? []}
