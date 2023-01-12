@@ -146,7 +146,7 @@ export const useEditEmployeeManagement = () => {
           department_id: +param.idDepartment!,
         });
       }
-      navigate('..');
+      navigate(-1);
       toast.success('Success');
     } catch (error: any) {
       console.error(new Error(error));

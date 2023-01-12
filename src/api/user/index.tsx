@@ -113,7 +113,7 @@ export const createEmployee = async (params: CreateEmployeeParams) => {
 };
 
 export const updateEmployee = async (id: number, params: UpdateEmployeeParams) => {
-  const url = `${USER__API}/manager`;
+  const url = `${USER__API_ALL}/manage`;
   // const cloneParams = {
   //   avatar: params.avatar,
   //   email: params.email,
@@ -140,28 +140,35 @@ export const createSignatureService = async (params: CreateSignatureParams) => {
   const url = SIGNATURE_API;
   const res = await ApiClient.post(url, undefined, params);
   return res.data;
-}
+};
 
-export const getSignatureListService = async (): Promise<AxiosResponse<SignatureResponse[]>> => {
+export const getSignatureListService = async (): Promise<
+  AxiosResponse<SignatureResponse[]>
+> => {
   const url = SIGNATURE_API;
   const res = await ApiClient.get(url);
   return res.data;
-}
+};
 
-export const getSignatureService = async (id: number): Promise<AxiosResponse<SignatureResponse>> => {
+export const getSignatureService = async (
+  id: number,
+): Promise<AxiosResponse<SignatureResponse>> => {
   const url = `${SIGNATURE_API}/${id}`;
   const res = await ApiClient.get(url);
   return res.data;
-}
+};
 
-export const updateSignatureService = async (id: number, params: UpdateSignatureParams): Promise<AxiosResponse<SignatureResponse>> => {
+export const updateSignatureService = async (
+  id: number,
+  params: UpdateSignatureParams,
+): Promise<AxiosResponse<SignatureResponse>> => {
   const url = `${SIGNATURE_API}/${id}`;
   const res = await ApiClient.put(url, undefined, params);
   return res.data;
-}
+};
 
 export const deleteSignatureService = async (id: number) => {
   const url = `${SIGNATURE_API}/${id}`;
   const res = await ApiClient.delete(url, undefined);
   return res.data;
-}
+};

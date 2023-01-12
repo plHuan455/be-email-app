@@ -12,6 +12,13 @@ import { deleteUser, getUserWithId, UserProfileResponse } from '@api/user';
 import Loading from '@components/atoms/Loading';
 import ClientProfileLayout from '@layouts/ClientProfile';
 import AlertDialog, { useAlertDialog } from '@components/molecules/AlertDialog';
+import LayoutMoreActionMenu, {
+  LayoutMoreActionInputType,
+} from '@components/molecules/LayoutMoreActionsMenu';
+import TableActionsMenu from '@components/molecules/TableActionsMenu';
+
+import DeleteIcon from '@mui/icons-material/Delete';
+import { toast } from 'react-toastify';
 
 const EmployeeContainer = () => {
   const [isOpenModel, setIsOpenModal] = useState<boolean>(false);
@@ -21,9 +28,46 @@ const EmployeeContainer = () => {
   const { t } = useTranslation();
   const params = useParams();
 
+  const {
+    isLoading,
+    callback,
+    description,
+    isOpen,
+    isShowAgreeBtn,
+    onClose,
+    onCloseCallBack,
+    setAlertData,
+    setIsLoading,
+    title,
+  } = useAlertDialog();
+
   useEffect(() => {
     console.log('mount', params);
   });
+
+  const onUpdateActionClick = (id: number) => {
+    navigate(`/departments/department/${params.idDepartment}/employee/edit/${id}`);
+  };
+
+  const onDeleteActionClick = (data) => {
+    setAlertData(
+      '',
+      <div>
+        <p>Are you sure want to "Delete" this user?</p>
+        <p>
+          <b>First Name:</b>
+          <span>{data.first_name}</span>
+        </p>
+        <p>
+          <b>Last Name:</b>
+          <span>{data.last_name}</span>
+        </p>
+      </div>,
+      () => {
+        mutateDeleteUser(data.id);
+      },
+    );
+  };
 
   const columns = React.useMemo<ColumnDef<any, any>[]>(
     () => [
@@ -82,22 +126,32 @@ const EmployeeContainer = () => {
         header: () => <span>{t('Position')}</span>,
         footer: (props) => props.column.id,
       },
+      {
+        accessorKey: '',
+        accessorFn: (row) => row,
+        id: 'actions',
+        cell: (info) => {
+          return (
+            <TableActionsMenu
+              options={[
+                { label: 'update', value: 0, icon: <UpdateIcon /> },
+                { label: 'delete', value: 1, icon: <DeleteIcon /> },
+              ]}
+              onClick={(e) => e.stopPropagation()}
+              onClose={(e) => e.stopPropagation()}
+              onItemClick={(value) => {
+                if (value === 0) onUpdateActionClick(Number(info.getValue().id));
+                if (value === 1) onDeleteActionClick(info.getValue());
+              }}
+            />
+          );
+        },
+        header: () => <span>{t('Actions')}</span>,
+        footer: (props) => props.column.id,
+      },
     ],
     [],
   );
-
-  const {
-    isLoading,
-    callback,
-    description,
-    isOpen,
-    isShowAgreeBtn,
-    onClose,
-    onCloseCallBack,
-    setAlertData,
-    setIsLoading,
-    title,
-  } = useAlertDialog();
 
   const {
     mutate: mutateGetUserProfile,
@@ -115,6 +169,7 @@ const EmployeeContainer = () => {
       setIsOpenModal(false);
       onClose();
       setRefreshKey(Date.now());
+      toast.success(t('Delete Successfully!'));
     },
   });
 

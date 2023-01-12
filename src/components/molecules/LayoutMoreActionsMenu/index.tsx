@@ -49,10 +49,12 @@ const LayoutMoreActionMenu: React.FC<LayoutMoreActionMenuProps> = ({
   const open = Boolean(anchorEl);
 
   const handleOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
+  const handleClose = (e: React.MouseEvent) => {
+    e.stopPropagation();
     setAnchorEl(null);
   };
 
@@ -63,9 +65,9 @@ const LayoutMoreActionMenu: React.FC<LayoutMoreActionMenuProps> = ({
       return (
         <MenuItem
           key={action.type}
-          onClick={() => {
+          onClick={(e) => {
             action.onClick();
-            handleClose();
+            handleClose(e);
           }}
           sx={{
             svg: {
