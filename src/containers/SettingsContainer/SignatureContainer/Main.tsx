@@ -5,6 +5,10 @@ import {SIGNATURE_API} from '@constants/UserAPI'
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteSignatureService } from '@api/user';
 import { toast } from 'react-toastify';
+import { useState } from 'react';
+import { SignatureResponse } from '@api/user/interface';
+import { useAppDispatch, useAppSelector } from '@redux/configureStore';
+import { setSignature } from '@redux/User/reducer';
 
 export interface SignItem {
   id: number;
@@ -16,6 +20,12 @@ export interface SignItem {
 }
 
 const SignatureContainer = () => {
+  const dispatch = useAppDispatch();
+
+  const currSignature = useAppSelector(state => state.user.signature);
+
+  console.log(currSignature);
+
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
@@ -30,12 +40,19 @@ const SignatureContainer = () => {
       toast.error('Cant\'t delete signature');
     }
   })
+
+  const handleSignatureCheckBoxClick = (value: SignatureResponse) => {
+    if(value.id === currSignature?.id) return
+    dispatch(setSignature(value))
+  }
   return (
     <>
       <SignatureTable
+        selectedId={currSignature?.id}
         api={SIGNATURE_API}
         onDeleteActionClick={(id) => updateSignatureMutate(id)}
         onUpdateActionClick={(id) => navigate(`edit/${id}`)}
+        onCheckboxClick={handleSignatureCheckBoxClick}
       />
     </>
   );
