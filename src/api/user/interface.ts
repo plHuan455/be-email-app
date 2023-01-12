@@ -18,3 +18,16 @@ export interface DeleteUserResponse {
   data?: string;
   message?: string;
 }
+
+export interface CreateSignatureParams {
+  name: string;
+  text_html: string;
+}
+
+export type UpdateSignatureParams = Partial<CreateSignatureParams>
+
+export interface SignatureResponse {
+  name: string;
+  text_html: string;
+  id: number;
+}
