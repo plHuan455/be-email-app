@@ -19,6 +19,7 @@ export interface SignatureTableItemTypes {
 interface SignatureTableProps {
   selectedId?: number,
   api: string;
+  queryKey: string;
   onCheckboxClick: (value: SignatureResponse) => void;
   onDeleteActionClick: (id: number) => void;
   onUpdateActionClick: (id: number) => void;
@@ -26,6 +27,7 @@ interface SignatureTableProps {
 
 const SignatureTable: React.FC<SignatureTableProps> = ({
   selectedId,
+  queryKey,
   api,
   onCheckboxClick,
   onDeleteActionClick,
@@ -117,7 +119,7 @@ const SignatureTable: React.FC<SignatureTableProps> = ({
         }}
       >
         <PageCrudData
-          refreshKey="delete-signature"
+          refreshKey={queryKey}
           disabledRowOnClick={false}
           api={api}
           columns={columns}

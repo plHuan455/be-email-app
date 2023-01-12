@@ -63,7 +63,7 @@ const PageCrudData: FC<PageCrudDataProps> = (props) => {
   );
 
   const dataQuery = useQuery(
-    [pagingModel, sortModel, debouceFilterModal, props.refreshKey],
+    [props.refreshKey, pagingModel, sortModel, debouceFilterModal],
     () => fetchingData(pagingModel),
     {
       keepPreviousData: false,
