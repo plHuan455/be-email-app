@@ -20,6 +20,7 @@ export interface SignItem {
 }
 
 const SignatureContainer = () => {
+  const QUERY_KEY = "delete-signature";
   const dispatch = useAppDispatch();
 
   const currSignature = useAppSelector(state => state.user.signature);
@@ -32,7 +33,9 @@ const SignatureContainer = () => {
     mutationFn: deleteSignatureService,
     onSuccess: () => {
       toast.success('Signature has been deleted');
-      queryClient.invalidateQueries({queryKey: ['delete-signature']})
+      queryClient.invalidateQueries({
+        queryKey: [QUERY_KEY]
+      })
     },
     onError: () => {
       toast.error('Cant\'t delete signature');
@@ -46,6 +49,7 @@ const SignatureContainer = () => {
   return (
     <>
       <SignatureTable
+        queryKey={QUERY_KEY}
         selectedId={currSignature?.id}
         api={SIGNATURE_API}
         onDeleteActionClick={(id) => updateSignatureMutate(id)}

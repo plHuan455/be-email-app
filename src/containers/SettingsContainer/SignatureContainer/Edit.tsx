@@ -25,7 +25,6 @@ const UpdateSignContainer = () => {
     onSuccess: (res) => {
       method.setValue('name', res.data.name),
       method.setValue('editor', getEditorStateFormHtmlString(res.data.text_html))
-      navigate('/setting/signature');
     },
     onError: (res) => {
       toast.error("Can't update signature")
@@ -37,6 +36,7 @@ const UpdateSignContainer = () => {
     mutationFn: (params: UpdateSignatureParams) => updateSignatureService(Number(id), params),
     onSuccess: () => {
       toast.success('Signature has been updated');
+      navigate('/setting/signature');
     },
     onError: (err: any) => {
       toast.error(`Can't update signature${err?.response?.data?.message ? ` (${err?.response?.data?.message})`: ''}`);
