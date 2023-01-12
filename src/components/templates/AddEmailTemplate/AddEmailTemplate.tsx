@@ -51,6 +51,19 @@ const AddEmailTemplate: React.FC<AddEmailTemplateProps> = ({
               '& .public-DraftEditor-content': {
                 minHeight: rem(400),
               },
+              // Align Text
+              '& .rdw-center-aligned-block *': {
+                textAlign: 'center'
+              },
+              '& .rdw-right-aligned-block *': {
+                textAlign: 'right'
+              },
+              '& .rdw-left-aligned-block *': {
+                textAlign: 'left'
+              },
+              '& .rdw-justify-aligned-block *': {
+                textAlign: 'justify',
+              }
             }}
           >
             <Controller

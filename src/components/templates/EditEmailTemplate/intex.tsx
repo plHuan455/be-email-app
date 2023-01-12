@@ -126,34 +126,52 @@ const EditEmailTemplate: React.FC<EditEmailTemplateProps> = ({
                   },
                 }}
               >
-                <Controller
-                  name="editor"
-                  render={({ field: { value, onChange } }) => (
-                    <Editor
-                      editorState={value}
-                      onEditorStateChange={(data) => onChange(data)}
-                      wrapperClassName="wrapper-class flex flex-col relative"
-                      editorClassName="editor-class border flex-1"
-                      toolbarClassName="toolbar-class w-full bg-white relative top-0 z-50"
-                      placeholder="Enter content here..."
-                      toolbar={toolbarCustom}
-                      onFocus={() => {
-                        const toolbar = document.querySelector(
-                          '.rdw-editor-toolbar',
-                        ) as HTMLElement;
+                <Box 
+                  sx={{
+                    // Align Text
+                    '& .rdw-center-aligned-block *': {
+                      textAlign: 'center'
+                    },
+                    '& .rdw-right-aligned-block *': {
+                      textAlign: 'right'
+                    },
+                    '& .rdw-left-aligned-block *': {
+                      textAlign: 'left'
+                    },
+                    '& .rdw-justify-aligned-block *': {
+                      textAlign: 'justify',
+                    }
+                  }}
+                >
+                  <Controller
+                    name="editor"
+                    render={({ field: { value, onChange } }) => (
+                      <Editor
+                        editorState={value}
+                        onEditorStateChange={(data) => onChange(data)}
+                        wrapperClassName="wrapper-class flex flex-col relative"
+                        editorClassName="editor-class border flex-1"
+                        toolbarClassName="toolbar-class w-full bg-white relative top-0 z-50"
+                        placeholder="Enter content here..."
+                        toolbar={toolbarCustom}
+                        onFocus={() => {
+                          const toolbar = document.querySelector(
+                            '.rdw-editor-toolbar',
+                          ) as HTMLElement;
 
-                        toolbar.style.position = 'sticky';
-                      }}
-                      onBlur={() => {
-                        const toolbar = document.querySelector(
-                          '.rdw-editor-toolbar',
-                        ) as HTMLElement;
+                          toolbar.style.position = 'sticky';
+                        }}
+                        onBlur={() => {
+                          const toolbar = document.querySelector(
+                            '.rdw-editor-toolbar',
+                          ) as HTMLElement;
 
-                        toolbar.style.position = 'relative';
-                      }}
-                    />
-                  )}
-                />
+                          toolbar.style.position = 'relative';
+                        }}
+                      />
+                    )}
+                  />
+                </Box>
               </Box>
             </Box>
             <Box display="flex" justifyContent="flex-end" sx={{ padding: rem(16), backgroundColor: '#F1F1F6' }}>
