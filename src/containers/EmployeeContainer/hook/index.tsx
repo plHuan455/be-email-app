@@ -157,8 +157,8 @@ export const useEditEmployeeManagement = () => {
   const handleDelete = async () => {
     try {
       // call await delete
-      // await deleteEmployee(Number(param.employee_id));
-      navigate('..');
+      await deleteEmployee(Number(param.id));
+      navigate(-1);
       toast.success('Success');
     } catch (error: any) {
       console.error(new Error(error));

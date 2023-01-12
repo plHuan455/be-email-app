@@ -8,9 +8,14 @@ interface Props {
   clientProfileData?: UserProfileResponse;
 
   onEdit: (id: number) => void;
+  onDelete: (user: UserProfileResponse) => void;
 }
 
-const ClientProfileLayout: React.FC<Props> = ({ clientProfileData, onEdit }) => {
+const ClientProfileLayout: React.FC<Props> = ({
+  clientProfileData,
+  onEdit,
+  onDelete,
+}) => {
   if (isEmpty(clientProfileData)) return null;
 
   const {
@@ -106,7 +111,9 @@ const ClientProfileLayout: React.FC<Props> = ({ clientProfileData, onEdit }) => 
         </Grid>
       </Box>
       <Box className="flex items-end justify-end gap-2 border-t border-slate-500 pt-2">
-        <Button color="error">Delete</Button>
+        <Button color="error" onClick={() => onDelete(clientProfileData)}>
+          Delete
+        </Button>
         <Button onClick={() => onEdit(id)}>Update</Button>
       </Box>
     </Box>

@@ -8,9 +8,10 @@ import { useNavigate, useParams } from 'react-router-dom';
 import UpdateIcon from '@mui/icons-material/Update';
 import ModalBase from '@components/atoms/ModalBase';
 import { useMutation } from '@tanstack/react-query';
-import { getUserWithId } from '@api/user';
+import { deleteUser, getUserWithId, UserProfileResponse } from '@api/user';
 import Loading from '@components/atoms/Loading';
 import ClientProfileLayout from '@layouts/ClientProfile';
+import AlertDialog, { useAlertDialog } from '@components/molecules/AlertDialog';
 
 const EmployeeContainer = () => {
   const [isOpenModel, setIsOpenModal] = useState<boolean>(false);
@@ -85,6 +86,19 @@ const EmployeeContainer = () => {
   );
 
   const {
+    isLoading,
+    callback,
+    description,
+    isOpen,
+    isShowAgreeBtn,
+    onClose,
+    onCloseCallBack,
+    setAlertData,
+    setIsLoading,
+    title,
+  } = useAlertDialog();
+
+  const {
     mutate: mutateGetUserProfile,
     data: dataMutateGetUserProfile,
     isLoading: isLoadingGetUserProfile,
@@ -93,9 +107,38 @@ const EmployeeContainer = () => {
     mutationFn: getUserWithId,
   });
 
+  const { mutate: mutateDeleteUser } = useMutation({
+    mutationKey: ['EmployeeContainer-delete-user'],
+    mutationFn: deleteUser,
+    onSuccess: () => {
+      setIsOpenModal(false);
+      onClose();
+    },
+  });
+
   const handleOnUpdateClick = (id: number) => {
     setIsOpenModal(false);
     navigate(`/departments/department/${params.idDepartment}/employee/edit/${id}`);
+  };
+
+  const handleOnDeleteClick = (data: UserProfileResponse) => {
+    setAlertData(
+      '',
+      <div>
+        <p>Are you sure want to "Delete" this user?</p>
+        <p>
+          <b>First Name:</b>
+          <span>{data.first_name}</span>
+        </p>
+        <p>
+          <b>Last Name:</b>
+          <span>{data.last_name}</span>
+        </p>
+      </div>,
+      () => {
+        mutateDeleteUser(data.id);
+      },
+    );
   };
 
   const rowClick = (row) => {
@@ -118,6 +161,15 @@ const EmployeeContainer = () => {
         columns={columns}
         rowOnClick={(row) => rowClick(row)}
       />
+      <AlertDialog
+        descriptionLabel={description}
+        isOpen={isOpen}
+        onClose={onClose}
+        titleLabel={title}
+        isLoading={isLoading}
+        onAgree={callback}
+        onDisagree={onClose}
+      />
       <ModalBase
         style={{ width: '80vw', minHeight: '50vh' }}
         isOpen={isOpenModel}
@@ -129,6 +181,7 @@ const EmployeeContainer = () => {
         ) : (
           <ClientProfileLayout
             clientProfileData={dataMutateGetUserProfile?.data}
+            onDelete={handleOnDeleteClick}
             onEdit={handleOnUpdateClick}
           />
         )}

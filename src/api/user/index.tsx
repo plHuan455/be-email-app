@@ -131,7 +131,7 @@ export const updateEmployee = async (id: number, params: UpdateEmployeeParams) =
 export const deleteUser = async (
   id: number,
 ): Promise<AxiosResponse<DeleteUserResponse>> => {
-  const url = USER__API;
+  const url = USER__API_ALL;
   const res = await ApiClient.delete(`${url}/${id}`, undefined);
   return res.data;
 };

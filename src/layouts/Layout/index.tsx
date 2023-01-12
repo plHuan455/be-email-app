@@ -1,6 +1,9 @@
 import ArrowLeft from '@assets/icon/ArrowLeft';
 import Icon from '@components/atoms/Icon';
 import IconButton from '@components/atoms/IconButton';
+import LayoutMoreActionMenu, {
+  LayoutMoreActionInputType,
+} from '@components/molecules/LayoutMoreActionsMenu';
 import SearchStartWithIcon from '@components/molecules/Search';
 import EmailsListActionsContainer from '@containers/EmailsListActionsContainer';
 import SidebarRightContainer from '@containers/SideBarRightContainer';
@@ -86,17 +89,17 @@ const MainHaveActions: React.FC<
     rightHeaderTabs?: React.ReactNode;
     onClickAdd?: React.MouseEventHandler<HTMLButtonElement>;
     onSearch?: () => void;
+    moreActionsList?: LayoutMoreActionInputType[];
   }
 > = ({
   children,
   onComback,
+  moreActionsList,
   isHaveHeader = true,
-  isHaveSearch = false,
   isFull = false,
   headTitle,
   rightHeaderTabs,
   onClickAdd,
-  onSearch = () => {},
 }) => {
   // useLocation
   const location = useLocation();
@@ -153,14 +156,19 @@ const MainHaveActions: React.FC<
                 )}
                 {rightHeaderTabs}
               </Box>
-              {onClickAdd && (
-                <IconButton
-                  className="bg-[#554CFF] hover:bg-[#554CFF] p-3"
-                  size="small"
-                  onClick={onClickAdd}>
-                  <Icon icon={'plus'} rawColor={'white'} width={16} height={16} />
-                </IconButton>
-              )}
+              <Box className="flex gap-2">
+                {moreActionsList && (
+                  <LayoutMoreActionMenu moreActionsList={moreActionsList ?? []} />
+                )}
+                {onClickAdd && (
+                  <IconButton
+                    className="bg-[#554CFF] hover:bg-[#554CFF] p-3"
+                    size="small"
+                    onClick={onClickAdd}>
+                    <Icon icon={'plus'} rawColor={'white'} width={16} height={16} />
+                  </IconButton>
+                )}
+              </Box>
             </Box>
           )}
           {children}
@@ -187,34 +195,31 @@ const MainQueryClient: React.FC<
   PropsWithChildren & {
     onComback?: () => void;
     isHaveHeader?: boolean;
-    isHaveSearch?: boolean;
     isFull?: boolean;
     headTitle?: string;
     rightHeaderTabs?: React.ReactNode;
     onClickAdd?: React.MouseEventHandler<HTMLButtonElement>;
-    onSearch?: () => void;
+    moreActionsList?: LayoutMoreActionInputType[];
   }
 > = ({
   children,
   onComback,
   isHaveHeader = true,
-  isHaveSearch = false,
   isFull = false,
   rightHeaderTabs,
   onClickAdd,
   headTitle,
-  onSearch = () => {},
+  moreActionsList,
 }) => {
   return (
     <MainHaveActions
       onComback={onComback}
       isHaveHeader={isHaveHeader}
-      isHaveSearch={isHaveSearch}
       isFull={isFull}
       headTitle={headTitle}
       onClickAdd={onClickAdd}
       rightHeaderTabs={rightHeaderTabs}
-      onSearch={onSearch}>
+      moreActionsList={moreActionsList}>
       {/* <QueryClientProvider client={queryClient}> */}
       {children}
       {/* </QueryClientProvider> */}
