@@ -9,7 +9,7 @@ import { useQuery,  } from '@tanstack/react-query';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import utc from 'dayjs/plugin/utc';
 import dayjs, { Dayjs } from 'dayjs';
-import { useAppSelector } from '@redux/configureStore';
+import { useAppDispatch, useAppSelector } from '@redux/configureStore';
 import {
   getEditorStateFormHtmlString,
   rem,
@@ -32,6 +32,7 @@ interface EmailComposeContainerProps {}
 
 const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
   const privateHashtags = useAppSelector((state) => state.email.privateHashtags);
+  const currSignature = useAppSelector((state) => state.user.signature);
 
   const [isOpenCalendarSelect, setIsOpenCalendarSelect] = useState(false);
   const [selectedDepartment, setSelectedDepartment] =
@@ -334,6 +335,7 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
           attachFiles={attachFiles}
           isFullScreen={isFullScreen}
           isShowCCForm={isShowCCForm}
+          signature={currSignature ? {id: currSignature.id, name: currSignature.name, htmlString: currSignature.text_html} : undefined}
           selectEmployersModalRows={convertedSelectEmployersModalRows}
           toOptions={convertedToOptions}
           ccOptions={convertedCcOptions}
