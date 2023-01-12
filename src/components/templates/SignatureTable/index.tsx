@@ -91,7 +91,9 @@ const SignatureTable: React.FC<SignatureTableProps> = ({
         cell: (info) => (
           <Box sx={{display: 'fex', justifyContent: 'center'}}>
             <TableActionsMenu 
-              options={[{label: 'update', value: 0, icon: <UpdateIcon />}, {label: 'delete', value: 1, icon: <DeleteIcon />}]} 
+              options={[{label: 'update', value: 0, icon: <UpdateIcon />}, {label: 'delete', value: 1, icon: <DeleteIcon />}]}
+              onClick={(e) => e.stopPropagation()}
+              onClose={(e) => e.stopPropagation()}
               onItemClick={(value)=> {
                 if(value === 0) onUpdateActionClick(Number(info.getValue()))
                 if(value === 1) onDeleteActionClick(Number(info.getValue()));
@@ -107,13 +109,19 @@ const SignatureTable: React.FC<SignatureTableProps> = ({
   
   return (
     <Box className="t-signatureTable px-6">
-      <Box sx={{'& .MuiTableCell-root': { verticalAlign: 'top'}}}>
+      <Box sx={{
+        '& .MuiTableCell-root': { verticalAlign: 'top'},
+        '& .MuiTableRow-root:not(.MuiTableRow-head)': {
+          cursor: 'pointer'
+        }
+        }}
+      >
         <PageCrudData
           refreshKey="delete-signature"
           disabledRowOnClick={false}
           api={api}
           columns={columns}
-          rowOnClick={(row) => {}}
+          rowOnClick={(row) => {onCheckboxClick(row.original)}}
         />
       </Box>
     </Box>

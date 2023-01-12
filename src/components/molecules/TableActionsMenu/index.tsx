@@ -1,5 +1,5 @@
 import { Button, Menu, MenuItem, MenuProps, SxProps, Theme } from "@mui/material";
-import { useState } from "react";
+import React, { useState } from "react";
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 import { rem } from "@utils/functions";
 import styled from "styled-components";
@@ -16,7 +16,7 @@ interface TableActionsMenuProps {
   sx?: SxProps<Theme>;
   options: MenuOptionTypes[];
   onItemClick: (value: string | number, e: React.MouseEvent<HTMLElement>) => void;
-  onClose?: () => void;
+  onClose?: (e: React.MouseEvent) => void;
   onClick?: (e: React.MouseEvent<HTMLElement>) => void;
 }
 
@@ -56,9 +56,9 @@ const TableActionsMenu: React.FC<TableActionsMenuProps> = ({
     setAnchorEl(event.currentTarget);
     onClick && onClick(event);
   };
-  const handleClose = () => {
+  const handleClose = (e) => {
     setAnchorEl(null);
-    onClose && onClose();
+    onClose && onClose(e);
   };
 
   return (<div className="m-tableActionsMenu">
@@ -77,7 +77,7 @@ const TableActionsMenu: React.FC<TableActionsMenuProps> = ({
             key={`table-actions-menu-${option.value}`}
             onClick={(e) => {
               onItemClick(option.value, e)
-              if(isAuto) handleClose();
+              if(isAuto) handleClose(e);
             }}
             disableRipple
           >

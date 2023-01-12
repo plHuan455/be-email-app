@@ -24,8 +24,6 @@ const SignatureContainer = () => {
 
   const currSignature = useAppSelector(state => state.user.signature);
 
-  console.log(currSignature);
-
   const queryClient = useQueryClient();
   const navigate = useNavigate();
 
@@ -43,7 +41,7 @@ const SignatureContainer = () => {
 
   const handleSignatureCheckBoxClick = (value: SignatureResponse) => {
     if(value.id === currSignature?.id) return
-    dispatch(setSignature(value))
+    dispatch(setSignature(value.id === currSignature?.id ? undefined : value))
   }
   return (
     <>

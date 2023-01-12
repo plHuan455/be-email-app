@@ -67,6 +67,11 @@ export const createCustomFiles = (files: FileList | File[] | null) => {
   });
 }
 
+export const parseDataFromLocalStorage = (localStorageKey: string) => {
+  const localStorageData = localStorage.getItem(localStorageKey);
+  return localStorageData ? JSON.parse(localStorageData) : undefined
+}
+
 export const rem = (pixel: number) => {
   return `${pixel / 16}rem`;
 }

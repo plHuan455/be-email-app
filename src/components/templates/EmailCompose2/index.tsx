@@ -54,6 +54,12 @@ export interface CustomFile extends File {
 
 export type EmailComposeEmailFieldNames = 'to' | 'cc' | 'bcc';
 
+export interface EmailComposeSignatureType {
+  id: number;
+  name: string;
+  htmlString: string;
+}
+
 export interface EmailComposeFields {
   to2: AutoCompleteGroupValueTypes[];
   to: InputContactBlock[];
@@ -98,6 +104,7 @@ interface EmailComposeProps {
   method: UseFormReturn<EmailComposeFields>;
   index?: number;
   isSubmitting?: boolean;
+  signature?: EmailComposeSignatureType;
   isOpenSelectEmployersModal?: boolean;
   isFullScreen?: boolean;
   selectedDepartment?: EmailComposeSelectedDepartmentTypes;
@@ -148,6 +155,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
   inputContactBlocks,
   method,
   index,
+  signature,
   isSubmitting = false,
   isFullScreen = false,
   isOpenSelectEmployersModal = false,
@@ -442,8 +450,10 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                       />
                     )}
                   />
-
-                  <SignatureTmpTemplate />
+                  {signature && <Box>
+                    <Typography dangerouslySetInnerHTML={{__html: signature.htmlString}}></Typography>
+                  </Box>}
+                  {/* <SignatureTmpTemplate /> */}
                   <Box className="mt-4">
                     <Box>
                       <Controller

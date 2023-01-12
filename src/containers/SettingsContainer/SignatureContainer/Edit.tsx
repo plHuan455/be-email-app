@@ -7,12 +7,9 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { useForm } from 'react-hook-form';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
-import { useEditStoreManagement } from './hook';
-import SignatureTemplate from './template';
 
 const UpdateSignContainer = () => {
   const { id } = useParams();
-
   const navigate = useNavigate();
   const method = useForm<CreateSignatureFields>({
     defaultValues: {
@@ -28,6 +25,10 @@ const UpdateSignContainer = () => {
     onSuccess: (res) => {
       method.setValue('name', res.data.name),
       method.setValue('editor', getEditorStateFormHtmlString(res.data.text_html))
+      navigate('/setting/signature');
+    },
+    onError: (res) => {
+      toast.error("Can't update signature")
     }
   })
 
