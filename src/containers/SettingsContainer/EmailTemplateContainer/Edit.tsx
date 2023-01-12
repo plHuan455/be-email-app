@@ -7,13 +7,14 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { addHttp, createImgFileFromElement, getEditorStateFormHtmlString, getHtmlStringFromEditorState } from "@utils/functions";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 
 interface EditEmailTemplateContainerProps { }
 
 const EditEmailTemplateContainer: React.FC<EditEmailTemplateContainerProps> = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const method = useForm<EditEmailTemplateFields>({
     defaultValues: {
@@ -55,7 +56,9 @@ const EditEmailTemplateContainer: React.FC<EditEmailTemplateContainerProps> = ()
       )
     },
     onSuccess: () => {
-      toast.success('Template have been updated')
+      toast.success('Template have been updated');
+      navigate('/setting/email-template')
+
     },
     onError: () => {
       toast.error('Can\'t update template')

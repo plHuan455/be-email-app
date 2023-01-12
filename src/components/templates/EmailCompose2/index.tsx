@@ -34,10 +34,6 @@ import HashtagInput, {
   HashtagOptionTypes,
 } from '@components/atoms/Input/HashtagInput';
 import { getDefaultSignId } from '@redux/selector';
-import ModalDrawSignature from '@components/atoms/ModalDrawSignature';
-import ModalChooseSignature from '@components/atoms/ModalChooseSignature';
-import { rowsSign } from '@containers/SettingsContainer/SignatureContainer/Main';
-import { parseSignToHtml } from '@utils/parseSignToHtml';
 import React from 'react';
 import classNames from 'classnames';
 import _ from 'lodash';

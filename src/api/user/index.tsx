@@ -4,6 +4,7 @@ import ApiClient, { CuSAxiosResponse } from '@api/ApiClient';
 import { AxiosResponse } from 'axios';
 import {
   GET__USER__API,
+  SIGNATURE_API,
   UPLOAD_FILE,
   USER_PROFILE,
   USER__API,
@@ -12,8 +13,11 @@ import {
 } from '@constants/UserAPI';
 import {
   CreateEmployeeParams,
+  CreateSignatureParams,
   DeleteUserResponse,
+  SignatureResponse,
   UpdateEmployeeParams,
+  UpdateSignatureParams,
 } from './interface';
 
 // export interface Receiver {}
@@ -131,3 +135,33 @@ export const deleteUser = async (
   const res = await ApiClient.delete(`${url}/${id}`, undefined);
   return res.data;
 };
+
+export const createSignatureService = async (params: CreateSignatureParams) => {
+  const url = SIGNATURE_API;
+  const res = await ApiClient.post(url, undefined, params);
+  return res.data;
+}
+
+export const getSignatureListService = async (): Promise<AxiosResponse<SignatureResponse[]>> => {
+  const url = SIGNATURE_API;
+  const res = await ApiClient.get(url);
+  return res.data;
+}
+
+export const getSignatureService = async (id: number): Promise<AxiosResponse<SignatureResponse>> => {
+  const url = `${SIGNATURE_API}/${id}`;
+  const res = await ApiClient.get(url);
+  return res.data;
+}
+
+export const updateSignatureService = async (id: number, params: UpdateSignatureParams): Promise<AxiosResponse<SignatureResponse>> => {
+  const url = `${SIGNATURE_API}/${id}`;
+  const res = await ApiClient.put(url, undefined, params);
+  return res.data;
+}
+
+export const deleteSignatureService = async (id: number) => {
+  const url = `${SIGNATURE_API}/${id}`;
+  const res = await ApiClient.delete(url, undefined);
+  return res.data;
+}

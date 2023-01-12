@@ -4,3 +4,4 @@ export const USER__API__GET = '/email/user';
 export const UPLOAD_FILE = '/upload';
 export const GET__USER__API = '/user/cond';
 export const USER_PROFILE = '/user/setting/profile';
+export const SIGNATURE_API = '/user/signature';
