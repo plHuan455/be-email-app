@@ -421,6 +421,19 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                     '& .public-DraftEditor-content': {
                       minHeight: '100px',
                     },
+                    // Align Text
+                    '& .rdw-center-aligned-block *': {
+                      textAlign: 'center'
+                    },
+                    '& .rdw-right-aligned-block *': {
+                      textAlign: 'right'
+                    },
+                    '& .rdw-left-aligned-block *': {
+                      textAlign: 'left'
+                    },
+                    '& .rdw-justify-aligned-block *': {
+                      textAlign: 'justify',
+                    }
                   }}>
                   <Controller
                     name="content"
