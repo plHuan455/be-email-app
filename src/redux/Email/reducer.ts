@@ -1,19 +1,15 @@
 import { EmailResponse } from '@api/email';
-import { EmailList, StatusOptions } from '@components/molecules/ModalEmailList';
+import { StatusOptions } from '@components/molecules/ModalEmailList';
 import { Email, UserInfo } from '@components/organisms/Email/Interface';
 import { AttachFile, UserRead } from '@components/organisms/EmailMess';
-import MinimizeEmail from '@components/organisms/MinimizeEmail';
 import { MinimizeEmailColor } from '@components/organisms/MinimizeEmail/interface';
 import { MinimizeEmailTypes } from '@components/templates/MinimizeEmailList';
-import { emailData } from '@layouts/EmailStatusBar';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { stat } from 'fs';
-import { clone } from 'lodash';
-import { act } from 'react-dom/test-utils';
-import { toast } from 'react-toastify';
+import { parseDataFromLocalStorage } from '@utils/functions';
 
 export const LOCAL_STORAGE_MINIMIZE_EMAILS = 'minimize_emails';
 export const LOCAL_STORAGE_PRIVATE_HASHTAG = 'private_hashtag';
+export const LOCAL_STORAGE_TAB_HISTORY = 'tab_history';
 
 export interface HashtagTabs {
   title: string;
@@ -21,6 +17,10 @@ export interface HashtagTabs {
   status: StatusOptions;
   notiNumber: number;
   color: string;
+}
+
+export interface TabHistoryTypes {
+  [key: string]: 'me' | 'all'
 }
 
 const userReadList: UserRead[] = [
@@ -235,6 +235,7 @@ export interface EmailState {
   deletedEmailsList: EmailResponse[];
   spamEmailsList: EmailResponse[];
   unreadEmailsList: EmailResponse[];
+  tabHistory: TabHistoryTypes;
   isLoading: boolean;
 }
 
@@ -254,6 +255,7 @@ const initialState: EmailState = {
   spamEmailsList: [],
   unreadEmailsList: [],
   isLoading: false,
+  tabHistory: parseDataFromLocalStorage(LOCAL_STORAGE_TAB_HISTORY) ?? {}
 };
 
 const EmailSlice = createSlice({
@@ -424,6 +426,11 @@ const EmailSlice = createSlice({
       );
       return state;
     },
+    addTabHistory(state, action: PayloadAction<{catalog: string, tab: 'all' | 'me'}>) {
+      state.tabHistory[action.payload.catalog] = action.payload.tab;
+      localStorage.setItem(LOCAL_STORAGE_TAB_HISTORY, JSON.stringify(state.tabHistory))
+      return state;
+    }
   },
 });
 
@@ -445,6 +452,7 @@ export const {
   updateMinimizeEmail,
   updateMinimizeEmailId,
   deleteMinimizeEmail,
+  addTabHistory,
 } = EmailSlice.actions;
 
 export default EmailSlice.reducer;

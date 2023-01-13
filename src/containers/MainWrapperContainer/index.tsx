@@ -163,7 +163,7 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
       mutationKey: ['email-compose-submit'],
       mutationFn: sendEmail,
       onSuccess: (res) => {
-        navigate(`/emails/catalog/pending/${res.data.email.writer_id}`);
+        navigate(`/emails/catalog/pending/${res.data.email.writer_id}?tab=me`);
         queryClient.invalidateQueries({ queryKey: ['get-all-email-status'] });
         setShowMinimizeEmailId((preState) => {
           if (preState?.id !== undefined) {
