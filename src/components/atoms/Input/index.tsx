@@ -84,11 +84,18 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>((props, ref) => {
           </label>
         )}
         <div
-          className={classNames('relative h-full', {
-            'mt-1': props.noMargin,
-            'mb-4': props.noMargin,
-            'input-fullWidth': props.fullWidth,
-          })}>
+          className={classNames(
+            'relative h-full flex bg-white',
+            props.borderColor,
+            props.borderRadius || 'rounded-3xl',
+            props.fontColor,
+            props.className,
+            {
+              'mt-1': props.noMargin,
+              'mb-4': props.noMargin,
+              'input-fullWidth': props.fullWidth,
+            },
+          )}>
           <span className={classNames('absolute icon-before', props.fontColor)}>
             {props.iconBefore}
           </span>
@@ -96,12 +103,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>((props, ref) => {
             {...sameProps}
             type={props.type}
             className={classNames(
-              'input ',
-              mapModifiers('input border'),
-              props.borderColor,
-              props.borderRadius || 'rounded-lg',
-              props.fontColor,
-              props.className,
+              'input flex-1 bg-transparent',
               {
                 'input-fullWidth': props.fullWidth,
                 'input-select-template': props.variant === 'select',
@@ -114,7 +116,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>((props, ref) => {
             {props.iconAfter}
           </span>
           {props.inputMode == 'search' && (
-            <ButtonBase sx={{ position: 'absolute', right: '15px', top: '10px' }}>
+            <ButtonBase sx={{ paddingInline: '0.5rem' }}>
               <Search width={15} height={15} color={'#827CFF'} />
             </ButtonBase>
           )}

@@ -16,6 +16,7 @@ import { toast } from 'react-toastify';
 import Icon from '@components/atoms/Icon';
 import PeopleIcon from '@mui/icons-material/People';
 import { LayoutMoreActionInputType } from '@components/molecules/LayoutMoreActionsMenu';
+import useLocalStorage from '@hooks/useLocalStorage';
 
 const Manager = () => {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
@@ -28,6 +29,9 @@ const Manager = () => {
   const ROOT_NAVIGATE = '/departments';
 
   const { t } = useTranslation();
+
+  const [currentRole] = useLocalStorage('current_role', '');
+  const [currentDepartmentId] = useLocalStorage('department_id', '');
 
   const outlet = useOutlet();
 
@@ -42,7 +46,9 @@ const Manager = () => {
     queryKey: ['manager-get-departments'],
     queryFn: getDepartmentsByRole,
     onSuccess: (res) => {
-      const resData = res.data;
+      const resData = currentRole.toLowerCase().startsWith('employee')
+        ? res.data.filter((value) => value.id.toString() === currentDepartmentId)
+        : res.data;
 
       const convertToMenus: SubSidebarItem[] = resData.map((data) => {
         const { name, id } = data;

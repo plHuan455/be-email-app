@@ -82,7 +82,7 @@ function LoginContainer() {
           // set current_email to 'email
           localStorage.setItem('current_email', email);
           localStorage.setItem('department_id', `${currentUser.data.department_id}`);
-          console.log(currentUser.data.role_id.toString());
+          localStorage.setItem('position', `${currentUser.data.position}`);
           localStorage.setItem(
             'current_role_id',
             currentUser.data.role_id.toString(),

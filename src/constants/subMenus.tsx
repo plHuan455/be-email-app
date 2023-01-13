@@ -91,9 +91,9 @@ export const subMenuSettingUser: SubSidebarItem[] = [
     navigate: '/setting/email-template',
   },
   {
-    name: 'Blacklist',
+    name: 'Spammer',
     icon: <BlockIcon />,
-    navigate: '/setting/blacklist',
+    navigate: '/setting/spammer',
   },
   {
     name: 'Signature',

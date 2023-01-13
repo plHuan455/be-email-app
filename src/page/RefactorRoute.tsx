@@ -203,7 +203,7 @@ export const declareRouter: RouteObject[] = [
         element: <SettingPage />,
         children: [
           { path: '/setting/user-role', element: <SettingRoles /> },
-          { path: '/setting/blacklist', element: <BlackListPage /> },
+          { path: '/setting/spammer', element: <BlackListPage /> },
           {
             path: '/setting/profile',
             children: [

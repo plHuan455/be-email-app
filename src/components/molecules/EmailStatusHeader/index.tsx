@@ -49,6 +49,7 @@ const EmailStatusHeader: React.FC<Props> = ({
         sx={{
           width: '100%',
           display: 'flex',
+          flexWrap: 'wrap',
           alignItems: 'center',
           justifyContent: 'space-between',
           marginBottom: '12px',
@@ -58,7 +59,7 @@ const EmailStatusHeader: React.FC<Props> = ({
           sx={{ fontSize: '24px', color: `${color}`, fontWeight: 'bold' }}>
           {title}
         </Typography>
-        <Box className="flex gap-3 justify-end">
+        <Box className="flex flex-1 gap-3 justify-end">
           {isComposeButton && (
             <CustomButton
               className="py-3 hover:opacity-90 ease-linear duration-300 w-auto"
