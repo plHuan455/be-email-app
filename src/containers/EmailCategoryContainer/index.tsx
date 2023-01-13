@@ -1,11 +1,31 @@
-import { approveEmail, EmailResponse, HashtagType, undoEmail, updateEmailHashtag, updateEmailWithQuery } from '@api/email';
+import {
+  approveEmail,
+  EmailResponse,
+  HashtagType,
+  undoEmail,
+  updateEmailHashtag,
+  updateEmailWithQuery,
+} from '@api/email';
 import Email from '@components/organisms/Email';
 import EmailsListActionsContainer from '@containers/EmailsListActionsContainer';
 import { Box, Button } from '@mui/material';
 import { useAppDispatch, useAppSelector } from '@redux/configureStore';
-import { addUnreadEmail, deleteEmailId, HashtagTabs, setCurrEmail, setEmailsList } from '@redux/Email/reducer';
+import {
+  addUnreadEmail,
+  deleteEmailId,
+  HashtagTabs,
+  setCurrEmail,
+  setEmailsList,
+} from '@redux/Email/reducer';
 import { rem } from '@utils/functions';
-import React, { memo, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import React, {
+  memo,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { Outlet, useSearchParams } from 'react-router-dom';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import useScrollInfinity from '@hooks/useScrollInfinity';
@@ -32,7 +52,7 @@ const EmailCategoryContainer = () => {
   const [searchParams] = useSearchParams();
   const tabSearchParams = searchParams.get('tab');
   const queryClient = useQueryClient();
-  
+
   const containerRef = useRef<HTMLDivElement>(null);
   const defaultApproveIn = useRef(dayjs('Thu Apr 07 2022 00:15:00'));
   const isScrolledWhenEmailListChange = useRef<boolean>(true);
@@ -51,17 +71,23 @@ const EmailCategoryContainer = () => {
 
   const [isEnableScrollTop, setIsEnableScrollTop] = useState<boolean>(true);
   const [isShowScrollBottom, setIsShowScrollButton] = useState<boolean>(false);
-  const [showHistoryEmailId, setShowHistoryEmailId] = useState<number | undefined>(0);
-  const [OpenApproveModalEmail, setOpenApproveModalEmail] = useState<EmailResponse>();
-  const [valueApproveIn, setValueApproveIn] = useState<Dayjs>(defaultApproveIn.current);
-  
+  const [showHistoryEmailId, setShowHistoryEmailId] = useState<number | undefined>(
+    0,
+  );
+  const [OpenApproveModalEmail, setOpenApproveModalEmail] =
+    useState<EmailResponse>();
+  const [valueApproveIn, setValueApproveIn] = useState<Dayjs>(
+    defaultApproveIn.current,
+  );
+
   const alertDialog = useAlertDialog();
 
   const { onContinueClick } = useContext(EmailComposeContext);
 
   const { scrollToPrePosition } = useScrollInfinity({
     scrollContainer: containerRef.current,
-    enabled: isEnableScrollTop && pageParams.page * pageParams.limit < EmailsList.length,
+    enabled:
+      isEnableScrollTop && pageParams.page * pageParams.limit < EmailsList.length,
     thresholdTop: 400, // Cách top 400px
     onScrollTop: () => {
       setIsEnableScrollTop(false);
@@ -69,7 +95,7 @@ const EmailCategoryContainer = () => {
       setTimeout(() => setIsEnableScrollTop(true), 2000);
     },
     onScroll: (target) => {
-      const { scrollHeight, scrollTop, clientHeight } = target as HTMLDivElement;;
+      const { scrollHeight, scrollTop, clientHeight } = target as HTMLDivElement;
       setIsShowScrollButton(scrollTop + clientHeight + 100 < scrollHeight);
       handleChangeCurrEmail();
     },
@@ -81,10 +107,8 @@ const EmailCategoryContainer = () => {
       mutationFn: (params: { id: number; data: EmailUpdateQuery }) =>
         updateEmailHashtag(params.id, {
           hashtags: (params.data?.hashtags ?? []).map((value) => value.hashtag),
-        }
-      ),
-    }
-  );
+        }),
+    });
 
   const { mutate: approveEmailMutate, isLoading: isEmailApproving } = useMutation({
     mutationKey: ['Approve-email'],
@@ -114,7 +138,8 @@ const EmailCategoryContainer = () => {
 
   const { mutate: declineEmailMutate, isLoading: isEmailDeclining } = useMutation({
     mutationKey: ['update-email'],
-    mutationFn: (id: number) => approveEmail({ user_email_id: id, status: 'declined' }),
+    mutationFn: (id: number) =>
+      approveEmail({ user_email_id: id, status: 'declined' }),
     onSuccess: (_, param) => {
       queryClient.invalidateQueries({ queryKey: ['get-email-manager'] });
       queryClient.invalidateQueries({ queryKey: ['get-emails-list'] });
@@ -157,8 +182,7 @@ const EmailCategoryContainer = () => {
         queryClient.invalidateQueries({ queryKey: ['get-emails-list'] });
         queryClient.invalidateQueries({ queryKey: ['get-email-manager'] });
       },
-    }
-  );
+    });
 
   const { mutate: addBlacklist } = useMutation({
     mutationKey: ['add-black-list'],
@@ -170,46 +194,41 @@ const EmailCategoryContainer = () => {
     },
   });
 
-  const { mutate: unReadMutate, isLoading: isEmailUnreadLoading } =
-    useMutation({
-      mutationKey: ['email-update-status'],
-      mutationFn: (params: {
-        id: number;
-        data?: EmailUpdateQuery;
-      }) =>
-        updateEmailWithQuery(params.id, {
-          email: { ...params.data },
-          status:'unread',
-          send_at: params.data?.send_at,
-        }),
-      onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ['get-emails-list'] });
-        queryClient.invalidateQueries({ queryKey: ['get-email-manager'] });
-      },
-    }
-  );
-  
-
-  const { mutate: updateImportantMutate, isLoading: isUpdateImportantLoading } =
-  useMutation({
-    mutationKey: ['email-update-is-important'],
-    mutationFn: (params: { id: number; isImportant?: boolean }) =>
+  const { mutate: unReadMutate, isLoading: isEmailUnreadLoading } = useMutation({
+    mutationKey: ['email-update-status'],
+    mutationFn: (params: { id: number; data?: EmailUpdateQuery }) =>
       updateEmailWithQuery(params.id, {
-        is_important: params.isImportant,
+        email: { ...params.data },
+        status: 'unread',
+        send_at: params.data?.send_at,
       }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['get-emails-list'] });
+      queryClient.invalidateQueries({ queryKey: ['get-email-manager'] });
     },
   });
 
+  const { mutate: updateImportantMutate, isLoading: isUpdateImportantLoading } =
+    useMutation({
+      mutationKey: ['email-update-is-important'],
+      mutationFn: (params: { id: number; isImportant?: boolean }) =>
+        updateEmailWithQuery(params.id, {
+          is_important: params.isImportant,
+        }),
+      onSuccess: () => {
+        queryClient.invalidateQueries({ queryKey: ['get-emails-list'] });
+      },
+    });
+
   const { mutate: storeDraftMutate } = useMutation({
     mutationKey: ['Approve-email'],
-    mutationFn: async (id:number) => await approveEmail({
+    mutationFn: async (id: number) =>
+      await approveEmail({
         user_email_id: id,
         status: 'DRAFT',
         approve_after: valueApproveIn.hour() * 60 + valueApproveIn.minute(),
         note: '',
-    }),
+      }),
     onSuccess(_, params) {
       queryClient.invalidateQueries({ queryKey: ['get-email-manager'] });
       queryClient.invalidateQueries({ queryKey: ['get-emails-list'] });
@@ -284,12 +303,10 @@ const EmailCategoryContainer = () => {
   }, [pageParams, EmailsList]);
 
   const fakeLoading = EmailsList.length > pageParams.page * pageParams.limit;
-  
+
   const checkIsReceiveEmail = (id) => {
-    return (
-      EmailsList.find((mail) => mail.id === id)?.email.from !== myEmail
-    );
-  }
+    return EmailsList.find((mail) => mail.id === id)?.email.from !== myEmail;
+  };
 
   const handleInterSecting = (target: HTMLDivElement, emailData: EmailResponse) => {
     intersectingEmailMessStack.current.push({ target, emailData });
@@ -316,7 +333,7 @@ const EmailCategoryContainer = () => {
       setTimeout(() => {
         if (containerRef.current)
           containerRef.current.scrollTop = container.scrollHeight;
-      }, 300)
+      }, 300);
     }
   };
 
@@ -330,7 +347,7 @@ const EmailCategoryContainer = () => {
       id,
       data: { hashtags },
     });
-  }
+  };
 
   const handleEmployerCancelClick = (value: EmailResponse) => {
     alertDialog.setAlertData(
@@ -339,19 +356,16 @@ const EmailCategoryContainer = () => {
         title='Are you sure want to "cancel" this mail?'
         emailTitle={value.email.subject ?? 'Empty'}
         writer={
-          value.email.from ??
-          value.email.cc[0] ??
-          value.email.bcc[0] ??
-          'No one'
+          value.email.from ?? value.email.cc[0] ?? value.email.bcc[0] ?? 'No one'
         }
       />,
       () => storeDraftMutate(value.id),
     );
-  }
+  };
 
   const handleUndoEmail = (id: number) => {
     undoEmailMutate({ emailId: id });
-  }
+  };
 
   const handleDeclineClick = (value: EmailResponse) => {
     alertDialog.setAlertData(
@@ -360,18 +374,15 @@ const EmailCategoryContainer = () => {
         title='Are you sure want to "decline" this mail?'
         emailTitle={value.email.subject ?? 'Empty'}
         writer={
-          value.email.from ??
-          value.email.cc[0] ??
-          value.email.bcc[0] ??
-          'No one'
+          value.email.from ?? value.email.cc[0] ?? value.email.bcc[0] ?? 'No one'
         }
       />,
       () => {
         // updateEmailStatus('declined')
-        declineEmailMutate(value.id)
+        declineEmailMutate(value.id);
       },
     );
-  }
+  };
 
   const handleApproveNowClick = () => {
     alertDialog.setAlertData(
@@ -387,18 +398,18 @@ const EmailCategoryContainer = () => {
         }
       />,
       () => {
-        if(OpenApproveModalEmail?.id !== undefined){
+        if (OpenApproveModalEmail?.id !== undefined) {
           approveEmailMutate({
             user_email_id: OpenApproveModalEmail.id,
             note: '',
             approve_after: 0,
             status: 'approved',
-          })
+          });
         }
         setOpenApproveModalEmail(undefined);
-      }
+      },
     );
-  }
+  };
 
   const handleApproveSettime = () => {
     alertDialog.setAlertData(
@@ -413,19 +424,19 @@ const EmailCategoryContainer = () => {
           'No one'
         }
       />,
-      () =>{
-        if(OpenApproveModalEmail){
+      () => {
+        if (OpenApproveModalEmail) {
           approveEmailMutate({
             user_email_id: OpenApproveModalEmail.id,
             note: '',
             approve_after: valueApproveIn.hour() * 60 + valueApproveIn.minute(),
             status: 'approved',
-          })
+          });
         }
-        setOpenApproveModalEmail(undefined)
-      }
+        setOpenApproveModalEmail(undefined);
+      },
     );
-  }
+  };
 
   const handleSendEmailClick = (id: number) => {
     approveEmailMutate({
@@ -434,8 +445,8 @@ const EmailCategoryContainer = () => {
       status: 'approved',
       approve_after: 0,
     });
-  }
-  
+  };
+
   const handleContinueEmailClick = (value: EmailResponse) => {
     const { email } = value;
     console.log(`[TODO] CONTINUE DRAFT EMAIL ADD FIELDS (TO, BCC, CC, ATTACH_FILE)`);
@@ -452,7 +463,7 @@ const EmailCategoryContainer = () => {
       //   fileUrls: email.attachs?.map(value => value.path) ?? []
       // }
     });
-  }
+  };
 
   const handleActionsClick = (action: ActionNameTypes, value: EmailResponse) => {
     switch (action) {
@@ -497,7 +508,9 @@ const EmailCategoryContainer = () => {
 
       default: {
         const cloneEmailsList = [...EmailsList];
-        const findIndex = cloneEmailsList.findIndex((email) => email.id === value.id);
+        const findIndex = cloneEmailsList.findIndex(
+          (email) => email.id === value.id,
+        );
         const reqData = { ...cloneEmailsList[findIndex], status: action };
         cloneEmailsList.splice(findIndex, 1, reqData);
         dispatch(setEmailsList(cloneEmailsList));
@@ -514,8 +527,7 @@ const EmailCategoryContainer = () => {
           overflow: 'scroll',
           padding: '120px 28px 28px 28px',
         }}
-        ref={containerRef}
-      >
+        ref={containerRef}>
         <Box className="w-full flex flex-wrap flex-col">
           {fakeLoading && <EmailMessEmpty isLoading={fakeLoading} />}
           {convertedEmailList.map((value, index) => {
@@ -535,41 +547,55 @@ const EmailCategoryContainer = () => {
                   hiddenActions={
                     isEmployee || isAdminTabMe
                       ? {
-                        replyAll:
-                          is_trash ||
-                          ['draft', 'trash', 'declined'].includes(status),
-                        reply:
-                          is_trash ||
-                          ['draft', 'trash', 'declined'].includes(status),
-                        forward:
-                          is_trash ||
-                          ['draft', 'trash', 'declined'].includes(status),
-                        unread:
-                          is_trash ||
-                          !isReceiver ||
-                          ['draft', 'trash'].includes(status),
-                        spam:
-                          is_trash ||
-                          !isReceiver ||
-                          ['draft', 'trash'].includes(status),
-                      }
+                          replyAll:
+                            is_trash ||
+                            ['pending', 'draft', 'trash', 'declined'].includes(
+                              status,
+                            ),
+                          reply:
+                            is_trash ||
+                            ['pending', 'draft', 'trash', 'declined'].includes(
+                              status,
+                            ),
+                          forward:
+                            is_trash ||
+                            ['pending', 'draft', 'trash', 'declined'].includes(
+                              status,
+                            ),
+                          unread:
+                            is_trash ||
+                            !isReceiver ||
+                            ['pending', 'draft', 'trash'].includes(status),
+                          spam:
+                            is_trash ||
+                            !isReceiver ||
+                            ['pending', 'draft', 'trash'].includes(status),
+                        }
                       : true
                   }
-                  onUpdateHashtagClick={(hashtags) => handleUpdateHashTagClick(value.id, hashtags)}
+                  onUpdateHashtagClick={(hashtags) =>
+                    handleUpdateHashTagClick(value.id, hashtags)
+                  }
                   onDecline={() => handleDeclineClick(value)}
                   onApprove={() => setOpenApproveModalEmail(value)}
                   onEmployeeCancel={() => handleEmployerCancelClick(value)}
-                  onUndoEmail={()=> handleUndoEmail(value.id)}
+                  onUndoEmail={() => handleUndoEmail(value.id)}
                   onApproveNow={handleApproveNowClick}
                   onSendEmail={() => handleSendEmailClick(value.id)}
                   onContinueClick={() => handleContinueEmailClick(value)}
                   onActionsClick={(action) => handleActionsClick(action, value)}
-                  onShowHistory={() => setShowHistoryEmailId(preState => preState === value.id ? undefined : value.id)}
-                  onInterSecting={(entry) => handleInterSecting(entry.target as HTMLDivElement, value)}
+                  onShowHistory={() =>
+                    setShowHistoryEmailId((preState) =>
+                      preState === value.id ? undefined : value.id,
+                    )
+                  }
+                  onInterSecting={(entry) =>
+                    handleInterSecting(entry.target as HTMLDivElement, value)
+                  }
                   onUnInterSecting={() => handleEmailMessUnIntersect(value.id)}
                 />
               </Box>
-            )
+            );
           })}
         </Box>
       </Box>
@@ -614,11 +640,10 @@ const EmailCategoryContainer = () => {
         isOpen={OpenApproveModalEmail !== undefined}
         title="Set time to Approve"
         submitLabel=""
-        onClose={() => {  
-            setOpenApproveModalEmail(undefined);
-            setValueApproveIn(defaultApproveIn.current);
-          }}
-        >
+        onClose={() => {
+          setOpenApproveModalEmail(undefined);
+          setValueApproveIn(defaultApproveIn.current);
+        }}>
         <SettimeInput
           value={valueApproveIn}
           setValueCalendar={(newValue: dayjs.Dayjs | null) =>
