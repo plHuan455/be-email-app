@@ -9,7 +9,7 @@ import {
   Typography,
 } from '@mui/material';
 import { rem } from '@utils/functions';
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useRef, useState } from 'react';
 import HomeWorkIcon from '@mui/icons-material/HomeWork';
 import SingleAvatar from '@components/atoms/SingleAvatar';
 export interface AutoCompleteGroupValueTypes {
@@ -21,14 +21,17 @@ export interface AutoCompleteGroupValueTypes {
 }
 
 interface AutoCompleteGroupProps {
+  isOpenOption?: boolean;
   value: AutoCompleteGroupValueTypes[];
   options: AutoCompleteGroupValueTypes[];
   autoAddOptionMatchRegex?: RegExp;
   isDisable?: boolean;
-  onGroupClick?: (e: React.MouseEvent, option: AutoCompleteGroupValueTypes) => void;
+  onGroupClick?: (option: AutoCompleteGroupValueTypes, e?: React.MouseEvent, ) => void;
   onChange: (value: AutoCompleteGroupValueTypes[]) => void;
   onChipClick?: (option: AutoCompleteGroupValueTypes) => void;
   onChipDelete?: (option: AutoCompleteGroupValueTypes) => void;
+  onClose?: () => void;
+  onOpen?: () => void;
 }
 
 interface AutoCompleteGroupTagsProps {
@@ -131,29 +134,9 @@ const AutoCompleteGroupTags: React.FC<AutoCompleteGroupTagsProps> = ({
   );
 };
 
-interface OptionItemProps {
-  children: React.ReactNode;
-}
-
-const OptionItem: React.FC<OptionItemProps> = ({ children }) => {
-  const [isShowInput, setIsShowInput] = useState<boolean>(false);
-
-  return (
-    <Box className="m-autoCompleteGroup-optionItem" sx={{ position: 'relative' }}>
-      <Typography onClick={() => setIsShowInput((preState) => !preState)}>
-        {children}
-      </Typography>
-      {isShowInput && (
-        <Box sx={{ position: 'absolute', top: '100%' }}>
-          adskjlfh dafjkldhs fjkasdhf dkhsafsdafadsjfh
-        </Box>
-      )}
-    </Box>
-  );
-};
-
 const AutoCompleteGroup: React.FC<AutoCompleteGroupProps> = ({
   value,
+  isOpenOption,
   options,
   autoAddOptionMatchRegex,
   isDisable = false,
@@ -161,6 +144,8 @@ const AutoCompleteGroup: React.FC<AutoCompleteGroupProps> = ({
   onChange,
   onChipClick,
   onChipDelete,
+  onClose,
+  onOpen
 }) => {
   const [autoOption, setAutoOption] = useState<AutoCompleteGroupValueTypes>();
 
@@ -193,6 +178,9 @@ const AutoCompleteGroup: React.FC<AutoCompleteGroupProps> = ({
   return (
     <Box className="m-autoCompleteGroup">
       <Autocomplete
+        open={isOpenOption}
+        onClose={onClose}
+        onOpen={onOpen}
         disabled={isDisable}
         multiple
         value={value}
@@ -206,7 +194,14 @@ const AutoCompleteGroup: React.FC<AutoCompleteGroupProps> = ({
             return option.id === undefined ? false : convertedValueHash[option.id];
           return convertedValueHash[option.name];
         }}
-        onChange={(_, data) => onChange(data)}
+        onChange={(e, data) => {
+          const willChangeValue = data[data.length -1];
+          if(willChangeValue?.isGroup && data.length > value.length) {
+            onGroupClick && onGroupClick(willChangeValue)
+          } else {
+            onChange(data);
+          }
+        }}
         sx={{
           // ml: label !== undefined ? rem(12) : 0,
           width: '100%',
@@ -250,9 +245,16 @@ const AutoCompleteGroup: React.FC<AutoCompleteGroupProps> = ({
           return (
             <MenuItem
               {...props}
+              sx={{
+                '&.Mui-focused': {
+                  backgroundColor: 'rgba(0, 0, 0, 0.12)'
+                }
+              }}
+              key={props.id}
               onClick={(e) => {
                 if (option.isGroup) {
-                  onGroupClick && onGroupClick(e, option);
+                  onGroupClick && onGroupClick(option, e);
+                  // inputRef.current && inputRef.current.focus()
                   return;
                 }
                 props.onClick && props.onClick(e);
@@ -274,12 +276,13 @@ const AutoCompleteGroup: React.FC<AutoCompleteGroupProps> = ({
                     />
                   )}
                 </Box>
-                <Typography>{option.name}</Typography>
+                <Typography>{option.name}{`${option.isGroup ? ` (${option.data.length})`: ''}`}</Typography>
               </Box>
             </MenuItem>
           );
         }}
-        renderInput={(params) => (
+        renderInput={(params) => {
+          return (
           <TextField
             {...params}
             variant="outlined"
@@ -309,7 +312,7 @@ const AutoCompleteGroup: React.FC<AutoCompleteGroupProps> = ({
             className="a-hashtagInput_input"
             // placeholder={placeholder}
           />
-        )}
+        )}}
       />
     </Box>
   );

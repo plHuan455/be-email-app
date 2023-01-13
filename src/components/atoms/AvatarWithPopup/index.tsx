@@ -57,7 +57,6 @@ const AvatarWithPopup: React.FC<Props> = ({
   const [currentUserName] = useLocalStorage('current_user_name', '');
   const [currentUserAvt] = useLocalStorage('current_user_avt', '');
 
-  console.log(currentUserAvt);
   const [anchorElUser, setAnchorElUser] = React.useState(null);
   const ref = useRef<any>();
 

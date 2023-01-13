@@ -252,7 +252,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                           value={value}
                           options={toOptions}
                           autoAddOptionMatchRegex={emailRegex}
-                          onGroupClick={(e, option) => {
+                          onGroupClick={(option, e) => {
                             if (option.id && option.isGroup) {
                               onDepartmentClick && onDepartmentClick(option, 'to');
                             }
@@ -284,7 +284,11 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                     isOpen={isOpenSelectEmployersModal}
                     title="Select employers"
                     submitLabel=""
-                    onClose={onCloseSelectEmployersModal}>
+                    onClose={() => { 
+                      onCloseSelectEmployersModal && onCloseSelectEmployersModal()
+                      console.log(document.getElementById('autocomplete-to'));
+                      setTimeout(() => {document.getElementById('autocomplete-to')?.focus();}, 200)
+                    }}>
                     <Box sx={{ width: '80vw' }}>
                       <Typography sx={{ py: rem(4) }}>
                         {selectedDepartment?.data.name}
@@ -315,7 +319,9 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                         </Button>
                         <Button
                           sx={{ ml: rem(20) }}
-                          onClick={onConfirmSelectEmployersModalClick}>
+                          onClick={onConfirmSelectEmployersModalClick}
+                          disabled={selectEmployersModalRows.length === 0}
+                        >
                           OK
                         </Button>
                       </Box>
@@ -336,7 +342,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                               value={value}
                               options={ccOptions}
                               autoAddOptionMatchRegex={emailRegex}
-                              onGroupClick={(e, option) => {
+                              onGroupClick={(option) => {
                                 if (option.id && option.isGroup) {
                                   onDepartmentClick &&
                                     onDepartmentClick(option, 'cc');
@@ -369,7 +375,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                               value={value}
                               options={ccOptions}
                               autoAddOptionMatchRegex={emailRegex}
-                              onGroupClick={(e, option) => {
+                              onGroupClick={(option) => {
                                 if (option.id && option.isGroup) {
                                   onDepartmentClick &&
                                     onDepartmentClick(option, 'bcc');
