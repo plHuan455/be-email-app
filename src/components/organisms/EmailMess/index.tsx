@@ -220,7 +220,7 @@ const EmailMess: React.FC<Props> = ({
     },
     onUnInterSecting,
   );
-  
+
 
   const cloneSendTo = [
     ...(emailData.email.to ?? []),
@@ -233,12 +233,12 @@ const EmailMess: React.FC<Props> = ({
   const remapPrivateHashtag = useMemo<HashtagTabs[]>(() => {
     return emailData.hashtags
       ? emailData.hashtags.map((val) => ({
-          notiNumber: 0,
-          status: 'hashtag',
-          title: `#${val.hashtag}`,
-          value: val.hashtag,
-          color: '#4BAAA2',
-        }))
+        notiNumber: 0,
+        status: 'hashtag',
+        title: `#${val.hashtag}`,
+        value: val.hashtag,
+        color: '#4BAAA2',
+      }))
       : [];
   }, [emailData]);
 
@@ -246,7 +246,7 @@ const EmailMess: React.FC<Props> = ({
     if (!emailData.email.attachments) return null;
 
     const newAttachesFile: AttachFile[] = attachsToAttachFiles(
-      emailData.email.attachments.map(value => ({id: value.id, email_id: value.email_id, path: value.filename})),
+      emailData.email.attachments.map(value => ({ id: value.id, email_id: value.email_id, path: value.filename })),
     );
 
     return <AttachFiles data={newAttachesFile} isUpload={false} />;
@@ -400,8 +400,8 @@ const EmailMess: React.FC<Props> = ({
           emailData.status === 'reply'
             ? [emailData.email.from]
             : emailData.status === 'replyAll'
-            ? emailData.email.to
-            : emailData.email.to
+              ? emailData.email.to
+              : emailData.email.to
         }
       />
     );
@@ -436,15 +436,13 @@ const EmailMess: React.FC<Props> = ({
 
   return (
     <Box
-      className={`o-EmailMess w-full relative flex flex-wrap ${
-        type === 'send' && styles.flexRowReverse
-      }`}
+      className={`o-EmailMess w-full relative flex flex-wrap ${type === 'send' && styles.flexRowReverse
+        }`}
       ref={containerRef}
     >
       <Box
-        className={`w-full flex flex-wrap ${styles.emailHeader} ${
-          isShowHeader && styles.showEmailHeader
-        } ${type === 'send' && styles.flexRowReverse}`}>
+        className={`w-full flex flex-wrap ${styles.emailHeader} ${isShowHeader && styles.showEmailHeader
+          } ${type === 'send' && styles.flexRowReverse}`}>
         <Box className={`flex-1`}>
           <OptionalAvatar
             className={` ${type === 'send' && styles.flexRowReverse}`}
@@ -476,18 +474,16 @@ const EmailMess: React.FC<Props> = ({
       />
       <Box
         sx={{ boxShadow: '0px 10px 23px -15px rgba(159,159,159,0.54)' }}
-        className={`flex-1 overflow-hidden bg-white ${
-          type === 'send'
+        className={`flex-1 overflow-hidden bg-white ${type === 'send'
             ? 'rounded-tl-[36px] rounded-br-[36px]'
             : 'rounded-tr-[36px] rounded-bl-[36px]'
-        } ${styles.emailWrap} mb-8`}>
+          } ${styles.emailWrap} mb-8`}>
         {/* Header */}
         <Box
-          className={`flex items-center justify-between cursor-pointer pb-6 bg-violet-200 py-4 ${
-            type === 'send'
+          className={`flex items-center justify-between cursor-pointer pb-6 bg-violet-200 py-4 ${type === 'send'
               ? 'rounded-br-[36px] rounded-tl-[36px]'
               : 'rounded-bl-[36px] rounded-tr-[36px]'
-          }  relative`}
+            }  relative`}
           onClick={() => onShowHistory(emailData, emailData.id)}>
           <div className="flex flex-col gap-2">
             {_renderEmailTitle}
@@ -516,7 +512,12 @@ const EmailMess: React.FC<Props> = ({
             <p dangerouslySetInnerHTML={createMarkup(emailData.email.html_body)} />
           </Box>
         </Box>
-        {/* Greeting */}
+        {/* Signature */}
+        {emailData.email?.signature && (
+          <Box>
+            <Typography dangerouslySetInnerHTML={{ __html: emailData.email.signature.text_html }}></Typography>
+          </Box>
+        )}
         <EmailGreeting
           greetingLabel="Thanks and Best regards, ------"
           isHaveLogo={true}
@@ -551,8 +552,8 @@ const EmailMess: React.FC<Props> = ({
                       ? sentAt.getTime()
                       : approveAt.getTime()) -
                       new Date().getTime()) /
-                      1000 /
-                      60,
+                    1000 /
+                    60,
                   )}
                   onSend={onSendEmail}
                   onUndo={onUndoEmail}

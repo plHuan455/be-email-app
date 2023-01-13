@@ -79,6 +79,7 @@ interface MainWrapperContainerProps {}
 const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
   const dispatch = useAppDispatch();
   const currentUserEmail = localStorage.getItem('current_email');
+  const currSignature = useAppSelector(state => state.user.signature);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const location = useLocation();
@@ -256,6 +257,7 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
         html_body: getHtmlStringFromEditorState(values.content),
         subject: values.subject,
         attachments: values.attachFiles.fileUrls.filter(value => value).map((value) => ({ filename: value ?? '' })),
+        signature_id: currSignature?.id ?? undefined
       },
       hashtags: values.hashtags.map((value) => value.value),
       send_at: values.sendAt?.toISOString() ?? dayjs().toISOString(),
