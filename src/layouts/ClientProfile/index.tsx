@@ -38,6 +38,8 @@ const ClientProfileLayout: React.FC<Props> = ({
     ward,
   } = clientProfileData;
 
+  const address = [national, city, district, ward, street, number];
+
   return (
     <Box className="flex flex-col h-full">
       <Box className="flex-1">

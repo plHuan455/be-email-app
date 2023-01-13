@@ -86,7 +86,7 @@ const AvatarWithPopup: React.FC<Props> = ({
             { p: 0, border: '4px solid transparent' },
           ]}>
           <Avatar
-            alt={currentUserName}
+            // alt={currentUserName}
             src={`http://${currentUserAvt}`}
             sx={{ width: '45px', height: '45px' }}
           />

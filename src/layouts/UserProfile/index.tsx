@@ -38,7 +38,7 @@ const UserProfile: React.FC<Props> = ({ userInfoData }) => {
         <Avatar
           id="create-employee-avatar-field"
           src={typeof avatar === 'string' ? `http://${avatar}` : undefined}
-          alt={user_name}
+          // alt={user_name}
           sx={{ width: 80, height: 80 }}
         />
       </Box>
