@@ -53,7 +53,7 @@ export interface UserResponse {
   role: string;
 }
 
-export interface UserProfileResponse {
+export interface UserProfileResponse extends AddressType {
   id: number;
   avatar: string;
   department: string;
@@ -68,7 +68,6 @@ export interface UserProfileResponse {
   contact_id: number;
   department_id: number;
   sex: string;
-  address: AddressType;
 }
 
 //GET EMAIL WITH STATUS

@@ -73,6 +73,13 @@ export const useEmployeeManagement = () => {
     position: yup.string().required('position is required!'),
     phone_number: yup.number().required('phone_number is required!'),
     role_id: yup.string().required('role_id is required!'),
+    // sex: yup.string().required('sex is required'),
+    national: yup.string().required('national is required'),
+    city: yup.string().required('city is required'),
+    district: yup.string().required('district is required'),
+    ward: yup.string().required('ward is required'),
+    street: yup.string().required('street is required'),
+    number: yup.string().required('number is required'),
   };
 
   console.log('role --->', roles);

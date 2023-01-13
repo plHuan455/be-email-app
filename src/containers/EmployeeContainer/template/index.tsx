@@ -4,6 +4,7 @@ import UploadArea from '@components/atoms/UploadArea';
 import Layout from '@layouts/Layout';
 import {
   FormControlLabel,
+  FormHelperText,
   FormLabel,
   Radio,
   RadioGroup,
@@ -19,7 +20,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { convertPathImage } from '@utils/functions';
 import { useForm } from 'react-hook-form';
 import { Select } from '@components/molecules/Select';
-import { debounce, isEmpty } from 'lodash';
+import { debounce, isEmpty, method } from 'lodash';
 import { useQuery } from '@tanstack/react-query';
 import { getRole } from '@api/role';
 import { getAllPositionInDepartment } from '@api/deparment';
@@ -127,9 +128,13 @@ const DepartmentTemplate: React.FC<DepartmentTemplateProps> = ({
   };
 
   const handleChangeSelect = debounce((event: SelectChangeEvent<any>) => {
-    formData[event.target.name] = event.target.value;
-    onChange && onChange(formData);
+    onChange && onChange({ ...formData, [event.target.name]: event.target.value });
   }, 300);
+
+  const handleChangeRadio = (event: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(event.target.value);
+    onChange && onChange({ ...formData, [event.target.name]: event.target.value });
+  };
 
   return (
     <div className="w-full relative flex flex-col flex-1 overflow-hidden">
@@ -186,7 +191,7 @@ const DepartmentTemplate: React.FC<DepartmentTemplateProps> = ({
               aria-labelledby="demo-radio-buttons-group-label"
               defaultValue={formData.sex}
               name="sex"
-              onChange={handleChangeSelect}>
+              onChange={handleChangeRadio}>
               <FormControlLabel value="female" control={<Radio />} label="Female" />
               <FormControlLabel value="male" control={<Radio />} label="Male" />
               <FormControlLabel value="other" control={<Radio />} label="Other" />
@@ -384,7 +389,7 @@ const DepartmentTemplate: React.FC<DepartmentTemplateProps> = ({
                 name="role_id"
                 onChange={handleChangeSelect}
                 size="small"
-                value={+getValues('role_id')}
+                defaultValue={+getValues('role_id')}
                 options={rolesList?.data ?? []}
                 mapping={{
                   label: (opt) => opt.name,

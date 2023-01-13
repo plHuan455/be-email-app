@@ -30,10 +30,13 @@ const ClientProfileLayout: React.FC<Props> = ({
     department,
     position,
     sex,
-    address,
+    city,
+    district,
+    national,
+    number,
+    street,
+    ward,
   } = clientProfileData;
-
-  const { city, district, national, number, street, ward } = address;
 
   return (
     <Box className="flex flex-col h-full">
@@ -101,6 +104,12 @@ const ClientProfileLayout: React.FC<Props> = ({
             </Grid>
             <Grid xs={12}>
               <p className="px-4 text-[18px] leading-10">
+                <b className="min-w-[140px] inline-block">Sex:</b>
+                <span className="inline-block">{sex}</span>
+              </p>
+            </Grid>
+            <Grid xs={12}>
+              <p className="px-4 text-[18px] leading-10">
                 <b className="min-w-[140px] inline-block">Address:</b>
                 <span className="inline-block">{`${number}, ${street}, ${ward}, ${district}, ${city}, ${national}`}</span>
               </p>
@@ -133,73 +142,6 @@ const ClientProfileLayout: React.FC<Props> = ({
         <Button onClick={() => onEdit(id)}>Update</Button>
       </Box>
     </Box>
-    // <Box className="flex flex-col h-full">
-    //   <Grid container>
-    //     <Grid xs={12}>
-    //       <h1 className="text-[28px] font-bold text-center">User Profile</h1>
-    //     </Grid>
-    //     <Grid xs={12}>
-    //       <Avatar
-    //         sx={{ width: '80px', height: '80px' }}
-    //         className="justify-center items-center mx-auto my-4"
-    //         src={avatar}
-    //         alt={`${first_name} ${last_name}`}
-    //       />
-    //     </Grid>
-    //     <Grid xs={6}>
-    //       <p className="px-4 text-[18px] leading-10">
-    //         <b className="min-w-[140px] inline-block">First Name:</b>
-    //         <span className="inline-block">{first_name}</span>
-    //       </p>
-    //     </Grid>
-    //     <Grid xs={6}>
-    //       <p className="px-4 text-[18px] leading-10">
-    //         <b className="min-w-[140px] inline-block">Last Name:</b>
-    //         <span className="inline-block">{last_name}</span>
-    //       </p>
-    //     </Grid>
-    //     <Grid xs={6}>
-    //       <p className="px-4 text-[18px] leading-10">
-    //         <b className="min-w-[140px] inline-block">Email:</b>
-    //         <span className="inline-block">{email}</span>
-    //       </p>
-    //     </Grid>
-    //     <Grid xs={6}>
-    //       <p className="px-4 text-[18px] leading-10">
-    //         <b className="min-w-[140px] inline-block">Phone Number:</b>
-    //         <span className="inline-block">{phone_number}</span>
-    //       </p>
-    //     </Grid>
-    //     <Grid xs={6}>
-    //       <p className="px-4 text-[18px] leading-10">
-    //         <b className="min-w-[140px] inline-block">Identity:</b>
-    //         <span className="inline-block">{identity}</span>
-    //       </p>
-    //     </Grid>
-    //     <Grid xs={6}>
-    //       <p className="px-4 text-[18px] leading-10">
-    //         <b className="min-w-[140px] inline-block">Role:</b>
-    //         <span className="inline-block">{role}</span>
-    //       </p>
-    //     </Grid>
-    //     <Grid xs={6}>
-    //       <p className="px-4 text-[18px] leading-10">
-    //         <b className="min-w-[140px] inline-block">Department:</b>
-    //         <span className="inline-block">{department}</span>
-    //       </p>
-    //     </Grid>
-    //     <Grid xs={6}>
-    //       <p className="px-4 text-[18px] leading-10">
-    //         <b className="min-w-[140px] inline-block">Position:</b>
-    //         <span className="inline-block">{position}</span>
-    //       </p>
-    //     </Grid>
-    //   </Grid>
-    //   <Box className="flex flex-1 items-end justify-around">
-    //     <Button color="error">Delete</Button>
-    //     <Button>Update</Button>
-    //   </Box>
-    // </Box>
   );
 };
 
