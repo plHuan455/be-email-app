@@ -364,7 +364,7 @@ const EmailForward: React.FC<Props> = ({
                       value={value}
                       options={toOptions}
                       autoAddOptionMatchRegex={emailRegex}
-                      onGroupClick={(e, option) => {
+                      onGroupClick={(option, e) => {
                         if (option.id && option.isGroup) {
                           handleDepartmentClick(option, 'to');
                         }
@@ -439,7 +439,7 @@ const EmailForward: React.FC<Props> = ({
                           value={value}
                           options={ccOptions}
                           autoAddOptionMatchRegex={emailRegex}
-                          onGroupClick={(e, option) => {
+                          onGroupClick={(option, e) => {
                             if (option.id && option.isGroup) {
                               handleDepartmentClick(option, 'cc');
                             }
@@ -469,7 +469,7 @@ const EmailForward: React.FC<Props> = ({
                           value={value}
                           options={bccOptions}
                           autoAddOptionMatchRegex={emailRegex}
-                          onGroupClick={(e, option) => {
+                          onGroupClick={(option, e) => {
                             if (option.id && option.isGroup) {
                               handleDepartmentClick(option, 'bcc');
                             }
