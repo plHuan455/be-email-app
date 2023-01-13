@@ -12,6 +12,7 @@ import {
   USER__API__GET,
 } from '@constants/UserAPI';
 import {
+  AddressType,
   CreateEmployeeParams,
   CreateSignatureParams,
   DeleteUserResponse,
@@ -66,6 +67,8 @@ export interface UserProfileResponse {
   role: string;
   contact_id: number;
   department_id: number;
+  sex: string;
+  address: AddressType;
 }
 
 //GET EMAIL WITH STATUS

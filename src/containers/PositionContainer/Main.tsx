@@ -14,6 +14,9 @@ import AlertDialog, { useAlertDialog } from '@components/molecules/AlertDialog';
 import { useMutation } from '@tanstack/react-query';
 import { deletePositionById } from '@api/deparment';
 import { toast } from 'react-toastify';
+import TableActionsMenu from '@components/molecules/TableActionsMenu';
+
+import DeleteIcon from '@mui/icons-material/Delete';
 
 const PositionContainer = () => {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
@@ -41,6 +44,31 @@ const PositionContainer = () => {
     title,
   } = useAlertDialog();
 
+  const onUpdateActionClick = (id: number) => {
+    navigate(`/departments/department/${params.idDepartment}/position/edit/${id}`);
+  };
+
+  const onDeleteActionClick = (data) => {
+    setAlertData(
+      '',
+      <div>
+        <p>Are you sure want to "Delete" this position?</p>
+        <p>
+          <b>Position Name:</b>
+          <span>{data.name}</span>
+        </p>
+        <p>
+          <b>Description:</b>
+          <span>{data.describe}</span>
+        </p>
+      </div>,
+      () => {
+        mutateDeletePosition(data.id);
+        onClose();
+      },
+    );
+  };
+
   const columns = React.useMemo<ColumnDef<any, any>[]>(() => {
     return [
       {
@@ -59,6 +87,29 @@ const PositionContainer = () => {
         id: 'describe',
         cell: (info) => info.getValue(),
         header: () => <span>Describe</span>,
+        footer: (props) => props.column.id,
+      },
+      {
+        accessorKey: '',
+        accessorFn: (row) => row,
+        id: 'actions',
+        cell: (info) => {
+          return (
+            <TableActionsMenu
+              options={[
+                { label: 'update', value: 0, icon: <UpdateIcon /> },
+                { label: 'delete', value: 1, icon: <DeleteIcon /> },
+              ]}
+              onClick={(e) => e.stopPropagation()}
+              onClose={(e) => e.stopPropagation()}
+              onItemClick={(value) => {
+                if (value === 0) onUpdateActionClick(Number(info.getValue().id));
+                if (value === 1) onDeleteActionClick(info.getValue());
+              }}
+            />
+          );
+        },
+        header: () => <span>{t('Actions')}</span>,
         footer: (props) => props.column.id,
       },
     ];

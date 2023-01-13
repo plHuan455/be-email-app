@@ -29,7 +29,11 @@ const ClientProfileLayout: React.FC<Props> = ({
     role,
     department,
     position,
+    sex,
+    address,
   } = clientProfileData;
+
+  const { city, district, national, number, street, ward } = address;
 
   return (
     <Box className="flex flex-col h-full">
@@ -69,6 +73,12 @@ const ClientProfileLayout: React.FC<Props> = ({
                 <span className="inline-block pl-2">{identity}.</span>
               </p>
             </Grid>
+            <Grid xs={12}>
+              <p className="px-4 text-[16px] leading-10 text-center">
+                <b className="inline-block">Sex:</b>
+                <span className="inline-block pl-2">{sex}.</span>
+              </p>
+            </Grid>
           </Grid>
           <Grid xs={8} sx={{ paddingLeft: 4 }}>
             <Grid xs={12}>
@@ -87,6 +97,12 @@ const ClientProfileLayout: React.FC<Props> = ({
               <p className="px-4 text-[18px] leading-10">
                 <b className="min-w-[140px] inline-block">Identity:</b>
                 <span className="inline-block">{identity}</span>
+              </p>
+            </Grid>
+            <Grid xs={12}>
+              <p className="px-4 text-[18px] leading-10">
+                <b className="min-w-[140px] inline-block">Address:</b>
+                <span className="inline-block">{`${number}, ${street}, ${ward}, ${district}, ${city}, ${national}`}</span>
               </p>
             </Grid>
             <Grid xs={12}>

@@ -20,7 +20,7 @@ export interface CuSAxiosResponse<T> extends AxiosResponse {
 
 const url = process.env.EMAIL_APP_API_BASE_URL
   ? process.env.EMAIL_APP_API_BASE_URL
-  : 'http://61.28.238.162:8000/';
+  : 'http://notification.trade:8000/';
 const local = 'http://10.0.2.131:8000/';
 
 const axiosInstance = axios.create({
