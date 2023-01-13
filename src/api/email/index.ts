@@ -27,6 +27,7 @@ export interface CreateEmailParam {
     cc?: string[];
     bcc?: string[];
     attachments?: { filename: string }[];
+    signature_id?: number;
   };
   status?: string;
   is_important?: boolean;
@@ -69,6 +70,11 @@ export interface EmailResponse {
     html_body: string;
     content: string;
     attachments?: { id: number, email_id: number; filename: string}[];
+    signature?: {
+      id: number;
+      name: string;
+      text_html: string;
+    }
     tags: [];
   };
   hashtags?: HashtagType[];

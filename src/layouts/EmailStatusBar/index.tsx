@@ -9,13 +9,14 @@ import SingleOTPInput from '@components/atoms/Input/PinInput/SingleInput';
 import { toast } from 'react-toastify';
 import { getAllCatalogTab } from '@api/email';
 import EmailTab from '@components/molecules/EmailTab';
-import { HashtagTabs, setHashtags, setPrivateHashtag } from '@redux/Email/reducer';
+import { addTabHistory, HashtagTabs, setHashtags, setPrivateHashtag } from '@redux/Email/reducer';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { isEmpty } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, useAppSelector } from '@redux/configureStore';
 import HashtagContainer from '@containers/HashtagContainer';
-import { number } from 'yargs';
+import { useParams } from 'react-router';
+import { useSearchParams } from 'react-router-dom';
 
 type Props = {};
 
@@ -135,6 +136,10 @@ const EmailTabsSecData: EmailTabs[] = [
 // const hashtagTabs:
 
 const EmailStatusBar = (props: Props) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const tab = searchParams.get('tab')
+  const {catalog} = useParams();
+  const tabHistory = useAppSelector(state => state.email.tabHistory);
   const hashtagTabs = useAppSelector((state) => state.email.privateHashtags);
 
   const [isCreateHashTag, setIsCreateHashTag] = useState<boolean>(false);
@@ -215,6 +220,19 @@ const EmailStatusBar = (props: Props) => {
       console.log(err);
     },
   });
+
+  useEffect(() => {
+    if(!catalog) return;
+    if(!searchParams.get('tab') && tabHistory[catalog]) {
+      setSearchParams({tab: tabHistory[catalog]})
+    }
+  }, [catalog])
+
+  useEffect(() => {
+    if(catalog && tab) {
+      dispatch(addTabHistory({catalog, tab: tab as 'all' | 'me'}))
+    }
+  }, [tab])
 
   useEffect(() => {
     if (!isEmpty(notificationList))
