@@ -1,4 +1,4 @@
-import { DepartmentResponse } from "@api/deparment/interface";
+import { DepartmentResponse } from '@api/deparment/interface';
 
 export const departmentListDummy: DepartmentResponse[] = [
   {
@@ -6,6 +6,7 @@ export const departmentListDummy: DepartmentResponse[] = [
     name: 'IT',
     description: 'Phòng it',
     address: '47 Điện Biên Phủ',
+    company_id: 1,
     users: [
       {
         id: 1,
@@ -23,7 +24,7 @@ export const departmentListDummy: DepartmentResponse[] = [
         position: 'IT',
         role: '',
         role_id: 1,
-        user_id: 1
+        user_id: 1,
       },
       {
         id: 2,
@@ -41,7 +42,7 @@ export const departmentListDummy: DepartmentResponse[] = [
         position: 'IT',
         role: '',
         role_id: 2,
-        user_id: 2
+        user_id: 2,
       },
       {
         id: 3,
@@ -59,7 +60,7 @@ export const departmentListDummy: DepartmentResponse[] = [
         position: 'IT',
         role: '',
         role_id: 3,
-        user_id: 3
+        user_id: 3,
       },
       {
         id: 4,
@@ -77,56 +78,62 @@ export const departmentListDummy: DepartmentResponse[] = [
         position: 'IT',
         role: '',
         role_id: 4,
-        user_id: 4
+        user_id: 4,
       },
-    ]
+    ],
   },
   {
     id: 2,
     name: 'FE',
     description: 'Phòng FE',
     address: '47 Điện Biên Phủ',
-    users: [{
-      id: 5,
-      avatar: '',
-      contacts: '',
-      department_id: 5,
-      email: 'user5@email.com',
-      first_name: 'user2',
-      last_name: 'user5',
-      identity: 'user5',
-      mail_storage: 'sdf',
-      manager: 1,
-      password: '',
-      phone_number: '5',
-      position: 'IT',
-      role: '',
-      role_id: 1,
-      user_id: 5
-    }]
+    company_id: 1,
+    users: [
+      {
+        id: 5,
+        avatar: '',
+        contacts: '',
+        department_id: 5,
+        email: 'user5@email.com',
+        first_name: 'user2',
+        last_name: 'user5',
+        identity: 'user5',
+        mail_storage: 'sdf',
+        manager: 1,
+        password: '',
+        phone_number: '5',
+        position: 'IT',
+        role: '',
+        role_id: 1,
+        user_id: 5,
+      },
+    ],
   },
   {
     id: 3,
     name: 'HR',
     description: 'Phòng it',
     address: '47 Điện Biên Phủ',
-    users: [{
-      id: 10,
-      avatar: '',
-      contacts: '',
-      department_id: 3,
-      email: 'user10@email.com',
-      first_name: 'user10',
-      last_name: 'user10',
-      identity: 'user10',
-      mail_storage: 'sdf',
-      manager: 1,
-      password: '',
-      phone_number: '10',
-      position: 'HR',
-      role: '',
-      role_id: 1,
-      user_id: 3
-    }]
+    company_id: 1,
+    users: [
+      {
+        id: 10,
+        avatar: '',
+        contacts: '',
+        department_id: 3,
+        email: 'user10@email.com',
+        first_name: 'user10',
+        last_name: 'user10',
+        identity: 'user10',
+        mail_storage: 'sdf',
+        manager: 1,
+        password: '',
+        phone_number: '10',
+        position: 'HR',
+        role: '',
+        role_id: 1,
+        user_id: 3,
+      },
+    ],
   },
-]
+];

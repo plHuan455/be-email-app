@@ -1,11 +1,23 @@
 import ApiClient from '@api/ApiClient';
-import { DEPARTMENT_API_URL, POSITION_API } from '@constants/departmentAPI';
+import {
+  DEPARTMENT_API_URL,
+  POSITION_API,
+  DEPARTMENT_API,
+} from '@constants/departmentAPI';
 import { AxiosResponse } from 'axios';
 import {
   CreateDepartmentParams,
   DepartmentResponse,
   PositionResponse,
 } from './interface';
+
+export const deletePositionById = async (
+  id: number,
+): Promise<AxiosResponse<PositionResponse[]>> => {
+  const url = `${POSITION_API}/${id}`;
+  const res = await ApiClient.delete(url, undefined);
+  return res.data;
+};
 
 export const getPositionById = async (
   id: number,
@@ -35,6 +47,14 @@ export const addPositionInDepartment = async (params: {
 }): Promise<AxiosResponse<PositionResponse[]>> => {
   const url = `${POSITION_API}`;
   const res = await ApiClient.post(url, undefined, params);
+  return res.data;
+};
+
+export const getDepartmentsByRole = async (): Promise<
+  AxiosResponse<DepartmentResponse[]>
+> => {
+  const url = `${DEPARTMENT_API}/usercompany`;
+  const res = await ApiClient.get(url);
   return res.data;
 };
 

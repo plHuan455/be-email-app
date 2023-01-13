@@ -1,7 +1,7 @@
 import { useTranslation } from '@@packages/localization/src';
 import { DepartmentContainer } from '@containers/DepartmentContainer';
 import Layout from '@layouts/Layout';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useOutletContext } from 'react-router-dom';
 
 const ManagerDepartmentPage = () => {
   const { t } = useTranslation();

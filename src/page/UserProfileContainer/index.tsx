@@ -17,7 +17,7 @@ import { updateUserProfileSchema } from '@utils/schemas';
 import { uploadFile } from '@api/uploadFile';
 import { toast } from 'react-toastify';
 import Layout from '@layouts/Layout';
-import { getUserWithEmail } from '@api/user';
+import { getUserWithId } from '@api/user';
 
 const staticData: {
   avatar: string;
@@ -101,7 +101,7 @@ const UserProfileContainer = () => {
   //   useQuery
   const queryData = useQuery({
     queryKey: ['get-user-profile', isUpdateUserProfileSuccess, currentId],
-    queryFn: () => getUserWithEmail(currentId ? +currentId : 0),
+    queryFn: () => getUserWithId(currentId ? +currentId : 0),
     onSuccess(res) {
       method.setValue('avatar', res.data.avatar);
       method.setValue('department', res.data.department);

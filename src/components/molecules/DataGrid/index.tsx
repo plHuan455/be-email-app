@@ -6,7 +6,7 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Paper from '@mui/material/Paper';
 import _ from 'lodash';
-import React, { FC, useMemo, useState } from 'react';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 import {
   useReactTable,
   getCoreRowModel,
@@ -34,6 +34,8 @@ import Loading from '@components/atoms/Loading';
 import { UseQueryResult } from '@tanstack/react-query';
 import { PagedListRequest } from '@api/commonDto';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { RootState } from '@redux/configureStore';
 // import TableCellDelete from './common/TableCellDelete';
 // import TableCellEdit from './common/TableCellEdit';
 // import TablePaginationActions from './common/TablePaginationActions';
@@ -107,6 +109,8 @@ const DataTable: FC<DataTableProps> = (props) => {
     getFacetedMinMaxValues: getFacetedMinMaxValues(),
     manualPagination: true,
   });
+
+  const { searchActionValue } = useSelector((state: RootState) => state.global);
 
   //! old version
 
@@ -219,14 +223,14 @@ const DataTable: FC<DataTableProps> = (props) => {
   const { getHeaderGroups, getRowModel, getAllColumns } = tableState;
 
   return (
-    <Paper className="relative">
+    <Paper className="relative h-full">
       <CssBaseline />
       <TableToolbar
         searchComponent={
           <SimpleFilter
             onSearch={props?.simpleSearch?.onTextSearch}
             onClearSortClicked={props.onClearSortClicked}
-            onFilter={ props?.simpleFilter?.onFilter }
+            onFilter={props?.simpleFilter?.onFilter}
             hasSimpleFilter={props.hasSimpleFilter}
           />
         }
@@ -370,4 +374,4 @@ export default DataTable;
 
 DataTable.defaultProps = {
   disabledRowOnClick: true,
-}
+};

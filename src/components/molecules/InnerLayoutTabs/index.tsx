@@ -24,9 +24,6 @@ const InnerLayoutHeaderTabs: React.FC<Props> = ({
   // useLocation
   const location = useLocation();
 
-  // useNavigate
-  const navigate = useNavigate();
-
   // useEffect
   React.useEffect(() => {
     if (typeOpenTabLink === 'continue') return;
@@ -38,11 +35,13 @@ const InnerLayoutHeaderTabs: React.FC<Props> = ({
 
         const newPath = pathToArr.join('/');
 
+        console.log(newPath);
+
         return { ...tab, path: newPath };
       });
       setTabsList(convertTabs);
     }
-  }, [tabs]);
+  }, [tabs, location]);
 
   return (
     <Box className="flex-1">

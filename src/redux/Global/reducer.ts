@@ -11,6 +11,7 @@ export interface GobalState {
   activeBar: string;
   locations: TLocation[];
   defaultSignId: number;
+  searchActionValue: string;
 }
 
 const initialState: GobalState = {
@@ -23,12 +24,16 @@ const initialState: GobalState = {
   activeBar: 'home',
   locations: [],
   defaultSignId: 1,
+  searchActionValue: '',
 };
 
 const globalSlice = createSlice({
   name: 'global',
   initialState,
   reducers: {
+    setSearchActionValue(state, actions) {
+      return { ...state, searchActionValue: actions.payload };
+    },
     changeSidebarRight(state, action) {
       switch (action.payload) {
         case 'information':
@@ -114,6 +119,7 @@ const globalSlice = createSlice({
 });
 
 export const {
+  setSearchActionValue,
   changeSidebarRight,
   setDefaultSignId,
   setThemeMode,

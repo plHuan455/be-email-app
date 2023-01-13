@@ -5,7 +5,7 @@ import Layout from '@layouts/Layout';
 import { SelectChangeEvent, Typography } from '@mui/material';
 import FormControl from '@mui/material/FormControl';
 import TextField from '@mui/material/TextField';
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -13,6 +13,7 @@ import { convertPathImage } from '@utils/functions';
 import { useForm } from 'react-hook-form';
 import { Select } from '@components/molecules/Select';
 import { debounce } from 'lodash';
+import { useOutletContext } from 'react-router-dom';
 
 interface DepartmentTemplateProps extends CRUDComponentProps<DepartmentItemProps> {}
 
@@ -36,16 +37,26 @@ const DepartmentTemplate: React.FC<DepartmentTemplateProps> = ({
 }) => {
   const { t } = useTranslation();
 
-  console.log('formdata -->', formData);
+  console.log('formData -->', formData);
   const {
     register,
     handleSubmit: _handleSubmit,
     formState: { errors },
+    setValue,
+    getValues,
   } = useForm({
     defaultValues: formData,
     resolver: schema && yupResolver(schema),
     mode: 'all',
   });
+
+  useEffect(() => {
+    setValue('address', formData.address);
+    setValue('company_id', formData.company_id);
+    setValue('description', formData.description);
+    setValue('id', formData.id);
+    setValue('name', formData.name);
+  }, [formData]);
 
   const handleInputChange = useCallback(
     (
@@ -129,7 +140,7 @@ const DepartmentTemplate: React.FC<DepartmentTemplateProps> = ({
             helperText={errors.company_id?.message?.toString()}
             id="company_id"
             name="company_id"
-            defaultValue={formData.company_id}
+            value={formData.company_id}
             onChange={handleChangeSelect}
             size="small"
             options={companies}

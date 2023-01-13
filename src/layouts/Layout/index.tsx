@@ -1,6 +1,9 @@
 import ArrowLeft from '@assets/icon/ArrowLeft';
 import Icon from '@components/atoms/Icon';
 import IconButton from '@components/atoms/IconButton';
+import LayoutMoreActionMenu, {
+  LayoutMoreActionInputType,
+} from '@components/molecules/LayoutMoreActionsMenu';
 import SearchStartWithIcon from '@components/molecules/Search';
 import EmailsListActionsContainer from '@containers/EmailsListActionsContainer';
 import SidebarRightContainer from '@containers/SideBarRightContainer';
@@ -85,12 +88,14 @@ const MainHaveActions: React.FC<
     headTitle?: string;
     rightHeaderTabs?: React.ReactNode;
     onClickAdd?: React.MouseEventHandler<HTMLButtonElement>;
+    onSearch?: () => void;
+    moreActionsList?: LayoutMoreActionInputType[];
   }
 > = ({
   children,
   onComback,
+  moreActionsList,
   isHaveHeader = true,
-  isHaveSearch = false,
   isFull = false,
   headTitle,
   rightHeaderTabs,
@@ -149,22 +154,21 @@ const MainHaveActions: React.FC<
                     {headTitle}
                   </Typography>
                 )}
+                {rightHeaderTabs}
+              </Box>
+              <Box className="flex gap-2">
+                {moreActionsList && (
+                  <LayoutMoreActionMenu moreActionsList={moreActionsList ?? []} />
+                )}
                 {onClickAdd && (
                   <IconButton
-                    className="bg-transparent hover:bg-transparent"
+                    className="bg-[#554CFF] hover:bg-[#554CFF] p-3"
                     size="small"
                     onClick={onClickAdd}>
-                    <Icon
-                      icon={'plus'}
-                      rawColor={'#827CFF'}
-                      width={16}
-                      height={16}
-                    />
+                    <Icon icon={'plus'} rawColor={'white'} width={16} height={16} />
                   </IconButton>
                 )}
               </Box>
-              {isHaveSearch && <SearchStartWithIcon />}
-              {rightHeaderTabs}
             </Box>
           )}
           {children}
@@ -191,32 +195,34 @@ const MainQueryClient: React.FC<
   PropsWithChildren & {
     onComback?: () => void;
     isHaveHeader?: boolean;
-    isHaveSearch?: boolean;
     isFull?: boolean;
     headTitle?: string;
     rightHeaderTabs?: React.ReactNode;
     onClickAdd?: React.MouseEventHandler<HTMLButtonElement>;
+    moreActionsList?: LayoutMoreActionInputType[];
   }
 > = ({
   children,
   onComback,
   isHaveHeader = true,
-  isHaveSearch = false,
   isFull = false,
   rightHeaderTabs,
   onClickAdd,
   headTitle,
+  moreActionsList,
 }) => {
   return (
     <MainHaveActions
       onComback={onComback}
       isHaveHeader={isHaveHeader}
-      isHaveSearch={isHaveSearch}
       isFull={isFull}
       headTitle={headTitle}
       onClickAdd={onClickAdd}
-      rightHeaderTabs={rightHeaderTabs}>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+      rightHeaderTabs={rightHeaderTabs}
+      moreActionsList={moreActionsList}>
+      {/* <QueryClientProvider client={queryClient}> */}
+      {children}
+      {/* </QueryClientProvider> */}
     </MainHaveActions>
   );
 };
@@ -302,9 +308,15 @@ const GroupButton: React.FC<GroupButtonProps> = ({
           },
         },
       }}>
-      <Button disabled={disabledClear} color="error" size="large" onClick={onClear}>
-        {labelClear}
-      </Button>
+      {!disabledClear && (
+        <Button
+          disabled={disabledClear}
+          color="error"
+          size="large"
+          onClick={onClear}>
+          {labelClear}
+        </Button>
+      )}
       <Button
         disabled={disabledCancel}
         variant="text"

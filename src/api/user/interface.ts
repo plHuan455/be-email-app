@@ -1,3 +1,11 @@
+export interface AddressType {
+  national: string;
+  city: string;
+  district: string;
+  ward: string;
+  street: string;
+  number: string;
+}
 export interface CreateEmployeeParams {
   avatar?: string;
   first_name: string;
@@ -9,6 +17,7 @@ export interface CreateEmployeeParams {
   position: string;
   role_id: number;
   department_id: number;
+  address: AddressType;
 }
 
 export type UpdateEmployeeParams = Partial<CreateEmployeeParams>;
@@ -24,7 +33,7 @@ export interface CreateSignatureParams {
   text_html: string;
 }
 
-export type UpdateSignatureParams = Partial<CreateSignatureParams>
+export type UpdateSignatureParams = Partial<CreateSignatureParams>;
 
 export interface SignatureResponse {
   name: string;

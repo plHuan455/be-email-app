@@ -5,9 +5,9 @@ import {
   updateDepartment,
 } from '@api/deparment';
 import { useUploadFileToSever } from '@hooks/useUploadFileToSever';
-import { useQuery } from '@tanstack/react-query';
-import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
+import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
 import { toast, useToast } from 'react-toastify';
 import * as yup from 'yup';
 
@@ -34,7 +34,7 @@ export const useDepartmentManagement = () => {
 
   const [department, setDepartment] = useState(initDepartment);
 
-  const handleCancel = () => navigate('..');
+  const handleCancel = () => navigate(-1);
 
   return {
     navigate,
@@ -48,17 +48,17 @@ export const useDepartmentManagement = () => {
 
 export const useCreateDepartmentManagement = () => {
   const hook = useDepartmentManagement();
-  const { navigate, department } = hook;
+  const { navigate, department, setDepartment } = hook;
 
   const handleCreate = async () => {
     try {
       console.log('department data --->', department);
 
       // call create here
-      const { id, company_id, ...params } = department;
-      await createDepartment(params);
-      toast.success('Create department success!');
-      navigate('..');
+      const { id, ...params } = department;
+      const res = await createDepartment(params);
+
+      return res;
     } catch (error: any) {
       console.error(new Error(error));
       toast.error(error?.response?.message || 'Has Error');
@@ -74,6 +74,7 @@ export const useCreateDepartmentManagement = () => {
 export const useEditDepartmentManagement = () => {
   const hook = useDepartmentManagement();
   const { param, navigate, department, setDepartment } = hook;
+  const queryClient = useQueryClient();
 
   console.log('param -->', param.id);
   useQuery(
@@ -106,7 +107,8 @@ export const useEditDepartmentManagement = () => {
       console.log('department data --->', department);
       const { id, company_id, ...params } = department;
       await updateDepartment(id, params);
-      navigate('..');
+      queryClient.invalidateQueries({ queryKey: ['manager-get-departments'] });
+      navigate(-1);
       toast.success('Success');
     } catch (error: any) {
       console.error(new Error(error));

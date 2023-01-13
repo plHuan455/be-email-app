@@ -107,7 +107,7 @@ const PageCrudData: FC<PageCrudDataProps> = (props) => {
   };
 
   return (
-    <div>
+    <div className="h-full">
       {props.children}
       <DataTable
         data={get(data, 'data', [])}

@@ -14,6 +14,7 @@ export interface DepartmentResponse {
   address: string;
   users?: UserResponse[];
   positions?: PositionResponse[];
+  company_id: number;
 }
 
 export interface CreateDepartmentParams {

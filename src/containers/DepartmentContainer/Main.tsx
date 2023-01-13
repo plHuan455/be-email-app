@@ -71,7 +71,7 @@ const DepartmentContainer = () => {
   };
 
   return (
-    <div className="px-4">
+    <div className="px-4 flex-1">
       <PageCrudData
         disabledRowOnClick={false}
         api="/system/position/department"

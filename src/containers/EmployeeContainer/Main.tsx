@@ -3,30 +3,88 @@ import Icon from '@components/atoms/Icon';
 import PageCrudData from '@components/organisms/PageCrudData';
 
 import { ColumnDef } from '@tanstack/react-table';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import UpdateIcon from '@mui/icons-material/Update';
+import ModalBase from '@components/atoms/ModalBase';
+import { useMutation } from '@tanstack/react-query';
+import { deleteUser, getUserWithId, UserProfileResponse } from '@api/user';
+import Loading from '@components/atoms/Loading';
+import ClientProfileLayout from '@layouts/ClientProfile';
+import AlertDialog, { useAlertDialog } from '@components/molecules/AlertDialog';
+import LayoutMoreActionMenu, {
+  LayoutMoreActionInputType,
+} from '@components/molecules/LayoutMoreActionsMenu';
+import TableActionsMenu from '@components/molecules/TableActionsMenu';
+
+import DeleteIcon from '@mui/icons-material/Delete';
+import { toast } from 'react-toastify';
 
 const EmployeeContainer = () => {
+  const [isOpenModel, setIsOpenModal] = useState<boolean>(false);
+  const [refreshKey, setRefreshKey] = useState(Date.now());
+
   const navigate = useNavigate();
   const { t } = useTranslation();
   const params = useParams();
+
+  const {
+    isLoading,
+    callback,
+    description,
+    isOpen,
+    isShowAgreeBtn,
+    onClose,
+    onCloseCallBack,
+    setAlertData,
+    setIsLoading,
+    title,
+  } = useAlertDialog();
 
   useEffect(() => {
     console.log('mount', params);
   });
 
+  const onUpdateActionClick = (id: number) => {
+    navigate(`/departments/department/${params.idDepartment}/employee/edit/${id}`);
+  };
+
+  const onDeleteActionClick = (data) => {
+    setAlertData(
+      '',
+      <div>
+        <p>Are you sure want to "Delete" this user?</p>
+        <p>
+          <b>First Name:</b>
+          <span>{data.first_name}</span>
+        </p>
+        <p>
+          <b>Last Name:</b>
+          <span>{data.last_name}</span>
+        </p>
+      </div>,
+      () => {
+        mutateDeleteUser(data.id);
+      },
+    );
+  };
+
   const columns = React.useMemo<ColumnDef<any, any>[]>(
     () => [
       {
         accessorKey: '',
-        accessorFn: (row) => row,
-        id: 'name',
-        cell: (info) => {
-          const { first_name, last_name } = info.getValue();
-          return first_name + ' ' + last_name;
-        },
-        header: () => <span>{t('Fullname')}</span>,
+        accessorFn: (row) => row.first_name,
+        id: 'first_name',
+        cell: (info) => info.getValue(),
+        header: () => <span>{t('First Name')}</span>,
+        footer: (props) => props.column.id,
+      },
+      {
+        accessorKey: '',
+        accessorFn: (row) => row.last_name,
+        id: 'last_name',
+        cell: (info) => info.getValue(),
+        header: () => <span>{t('Last Name')}</span>,
         footer: (props) => props.column.id,
       },
       {
@@ -68,27 +126,123 @@ const EmployeeContainer = () => {
         header: () => <span>{t('Position')}</span>,
         footer: (props) => props.column.id,
       },
+      {
+        accessorKey: '',
+        accessorFn: (row) => row,
+        id: 'actions',
+        cell: (info) => {
+          return (
+            <TableActionsMenu
+              options={[
+                { label: 'update', value: 0, icon: <UpdateIcon /> },
+                { label: 'delete', value: 1, icon: <DeleteIcon /> },
+              ]}
+              onClick={(e) => e.stopPropagation()}
+              onClose={(e) => e.stopPropagation()}
+              onItemClick={(value) => {
+                if (value === 0) onUpdateActionClick(Number(info.getValue().id));
+                if (value === 1) onDeleteActionClick(info.getValue());
+              }}
+            />
+          );
+        },
+        header: () => <span>{t('Actions')}</span>,
+        footer: (props) => props.column.id,
+      },
     ],
     [],
   );
 
+  const {
+    mutate: mutateGetUserProfile,
+    data: dataMutateGetUserProfile,
+    isLoading: isLoadingGetUserProfile,
+  } = useMutation({
+    mutationKey: ['EmployeeContainer-get-user-profile'],
+    mutationFn: getUserWithId,
+  });
+
+  const { mutate: mutateDeleteUser } = useMutation({
+    mutationKey: ['EmployeeContainer-delete-user'],
+    mutationFn: deleteUser,
+    onSuccess: () => {
+      setIsOpenModal(false);
+      onClose();
+      setRefreshKey(Date.now());
+      toast.success(t('Delete Successfully!'));
+    },
+  });
+
+  const handleOnUpdateClick = (id: number) => {
+    setIsOpenModal(false);
+    navigate(`/departments/department/${params.idDepartment}/employee/edit/${id}`);
+  };
+
+  const handleOnDeleteClick = (data: UserProfileResponse) => {
+    setAlertData(
+      '',
+      <div>
+        <p>Are you sure want to "Delete" this user?</p>
+        <p>
+          <b>First Name:</b>
+          <span>{data.first_name}</span>
+        </p>
+        <p>
+          <b>Last Name:</b>
+          <span>{data.last_name}</span>
+        </p>
+      </div>,
+      () => {
+        mutateDeleteUser(data.id);
+      },
+    );
+  };
+
   const rowClick = (row) => {
     if (row && row.original) {
       // tạm thời cho edit, sau này phần quyền sau
-      navigate(
-        `/department/${params.idDepartment}/employee/edit/${row.original.id}`,
-      );
+      // navigate(
+      //   `/departments/department/${params.idDepartment}/employee/profile/${row.original.id}`,
+      // );
+      mutateGetUserProfile(row.original.id);
+      setIsOpenModal(true);
     }
   };
 
   return (
-    <div className="px-4">
+    <div className="px-4 flex-1 pb-3">
       <PageCrudData
+        refreshKey={params.idDepartment + refreshKey.toString()}
         disabledRowOnClick={false}
         api={`/rbac/department/users/${params.idDepartment}`}
         columns={columns}
         rowOnClick={(row) => rowClick(row)}
       />
+      <AlertDialog
+        descriptionLabel={description}
+        isOpen={isOpen}
+        onClose={onClose}
+        titleLabel={title}
+        isLoading={isLoading}
+        onAgree={callback}
+        onDisagree={onClose}
+      />
+      <ModalBase
+        style={{ width: '80vw', minHeight: '50vh' }}
+        isOpen={isOpenModel}
+        title=""
+        submitLabel=""
+        onClose={() => setIsOpenModal(false)}>
+        {isLoadingGetUserProfile ? (
+          <Loading isLoading={isLoadingGetUserProfile} />
+        ) : (
+          <ClientProfileLayout
+            clientProfileData={dataMutateGetUserProfile?.data}
+            onDelete={handleOnDeleteClick}
+            onEdit={handleOnUpdateClick}
+          />
+        )}
+      </ModalBase>
     </div>
   );
 };

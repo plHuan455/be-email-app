@@ -53,12 +53,18 @@ const EmailsListActions: React.FC<Props> = ({ className, isShowInformationBtn })
   };
 
   const unReadNotificationCount = useMemo(() => {
-    return notificationList.reduce((count, value) => value.isSeen ? count : count + 1, 0)
-  }, [notificationList])
+    return notificationList.reduce(
+      (count, value) => (value.isSeen ? count : count + 1),
+      0,
+    );
+  }, [notificationList]);
 
   return (
     <Box
       className={`p-4 flex item-center justify-end gap-4 bg-white rounded-tl-[4rem] z-10 ${className}`}>
+      <Box>
+        <SearchStartWithIcon onSearch={() => {}} />
+      </Box>
       {isShowInformationBtn && (
         <Box>
           <IconButton onClick={handleChangeIsShowSideBarState}>
