@@ -25,6 +25,7 @@ import { useQuery } from '@tanstack/react-query';
 import { getRole } from '@api/role';
 import { getAllPositionInDepartment } from '@api/deparment';
 import { useParams } from 'react-router-dom';
+import BasePhoneInput from '@components/atoms/Input/BasePhoneInput';
 
 interface DepartmentTemplateProps extends CRUDComponentProps<DepartmentItemProps> {
   editMode?: boolean;
@@ -102,7 +103,8 @@ const DepartmentTemplate: React.FC<DepartmentTemplateProps> = ({
     (
       e:
         | React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-        | SelectChangeEvent<any>,
+        | SelectChangeEvent<any>
+        | { target: { value: string; name?: string } },
     ) => {
       console.log('input change -->', e.target.value);
       console.log('input name -->', e.target.name);
@@ -261,6 +263,13 @@ const DepartmentTemplate: React.FC<DepartmentTemplateProps> = ({
               onChange={handleInputChange}
               size={'small'}
             />
+            {/* <BasePhoneInput
+              {...register('phone_number')}
+              value={formData.phone_number}
+              onChange={(data, e) => {
+                handleInputChange({ target: { value: data, name: 'phone_number' } });
+              }}
+            /> */}
           </FormControl>
           <FormControl sx={{ width: '50%' }} className="py-2">
             <Typography sx={{ fontWeight: 700 }}>{t('National')} :</Typography>

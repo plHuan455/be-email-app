@@ -19,6 +19,7 @@ import TableActionsMenu from '@components/molecules/TableActionsMenu';
 
 import DeleteIcon from '@mui/icons-material/Delete';
 import { toast } from 'react-toastify';
+import { Avatar } from '@mui/material';
 
 const EmployeeContainer = () => {
   const [isOpenModel, setIsOpenModal] = useState<boolean>(false);
@@ -92,9 +93,9 @@ const EmployeeContainer = () => {
         accessorFn: (row) => row.avatar,
         id: 'avatar',
         cell: (info) => (
-          <div>
-            <img
-              className="w-20 h-10 object-contain rounded-md"
+          <div className="w-10 h-10 rounded-[50%] overflow-hidden border border-slate-200">
+            <Avatar
+              className="w-full h-full object-cover"
               src={`http://${info.getValue()}`}
             />
           </div>

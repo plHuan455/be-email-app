@@ -140,7 +140,7 @@ const UserProfileContainer = () => {
 
   return (
     <Layout.MainHaveActions>
-      <Box className="flex flex-col rounded-xl mt-8 h-full p-16 shadow-md">
+      <Box className="flex flex-col rounded-xl h-full p-16 shadow-md bg-white">
         {isLoadingUserProfile ? (
           <Loading isLoading={true} />
         ) : (
