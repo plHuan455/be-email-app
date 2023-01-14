@@ -1,6 +1,7 @@
 import ArrowLeft from '@assets/icon/ArrowLeft';
 import Icon from '@components/atoms/Icon';
 import IconButton from '@components/atoms/IconButton';
+import Loading from '@components/atoms/Loading';
 import LayoutMoreActionMenu, {
   LayoutMoreActionInputType,
 } from '@components/molecules/LayoutMoreActionsMenu';
@@ -76,6 +77,23 @@ const Main: React.FC<
         {children}
       </Paper>
     </Grid>
+  );
+};
+
+interface PropsLoading {
+  isLoading?: boolean;
+}
+
+const LayoutLoading: React.FC<PropsLoading> = ({ isLoading = false }) => {
+  if (!isLoading) return <Box></Box>;
+
+  return (
+    <Box className="fixed top-0 lef-0 w-[100vw] h-[100vh]">
+      <Box className="w-full h-full bg-slate-500/50"></Box>
+      <Box className="absolute top-1/2 left-1/2 -translate-y-1/2">
+        <Loading isLoading={isLoading} />
+      </Box>
+    </Box>
   );
 };
 
@@ -336,6 +354,7 @@ const Layout = {
   Content,
   Main,
   MainHaveActions,
+  LayoutLoading,
   ASide,
   Report,
   Chart,

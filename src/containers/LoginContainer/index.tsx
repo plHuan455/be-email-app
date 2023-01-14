@@ -59,11 +59,14 @@ function LoginContainer() {
     resolver: yupResolver(schema),
   });
 
-  const { user, token, signin } = useAuth();
-
-  const submitLogin = async ({ email, password }) => {
-    try {
-      const res = await login({ email, password });
+  const {
+    mutate: mutateLogin,
+    data: dataMutateLogin,
+    isLoading: isLoginLoadingMute,
+  } = useMutation({
+    mutationKey: ['LoginContainer-login'],
+    mutationFn: login,
+    onSuccess: (res) => {
       // Change to res.data
       signin({}, res.data, async () => {
         if (res.message === 'Login successful') {
@@ -80,19 +83,20 @@ function LoginContainer() {
           );
           localStorage.setItem('current_user_avt', currentUser.data.avatar);
           // set current_email to 'email
-          localStorage.setItem('current_email', email);
+          localStorage.setItem('current_email', currentUser.data.email);
           localStorage.setItem('department_id', `${currentUser.data.department_id}`);
           localStorage.setItem('position', `${currentUser.data.position}`);
           localStorage.setItem(
             'current_role_id',
             currentUser.data.role_id.toString(),
           );
-          toast.success('Đăng nhập thành công!');
+          localStorage.setItem('current_role', currentUser.data.role);
+          toast.success('Logged in successfully!');
 
           Notification.requestPermission().then((permission) => {
             if (permission === 'granted') {
               console.log('line 28 Notification permission granted.');
-              fetchToken(setTokenFound, setFcmToken);
+              // fetchToken(setTokenFound, setFcmToken);
             }
             if (permission === 'default') {
               console.log('line 28 Notification permission default.');
@@ -105,13 +109,16 @@ function LoginContainer() {
           navigate('/');
         }
       });
-    } catch (error: any) {
-      toast.error(t('Tài khoản chưa tồn tại hoặc sai thông tin đăng nhập'));
-    }
-  };
+    },
+    onError: (error) => {
+      toast.error(t('The account does not exist or the login information is wrong'));
+    },
+  });
+
+  const { user, token, signin } = useAuth();
 
   const onSubmit = (data) => {
-    submitLogin({ email: data.email, password: data.password });
+    mutateLogin({ email: data.email, password: data.password });
   };
 
   const handleReLoginWithEmail = () => {
@@ -250,9 +257,10 @@ function LoginContainer() {
               )}
             </form>
           </Content>
-          <p>2022 Metanode, Inc.</p>
+          <p>&copy; Copyright, 2022 Metanode, Inc.</p>
         </WrapContent>
       </WrapContainer>
+      <Layout.LayoutLoading isLoading={isLoginLoadingMute} />
     </Root>
   );
 }
@@ -268,6 +276,8 @@ import { Navigate, useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { login } from '@api/auth';
 import { getUserWithId } from '@api/user';
+import { useMutation } from '@tanstack/react-query';
+import Layout from '@layouts/Layout';
 
 export const Root = styled.div`
   width: 100%;

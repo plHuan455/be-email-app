@@ -53,22 +53,22 @@ function MainWrapper({ children }: { children: React.ReactNode }) {
   const [show, setShow] = useState(false);
   const [notification, setNotification] = useState({ title: '', body: '' });
 
-  onMessageListener()
-    .then((payload) => {
-      setNotification({
-        title: payload.data.title,
-        body: payload.data.body,
-      });
-      setShow(true);
-      dispatch(
-        unShiftNotificationList({
-          ...payload.data,
-          id: Date.now(),
-          createdAt: new Date().toISOString(),
-        }),
-      );
-    })
-    .catch((err) => console.log('failed', err));
+  // onMessageListener()
+  //   .then((payload) => {
+  //     setNotification({
+  //       title: payload.data.title,
+  //       body: payload.data.body,
+  //     });
+  //     setShow(true);
+  //     dispatch(
+  //       unShiftNotificationList({
+  //         ...payload.data,
+  //         id: Date.now(),
+  //         createdAt: new Date().toISOString(),
+  //       }),
+  //     );
+  //   })
+  //   .catch((err) => console.log('failed', err));
 
   // Hooks
   const { classes, cx } = useStyles();
@@ -85,6 +85,7 @@ function MainWrapper({ children }: { children: React.ReactNode }) {
   const handleLogout = useCallback(() => {
     deleteDeviceKey().finally(() => {
       auth.signout(() => {
+        localStorage.removeItem('current_email');
         localStorage.removeItem('device_key_id');
         localStorage.removeItem('token');
         localStorage.removeItem('device_token');

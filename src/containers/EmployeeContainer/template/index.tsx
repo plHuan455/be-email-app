@@ -252,7 +252,7 @@ const DepartmentTemplate: React.FC<DepartmentTemplateProps> = ({
           )}
           <FormControl fullWidth className="py-2">
             <Typography sx={{ fontWeight: 700 }}>{t('Phone Number')}:</Typography>
-            {/* <TextField
+            <TextField
               {...register('phone_number')}
               type={'phone_number'}
               error={Boolean(errors.phone_number)}
@@ -262,14 +262,14 @@ const DepartmentTemplate: React.FC<DepartmentTemplateProps> = ({
               defaultValue={formData.phone_number}
               onChange={handleInputChange}
               size={'small'}
-            /> */}
-            <BasePhoneInput
+            />
+            {/* <BasePhoneInput
               {...register('phone_number')}
               value={formData.phone_number}
               onChange={(data, e) => {
                 handleInputChange({ target: { value: data, name: 'phone_number' } });
               }}
-            />
+            /> */}
           </FormControl>
           <FormControl sx={{ width: '50%' }} className="py-2">
             <Typography sx={{ fontWeight: 700 }}>{t('National')} :</Typography>

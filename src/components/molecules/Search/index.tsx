@@ -38,7 +38,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     paddingRight: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create('width'),
     width: '100%',
-    backgroundColor: '#7061e2',
+    // backgroundColor: '#7061e2',
     '&:hover': {
       backgroundColor: '#7061e2',
     },

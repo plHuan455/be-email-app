@@ -534,11 +534,11 @@ const EmailMess: React.FC<Props> = ({
               }}></Typography>
           </Box>
         )}
-        <EmailGreeting
+        {/* <EmailGreeting
           greetingLabel="Thanks and Best regards, ------"
           isHaveLogo={true}
           logo={<LogoWithLabel />}
-        />
+        /> */}
         {/* Files List If have */}
         {_renderAttachesFiles}
         {/* Email Private Hashtag */}
