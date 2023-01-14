@@ -1,3 +1,4 @@
+import { useTranslation } from '@@packages/localization/src';
 import { deleteDeviceKey } from '@api/deviceKey';
 import AvatarWithPopup from '@components/atoms/AvatarWithPopup';
 import { useAuth } from '@context/AppContext';
@@ -50,6 +51,8 @@ function MainWrapper({ children }: { children: React.ReactNode }) {
   const dispatch = useAppDispatch();
   const location = useLocation();
 
+  const { t } = useTranslation();
+
   const [show, setShow] = useState(false);
   const [notification, setNotification] = useState({ title: '', body: '' });
 
@@ -90,7 +93,7 @@ function MainWrapper({ children }: { children: React.ReactNode }) {
         localStorage.removeItem('token');
         localStorage.removeItem('device_token');
       });
-      toast.success('Bái bai!');
+      toast.success(t('Good bye!'));
     });
   }, [auth.signout]);
 
