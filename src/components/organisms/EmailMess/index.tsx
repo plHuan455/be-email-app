@@ -147,14 +147,14 @@ const EmailMessRightSideBar: React.FC<EmailMessRightSideBarProps> = ({
         <Avatar alt={userInfo.name} src={userInfo.avatar} />
       </Box>
       {_renderEmailActionTypeIcon}
-      <Box>
+      {/* <Box>
         <Icon
           icon="star"
           color={`${emailData.is_important ? '#FAAF00' : '#999999'}`}
           width={22}
           height={22}
         />
-      </Box>
+      </Box> */}
       <Box className="flex flex-col justify-center gap-4">
         <Badge
           badgeContent={4}
@@ -162,6 +162,14 @@ const EmailMessRightSideBar: React.FC<EmailMessRightSideBarProps> = ({
           max={9}
           sx={{
             justifyContent: 'center',
+            '& .MuiBadge-badge': {
+              minWidth: '18px',
+              height: '18px',
+              fontSize: '10px',
+              padding: '4px',
+              right: '8px',
+              top: '2px',
+            },
           }}>
           <Icon width={30} height={30} icon="reply" />
         </Badge>
@@ -171,6 +179,14 @@ const EmailMessRightSideBar: React.FC<EmailMessRightSideBarProps> = ({
           max={9}
           sx={{
             justifyContent: 'center',
+            '& .MuiBadge-badge': {
+              minWidth: '18px',
+              height: '18px',
+              fontSize: '10px',
+              padding: '4px',
+              right: '8px',
+              top: '2px',
+            },
           }}>
           <Icon width={30} height={30} icon="replyAll" />
         </Badge>
@@ -339,7 +355,8 @@ const EmailMess: React.FC<Props> = ({
             <Box>
               <ControlEmailSend
                 variant="cancel"
-                scheduleAt={dayjs(sentAt).format('MMMM, DD YYYY - HH:mm')}
+                // scheduleAt={dayjs(sentAt).format('MMMM, DD YYYY - HH:mm')}
+                scheduleAt="Now"
                 remainMinutes={Math.floor(
                   (sentAt.getTime() - Date.now()) / 1000 / 60,
                 )}
