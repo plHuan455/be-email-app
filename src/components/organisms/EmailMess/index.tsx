@@ -518,11 +518,11 @@ const EmailMess: React.FC<Props> = ({
             <Typography dangerouslySetInnerHTML={{ __html: emailData.email.signature.text_html }}></Typography>
           </Box>
         )}
-        <EmailGreeting
+        {/* <EmailGreeting
           greetingLabel="Thanks and Best regards, ------"
           isHaveLogo={true}
           logo={<LogoWithLabel />}
-        />
+        /> */}
         {/* Files List If have */}
         {_renderAttachesFiles}
         {/* Email Private Hashtag */}

@@ -5,7 +5,7 @@ import {
   sendEmail,
   updateEmailWithQuery,
 } from '@api/email';
-import { EmailComposeEmailFieldNames, EmailComposeFields } from '@components/templates/EmailCompose2';
+import { EmailComposeEmailFieldNames, EmailComposeFields, SelectedEmailHashType } from '@components/templates/EmailCompose2';
 import MainWrapper from '@layouts/MainWrapper';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import dayjs, { Dayjs } from 'dayjs';
@@ -36,9 +36,9 @@ import { emailRegex } from '@constants/constants';
 import { emailData } from '@layouts/EmailStatusBar';
 import { AutoCompleteGroupValueTypes } from '@components/molecules/AutoCompleteGroup';
 
-type SelectedEmailHashType = {
-  [key in EmailComposeEmailFieldNames]: {[key: string]: true};
-}
+// type SelectedEmailHashType = {
+//   [key in EmailComposeEmailFieldNames]: {[key: string]: true};
+// }
 
 interface EmailComposeContextTypes {
   isEmailSending?: boolean;
@@ -94,11 +94,8 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
   const method = useForm<EmailComposeFields>({
     defaultValues: {
       contactBlock: [],
-      to2:[],
       to:[],
-      cc2: [],
       cc: [],
-      bcc2: [],
       bcc: [],
       subject: '',
       content: getEditorStateFormHtmlString(),
@@ -232,9 +229,9 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
     // const { to, cc, bcc } = convertContactField(contactBlock);
 
     return (
-      values.to2.length === 0 &&
-      values.bcc2.length === 0 &&
-      values.cc2.length === 0 &&
+      values.cc.length === 0 &&
+      values.cc.length === 0 &&
+      values.bcc.length === 0 &&
       !values.subject &&
       values.attachFiles.fileUrls.length === 0 &&
       values.attachFiles.files.length === 0 &&
@@ -250,9 +247,9 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
     // const { to, cc, bcc } = convertContactField(contactBlock);
     return {
       email: {
-        to: convertContactField(values.to2),
-        bcc: convertContactField(values.bcc2),
-        cc: convertContactField(values.cc2),
+        to: convertContactField(values.to),
+        bcc: convertContactField(values.bcc),
+        cc: convertContactField(values.cc),
         from: currentUserEmail ?? '',
         html_body: getHtmlStringFromEditorState(values.content),
         subject: values.subject,
@@ -274,9 +271,9 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
   };
   const createDataForForm = (data: MinimizeEmailTypes) => {
     method.reset();
-    method.setValue('to2', data.to ?? []);
-    method.setValue('cc2', data.cc ?? []);
-    method.setValue('bcc2', data.bcc ?? []);
+    method.setValue('to', data.to ?? []);
+    method.setValue('cc', data.cc ?? []);
+    method.setValue('bcc', data.bcc ?? []);
     method.setValue('content', getEditorStateFormHtmlString(data.content));
     method.setValue('subject', data.subject ?? '');
     method.setValue('attachFiles', data.attachFiles ?? { files: [], fileUrls: [] });
@@ -316,7 +313,7 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
 
     // const { to, cc, bcc } = convertContactField(contactBlock);
     // console.log(to, cc, bcc);
-    const {to2: to, cc2: cc, bcc2: bcc} = values;
+    const {to, cc, bcc} = values;
 
     if (to.length === 0 && cc.length === 0 && bcc.length === 0) {
       alertDialog.setAlertData(
@@ -337,9 +334,6 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
     const isEmailDataEmpty = checkEmailDataEmpty(currValue);
     const convertMinimizeEmailData = {
       ...currValue,
-      to: currValue.to2,
-      bcc: currValue.bcc2,
-      cc: currValue.cc2,
       content: getHtmlStringFromEditorState(currValue.content),
     };
 
@@ -383,9 +377,6 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
     const isEmailDataEmpty = checkEmailDataEmpty(method.getValues());
     const convertMinimizeEmailData = {
       ...values,
-      to: values.to2,
-      bcc: values.bcc2,
-      cc: values.cc2,
       content: getHtmlStringFromEditorState(values.content),
     };
     const apiParamData = createApiData(values);
@@ -448,9 +439,6 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
     const data = createApiData(values);
     const convertMinimizeEmailData = {
       ...values,
-      to: values.to2,
-      bcc: values.bcc2,
-      cc: values.cc2,
       content: getHtmlStringFromEditorState(values.content),
     };
     
@@ -514,9 +502,6 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
     const values = method.getValues();
     const convertMinimizeEmailData = {
       ...values,
-      to: values.to2,
-      cc: values.cc2,
-      bcc: values.bcc2,
       content: getHtmlStringFromEditorState(values.content),
     };
     const data = createApiData(values);

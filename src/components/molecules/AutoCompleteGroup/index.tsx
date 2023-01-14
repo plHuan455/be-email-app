@@ -18,6 +18,7 @@ export interface AutoCompleteGroupValueTypes {
   name: string;
   avatar?: string;
   data: string[];
+  selectedDataLabelAfter?: string;
 }
 
 interface AutoCompleteGroupProps {
@@ -58,9 +59,7 @@ const AutoCompleteGroupTags: React.FC<AutoCompleteGroupTagsProps> = ({
           <Chip
             variant="outlined"
             icon={option.isGroup ? <HomeWorkIcon /> : undefined}
-            label={`${option.name}${
-              option.isGroup ? ` (${option.data.length})` : ''
-            }`}
+            label={`${option.name}${option.selectedDataLabelAfter ?? ''}`}
             {...props}
             onDelete={(e) => {
               props.onDelete(e);
@@ -98,9 +97,7 @@ const AutoCompleteGroupTags: React.FC<AutoCompleteGroupTagsProps> = ({
               <Chip
                 variant="outlined"
                 icon={option.isGroup ? <HomeWorkIcon /> : undefined}
-                label={`${option.name}${
-                  option.isGroup ? ` (${option.data.length})` : ''
-                }`}
+                label={`${option.name}${option.selectedDataLabelAfter ?? ''}`}
                 {...props}
                 onDelete={(e) => {
                   props.onDelete(e);
