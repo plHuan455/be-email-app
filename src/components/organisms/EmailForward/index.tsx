@@ -29,6 +29,8 @@ import {
   EmailComposeEmailFieldNames,
   EmailComposeModalRowTypes,
   EmailComposeSelectedDepartmentTypes,
+  SelectedEmailHashType,
+  useEmailComposeContactFields,
 } from '@components/templates/EmailCompose2';
 import classNames from 'classnames';
 import ModalBase from '@components/atoms/ModalBase';
@@ -49,11 +51,6 @@ const EmailForward: React.FC<Props> = ({
   emailData,
 }) => {
   const [isShowCCForm, setIsShowCCForm] = useState<boolean>(false);
-  const [selectedDepartment, setSelectedDepartment] =
-    useState<EmailComposeSelectedDepartmentTypes>();
-  const [selectedEmployerModalList, setSelectedEmployerModalList] = useState<
-    string[]
-  >([]);
 
   const alertDialog = useAlertDialog();
 
@@ -81,98 +78,24 @@ const EmailForward: React.FC<Props> = ({
     },
   });
 
-  const convertedSelectEmployersModalRows = useMemo<EmailComposeModalRowTypes[]>(() => {
-    if (selectedDepartment === undefined) return [];
-    const field = selectedDepartment.field;
-    return (
-      selectedDepartment.data.emailInfo
-        .filter((value) => {
-          switch (field) {
-            case 'to':
-              return (
-                !selectedEmailHash.bcc[value.email] &&
-                !selectedEmailHash.cc[value.email]
-              );
-            case 'cc':
-              return (
-                !selectedEmailHash.bcc[value.email] &&
-                !selectedEmailHash.to[value.email]
-              );
-            case 'bcc':
-              return (
-                !selectedEmailHash.to[value.email] &&
-                !selectedEmailHash.cc[value.email]
-              );
-          }
-        })
-        .map((value) => ({
-          lastName: value.lastName,
-          firstName: value.firstName,
-          email: value.email,
-          id: value.email,
-        })) ?? []
-    );
-  }, [selectedDepartment]);
-
-  const { toOptions, ccOptions, bccOptions } = useMemo(() => {
-    if (!departmentData)
-      return {
-        toOptions: [],
-        ccOptions: [],
-        bccOptions: [],
-      };
-    const toOptions: AutoCompleteGroupValueTypes[] = [];
-    const ccOptions: AutoCompleteGroupValueTypes[] = [];
-    const bccOptions: AutoCompleteGroupValueTypes[] = [];
-
-    departmentData?.forEach((department) => {
-      const toEmails: string[] = [];
-      const ccEmails: string[] = [];
-      const bccEmails: string[] = [];
-      department.users?.forEach((user) => {
-        if (
-          !selectedEmailHash.bcc[user.email] &&
-          !selectedEmailHash.cc[user.email]
-        ) {
-          toEmails.push(user.email);
-        }
-        if (!selectedEmailHash.to[user.email] && !selectedEmailHash.cc[user.email]) {
-          bccEmails.push(user.email);
-        }
-        if (
-          !selectedEmailHash.to[user.email] &&
-          !selectedEmailHash.bcc[user.email]
-        ) {
-          ccEmails.push(user.email);
-        }
-      });
-
-      toOptions.push({
-        isGroup: true,
-        name: department.name,
-        id: department.id,
-        data: toEmails,
-      });
-      ccOptions.push({
-        isGroup: true,
-        name: department.name,
-        id: department.id,
-        data: ccEmails,
-      });
-      bccOptions.push({
-        isGroup: true,
-        name: department.name,
-        id: department.id,
-        data: bccEmails,
-      });
-    });
-
-    return {
-      toOptions: toOptions,
-      ccOptions: ccOptions,
-      bccOptions: bccOptions,
-    };
-  }, [departmentData, selectedEmailHash]);
+  const {
+    toOptions,
+    bccOptions,
+    ccOptions,
+    selectedDepartment,
+    selectedEmployerEmailList,
+    selectEmployersModalRows,
+    onDepartmentClick,
+    onDeleteDepartmentOnInput,
+    onConfirmSelectEmployersModalClick,
+    onSelectEmployersChange,
+    onCloseSelectEmployersModal,
+  } = useEmailComposeContactFields({
+    method,
+    departmentList: departmentData ?? [],
+    selectedEmailHash: selectedEmailHash,
+    onChangeSelectedEmailHash: setSelectedEmailHash,
+  });
 
   useEffect(() => {
     method.reset();
@@ -232,99 +155,6 @@ const EmailForward: React.FC<Props> = ({
     }
   };
 
-  const handleDepartmentClick = (
-    option: AutoCompleteGroupValueTypes,
-    field: EmailComposeEmailFieldNames,
-  ) => {
-    const foundDepartment = departmentData?.find((value) => value.id === option.id);
-    if (foundDepartment) {
-      const currValue = method.getValues(`${field}`);
-      const foundCurrSelectedEmployers = currValue.find(
-        (value) => value.id === option.id,
-      );
-      if (foundCurrSelectedEmployers) {
-        setSelectedEmployerModalList(foundCurrSelectedEmployers.data);
-      } else {
-        setSelectedEmployerModalList(
-          foundDepartment.users?.map((value) => value.email) ?? [],
-        );
-      }
-      setSelectedDepartment({
-        field,
-        data: {
-          id: foundDepartment.id,
-          name: foundDepartment.name,
-          emailInfo:
-            foundDepartment.users?.map((value) => ({
-              lastName: value.last_name,
-              firstName: value.first_name,
-              email: value.email,
-              id: value.id,
-            })) ?? [],
-        },
-      });
-    }
-  };
-
-  const handleDeleteDepartmentOnInput = (
-    option: AutoCompleteGroupValueTypes,
-    field: EmailComposeEmailFieldNames,
-  ) => {
-    const cloneSelectedEmailHash = { ...selectedEmailHash };
-    option.data.forEach((email) => {
-      delete cloneSelectedEmailHash[field][email];
-    });
-
-    setSelectedEmailHash(cloneSelectedEmailHash);
-  };
-
-  const handleConfirmSelectEmployersModalClick = () => {
-    if (selectedDepartment) {
-      const { field, data: selectedDepartmentData } = selectedDepartment;
-
-      const currValue = method.getValues(`${field}`);
-      const foundDepartmentValueIndex = currValue.findIndex(
-        (value) => value.id === selectedDepartment.data.id,
-      );
-
-      // { [key: string]: true } // email: true
-      const cloneSelectedEmailHash = { ...selectedEmailHash };
-
-      selectedDepartment.data.emailInfo.forEach((emailInfo) => {
-        if (selectedEmployerModalList.includes(emailInfo.email)) {
-          cloneSelectedEmailHash[field][emailInfo.email] = true;
-        } else {
-          delete cloneSelectedEmailHash[field][emailInfo.email];
-        }
-      });
-      setSelectedEmailHash(cloneSelectedEmailHash);
-
-      if (foundDepartmentValueIndex === -1) {
-        if (selectedEmployerModalList.length !== 0) {
-          method.setValue(`${field}`, [
-            ...currValue,
-            {
-              id: selectedDepartment.data.id,
-              isGroup: true,
-              name: selectedDepartment.data.name,
-              data: [...selectedEmployerModalList],
-            },
-          ]);
-        }
-      } else {
-        if (selectedEmployerModalList.length === 0) {
-          console.log(foundDepartmentValueIndex);
-          // currValue.splice(foundDepartmentValueIndex, 1);
-        } else {
-          currValue[foundDepartmentValueIndex].data = [...selectedEmployerModalList];
-        }
-        method.setValue(`${field}`, currValue);
-      }
-    }
-    setSelectedDepartment(undefined);
-    setSelectedEmployerModalList([]);
-  };
-
   const renderReceiverList = () => {
     return (
       <Box className="flex-1">
@@ -366,13 +196,13 @@ const EmailForward: React.FC<Props> = ({
                       autoAddOptionMatchRegex={emailRegex}
                       onGroupClick={(option, e) => {
                         if (option.id && option.isGroup) {
-                          handleDepartmentClick(option, 'to');
+                          onDepartmentClick(option, 'to');
                         }
                       }}
                       onChange={onChange}
-                      onChipClick={(option) => handleDepartmentClick(option, 'to')}
+                      onChipClick={(option) => onDepartmentClick(option, 'to')}
                       onChipDelete={(option) =>
-                        option.isGroup && handleDeleteDepartmentOnInput(option, 'to')
+                        option.isGroup && onDeleteDepartmentOnInput(option, 'to')
                       }
                     />
                   </Box>
@@ -391,20 +221,20 @@ const EmailForward: React.FC<Props> = ({
                 isOpen={Boolean(selectedDepartment)}
                 title="Select employers"
                 submitLabel=""
-                onClose={() => setSelectedDepartment(undefined)}>
+                onClose={() => onCloseSelectEmployersModal()}>
                 <Box sx={{ width: '80vw' }}>
                   <Typography sx={{ py: rem(4) }}>
                     {selectedDepartment?.data.name}
                   </Typography>
                   <DataGrid
                     sx={{ height: '50vh' }}
-                    rows={convertedSelectEmployersModalRows}
+                    rows={selectEmployersModalRows}
                     columns={columns}
                     checkboxSelection
                     hideFooter
-                    selectionModel={selectedEmployerModalList}
+                    selectionModel={selectedEmployerEmailList}
                     onSelectionModelChange={(emails) => {
-                      setSelectedEmployerModalList(emails as string[]);
+                      onSelectEmployersChange(emails as string[]);
                     }}
                   />
                   <Box display="flex" justifyContent="flex-end" sx={{ mt: rem(8) }}>
@@ -413,12 +243,12 @@ const EmailForward: React.FC<Props> = ({
                         backgroundColor: '#dc3545',
                         '&:hover': { backgroundColor: '#bf192a' },
                       }}
-                      onClick={() => setSelectedDepartment(undefined)}>
+                      onClick={() => onCloseSelectEmployersModal()}>
                       Cancel
                     </Button>
                     <Button
                       sx={{ ml: rem(20) }}
-                      onClick={handleConfirmSelectEmployersModalClick}>
+                      onClick={onConfirmSelectEmployersModalClick}>
                       OK
                     </Button>
                   </Box>
@@ -441,16 +271,16 @@ const EmailForward: React.FC<Props> = ({
                           autoAddOptionMatchRegex={emailRegex}
                           onGroupClick={(option, e) => {
                             if (option.id && option.isGroup) {
-                              handleDepartmentClick(option, 'cc');
+                              onDepartmentClick(option, 'cc');
                             }
                           }}
                           onChange={onChange}
                           onChipClick={(option) =>
-                            handleDepartmentClick(option, 'cc')
+                            onDepartmentClick(option, 'cc')
                           }
                           onChipDelete={(option) =>
                             option.isGroup &&
-                            handleDeleteDepartmentOnInput(option, 'cc')
+                            onDeleteDepartmentOnInput(option, 'cc')
                           }
                         />
                       </Box>
@@ -471,16 +301,16 @@ const EmailForward: React.FC<Props> = ({
                           autoAddOptionMatchRegex={emailRegex}
                           onGroupClick={(option, e) => {
                             if (option.id && option.isGroup) {
-                              handleDepartmentClick(option, 'bcc');
+                              onDepartmentClick(option, 'bcc');
                             }
                           }}
                           onChange={onChange}
                           onChipClick={(option) =>
-                            handleDepartmentClick(option, 'bcc')
+                            onDepartmentClick(option, 'bcc')
                           }
                           onChipDelete={(option) =>
                             option.isGroup &&
-                            handleDeleteDepartmentOnInput(option, 'bcc')
+                            onDeleteDepartmentOnInput(option, 'bcc')
                           }
                         />
                       </Box>

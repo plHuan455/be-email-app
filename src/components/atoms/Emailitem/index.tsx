@@ -69,7 +69,7 @@ const EmailItem: React.FC<Props> = ({
             alt={fullName}
             sx={{ width: '35px', height: '35px' }}
           />
-          <Box sx={{ width: '70%' }}>
+          <Box className="flex flex-col" sx={{ width: '70%' }}>
             <Typography
               component={'p'}
               sx={{
@@ -81,7 +81,20 @@ const EmailItem: React.FC<Props> = ({
                 whiteSpace: 'nowrap',
                 overflow: 'hidden',
               }}>
-              <span className="font-bold">{fullName}</span> | {user_email}
+              <span className="font-bold">{fullName}</span>
+            </Typography>
+            <Typography
+              component={'p'}
+              sx={{
+                width: '100%',
+                fontSize: '10px',
+                color: '#999DA0',
+                paddingLeft: '10px',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                overflow: 'hidden',
+              }}>
+              <span>{user_email}</span>
             </Typography>
             <Typography
               component={'p'}
