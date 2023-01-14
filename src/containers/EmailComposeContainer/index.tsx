@@ -4,6 +4,7 @@ import EmailCompose2, {
   EmailComposeFields,
   EmailComposeModalRowTypes,
   EmailComposeSelectedDepartmentTypes,
+  useEmailComposeContactFields,
 } from '@components/templates/EmailCompose2';
 import { useQuery,  } from '@tanstack/react-query';
 import { useContext, useEffect, useMemo, useState } from 'react';
@@ -27,8 +28,6 @@ import { getTemplateListService } from '@api/template';
 import { departmentListDummy } from '@assets/dummyData/departmnetDummy';
 dayjs.extend(utc);
 
-const currentUserEmail = localStorage.getItem('current_email');
-
 interface EmailComposeContainerProps {}
 
 const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
@@ -36,11 +35,6 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
   const currSignature = useAppSelector((state) => state.user.signature);
 
   const [isOpenCalendarSelect, setIsOpenCalendarSelect] = useState(false);
-  const [selectedDepartment, setSelectedDepartment] =
-    useState<EmailComposeSelectedDepartmentTypes>();
-  const [selectedEmployerModalList, setSelectedEmployerModalList] = useState<
-    string[]
-  >([]);
 
   const [attachFiles, setAttachFiles] = useState<(File | undefined)[]>([]);
   const [selectedTemplate, setSelectedTemplate] = useState<EmailTemplateItem>();
@@ -49,7 +43,6 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
   const {
     isEmailSending,
     inputContactBlocks,
-    setInputContactBlocks,
     selectedEmailHash,
     onChangeSelectedEmailHash,
     method,
@@ -73,80 +66,22 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
   const [isShowCalendarModal, setIsShowCalendarModal] = useState<boolean>(false);
 
   // API
-  // const { data: departmentData, isLoading } = useQuery({
-  //   queryKey: ['email-compose-get-departments'],
-  //   queryFn: async () => {
-  //     const res = await getDepartments();
-  //     return res.data;
-  //   },
-  // });
+  const { data: departmentData, isLoading } = useQuery({
+    queryKey: ['email-compose-get-departments'],
+    queryFn: async () => {
+      const res = await getDepartments();
+      return res.data;
+    },
+  });
 
   const { data: templateData, isLoading: isTemplateDataGetting } = useQuery({
     queryKey: ['email-template-get'],
     queryFn: getTemplateListService,
   })
 
-  const departmentData = departmentListDummy;
+  // const departmentData = departmentListDummy;
 
-  // // Convert data
-  const {
-    convertedToOptions = [],
-    convertedCcOptions = [],
-    convertedBccOptions = [],
-  } = useMemo(() => {
-    if (!departmentData) return {};
-    const toOptions: AutoCompleteGroupValueTypes[] = [];
-    const ccOptions: AutoCompleteGroupValueTypes[] = [];
-    const bccOptions: AutoCompleteGroupValueTypes[] = [];
-
-    departmentData?.forEach((department) => {
-      const toEmails: string[] = [];
-      const ccEmails: string[] = [];
-      const bccEmails: string[] = [];
-      department.users?.forEach((user) => {
-        if (
-          !selectedEmailHash.bcc[user.email] &&
-          !selectedEmailHash.cc[user.email]
-        ) {
-          toEmails.push(user.email);
-        }
-        if (!selectedEmailHash.to[user.email] && !selectedEmailHash.cc[user.email]) {
-          bccEmails.push(user.email);
-        }
-        if (
-          !selectedEmailHash.to[user.email] &&
-          !selectedEmailHash.bcc[user.email]
-        ) {
-          ccEmails.push(user.email);
-        }
-      });
-
-      toOptions.push({
-        isGroup: true,
-        name: department.name,
-        id: department.id,
-        data: toEmails,
-      });
-      ccOptions.push({
-        isGroup: true,
-        name: department.name,
-        id: department.id,
-        data: ccEmails,
-      });
-      bccOptions.push({
-        isGroup: true,
-        name: department.name,
-        id: department.id,
-        data: bccEmails,
-      });
-    });
-
-    return {
-      convertedToOptions: toOptions,
-      convertedCcOptions: ccOptions,
-      convertedBccOptions: bccOptions,
-    };
-  }, [departmentData, selectedEmailHash]);
+  const contactFieldsHandle = useEmailComposeContactFields({method, departmentList: departmentData ?? [], selectedEmailHash, onChangeSelectedEmailHash});
 
   const convertedEmailTemplateList = useMemo<EmailTemplateItem[] | undefined>(() => {
     return templateData?.data.map(template => ({
@@ -157,39 +92,6 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
       imgSrc: template.images?.[0]?.path ?? ''
     }))
   }, [templateData]) 
-
-  const convertedSelectEmployersModalRows = useMemo<EmailComposeModalRowTypes[]>(() => {
-    if (selectedDepartment === undefined) return [];
-    const field = selectedDepartment.field;
-    return (
-      selectedDepartment.data.emailInfo
-        .filter((value) => {
-          switch (field) {
-            case 'to':
-              return (
-                !selectedEmailHash.bcc[value.email] &&
-                !selectedEmailHash.cc[value.email]
-              );
-            case 'cc':
-              return (
-                !selectedEmailHash.bcc[value.email] &&
-                !selectedEmailHash.to[value.email]
-              );
-            case 'bcc':
-              return (
-                !selectedEmailHash.to[value.email] &&
-                !selectedEmailHash.cc[value.email]
-              );
-          }
-        })
-        .map((value) => ({
-          email: value.email,
-          lastName: value.lastName,
-          firstName: value.firstName,
-          id: value.email,
-        })) ?? []
-    );
-  }, [selectedDepartment]);
 
   const convertedHashtagOptions = useMemo(() => {
     return privateHashtags.map((value) => ({
@@ -212,106 +114,6 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
     setIsOpenTemplateModal(false);
   };
 
-  const handleDepartmentClick = (
-    option: AutoCompleteGroupValueTypes,
-    field: EmailComposeEmailFieldNames,
-  ) => {
-    const foundDepartment = departmentData?.find((value) => value.id === option.id);
-    if (foundDepartment) {
-      const currValue = method.getValues(`${field}2`);
-      const foundCurrSelectedEmployers = currValue.find(
-        (value) => value.id === option.id,
-      );
-      if (foundCurrSelectedEmployers) {
-        setSelectedEmployerModalList(foundCurrSelectedEmployers.data);
-      } else {
-        setSelectedEmployerModalList(
-          foundDepartment.users?.map((value) => value.email) ?? [],
-        );
-      }
-      setSelectedDepartment({
-        field,
-        data: {
-          id: foundDepartment.id,
-          name: foundDepartment.name,
-          emailInfo:
-            foundDepartment.users?.map((value) => ({
-              firstName: value.first_name,
-              lastName: value.last_name,
-              email: value.email,
-              id: value.id,
-            })) ?? [],
-        },
-      });
-    }
-  };
-
-  const handleSelectedEmployersChange = (emails: string[]) => {
-    setSelectedEmployerModalList(emails);
-  };
-
-  const handleConfirmSelectEmployersModalClick = () => {
-    if (selectedDepartment) {
-      const { field, data: selectedDepartmentData } = selectedDepartment;
-
-      const currValue = method.getValues(`${field}2`);
-      const foundDepartmentValueIndex = currValue.findIndex(
-        (value) => value.id === selectedDepartment.data.id,
-      );
-
-      // { [key: string]: true } // email: true
-      const cloneSelectedEmailHash = { ...selectedEmailHash };
-
-      selectedDepartment.data.emailInfo.forEach((emailInfo) => {
-        if (selectedEmployerModalList.includes(emailInfo.email)) {
-          cloneSelectedEmailHash[field][emailInfo.email] = true;
-        } else {
-          delete cloneSelectedEmailHash[field][emailInfo.email];
-        }
-      });
-      onChangeSelectedEmailHash(cloneSelectedEmailHash);
-
-      // Selected Department on Modal is not exist in currValue
-      if (foundDepartmentValueIndex === -1) {
-        if(selectedEmployerModalList.length !== 0){
-          method.setValue(`${field}2`, [
-            ...currValue,
-            {
-              id: selectedDepartment.data.id,
-              isGroup: true,
-              name: selectedDepartment.data.name,
-              data: [...selectedEmployerModalList],
-              selectedDataLabelAfter: ` (${selectedEmployerModalList.length}/${selectedDepartment.data.emailInfo.length})`
-            },
-          ]);
-        }
-      } 
-      else {
-        if (selectedEmployerModalList.length === 0) {
-          currValue.splice(foundDepartmentValueIndex, 1);
-        } else {
-          currValue[foundDepartmentValueIndex].data = [...selectedEmployerModalList];
-          currValue[foundDepartmentValueIndex].selectedDataLabelAfter = ` (${selectedEmployerModalList.length}/${selectedDepartment.data.emailInfo.length})`
-        }
-        method.setValue(`${field}2`, currValue);
-      }
-    }
-    setSelectedDepartment(undefined);
-    setSelectedEmployerModalList([]);
-  };
-
-  const handleDeleteDepartmentOnInput = (
-    option: AutoCompleteGroupValueTypes,
-    field: EmailComposeEmailFieldNames,
-  ) => {
-    const cloneSelectedEmailHash = { ...selectedEmailHash };
-    option.data.forEach((email) => {
-      delete cloneSelectedEmailHash[field][email];
-    });
-
-    onChangeSelectedEmailHash(cloneSelectedEmailHash);
-  };
-
   const handleSubmit = (values: EmailComposeFields) => {
     onSendEmail({ ...values, sendAt: selectedDate });
   };
@@ -330,20 +132,14 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
     <>
       <motion.div animate={ringAnimationControl} transition={{ duration: 0.2 }}>
         <EmailCompose2
-          selectedDepartment={selectedDepartment}
-          selectedEmployerEmailList={selectedEmployerModalList}
+          {...contactFieldsHandle}
           isSubmitting={isEmailSending}
           inputContactBlocks={inputContactBlocks}
-          isOpenSelectEmployersModal={Boolean(selectedDepartment)}
           method={method}
           attachFiles={attachFiles}
           isFullScreen={isFullScreen}
           isShowCCForm={isShowCCForm}
           signature={currSignature ? {id: currSignature.id, name: currSignature.name, htmlString: currSignature.text_html} : undefined}
-          selectEmployersModalRows={convertedSelectEmployersModalRows}
-          toOptions={convertedToOptions}
-          ccOptions={convertedCcOptions}
-          bccOptions={convertedBccOptions}
           isShowCalendarModal={isShowCalendarModal}
           isOpenCalendarSelect={isOpenCalendarSelect}
           hashtagOptions={convertedHashtagOptions}
@@ -376,12 +172,6 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
           onUseTemplateClick={() => {
             setIsOpenTemplateModal(true);
           }}
-          onCloseSelectEmployersModal={() => setSelectedDepartment(undefined)}
-          onDepartmentClick={handleDepartmentClick}
-          onSelectEmployersChange={handleSelectedEmployersChange}
-          onConfirmSelectEmployersModalClick={handleConfirmSelectEmployersModalClick}
-          onSelectedDepartmentClick={handleDepartmentClick}
-          onDeleteDepartmentOnInput={handleDeleteDepartmentOnInput}
         />
       </motion.div>
       <ModalBase
