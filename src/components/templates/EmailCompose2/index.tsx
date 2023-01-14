@@ -373,7 +373,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                           <Box sx={{ flexGrow: 1 }}>
                             <AutoCompleteGroup
                               value={value}
-                              options={ccOptions}
+                              options={bccOptions}
                               autoAddOptionMatchRegex={emailRegex}
                               onGroupClick={(option) => {
                                 if (option.id && option.isGroup) {

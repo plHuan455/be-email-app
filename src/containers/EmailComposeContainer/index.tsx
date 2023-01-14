@@ -24,6 +24,7 @@ import EmailTemplateList, {
 } from '@components/templates/EmailTemplateList';
 import { AutoCompleteGroupValueTypes } from '@components/molecules/AutoCompleteGroup';
 import { getTemplateListService } from '@api/template';
+import { departmentListDummy } from '@assets/dummyData/departmnetDummy';
 dayjs.extend(utc);
 
 const currentUserEmail = localStorage.getItem('current_email');
@@ -72,20 +73,20 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
   const [isShowCalendarModal, setIsShowCalendarModal] = useState<boolean>(false);
 
   // API
-  const { data: departmentData, isLoading } = useQuery({
-    queryKey: ['email-compose-get-departments'],
-    queryFn: async () => {
-      const res = await getDepartments();
-      return res.data;
-    },
-  });
+  // const { data: departmentData, isLoading } = useQuery({
+  //   queryKey: ['email-compose-get-departments'],
+  //   queryFn: async () => {
+  //     const res = await getDepartments();
+  //     return res.data;
+  //   },
+  // });
 
   const { data: templateData, isLoading: isTemplateDataGetting } = useQuery({
     queryKey: ['email-template-get'],
     queryFn: getTemplateListService,
   })
 
-  // const departmentData = departmentListDummy;
+  const departmentData = departmentListDummy;
 
   // // Convert data
   const {
@@ -270,8 +271,9 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
       });
       onChangeSelectedEmailHash(cloneSelectedEmailHash);
 
+      // Selected Department on Modal is not exist in currValue
       if (foundDepartmentValueIndex === -1) {
-        if (selectedEmployerModalList.length !== 0) {
+        if(selectedEmployerModalList.length !== 0){
           method.setValue(`${field}2`, [
             ...currValue,
             {
@@ -279,15 +281,17 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
               isGroup: true,
               name: selectedDepartment.data.name,
               data: [...selectedEmployerModalList],
+              selectedDataLabelAfter: ` (${selectedEmployerModalList.length}/${selectedDepartment.data.emailInfo.length})`
             },
           ]);
         }
-      } else {
+      } 
+      else {
         if (selectedEmployerModalList.length === 0) {
-          console.log(foundDepartmentValueIndex);
-          // currValue.splice(foundDepartmentValueIndex, 1);
+          currValue.splice(foundDepartmentValueIndex, 1);
         } else {
           currValue[foundDepartmentValueIndex].data = [...selectedEmployerModalList];
+          currValue[foundDepartmentValueIndex].selectedDataLabelAfter = ` (${selectedEmployerModalList.length}/${selectedDepartment.data.emailInfo.length})`
         }
         method.setValue(`${field}2`, currValue);
       }
