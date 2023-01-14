@@ -90,11 +90,11 @@ export interface EmailComposeSelectedDepartmentTypes {
   };
 }
 
-export interface EmailComposeModalRowTypes { 
+export interface EmailComposeModalRowTypes {
   lastName: string;
   firstName: string;
   email: string;
-  id: string
+  id: string;
 }
 
 interface EmailComposeProps {
@@ -281,9 +281,11 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                     isOpen={isOpenSelectEmployersModal}
                     title="Select employers"
                     submitLabel=""
-                    onClose={() => { 
-                      onCloseSelectEmployersModal && onCloseSelectEmployersModal()
-                      setTimeout(() => {document.getElementById('autocomplete-to')?.focus();}, 200)
+                    onClose={() => {
+                      onCloseSelectEmployersModal && onCloseSelectEmployersModal();
+                      setTimeout(() => {
+                        document.getElementById('autocomplete-to')?.focus();
+                      }, 200);
                     }}>
                     <Box sx={{ width: '80vw' }}>
                       <Typography sx={{ py: rem(4) }}>
@@ -316,8 +318,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                         <Button
                           sx={{ ml: rem(20) }}
                           onClick={onConfirmSelectEmployersModalClick}
-                          disabled={selectEmployersModalRows.length === 0}
-                        >
+                          disabled={selectEmployersModalRows.length === 0}>
                           OK
                         </Button>
                       </Box>
@@ -425,17 +426,17 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                     },
                     // Align Text
                     '& .rdw-center-aligned-block *': {
-                      textAlign: 'center'
+                      textAlign: 'center',
                     },
                     '& .rdw-right-aligned-block *': {
-                      textAlign: 'right'
+                      textAlign: 'right',
                     },
                     '& .rdw-left-aligned-block *': {
-                      textAlign: 'left'
+                      textAlign: 'left',
                     },
                     '& .rdw-justify-aligned-block *': {
                       textAlign: 'justify',
-                    }
+                    },
                   }}>
                   <Controller
                     name="content"
@@ -465,9 +466,14 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                       />
                     )}
                   />
-                  {signature && <Box>
-                    <Typography dangerouslySetInnerHTML={{__html: signature.htmlString}}></Typography>
-                  </Box>}
+                  {signature && (
+                    <Box className="mt-4">
+                      <Typography
+                        dangerouslySetInnerHTML={{
+                          __html: signature.htmlString,
+                        }}></Typography>
+                    </Box>
+                  )}
                   {/* <SignatureTmpTemplate /> */}
                   <Box className="mt-4">
                     <Box>
@@ -697,28 +703,30 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
   );
 };
 
-
 export type SelectedEmailHashType = {
-  [key in EmailComposeEmailFieldNames]: {[key: string]: true};
-}
+  [key in EmailComposeEmailFieldNames]: { [key: string]: true };
+};
 
 interface UseEmailComposeContactFieldsProps {
-  method: UseFormReturn<any>,
-  departmentList: DepartmentResponse[],
-  selectedEmailHash: SelectedEmailHashType,
-  onChangeSelectedEmailHash: (value: SelectedEmailHashType) => void
+  method: UseFormReturn<any>;
+  departmentList: DepartmentResponse[];
+  selectedEmailHash: SelectedEmailHashType;
+  onChangeSelectedEmailHash: (value: SelectedEmailHashType) => void;
 }
 
 export const useEmailComposeContactFields = ({
-    method,
-    departmentList,
-    selectedEmailHash,
-    onChangeSelectedEmailHash
+  method,
+  departmentList,
+  selectedEmailHash,
+  onChangeSelectedEmailHash,
 }: UseEmailComposeContactFieldsProps) => {
-  const [selectedDepartment, setSelectedDepartment] = useState<EmailComposeSelectedDepartmentTypes>();
+  const [selectedDepartment, setSelectedDepartment] =
+    useState<EmailComposeSelectedDepartmentTypes>();
 
-  const [selectedEmployerModalList, setSelectedEmployerModalList] = useState<string[]>([]);
-  
+  const [selectedEmployerModalList, setSelectedEmployerModalList] = useState<
+    string[]
+  >([]);
+
   const {
     convertedToOptions = [],
     convertedCcOptions = [],
@@ -778,7 +786,9 @@ export const useEmailComposeContactFields = ({
     };
   }, [departmentList, selectedEmailHash]);
 
-  const convertedSelectEmployersModalRows = useMemo<EmailComposeModalRowTypes[]>(() => {
+  const convertedSelectEmployersModalRows = useMemo<
+    EmailComposeModalRowTypes[]
+  >(() => {
     if (selectedDepartment === undefined) return [];
     const field = selectedDepartment.field;
     return (
@@ -811,7 +821,10 @@ export const useEmailComposeContactFields = ({
     );
   }, [selectedDepartment]);
 
-  const onDepartmentClick = (option: AutoCompleteGroupValueTypes, field: EmailComposeEmailFieldNames) => {
+  const onDepartmentClick = (
+    option: AutoCompleteGroupValueTypes,
+    field: EmailComposeEmailFieldNames,
+  ) => {
     const foundDepartment = departmentList?.find((value) => value.id === option.id);
     if (foundDepartment) {
       const currValue = method.getValues(field);
@@ -840,7 +853,7 @@ export const useEmailComposeContactFields = ({
         },
       });
     }
-  }
+  };
 
   const onSelectEmployersChange = (emails: string[]) => {
     setSelectedEmployerModalList(emails);
@@ -857,10 +870,10 @@ export const useEmailComposeContactFields = ({
 
     onChangeSelectedEmailHash(cloneSelectedEmailHash);
   };
-  
+
   const onCloseSelectEmployersModal = () => {
-    setSelectedDepartment(undefined)
-  }
+    setSelectedDepartment(undefined);
+  };
 
   const onConfirmSelectEmployersModalClick = () => {
     if (selectedDepartment) {
@@ -885,7 +898,7 @@ export const useEmailComposeContactFields = ({
 
       // Selected Department on Modal is not exist in currValue
       if (foundDepartmentValueIndex === -1) {
-        if(selectedEmployerModalList.length !== 0){
+        if (selectedEmployerModalList.length !== 0) {
           method.setValue(field, [
             ...currValue,
             {
@@ -893,17 +906,18 @@ export const useEmailComposeContactFields = ({
               isGroup: true,
               name: selectedDepartment.data.name,
               data: [...selectedEmployerModalList],
-              selectedDataLabelAfter: ` (${selectedEmployerModalList.length}/${selectedDepartment.data.emailInfo.length})`
+              selectedDataLabelAfter: ` (${selectedEmployerModalList.length}/${selectedDepartment.data.emailInfo.length})`,
             },
           ]);
         }
-      } 
-      else {
+      } else {
         if (selectedEmployerModalList.length === 0) {
           currValue.splice(foundDepartmentValueIndex, 1);
         } else {
           currValue[foundDepartmentValueIndex].data = [...selectedEmployerModalList];
-          currValue[foundDepartmentValueIndex].selectedDataLabelAfter = ` (${selectedEmployerModalList.length}/${selectedDepartment.data.emailInfo.length})`
+          currValue[
+            foundDepartmentValueIndex
+          ].selectedDataLabelAfter = ` (${selectedEmployerModalList.length}/${selectedDepartment.data.emailInfo.length})`;
         }
         method.setValue(field, currValue);
       }
@@ -926,7 +940,7 @@ export const useEmailComposeContactFields = ({
     onDeleteDepartmentOnInput,
     onCloseSelectEmployersModal,
     onConfirmSelectEmployersModalClick,
-  }
-}
+  };
+};
 
 export default EmailCompose2;
