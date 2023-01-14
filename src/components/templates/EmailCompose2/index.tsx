@@ -92,11 +92,11 @@ export interface EmailComposeSelectedDepartmentTypes {
   };
 }
 
-export interface EmailComposeModalRowTypes { 
+export interface EmailComposeModalRowTypes {
   lastName: string;
   firstName: string;
   email: string;
-  id: string
+  id: string;
 }
 
 interface EmailComposeProps {
@@ -284,10 +284,12 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                     isOpen={isOpenSelectEmployersModal}
                     title="Select employers"
                     submitLabel=""
-                    onClose={() => { 
-                      onCloseSelectEmployersModal && onCloseSelectEmployersModal()
+                    onClose={() => {
+                      onCloseSelectEmployersModal && onCloseSelectEmployersModal();
                       console.log(document.getElementById('autocomplete-to'));
-                      setTimeout(() => {document.getElementById('autocomplete-to')?.focus();}, 200)
+                      setTimeout(() => {
+                        document.getElementById('autocomplete-to')?.focus();
+                      }, 200);
                     }}>
                     <Box sx={{ width: '80vw' }}>
                       <Typography sx={{ py: rem(4) }}>
@@ -320,8 +322,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                         <Button
                           sx={{ ml: rem(20) }}
                           onClick={onConfirmSelectEmployersModalClick}
-                          disabled={selectEmployersModalRows.length === 0}
-                        >
+                          disabled={selectEmployersModalRows.length === 0}>
                           OK
                         </Button>
                       </Box>
@@ -429,17 +430,17 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                     },
                     // Align Text
                     '& .rdw-center-aligned-block *': {
-                      textAlign: 'center'
+                      textAlign: 'center',
                     },
                     '& .rdw-right-aligned-block *': {
-                      textAlign: 'right'
+                      textAlign: 'right',
                     },
                     '& .rdw-left-aligned-block *': {
-                      textAlign: 'left'
+                      textAlign: 'left',
                     },
                     '& .rdw-justify-aligned-block *': {
                       textAlign: 'justify',
-                    }
+                    },
                   }}>
                   <Controller
                     name="content"
@@ -469,9 +470,14 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
                       />
                     )}
                   />
-                  {signature && <Box>
-                    <Typography dangerouslySetInnerHTML={{__html: signature.htmlString}}></Typography>
-                  </Box>}
+                  {signature && (
+                    <Box className="mt-4">
+                      <Typography
+                        dangerouslySetInnerHTML={{
+                          __html: signature.htmlString,
+                        }}></Typography>
+                    </Box>
+                  )}
                   {/* <SignatureTmpTemplate /> */}
                   <Box className="mt-4">
                     <Box>
