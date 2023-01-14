@@ -36,7 +36,7 @@ export const toolbarCustom = {
     'fontFamily',
     'fontSize',
     'colorPicker',
-    'emoji',
+    // 'emoji',
     'link',
     'image',
     'textAlign',

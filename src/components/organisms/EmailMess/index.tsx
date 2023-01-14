@@ -147,14 +147,14 @@ const EmailMessRightSideBar: React.FC<EmailMessRightSideBarProps> = ({
         <Avatar alt={userInfo.name} src={userInfo.avatar} />
       </Box>
       {_renderEmailActionTypeIcon}
-      <Box>
+      {/* <Box>
         <Icon
           icon="star"
           color={`${emailData.is_important ? '#FAAF00' : '#999999'}`}
           width={22}
           height={22}
         />
-      </Box>
+      </Box> */}
       <Box className="flex flex-col justify-center gap-4">
         <Badge
           badgeContent={4}
@@ -162,6 +162,14 @@ const EmailMessRightSideBar: React.FC<EmailMessRightSideBarProps> = ({
           max={9}
           sx={{
             justifyContent: 'center',
+            '& .MuiBadge-badge': {
+              minWidth: '18px',
+              height: '18px',
+              fontSize: '10px',
+              padding: '4px',
+              right: '8px',
+              top: '2px',
+            },
           }}>
           <Icon width={30} height={30} icon="reply" />
         </Badge>
@@ -171,6 +179,14 @@ const EmailMessRightSideBar: React.FC<EmailMessRightSideBarProps> = ({
           max={9}
           sx={{
             justifyContent: 'center',
+            '& .MuiBadge-badge': {
+              minWidth: '18px',
+              height: '18px',
+              fontSize: '10px',
+              padding: '4px',
+              right: '8px',
+              top: '2px',
+            },
           }}>
           <Icon width={30} height={30} icon="replyAll" />
         </Badge>
@@ -200,7 +216,7 @@ const EmailMess: React.FC<Props> = ({
   onActionsClick,
   onContinueClick,
   onInterSecting,
-  onUnInterSecting
+  onUnInterSecting,
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -221,7 +237,6 @@ const EmailMess: React.FC<Props> = ({
     onUnInterSecting,
   );
 
-
   const cloneSendTo = [
     ...(emailData.email.to ?? []),
     ...(emailData.email.cc ?? []),
@@ -233,12 +248,12 @@ const EmailMess: React.FC<Props> = ({
   const remapPrivateHashtag = useMemo<HashtagTabs[]>(() => {
     return emailData.hashtags
       ? emailData.hashtags.map((val) => ({
-        notiNumber: 0,
-        status: 'hashtag',
-        title: `#${val.hashtag}`,
-        value: val.hashtag,
-        color: '#4BAAA2',
-      }))
+          notiNumber: 0,
+          status: 'hashtag',
+          title: `#${val.hashtag}`,
+          value: val.hashtag,
+          color: '#4BAAA2',
+        }))
       : [];
   }, [emailData]);
 
@@ -246,7 +261,11 @@ const EmailMess: React.FC<Props> = ({
     if (!emailData.email.attachments) return null;
 
     const newAttachesFile: AttachFile[] = attachsToAttachFiles(
-      emailData.email.attachments.map(value => ({ id: value.id, email_id: value.email_id, path: value.filename })),
+      emailData.email.attachments.map((value) => ({
+        id: value.id,
+        email_id: value.email_id,
+        path: value.filename,
+      })),
     );
 
     return <AttachFiles data={newAttachesFile} isUpload={false} />;
@@ -336,7 +355,8 @@ const EmailMess: React.FC<Props> = ({
             <Box>
               <ControlEmailSend
                 variant="cancel"
-                scheduleAt={dayjs(sentAt).format('MMMM, DD YYYY - HH:mm')}
+                // scheduleAt={dayjs(sentAt).format('MMMM, DD YYYY - HH:mm')}
+                scheduleAt="Now"
                 remainMinutes={Math.floor(
                   (sentAt.getTime() - Date.now()) / 1000 / 60,
                 )}
@@ -368,7 +388,9 @@ const EmailMess: React.FC<Props> = ({
                 className="mx-1 bg-rose-600 py-1.5 px-5 hover:bg-rose-500">
                 DECLINE
               </Button>
-              <Button onClick={() => onApprove(emailData)} className="mx-1 py-1.5 px-5">
+              <Button
+                onClick={() => onApprove(emailData)}
+                className="mx-1 py-1.5 px-5">
                 APPROVE
               </Button>
             </Box>
@@ -400,8 +422,8 @@ const EmailMess: React.FC<Props> = ({
           emailData.status === 'reply'
             ? [emailData.email.from]
             : emailData.status === 'replyAll'
-              ? emailData.email.to
-              : emailData.email.to
+            ? emailData.email.to
+            : emailData.email.to
         }
       />
     );
@@ -436,13 +458,14 @@ const EmailMess: React.FC<Props> = ({
 
   return (
     <Box
-      className={`o-EmailMess w-full relative flex flex-wrap ${type === 'send' && styles.flexRowReverse
-        }`}
-      ref={containerRef}
-    >
+      className={`o-EmailMess w-full relative flex flex-wrap ${
+        type === 'send' && styles.flexRowReverse
+      }`}
+      ref={containerRef}>
       <Box
-        className={`w-full flex flex-wrap ${styles.emailHeader} ${isShowHeader && styles.showEmailHeader
-          } ${type === 'send' && styles.flexRowReverse}`}>
+        className={`w-full flex flex-wrap ${styles.emailHeader} ${
+          isShowHeader && styles.showEmailHeader
+        } ${type === 'send' && styles.flexRowReverse}`}>
         <Box className={`flex-1`}>
           <OptionalAvatar
             className={` ${type === 'send' && styles.flexRowReverse}`}
@@ -474,16 +497,18 @@ const EmailMess: React.FC<Props> = ({
       />
       <Box
         sx={{ boxShadow: '0px 10px 23px -15px rgba(159,159,159,0.54)' }}
-        className={`flex-1 overflow-hidden bg-white ${type === 'send'
+        className={`flex-1 overflow-hidden bg-white ${
+          type === 'send'
             ? 'rounded-tl-[36px] rounded-br-[36px]'
             : 'rounded-tr-[36px] rounded-bl-[36px]'
-          } ${styles.emailWrap} mb-8`}>
+        } ${styles.emailWrap} mb-8`}>
         {/* Header */}
         <Box
-          className={`flex items-center justify-between cursor-pointer pb-6 bg-violet-200 py-4 ${type === 'send'
+          className={`flex items-center justify-between cursor-pointer pb-6 bg-violet-200 py-4 ${
+            type === 'send'
               ? 'rounded-br-[36px] rounded-tl-[36px]'
               : 'rounded-bl-[36px] rounded-tr-[36px]'
-            }  relative`}
+          }  relative`}
           onClick={() => onShowHistory(emailData, emailData.id)}>
           <div className="flex flex-col gap-2">
             {_renderEmailTitle}
@@ -497,7 +522,12 @@ const EmailMess: React.FC<Props> = ({
                   onClick={onContinueClick}>
                   <CreateIcon sx={{ fontSize: rem(20) }} />
                   <Typography
-                    sx={{ ml: rem(8), fontSize: rem(14), fontWeight: 500, lineHeight: rem(20) }}>
+                    sx={{
+                      ml: rem(8),
+                      fontSize: rem(14),
+                      fontWeight: 500,
+                      lineHeight: rem(20),
+                    }}>
                     Continue
                   </Typography>
                 </Button>
@@ -515,7 +545,10 @@ const EmailMess: React.FC<Props> = ({
         {/* Signature */}
         {emailData.email?.signature && (
           <Box>
-            <Typography dangerouslySetInnerHTML={{ __html: emailData.email.signature.text_html }}></Typography>
+            <Typography
+              dangerouslySetInnerHTML={{
+                __html: emailData.email.signature.text_html,
+              }}></Typography>
           </Box>
         )}
         <EmailGreeting
@@ -552,8 +585,8 @@ const EmailMess: React.FC<Props> = ({
                       ? sentAt.getTime()
                       : approveAt.getTime()) -
                       new Date().getTime()) /
-                    1000 /
-                    60,
+                      1000 /
+                      60,
                   )}
                   onSend={onSendEmail}
                   onUndo={onUndoEmail}
