@@ -16,6 +16,14 @@ const Search = styled('div')(({ theme }) => ({
     marginLeft: theme.spacing(1),
     width: 'auto',
   },
+  '&:hover': {
+    '& .searchInputBase': {
+      backgroundColor: '#7061e2',
+    },
+    '& .searchIcon': {
+      color: 'white',
+    },
+  },
 }));
 
 const SearchIconWrapper = styled('div')(({ theme }) => ({
@@ -27,6 +35,11 @@ const SearchIconWrapper = styled('div')(({ theme }) => ({
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
+  transition: '0.4s',
+  transform: 'translateY(1.5px)',
+  svg: {
+    color: '#999999',
+  },
 }));
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
@@ -36,11 +49,17 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     padding: theme.spacing(2, 2, 2, 2),
     // vertical padding + font size from searchIcon
     paddingRight: `calc(1em + ${theme.spacing(4)})`,
-    transition: theme.transitions.create('width'),
     width: '100%',
+    transition: '0.4s',
     // backgroundColor: '#7061e2',
     '&:hover': {
       backgroundColor: '#7061e2',
+    },
+    '&:focus': {
+      backgroundColor: '#7061e2',
+      '& + .searchIconWrapper .searchIcon': {
+        color: 'white',
+      },
     },
     color: '#ffffff',
     [theme.breakpoints.up('sm')]: {
@@ -63,6 +82,8 @@ interface SearchStartWithIconProps {
 }
 
 const SearchStartWithIcon: React.FC<SearchStartWithIconProps> = ({ onSearch }) => {
+  const [isFocus, setIsFocus] = useState<boolean>(false);
+
   const timeToSearch = 1000;
   let searchInterval;
 
@@ -82,13 +103,21 @@ const SearchStartWithIcon: React.FC<SearchStartWithIconProps> = ({ onSearch }) =
 
   return (
     <Search>
-      <SearchIconWrapper>
-        <SearchIcon sx={{ color: '#ffffff' }} />
+      <SearchIconWrapper className="searchIconWrapper">
+        <SearchIcon
+          className="searchIcon"
+          sx={{
+            color: isFocus ? 'white !important' : '#999999',
+          }}
+        />
       </SearchIconWrapper>
       <StyledInputBase
+        className="searchInputBase"
         placeholder="Search…"
         inputProps={{ 'aria-label': 'search' }}
         onChange={handleChangeSearchValue}
+        onFocus={() => setIsFocus(true)}
+        onBlur={() => setIsFocus(false)}
       />
     </Search>
   );
