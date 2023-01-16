@@ -1,6 +1,7 @@
+import { useTranslation } from '@@packages/localization/src';
 import { DepartmentResponse } from '@api/deparment/interface';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { AxiosResponse } from 'axios';
+import { AxiosError, AxiosResponse } from 'axios';
 import { isEmpty } from 'lodash';
 import React, { useEffect, useMemo } from 'react';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
@@ -33,6 +34,8 @@ const AddDepartmentContainer = () => {
 
   const navigate = useNavigate();
 
+  const { t } = useTranslation();
+
   const { mutate: createDepartmentMutation } = useMutation({
     mutationKey: ['create-department-container'],
     mutationFn: handleCreate,
@@ -43,6 +46,10 @@ const AddDepartmentContainer = () => {
       });
       toast.success('Create department success!');
       navigate(`/departments/department/${res?.data.id}/employee`);
+    },
+    onError: (error: AxiosError<{ message: string }>) => {
+      console.log(`line 51`, error);
+      toast(t(error.response?.data.message ?? 'Has Error'));
     },
   });
 

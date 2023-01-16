@@ -6,15 +6,12 @@ import EmailCompose2, {
   EmailComposeSelectedDepartmentTypes,
   useEmailComposeContactFields,
 } from '@components/templates/EmailCompose2';
-import { useQuery,  } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import { useContext, useEffect, useMemo, useState } from 'react';
 import utc from 'dayjs/plugin/utc';
 import dayjs, { Dayjs } from 'dayjs';
 import { useAppDispatch, useAppSelector } from '@redux/configureStore';
-import {
-  getEditorStateFormHtmlString,
-  rem,
-} from '@utils/functions';
+import { getEditorStateFormHtmlString, rem } from '@utils/functions';
 dayjs.extend(utc);
 import { EmailComposeContext } from '@containers/MainWrapperContainer';
 import { getDepartments } from '@api/deparment';
@@ -77,21 +74,26 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
   const { data: templateData, isLoading: isTemplateDataGetting } = useQuery({
     queryKey: ['email-template-get'],
     queryFn: getTemplateListService,
-  })
+  });
 
   // const departmentData = departmentListDummy;
 
-  const contactFieldsHandle = useEmailComposeContactFields({method, departmentList: departmentData ?? [], selectedEmailHash, onChangeSelectedEmailHash});
+  const contactFieldsHandle = useEmailComposeContactFields({
+    method,
+    departmentList: departmentData ?? [],
+    selectedEmailHash,
+    onChangeSelectedEmailHash,
+  });
 
   const convertedEmailTemplateList = useMemo<EmailTemplateItem[] | undefined>(() => {
-    return templateData?.data.map(template => ({
+    return templateData?.data.map((template) => ({
       id: template.id,
       description: template.describe,
       htmlString: template.text_html,
       name: template.title,
-      imgSrc: template.images?.[0]?.path ?? ''
-    }))
-  }, [templateData]) 
+      imgSrc: template.images?.[0]?.path ?? '',
+    }));
+  }, [templateData]);
 
   const convertedHashtagOptions = useMemo(() => {
     return privateHashtags.map((value) => ({
@@ -130,7 +132,10 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
 
   return (
     <>
-      <motion.div animate={ringAnimationControl} transition={{ duration: 0.2 }}>
+      <motion.div
+        className="h-full overflow-scroll"
+        animate={ringAnimationControl}
+        transition={{ duration: 0.2 }}>
         <EmailCompose2
           {...contactFieldsHandle}
           isSubmitting={isEmailSending}
@@ -139,7 +144,15 @@ const EmailComposeContainer: React.FC<EmailComposeContainerProps> = () => {
           attachFiles={attachFiles}
           isFullScreen={isFullScreen}
           isShowCCForm={isShowCCForm}
-          signature={currSignature ? {id: currSignature.id, name: currSignature.name, htmlString: currSignature.text_html} : undefined}
+          signature={
+            currSignature
+              ? {
+                  id: currSignature.id,
+                  name: currSignature.name,
+                  htmlString: currSignature.text_html,
+                }
+              : undefined
+          }
           isShowCalendarModal={isShowCalendarModal}
           isOpenCalendarSelect={isOpenCalendarSelect}
           hashtagOptions={convertedHashtagOptions}

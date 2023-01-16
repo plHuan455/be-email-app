@@ -221,10 +221,10 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
   return (
     <Box className="t-emailCompose w-full h-full py-10 mt-4">
       <FormProvider {...method}>
-        <form className="p-8 flex items-center justify-center w-full h-full">
+        <form className="pt-8 px-8 flex items-center justify-center w-full h-full">
           <Box
-            className={`flex flex-col h-full w-full mx-auto shadow-xl bg-white rounded-3xl z-[80] transition-all ${
-              isFullScreen && 'fixed top-0 left-0 bottom-0'
+            className={`flex flex-col h-full w-full mx-auto shadow-xl bg-white rounded-3xl transition-all ${
+              isFullScreen ? 'fixed top-0 left-0 bottom-0 z-[150]' : 'z-[80]'
             }`}>
             <WindowComposeActions
               className="pt-3 px-3 rounded-tl-3xl rounded-tr-3xl"
@@ -412,7 +412,7 @@ const EmailCompose2: React.FC<EmailComposeProps> = ({
 
                 {/* Edit Content */}
                 <Box
-                  className="flex flex-col"
+                  className="flex flex-1 flex-col"
                   sx={{
                     '& .public-DraftStyleDefault-block': {
                       marginBlock: 0,

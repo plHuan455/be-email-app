@@ -14,7 +14,7 @@ const EmailsListActionsContainer: React.FC<Props> = ({
 }) => {
   return (
     <Box
-      className={`absolute top-0 left-0 w-full overflow-hidden z-10 ${className}`}>
+      className={`absolute top-0 left-0 w-full overflow-hidden z-[100] ${className}`}>
       <EmailsListActions isShowInformationBtn={isShowInformationBtn} />
     </Box>
   );

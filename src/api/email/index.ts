@@ -69,12 +69,12 @@ export interface EmailResponse {
     writer_id: number;
     html_body: string;
     content: string;
-    attachments?: { id: number, email_id: number; filename: string}[];
+    attachments?: { id: number; email_id: number; filename: string }[];
     signature?: {
       id: number;
       name: string;
       text_html: string;
-    }
+    };
     tags: [];
   };
   hashtags?: HashtagType[];

@@ -99,7 +99,7 @@ const ModalEmailList: React.FC<Props> = ({
   handleChangeEmailTabNotiNumber,
 }) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  
+
   const tagParams = searchParams.get('tab');
 
   const [value, setValue] = React.useState(0);
@@ -222,23 +222,24 @@ const ModalEmailList: React.FC<Props> = ({
           {title}
         </Typography>
       </ButtonBase>
-      <Box>
-        <Tabs
-          className={`cover__tabs`}
-          style={
-            {
-              '--main-color': titleColor,
-            } as React.CSSProperties
-          }
-          value={value}
-          onChange={handleChange}
-          aria-label="basic tabs example">
-          <Tab className="tab" label="Me" {...a11yProps(0)} />
-          {!currentPosition?.toUpperCase().startsWith('EMPLOYEE') && ['pending', 'approved', 'declined'].includes(catalog) && (
-            <Tab className="tab" label="All" {...a11yProps(1)} />
-          )}
-        </Tabs>
-      </Box>
+      {!currentPosition?.toUpperCase().startsWith('EMPLOYEE') &&
+        ['pending', 'approved', 'declined'].includes(catalog) && (
+          <Box>
+            <Tabs
+              className={`cover__tabs`}
+              style={
+                {
+                  '--main-color': titleColor,
+                } as React.CSSProperties
+              }
+              value={value}
+              onChange={handleChange}
+              aria-label="basic tabs example">
+              <Tab className="tab" label="Me" {...a11yProps(0)} />
+              <Tab className="tab" label="All" {...a11yProps(1)} />
+            </Tabs>
+          </Box>
+        )}
       <TabPanel value={value} index={0}>
         {isLoadingGetEmailData ? (
           <Box className="flex flex-col gap-2">

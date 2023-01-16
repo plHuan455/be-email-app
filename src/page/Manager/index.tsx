@@ -17,6 +17,7 @@ import Icon from '@components/atoms/Icon';
 import PeopleIcon from '@mui/icons-material/People';
 import { LayoutMoreActionInputType } from '@components/molecules/LayoutMoreActionsMenu';
 import useLocalStorage from '@hooks/useLocalStorage';
+import { useCheckPermissions } from '@hooks/useCheckPermissions';
 
 const Manager = () => {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
@@ -36,6 +37,8 @@ const Manager = () => {
   const outlet = useOutlet();
 
   const params = useParams();
+
+  const isCanCreate = useCheckPermissions('RBAC_DEPARTMENT_CREATE');
 
   const { callback, description, isLoading, isOpen, onClose, setAlertData, title } =
     useAlertDialog();
@@ -172,8 +175,12 @@ const Manager = () => {
         <SubSidebar
           menus={menus}
           title="Department"
-          headerBtnTitle=""
-          onClickCompose={() => navigate(`${ROOT_NAVIGATE}/department/add`)}
+          headerBtnTitle={isCanCreate ? '' : 'Compose'}
+          onClickCompose={
+            isCanCreate
+              ? () => navigate(`${ROOT_NAVIGATE}/department/add`)
+              : () => navigate(`/emails/compose`)
+          }
         />
       </Layout.ASide>
       {outlet ? (

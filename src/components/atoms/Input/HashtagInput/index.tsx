@@ -58,7 +58,7 @@ const HashtagInput: React.FC<HashTagInputProps> = ({
       <Autocomplete
         multiple
         value={value}
-        options={tempOption ? [tempOption, ...optionList]: optionList}
+        options={tempOption ? [tempOption, ...optionList] : optionList}
         getOptionLabel={(option) => option.name}
         autoHighlight
         defaultValue={[]}
@@ -92,7 +92,7 @@ const HashtagInput: React.FC<HashTagInputProps> = ({
               sx={{
                 color: '#7061e2',
                 fontWeight: 600,
-                borderColor: '#7061e2'
+                borderColor: '#7061e2',
               }}
             />
           ))

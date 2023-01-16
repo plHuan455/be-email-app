@@ -9,6 +9,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import { Box, Drawer } from '@mui/material';
 import { useAppDispatch } from '@redux/configureStore';
 import { unShiftNotificationList } from '@redux/Notify/reducer';
+import { resetSignature } from '@redux/User/reducer';
 import React, { useCallback, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
@@ -56,28 +57,29 @@ function MainWrapper({ children }: { children: React.ReactNode }) {
   const [show, setShow] = useState(false);
   const [notification, setNotification] = useState({ title: '', body: '' });
 
-  // onMessageListener()
-  //   .then((payload) => {
-  //     setNotification({
-  //       title: payload.data.title,
-  //       body: payload.data.body,
-  //     });
-  //     setShow(true);
-  //     dispatch(
-  //       unShiftNotificationList({
-  //         ...payload.data,
-  //         id: Date.now(),
-  //         createdAt: new Date().toISOString(),
-  //       }),
-  //     );
-  //   })
-  //   .catch((err) => console.log('failed', err));
+  onMessageListener()
+    .then((payload) => {
+      setNotification({
+        title: payload.data.title,
+        body: payload.data.body,
+      });
+      setShow(true);
+      dispatch(
+        unShiftNotificationList({
+          ...payload.data,
+          id: Date.now(),
+          createdAt: new Date().toISOString(),
+        }),
+      );
+    })
+    .catch((err) => console.log('failed', err));
 
   // Hooks
   const { classes, cx } = useStyles();
   const { breadcrumbs } = useBreadcrumbs();
   const auth = useAuth();
   const navigate = useNavigate();
+
   // States
   const [openMobileSideBar, setOpenMobileSideBar] = useState(false);
 
@@ -88,6 +90,7 @@ function MainWrapper({ children }: { children: React.ReactNode }) {
   const handleLogout = useCallback(() => {
     deleteDeviceKey().finally(() => {
       auth.signout(() => {
+        dispatch(resetSignature({}));
         localStorage.clear();
       });
       toast.success(t('Good bye!'));

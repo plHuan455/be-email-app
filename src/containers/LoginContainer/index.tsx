@@ -96,7 +96,7 @@ function LoginContainer() {
           Notification.requestPermission().then((permission) => {
             if (permission === 'granted') {
               console.log('line 28 Notification permission granted.');
-              // fetchToken(setTokenFound, setFcmToken);
+              fetchToken(setTokenFound, setFcmToken);
             }
             if (permission === 'default') {
               console.log('line 28 Notification permission default.');

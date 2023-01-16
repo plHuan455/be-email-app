@@ -51,18 +51,17 @@ export const useCreateDepartmentManagement = () => {
   const { navigate, department, setDepartment } = hook;
 
   const handleCreate = async () => {
-    try {
-      console.log('department data --->', department);
+    // try {
+    console.log('department data --->', department);
 
-      // call create here
-      const { id, ...params } = department;
-      const res = await createDepartment(params);
+    // call create here
+    const { id, ...params } = department;
 
-      return res;
-    } catch (error: any) {
-      console.error(new Error(error));
-      toast.error(error?.response?.message || 'Has Error');
-    }
+    return await createDepartment(params);
+    // } catch (error: any) {
+    //   console.error(new Error(error));
+    //   toast.error(error?.response?.message || 'Has Error');
+    // }
   };
 
   return {

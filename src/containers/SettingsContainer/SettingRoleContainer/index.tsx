@@ -123,9 +123,11 @@ const SettingRolesContainer = () => {
   };
 
   const handleUpdatePermission = () => {
+    console.log(activePermissionsHash);
     const convertedPermissionParams = Object.keys(activePermissionsHash).map(
       (key) => ({
         id: Number(key),
+        name: activePermissionsHash[key],
       }),
     );
 
