@@ -362,6 +362,9 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
     }
 
     createDataForForm({
+      to: values.to,
+      cc: values.cc,
+      bcc: values.bcc,
       subject: values.subject,
       content: values.content,
       hashtags: values.hashtags,

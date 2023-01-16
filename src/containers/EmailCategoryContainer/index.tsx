@@ -452,6 +452,9 @@ const EmailCategoryContainer = () => {
     console.log(`[TODO] CONTINUE DRAFT EMAIL ADD FIELDS (TO, BCC, CC, ATTACH_FILE)`);
     onContinueClick({
       id: value.id,
+      to: email.to?.map(value => ({isGroup: false, name: value, data: []})) ?? [],
+      cc: email.cc?.map(value => ({isGroup: false, name: value, data: []})) ?? [],
+      bcc: email.bcc?.map(value => ({isGroup: false, name: value, data: []})) ?? [],
       subject: email.subject,
       content: email.html_body,
       hashtags: (value.hashtags ?? []).map((hashtag) => ({
