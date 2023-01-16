@@ -88,10 +88,7 @@ function MainWrapper({ children }: { children: React.ReactNode }) {
   const handleLogout = useCallback(() => {
     deleteDeviceKey().finally(() => {
       auth.signout(() => {
-        localStorage.removeItem('current_email');
-        localStorage.removeItem('device_key_id');
-        localStorage.removeItem('token');
-        localStorage.removeItem('device_token');
+        localStorage.clear();
       });
       toast.success(t('Good bye!'));
     });
