@@ -21,7 +21,6 @@ import { useSearchParams } from 'react-router-dom';
 import Icon from '@components/atoms/Icon';
 import { SearchCatalogResponse } from '@api/public/interface';
 import Loading from '@components/atoms/Loading';
-import useWebsocket from '@hooks/useWebsocket';
 
 import Highlighter from 'react-highlight-words';
 import { setSearchCatalogValue } from '@redux/Global/reducer';

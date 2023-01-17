@@ -48,7 +48,8 @@ const SidebarRightContainer: React.FC<Props> = ({
   const { isLoading, EmailsList } = useSelector((state: RootState) => state.email);
 
   useWebsocket({
-    onMessage: () => {
+    onMessage: (data) => {
+      if (!data.change) return;
       queryClient.invalidateQueries({ queryKey: ['slideBar-right-get-notify'] });
     },
   });

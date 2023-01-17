@@ -139,6 +139,7 @@ const ModalEmailList: React.FC<Props> = ({
       console.log('Websocket open ModalEmailList');
     },
     onMessage: (data) => {
+      if(!data.change) return;
       console.log('Websocket message ModalEmailList', data);
       queryClient.invalidateQueries({queryKey: ['get-email-manager']})
     },
