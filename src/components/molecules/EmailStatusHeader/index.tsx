@@ -14,7 +14,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useAppDispatch } from '@redux/configureStore';
-import React, { useCallback, useContext } from 'react';
+import React, { ChangeEvent, useCallback, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 type Props = {
@@ -23,6 +23,7 @@ type Props = {
   color: string;
   bgButtonColor: string;
   isSearch?: boolean;
+  onSearch?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   isComposeButton?: boolean;
   onClickCompose?: () => void;
 };
@@ -34,6 +35,7 @@ const EmailStatusHeader: React.FC<Props> = ({
   isComposeButton,
   color,
   bgButtonColor,
+  onSearch,
   onClickCompose,
 }) => {
   const navigate = useNavigate();
@@ -76,9 +78,10 @@ const EmailStatusHeader: React.FC<Props> = ({
         </Box>
       </Box>
 
-      {isSearch && (
+      {isSearch && onSearch && (
         <Box className="py-2">
           <Input
+            onChange={onSearch}
             type="text"
             inputMode="search"
             placeHolder="Search email, name, department, keywords..."

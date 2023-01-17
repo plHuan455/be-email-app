@@ -1,12 +1,9 @@
-import EmailStatusBar from '@layouts/EmailStatusBar';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import EmailMainWrapper from '@layouts/EmailMainWrapper';
 import { useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
-import EmailLayout from '@layouts/EmailLayout';
 import Layout from '@layouts/Layout';
 import { useDispatch } from 'react-redux';
 import { clearEmailsList } from '@redux/Email/reducer';
+import EmailStatusBarContainer from '@containers/EmailStatusBarContainer';
 
 const Email = () => {
   const dispatch = useDispatch();
@@ -18,7 +15,7 @@ const Email = () => {
   return (
     <Layout.Content>
       <Layout.ASide>
-        <EmailStatusBar />
+        <EmailStatusBarContainer />
       </Layout.ASide>
       <Layout.MainHaveActions isHaveHeader={false}>
         <Outlet />

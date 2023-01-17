@@ -12,6 +12,7 @@ export interface GobalState {
   locations: TLocation[];
   defaultSignId: number;
   searchActionValue: string;
+  searchCatalogValue: string;
 }
 
 const initialState: GobalState = {
@@ -25,12 +26,16 @@ const initialState: GobalState = {
   locations: [],
   defaultSignId: 1,
   searchActionValue: '',
+  searchCatalogValue: '',
 };
 
 const globalSlice = createSlice({
   name: 'global',
   initialState,
   reducers: {
+    setSearchCatalogValue(state, actions) {
+      return { ...state, searchCatalogValue: actions.payload };
+    },
     setSearchActionValue(state, actions) {
       return { ...state, searchActionValue: actions.payload };
     },
@@ -119,6 +124,7 @@ const globalSlice = createSlice({
 });
 
 export const {
+  setSearchCatalogValue,
   setSearchActionValue,
   changeSidebarRight,
   setDefaultSignId,

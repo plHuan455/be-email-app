@@ -1,24 +1,29 @@
 import EmailStatusHeader from '@components/molecules/EmailStatusHeader';
 import { EmailList, StatusOptions } from '@components/molecules/ModalEmailList';
 import { Box } from '@mui/material';
-import avt from '../../../src/assets/images/avatars/avatar-1.jpg';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, {
+  ChangeEvent,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 import './index.scss';
-import CustomButton from '@components/atoms/CustomButton';
-import SingleOTPInput from '@components/atoms/Input/PinInput/SingleInput';
-import { toast } from 'react-toastify';
-import { getAllCatalogTab } from '@api/email';
 import EmailTab from '@components/molecules/EmailTab';
-import { addTabHistory, HashtagTabs, setHashtags, setPrivateHashtag } from '@redux/Email/reducer';
+import { addTabHistory } from '@redux/Email/reducer';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { isEmpty } from 'lodash';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState, useAppSelector } from '@redux/configureStore';
 import HashtagContainer from '@containers/HashtagContainer';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 import { useSearchParams } from 'react-router-dom';
+import Icon from '@components/atoms/Icon';
+import { SearchCatalogResponse } from '@api/public/interface';
+import Loading from '@components/atoms/Loading';
 
-type Props = {};
+import Highlighter from 'react-highlight-words';
+import { setSearchCatalogValue } from '@redux/Global/reducer';
 
 export interface EmailItem {
   userAvt: string;
@@ -27,7 +32,7 @@ export interface EmailItem {
   totalEmail: number;
 }
 
-interface EmailTabs {
+export interface EmailTabs {
   title?: string;
   url?: string;
   logo?: string;
@@ -38,118 +43,158 @@ interface EmailTabs {
   color?: string;
 }
 
-export const emailData: EmailList[] = [
-  {
-    userId: 1,
-    userAvt: avt,
-    userName: 'Maria Ohio',
-    userEmail: 'maria.ohio@gmailcom',
-    title: 'A collection of textile',
-    totalEmail: 12,
-    sent: 5,
-    received: 4,
-  },
-  {
-    userId: 2,
-    userAvt: avt,
-    userName: 'Maria Ohio',
-    userEmail: 'maria.ohio@gmailcom',
-    title: 'A collection of textile',
-    totalEmail: 12,
-  },
-  {
-    userId: 3,
-    userAvt: avt,
-    userName: 'Maria Ohio',
-    userEmail: 'maria.ohio@gmailcom',
-    title: 'A collection of textile',
-    totalEmail: 12,
-  },
-  {
-    userId: 4,
-    userAvt: avt,
-    userName: 'Maria Ohio',
-    userEmail: 'maria.ohio@gmailcom',
-    title: 'A collection of textile',
-    totalEmail: 12,
-  },
-];
+interface SearchResultProps {
+  searchData: any;
+  isLoading: boolean;
+  searchValue: string;
+  searchSize: number;
+  onSearchShowMore: () => void;
+}
 
-const EmailTabsData: EmailTabs[] = [
-  {
-    status: 'pending',
-    title: '#pending',
-    notiNumber: 0,
-    emailData: emailData,
-  },
-  {
-    status: 'approved',
-    title: '#approved',
-    notiNumber: 0,
-    emailData: emailData,
-  },
-  {
-    status: 'declined',
-    title: '#declined',
-    notiNumber: 0,
-    emailData: emailData,
-  },
-];
-const EmailTabsSecData: EmailTabs[] = [
-  {
-    status: 'important',
-    title: '#important',
-    notiNumber: 0,
-    emailData: emailData,
-    color: '#f44336',
-  },
-  {
-    status: 'sent',
-    title: '#sent',
-    notiNumber: 0,
-    emailData: emailData,
-    color: '#f9a825',
-  },
-  {
-    status: 'draft',
-    title: '#draft',
-    notiNumber: 0,
-    emailData: emailData,
-    color: '#607d8b',
-  },
-  {
-    status: 'trash',
-    title: '#trash',
-    notiNumber: 0,
-    emailData: emailData,
-    color: '#ff6d00',
-  },
-  {
-    status: 'spam',
-    title: '#spam',
-    notiNumber: 0,
-    emailData: emailData,
-    color: '#dd2c00',
-  },
-];
+const SearchResult: React.FC<SearchResultProps> = ({
+  searchData,
+  isLoading,
+  searchValue,
+  searchSize,
+  onSearchShowMore,
+}) => {
+  const dispatch = useDispatch();
 
-// const hashtagTabs:
+  if (isLoading)
+    return (
+      <Box>
+        <Loading isLoading={isLoading} />
+      </Box>
+    );
 
-const EmailStatusBar = (props: Props) => {
+  const { total, data } = searchData;
+
+  // Handle After Here
+  if (isEmpty(data)) return <Box>No matching results</Box>;
+
+  const dataSort = useMemo(() => {
+    return data.sort((a, b) => {
+      const esIndexA = a['es-index'].toUpperCase();
+      const esIndexB = b['es-index'].toUpperCase();
+
+      return esIndexA <= esIndexB;
+    });
+  }, [data]);
+
+  // useNavigate
+  const navigate = useNavigate();
+
+  const searchCharacters = useMemo(() => {
+    return searchValue.split(' ');
+  }, [searchValue]);
+
+  // Handler FNC
+  const onClearSearchValue = () => {
+    dispatch(setSearchCatalogValue(''));
+    navigate('/emails');
+  };
+
+  // Render FNC
+  const _renderEmailsType = useCallback(
+    (item: SearchCatalogResponse) => {
+      const { id, email, status } = item;
+
+      return (
+        <Box
+          key={id}
+          className="flex items-center rounded-md overflow-hidden p-2 hover:bg-slate-400/40  hover:cursor-pointer"
+          onClick={() => navigate(`/emails/catalog/${status}/${email.writer_id}`)}>
+          <Icon className="mr-2" icon="email" />
+          <Box className="flex-1 border-l overflow-hidden border-slate-600/40 px-2">
+            <Highlighter
+              className="truncate"
+              searchWords={searchCharacters}
+              autoEscape={true}
+              textToHighlight={email.subject}
+            />
+          </Box>
+        </Box>
+      );
+    },
+    [data],
+  );
+
+  const _renderSearchResultItem = useCallback(
+    (item: SearchCatalogResponse) => {
+      const { ['es-index']: esIndex } = item;
+      switch (esIndex) {
+        case 'emails': {
+          return _renderEmailsType(item);
+        }
+
+        default: {
+          return _renderEmailsType(item);
+        }
+      }
+    },
+    [data],
+  );
+
+  // Main Render
+  return (
+    <Box className="flex flex-col pt-2">
+      <Box className="flex justify-between items-center bg-slate-500/40">
+        <h3 className="font-bold text-lg">Total:</h3>
+        <p>
+          {total} {total >= 1 ? 'results' : 'result'}{' '}
+        </p>
+        <Icon
+          className="hover:cursor-pointer"
+          icon="close"
+          onClick={onClearSearchValue}
+        />
+      </Box>
+      <Box className="flex-1 py-2">
+        {dataSort.map((item) => _renderSearchResultItem(item))}
+      </Box>
+      {dataSort.length < total && (
+        <Box>
+          <span
+            className="text-blue-1 hover:cursor-pointer"
+            onClick={onSearchShowMore}>
+            Show More
+          </span>
+        </Box>
+      )}
+    </Box>
+  );
+};
+
+interface Props {
+  hashtagEditing: number;
+  emailTabs: EmailTabs[];
+  emailSecTabs: EmailTabs[];
+  searchValue?: string;
+  isLoadingSearch?: boolean;
+  searchData?: any;
+  searchSize?: number;
+  onSearchShowMore?: () => void;
+  onSearch: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChangeHashtagEditing: (value: number) => void;
+}
+
+const EmailStatusBar: React.FC<Props> = ({
+  hashtagEditing,
+  emailTabs,
+  emailSecTabs,
+  searchValue = '',
+  isLoadingSearch = false,
+  searchData,
+  searchSize,
+  onSearchShowMore,
+  onSearch,
+  onChangeHashtagEditing,
+}) => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const tab = searchParams.get('tab')
-  const {catalog} = useParams();
-  const tabHistory = useAppSelector(state => state.email.tabHistory);
+  const tab = searchParams.get('tab');
+  const { catalog } = useParams();
+  const tabHistory = useAppSelector((state) => state.email.tabHistory);
   const hashtagTabs = useAppSelector((state) => state.email.privateHashtags);
-
-  const [isCreateHashTag, setIsCreateHashTag] = useState<boolean>(false);
-  const [newHashTagValue, setNewHashTagValue] = useState<string>('');
-
-  const [emailTabs, setEmailTabs] = useState<EmailTabs[]>(EmailTabsData);
-
-  const [emailSecTabs, setEmailSecTab] = useState<EmailTabs[]>(EmailTabsSecData);
-
-  const [hashtagEditingIndex, setHashtagEditingIndex] = useState<number>(-1);
 
   // useDispatch
   const dispatch = useDispatch();
@@ -157,157 +202,25 @@ const EmailStatusBar = (props: Props) => {
   // useSelector
   const { notificationList } = useSelector((state: RootState) => state.notify);
 
-  // useQuery
+  useEffect(() => {
+    if (!catalog) return;
+    if (!searchParams.get('tab') && tabHistory[catalog]) {
+      setSearchParams({ tab: tabHistory[catalog] });
+    }
+  }, [catalog]);
+
+  useEffect(() => {
+    if (catalog && tab) {
+      dispatch(addTabHistory({ catalog, tab: tab as 'all' | 'me' }));
+    }
+  }, [tab]);
 
   const queryClient = useQueryClient();
-
-  useQuery({
-    queryKey: ['get-all-email-status'],
-    queryFn: getAllCatalogTab,
-    onSuccess(res) {
-      if (!isEmpty(res.data)) {
-        const amountDefaultStatus = emailTabs.length + emailSecTabs.length;
-
-        const privHashTagData = res.data
-          .splice(amountDefaultStatus)
-          .map<HashtagTabs>((hashTag) => ({
-            title: `#${hashTag.value}`,
-            value: hashTag.value,
-            status: 'hashtag',
-            notiNumber: hashTag.amount,
-            color: '#4BAAA2',
-          }));
-
-        dispatch(setHashtags(privHashTagData));
-        // setHashtagTabs(privHashTagData);
-        dispatch(setPrivateHashtag(privHashTagData));
-
-        setEmailTabs((prevState) => {
-          const data: EmailTabs[] = prevState.reduce(
-            (currVal: EmailTabs[], nextVal) => {
-              const foundInRes = res.data.find(
-                (item) => item.value.toLowerCase() === nextVal.status,
-              );
-
-              if (foundInRes)
-                return [...currVal, { ...nextVal, notiNumber: foundInRes.amount }];
-              return [...currVal, nextVal];
-            },
-            [],
-          );
-
-          return data;
-        });
-        setEmailSecTab((prevState) => {
-          const data: EmailTabs[] = prevState.reduce(
-            (currVal: EmailTabs[], nextVal) => {
-              const foundInRes = res.data.find(
-                (item) => item.value.toLowerCase() === nextVal.status,
-              );
-
-              if (foundInRes)
-                return [...currVal, { ...nextVal, notiNumber: foundInRes.amount }];
-              return [...currVal, nextVal];
-            },
-            [],
-          );
-
-          return data;
-        });
-      }
-    },
-    onError(err) {
-      console.log(err);
-    },
-  });
-
-  useEffect(() => {
-    if(!catalog) return;
-    if(!searchParams.get('tab') && tabHistory[catalog]) {
-      setSearchParams({tab: tabHistory[catalog]})
-    }
-  }, [catalog])
-
-  useEffect(() => {
-    if(catalog && tab) {
-      dispatch(addTabHistory({catalog, tab: tab as 'all' | 'me'}))
-    }
-  }, [tab])
 
   useEffect(() => {
     if (!isEmpty(notificationList))
       queryClient.invalidateQueries({ queryKey: ['get-all-email-status'] });
   }, [notificationList]);
-
-  const handleChangeHashtagEditing = useCallback(
-    (value: number) => {
-      setHashtagEditingIndex(value);
-    },
-    [hashtagEditingIndex],
-  );
-
-  const handleCreateHashTag = (e) => {
-    if (newHashTagValue === '') {
-      return toast.error('Please Enter new hashtag!');
-    } else {
-      const found = hashtagTabs.find((val) => val.value === newHashTagValue);
-
-      if (found) return toast.error('Hashtag already exist!');
-
-      const newValue: HashtagTabs = {
-        title: '#' + newHashTagValue,
-        value: newHashTagValue,
-        status: 'hashtag',
-        notiNumber: 0,
-        color: '#4BAAA2',
-      };
-      // setHashtagTabs((prevState) => [...prevState, newValue]);
-      dispatch(setHashtags([...hashtagTabs, newValue]));
-      setIsCreateHashTag(false);
-      setNewHashTagValue('');
-      return toast.success('Create hashtag successful!');
-    }
-  };
-
-  const handleCancelCreateHashTag = (e) => {
-    setNewHashTagValue('');
-    setIsCreateHashTag(false);
-  };
-
-  const handleChangeHashTagValue = (e) => {
-    setNewHashTagValue(e.target.value);
-  };
-
-  const CreateHashTag = () => {
-    return (
-      <Box>
-        <SingleOTPInput
-          value={newHashTagValue}
-          onChange={handleChangeHashTagValue}
-          className="rounded w-full outline-none p-2 text-[14px]"
-          placeholder="Enter New Hashtag..."
-        />
-        <Box className="flex mt-3">
-          <CustomButton
-            className="flex-1 mx-2"
-            classNameLabel="py-2"
-            onClick={handleCreateHashTag}
-            bgButtonColor="#6C64FF"
-            color="#ffffff"
-            label="Add"
-          />
-          <CustomButton
-            className="flex-1 mx-2"
-            classNameLabel="py-2"
-            onClick={handleCancelCreateHashTag}
-            bgButtonColor="#D3D3D3"
-            color="#ffffff"
-            label="Cancel"
-          />
-        </Box>
-      </Box>
-    );
-  };
 
   // render FNC
   const _renderEmailTags = (emailTagList: EmailTabs[], emailTabType: string) => {
@@ -345,8 +258,8 @@ const EmailStatusBar = (props: Props) => {
                 title={item.title}
                 catalog={item.value}
                 status={item.status}
-                hashtagEditingIndex={hashtagEditingIndex}
-                setHashtagEditingIndex={handleChangeHashtagEditing}
+                hashtagEditingIndex={hashtagEditing}
+                setHashtagEditingIndex={onChangeHashtagEditing}
                 index={index}
                 notiNumber={item.notiNumber ? item.notiNumber : 0}
               />
@@ -369,7 +282,7 @@ const EmailStatusBar = (props: Props) => {
         )} */}
       </Box>
     );
-  }, [hashtagTabs, hashtagEditingIndex]);
+  }, [hashtagTabs, hashtagEditing]);
 
   return (
     <Box
@@ -389,6 +302,7 @@ const EmailStatusBar = (props: Props) => {
         bgButtonColor="#554CFF"
         isComposeButton={true}
         isSearch={true}
+        onSearch={onSearch}
       />
       <Box
         className="flex flex-col flex-1"
@@ -396,9 +310,21 @@ const EmailStatusBar = (props: Props) => {
           paddingBottom: '10px',
           position: 'relative',
         }}>
-        {_renderEmailTags(emailTabs, 'emailTabs')}
-        {_renderEmailTags(emailSecTabs, 'emailSecTabs')}
-        {_renderPrivateHashtag}
+        {!Boolean(searchValue) ? (
+          <>
+            {_renderEmailTags(emailTabs, 'emailTabs')}
+            {_renderEmailTags(emailSecTabs, 'emailSecTabs')}
+            {_renderPrivateHashtag}
+          </>
+        ) : (
+          <SearchResult
+            searchData={searchData}
+            isLoading={isLoadingSearch}
+            searchValue={searchValue}
+            searchSize={searchSize ?? 0}
+            onSearchShowMore={onSearchShowMore ?? (() => {})}
+          />
+        )}
       </Box>
     </Box>
   );

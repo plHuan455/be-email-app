@@ -11,7 +11,6 @@ import { UserInfo } from '@components/organisms/Email/Interface';
 import EmailMess from '@components/organisms/EmailMess';
 import { EmailComposeContext } from '@containers/MainWrapperContainer';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
-import { emailData } from '@layouts/EmailStatusBar';
 import { Box, Button } from '@mui/material';
 import { deleteIndexEmail, HashtagTabs } from '@redux/Email/reducer';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -233,7 +232,7 @@ const EmailMessContainerRef: React.ForwardRefRenderFunction<
 
   const handleOnApprove = (data: EmailResponse) => {
     setIsOpenModal(true);
-  }
+  };
 
   const handleUndoEmail = () => {
     undoEmailMutate({ emailId: emailData.id });

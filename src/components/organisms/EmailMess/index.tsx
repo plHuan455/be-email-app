@@ -19,19 +19,15 @@ import EmailPrivateHashtagContainer from '@containers/EmailPrivateHashtagContain
 import { HashtagTabs } from '@redux/Email/reducer';
 import dayjs, { Dayjs } from 'dayjs';
 import ControlEmailSend from '../ControlEmailSend';
-import EmailGreeting from '@components/molecules/EmailGreeting';
-import LogoWithLabel from '@components/atoms/LogoWithLabel';
 import Icon from '@components/atoms/Icon';
 import { rem } from '@utils/functions';
-import { useParams, useSearchParams } from 'react-router-dom';
 import ScheduleSendIcon from '@mui/icons-material/ScheduleSend';
 import SendIcon from '@mui/icons-material/Send';
-import { color } from 'd3-color';
-import { data } from 'autoprefixer';
-import EmailActionLayoutContainer, {
-  useEmailActionLayout,
-} from '@containers/EmailActionsLayoutContainer';
 import useIntersectionObserver from '@hooks/useIntersectionObserver';
+import { useSelector } from 'react-redux';
+import { RootState } from '@redux/configureStore';
+import Highlighter from 'react-highlight-words';
+
 export interface UserRead {
   name: string;
   time: string;
@@ -243,7 +239,14 @@ const EmailMess: React.FC<Props> = ({
     ...(emailData.email.bcc ?? []),
   ];
 
+  // useSelector
+  const { searchActionValue } = useSelector((state: RootState) => state.global);
+
   // useMemo
+
+  const searchCharacters = useMemo(() => {
+    return searchActionValue.split(' ');
+  }, [searchActionValue]);
 
   const remapPrivateHashtag = useMemo<HashtagTabs[]>(() => {
     return emailData.hashtags
@@ -435,9 +438,17 @@ const EmailMess: React.FC<Props> = ({
     if (!emailTitle) return <h1 className="text-stone-700 font-bold text-base"></h1>;
     if (emailTitle?.length < limitShow) {
       return (
-        <h1 className="text-stone-700 font-bold text-base">
-          {emailData.email.subject}
-        </h1>
+        <>
+          {/* <h1 className="text-stone-700 font-bold text-base">
+            {emailData.email.subject}
+          </h1> */}
+          <Highlighter
+            className="text-stone-700 font-bold text-base"
+            searchWords={searchCharacters}
+            autoEscape={true}
+            textToHighlight={emailData.email.subject}
+          />
+        </>
       );
     }
     return (

@@ -5,7 +5,11 @@ import {
   sendEmail,
   updateEmailWithQuery,
 } from '@api/email';
-import { EmailComposeEmailFieldNames, EmailComposeFields, SelectedEmailHashType } from '@components/templates/EmailCompose2';
+import {
+  EmailComposeEmailFieldNames,
+  EmailComposeFields,
+  SelectedEmailHashType,
+} from '@components/templates/EmailCompose2';
 import MainWrapper from '@layouts/MainWrapper';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import dayjs, { Dayjs } from 'dayjs';
@@ -28,12 +32,7 @@ import MinimizeEmailList, {
   MinimizeEmailTypes,
 } from '@components/templates/MinimizeEmailList';
 import AlertDialog, { useAlertDialog } from '@components/molecules/AlertDialog';
-// import { deleteAllWithIdList } from '@api/email';
-import { attempt, update } from 'lodash';
 import { InputContactBlock } from '@components/molecules/Autocomplete';
-import { UserReceiveInfo } from '@components/organisms/Email/Interface';
-import { emailRegex } from '@constants/constants';
-import { emailData } from '@layouts/EmailStatusBar';
 import { AutoCompleteGroupValueTypes } from '@components/molecules/AutoCompleteGroup';
 
 // type SelectedEmailHashType = {
@@ -64,7 +63,7 @@ export const EmailComposeContext = createContext<EmailComposeContextTypes>({
   inputContactBlocks: [],
   setInputContactBlocks: () => undefined,
   triggerClearData: false,
-  selectedEmailHash: {to: {}, cc: {}, bcc: {}},
+  selectedEmailHash: { to: {}, cc: {}, bcc: {} },
   onChangeSelectedEmailHash: () => {},
   onSendEmail: () => {},
   onNewComposeClick: () => {},
@@ -79,7 +78,7 @@ interface MainWrapperContainerProps {}
 const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
   const dispatch = useAppDispatch();
   const currentUserEmail = localStorage.getItem('current_email');
-  const currSignature = useAppSelector(state => state.user.signature);
+  const currSignature = useAppSelector((state) => state.user.signature);
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const location = useLocation();
@@ -94,7 +93,7 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
   const method = useForm<EmailComposeFields>({
     defaultValues: {
       contactBlock: [],
-      to:[],
+      to: [],
       cc: [],
       bcc: [],
       subject: '',
@@ -118,12 +117,16 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
     [],
   );
 
-  const [selectedEmailHash, setSelectedEmailHash] = useState<SelectedEmailHashType>({to: {}, cc: {}, bcc: {}});
+  const [selectedEmailHash, setSelectedEmailHash] = useState<SelectedEmailHashType>({
+    to: {},
+    cc: {},
+    bcc: {},
+  });
 
   // MUTATIONS
   const { mutate: deleteEmailMutate } = useMutation({
     mutationKey: ['email-compose-delete-email'],
-    mutationFn: (id: number) => updateEmailWithQuery(id, {is_trash: true}),
+    mutationFn: (id: number) => updateEmailWithQuery(id, { is_trash: true }),
   });
   const { mutate: storeDraftMutate, isLoading: isStoreDraftLoading } = useMutation({
     mutationKey: ['main-wrapper-container-store-draft', showMinimizeEmailId],
@@ -208,10 +211,10 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
 
   const convertContactField = (fieldData: AutoCompleteGroupValueTypes[]) => {
     return fieldData.reduce<string[]>((preValue, value) => {
-      if(!value.isGroup) return [...preValue, value.name];
-      return [...preValue, ...value.data.map(email => email)]
-    }, [])
-  } 
+      if (!value.isGroup) return [...preValue, value.name];
+      return [...preValue, ...value.data.map((email) => email)];
+    }, []);
+  };
 
   const getSelectedContact = (contactBlock: InputContactBlock[]) => {
     return (field: 'to' | 'cc' | 'bcc') => {
@@ -253,8 +256,10 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
         from: currentUserEmail ?? '',
         html_body: getHtmlStringFromEditorState(values.content),
         subject: values.subject,
-        attachments: values.attachFiles.fileUrls.filter(value => value).map((value) => ({ filename: value ?? '' })),
-        signature_id: currSignature?.id ?? undefined
+        attachments: values.attachFiles.fileUrls
+          .filter((value) => value)
+          .map((value) => ({ filename: value ?? '' })),
+        signature_id: currSignature?.id ?? undefined,
       },
       hashtags: values.hashtags.map((value) => value.value),
       send_at: values.sendAt?.toISOString() ?? dayjs().toISOString(),
@@ -279,22 +284,26 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
     method.setValue('attachFiles', data.attachFiles ?? { files: [], fileUrls: [] });
     method.setValue('hashtags', data.hashtags ?? []);
 
-    const cloneSelectedEmailHash:SelectedEmailHashType = {to: {}, cc: {}, bcc: {}};
-    data.to?.forEach(value => {
-      if(value.isGroup) {
-        value.data.forEach(email => cloneSelectedEmailHash.to[email] = true)
+    const cloneSelectedEmailHash: SelectedEmailHashType = {
+      to: {},
+      cc: {},
+      bcc: {},
+    };
+    data.to?.forEach((value) => {
+      if (value.isGroup) {
+        value.data.forEach((email) => (cloneSelectedEmailHash.to[email] = true));
       }
-    })
-    data.cc?.forEach(value => {
-      if(value.isGroup) {
-        value.data.forEach(email => cloneSelectedEmailHash.cc[email] = true)
+    });
+    data.cc?.forEach((value) => {
+      if (value.isGroup) {
+        value.data.forEach((email) => (cloneSelectedEmailHash.cc[email] = true));
       }
-    })
-    data.bcc?.forEach(value => {
-      if(value.isGroup) {
-        value.data.forEach(email => cloneSelectedEmailHash.bcc[email] = true)
+    });
+    data.bcc?.forEach((value) => {
+      if (value.isGroup) {
+        value.data.forEach((email) => (cloneSelectedEmailHash.bcc[email] = true));
       }
-    })
+    });
 
     setSelectedEmailHash(cloneSelectedEmailHash);
   };
@@ -313,7 +322,7 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
 
     // const { to, cc, bcc } = convertContactField(contactBlock);
     // console.log(to, cc, bcc);
-    const {to, cc, bcc} = values;
+    const { to, cc, bcc } = values;
 
     if (to.length === 0 && cc.length === 0 && bcc.length === 0) {
       alertDialog.setAlertData(
@@ -343,12 +352,15 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
 
     if (showMinimizeEmailId || !isEmailDataEmpty) {
       const newCacheId = Date.now();
-      
-      if(!foundMinimizeEmail && values.id !== showMinimizeEmailId?.id) {
-        dispatch(addMinimizeEmail({...convertMinimizeEmailData,
-          cacheId: showMinimizeEmailId?.cacheId ?? newCacheId,
-          id: showMinimizeEmailId?.id
-        }))
+
+      if (!foundMinimizeEmail && values.id !== showMinimizeEmailId?.id) {
+        dispatch(
+          addMinimizeEmail({
+            ...convertMinimizeEmailData,
+            cacheId: showMinimizeEmailId?.cacheId ?? newCacheId,
+            id: showMinimizeEmailId?.id,
+          }),
+        );
       }
 
       if (showMinimizeEmailId?.id) {
@@ -371,7 +383,10 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
     });
     clearTimeout(storeDraftTimeOutFunc.current);
     setTabColor(foundMinimizeEmail?.color);
-    setShowMinimizeEmailId({ id: values.id, cacheId: foundMinimizeEmail ? foundMinimizeEmail.cacheId : Date.now() });
+    setShowMinimizeEmailId({
+      id: values.id,
+      cacheId: foundMinimizeEmail ? foundMinimizeEmail.cacheId : Date.now(),
+    });
     navigate('/emails/compose');
   };
 
@@ -444,8 +459,8 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
       ...values,
       content: getHtmlStringFromEditorState(values.content),
     };
-    
-    if(showMinimizeEmailId?.id !== undefined) {
+
+    if (showMinimizeEmailId?.id !== undefined) {
       updateDraftMutate({ id: showMinimizeEmailId.id, data });
       dispatch(
         addMinimizeEmail({
@@ -454,10 +469,12 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
           cacheId: showMinimizeEmailId.cacheId,
         }),
       );
-    }
-    else {
+    } else {
       const newCacheId = Date.now();
-      storeDraftMutate({ data, cacheId: showMinimizeEmailId?.cacheId ?? newCacheId});
+      storeDraftMutate({
+        data,
+        cacheId: showMinimizeEmailId?.cacheId ?? newCacheId,
+      });
       dispatch(
         addMinimizeEmail({
           ...convertMinimizeEmailData,
@@ -469,7 +486,7 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
 
     setShowMinimizeEmailId(undefined);
     setTabColor(undefined);
-    setSelectedEmailHash({to: {}, cc: {}, bcc: {}})
+    setSelectedEmailHash({ to: {}, cc: {}, bcc: {} });
     method.reset();
     clearTimeout(storeDraftTimeOutFunc.current);
   };
@@ -489,12 +506,16 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
       });
     }
 
-    showMinimizeEmailId && dispatch(
-      deleteMinimizeEmail({ cacheId: showMinimizeEmailId.cacheId, id: showMinimizeEmailId.id })
-    );
+    showMinimizeEmailId &&
+      dispatch(
+        deleteMinimizeEmail({
+          cacheId: showMinimizeEmailId.cacheId,
+          id: showMinimizeEmailId.id,
+        }),
+      );
 
     setShowMinimizeEmailId(undefined);
-    setTabColor(undefined)
+    setTabColor(undefined);
     method.reset();
     clearTimeout(storeDraftTimeOutFunc.current);
     alertDialog.onClose();
@@ -549,7 +570,7 @@ const MainWrapperContainer: React.FC<MainWrapperContainerProps> = () => {
     method.reset();
     clearTimeout(storeDraftTimeOutFunc.current);
     navigate('/emails/compose');
-    return; 
+    return;
   };
 
   // Auto call this func after 3s
