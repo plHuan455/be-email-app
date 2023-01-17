@@ -55,11 +55,11 @@ const EmailMainWrapper = () => {
     },
   });
 
-  useEffect(() => {
-    if (!isEmpty(notificationList)) {
-      queryClient.invalidateQueries({ queryKey: ['get-emails-list'] });
-    }
-  }, [notificationList]);
+  // useEffect(() => {
+  //   if (!isEmpty(notificationList)) {
+  //     queryClient.invalidateQueries({ queryKey: ['get-emails-list'] });
+  //   }
+  // }, [notificationList]);
 
   useEffect(() => {
     if (!isHaveParams) {
