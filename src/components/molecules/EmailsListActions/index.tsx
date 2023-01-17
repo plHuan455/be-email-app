@@ -34,7 +34,6 @@ const EmailsListActions: React.FC<Props> = ({ className, isShowInformationBtn })
     else {
       if (sidebarRight.type === 'notify') {
         dispatch(closeNotifySidebarRight());
-        dispatch(sortNotification());
         dispatch(openInformationSidebarRight());
       } else dispatch(closeInformationSidebarRight());
     }

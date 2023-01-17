@@ -4,6 +4,7 @@ import { NotificationList, NotifyState } from './interface';
 
 const initialState: NotifyState = {
     notificationList: JSON.parse(localStorage.getItem(LOCAL_STORAGE_NOTIFY) ?? '[]'),
+    unreadCount: 0,
 }
 
 const NotifySlice = createSlice({
@@ -15,16 +16,15 @@ const NotifySlice = createSlice({
       localStorage.setItem(LOCAL_STORAGE_NOTIFY, JSON.stringify(state.notificationList));
       return state;
     },
-    setNotificationList(state, action) {
-      return {
-        ...state,
-        notificationList: action.payload,
-      };
+    setNotificationList(state, action: PayloadAction<NotificationList[]>) {
+      state.notificationList = action.payload;
+      localStorage.setItem(LOCAL_STORAGE_NOTIFY, JSON.stringify(state.notificationList));
+      return state;
     },
     seenNotification(state, action: PayloadAction<number>) {
       const foundNotificationIndex = state.notificationList.findIndex(notify => notify.id === action.payload);
       if(foundNotificationIndex !== -1) {
-        state.notificationList[foundNotificationIndex].isSeen = !Boolean(state.notificationList[foundNotificationIndex].isSeen);
+        state.notificationList[foundNotificationIndex].isSeen = true;
         localStorage.setItem(LOCAL_STORAGE_NOTIFY, JSON.stringify(state.notificationList));
       }
 
@@ -46,6 +46,10 @@ const NotifySlice = createSlice({
       })
       state.notificationList = [...unReadNotificationList, ...readNotificationList];
       localStorage.setItem(LOCAL_STORAGE_NOTIFY, JSON.stringify(state.notificationList));
+      return state;
+    },
+    setUnReadCount(state, action: PayloadAction<number>) {
+      state.unreadCount = action.payload;
       return state;
     }
   },

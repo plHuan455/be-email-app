@@ -12,8 +12,10 @@ import DoneAllIcon from '@mui/icons-material/DoneAll';
 import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 
 import styles from './styles.module.scss';
-import dayjs from 'dayjs';
-import { seenAllNotification, seenNotification, sortNotification } from '@redux/Notify/reducer';
+import dayjs, { Dayjs } from 'dayjs';
+import { seenAllNotification, seenNotification, setNotificationList, sortNotification } from '@redux/Notify/reducer';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { getNotifications, updateNotify } from '@api/notification';
 
 interface Props {
   isBorderBottom: boolean;
@@ -24,6 +26,7 @@ const SidebarRightContainer: React.FC<Props> = ({
   isBorderBottom,
   isShowInformationBtn,
 }) => {
+  const queryClient = useQueryClient();
   // dispatch
   const dispatch = useAppDispatch();
 
@@ -33,12 +36,58 @@ const SidebarRightContainer: React.FC<Props> = ({
   const { notificationList } = useSelector((state: RootState) => state.notify);
   const { isLoading, EmailsList } = useSelector((state: RootState) => state.email);
 
+  const {data: notifyListData, isLoading: isNNotifyLoading} = useQuery({
+    queryKey: ['slideBar-right-get-notify'],
+    queryFn: getNotifications,
+    onSuccess: (res) => {
+      if(res.data) {
+        dispatch(setNotificationList(res.data.map((value) => ({
+          id: value.id,
+          body: value.notify_type_id === 1 ? `${value.sender} has sent a new email to ${value.receiver}. ` : '',
+          isSeen: value.status === 'read' ? true : false,
+          title: value.content?.notify ?? '',
+          createdAt: value.created_at
+        }))))
+      }
+    },
+    enabled: sidebarRight.type === 'notify' && sidebarRight.isShow
+  });
+
+  const {mutate: readNotifyMutate, isLoading: isReadNotifyLoading} = useMutation({
+    mutationKey: ['sidebar-right-read-notify'],
+    mutationFn: async(id: number) => updateNotify({status: 'read'}, id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: ['slideBar-right-get-notify']})
+    }
+  })
+
+  const {mutate: readAllNotifyMutate} = useMutation({
+    mutationKey: ['sidebar-right-read-notify'],
+    mutationFn: () => updateNotify({status: 'read'}),
+    onSuccess: () => {
+      queryClient.invalidateQueries({queryKey: ['slideBar-right-get-notify']})
+    }
+  }) 
+
+  const renderTime = (date: Dayjs) => {
+    const diffSecond = date.diff(dayjs(), 's');
+    return date.format('lll')
+  }
+
+  const handleNotifyClick = (notifyId: number) => {
+    readNotifyMutate(notifyId);
+  }
+
+  const handleSeeAllNotify = () => {
+    readAllNotifyMutate();
+  }
+
   const _renderNotify = useMemo(() => {
     if (!isEmpty(notificationList))
       return (
         <Box sx={{ maxHeight: 'calc(100% - 24px)', overflow: 'auto', mt: rem(8) }}>
           <Box display="flex" alignItems="center" sx={{py: rem(8)}}>
-            <Box display="flex" alignItems="center" sx={{cursor: 'pointer'}} onClick={() =>{dispatch(seenAllNotification())}}>
+            <Box display="flex" alignItems="center" sx={{cursor: 'pointer'}} onClick={handleSeeAllNotify}>
               <DoneAllIcon sx={{fontSize: rem(14), color: '#2172f2'}} />
               <Typography variant='body1' sx={{fontSize: rem(14), color: '#2172f2', ml: rem(4), fontWeight: 500}}>Mark as read</Typography>
             </Box>
@@ -49,7 +98,7 @@ const SidebarRightContainer: React.FC<Props> = ({
               display="flex"
               key={notify.id}
               onClick={() => {
-                dispatch(seenNotification(notify.id))
+                handleNotifyClick(notify.id)
               }}
             >
               <Box sx={{ minWidth: rem(12) }}>
@@ -57,10 +106,13 @@ const SidebarRightContainer: React.FC<Props> = ({
               </Box>
               <Box sx={{ ml: rem(12), pb: rem(12), borderBottom: '1px solid #DEDEDE', flexGrow: 1 }}>
                 <Typography sx={{ color: '#282828', fontSize: rem(14), lineHeight: rem(24), fontWeight: 500, minHeight: rem(24) }} variant="body1">
+                  {notify.title}
+                </Typography>
+                <Typography sx={{ color: '#282828', fontSize: rem(12), lineHeight: rem(20), fontWeight: 400 }} variant="body1">
                   {notify.body}
                 </Typography>
                 <Typography sx={{ color: notify.isSeen ? '#6c6c6c' : '#2172f2', fontSize: rem(12), mt: rem(4) }} variant="body2">
-                  {dayjs(notify.createdAt).format('lll')}
+                  {renderTime(dayjs(notify.createdAt))}
                 </Typography>
               </Box>
             </Box>
@@ -69,7 +121,7 @@ const SidebarRightContainer: React.FC<Props> = ({
         </Box>
       )
     return <p>No new announcements</p>;
-  }, [notificationList]);
+  }, [notificationList, handleNotifyClick]);
 
   const _renderEmailsInformation = useMemo(() => {
     if (!isEmpty(EmailsList))

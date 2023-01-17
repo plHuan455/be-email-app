@@ -8,4 +8,5 @@ export interface NotificationList {
 
 export interface NotifyState {
   notificationList: NotificationList[];
+  unreadCount: number;
 }
