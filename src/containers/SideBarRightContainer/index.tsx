@@ -15,7 +15,8 @@ import styles from './styles.module.scss';
 import dayjs, { Dayjs } from 'dayjs';
 import { seenAllNotification, seenNotification, setNotificationList, sortNotification } from '@redux/Notify/reducer';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { getNotifications, updateNotify } from '@api/notification';
+import { getNotifications, readAllNotifyService, updateNotify } from '@api/notification';
+import useWebsocket from '@hooks/useWebsocket';
 
 interface Props {
   isBorderBottom: boolean;
@@ -26,6 +27,7 @@ const SidebarRightContainer: React.FC<Props> = ({
   isBorderBottom,
   isShowInformationBtn,
 }) => {
+  const currUserId = localStorage.getItem('current_id');
   const queryClient = useQueryClient();
   // dispatch
   const dispatch = useAppDispatch();
@@ -36,9 +38,15 @@ const SidebarRightContainer: React.FC<Props> = ({
   const { notificationList } = useSelector((state: RootState) => state.notify);
   const { isLoading, EmailsList } = useSelector((state: RootState) => state.email);
 
+  useWebsocket({
+    onMessage: () => {
+      queryClient.invalidateQueries({queryKey: ['slideBar-right-get-notify']})
+    }
+  })
+
   const {data: notifyListData, isLoading: isNNotifyLoading} = useQuery({
-    queryKey: ['slideBar-right-get-notify'],
-    queryFn: getNotifications,
+    queryKey: ['slideBar-right-get-notify', currUserId],
+    queryFn: () => getNotifications(Number(currUserId)),
     onSuccess: (res) => {
       if(res.data) {
         dispatch(setNotificationList(res.data.map((value) => ({
@@ -50,7 +58,7 @@ const SidebarRightContainer: React.FC<Props> = ({
         }))))
       }
     },
-    enabled: sidebarRight.type === 'notify' && sidebarRight.isShow
+    // enabled: sidebarRight.type === 'notify' && sidebarRight.isShow && currUserId !== null
   });
 
   const {mutate: readNotifyMutate, isLoading: isReadNotifyLoading} = useMutation({
@@ -63,14 +71,16 @@ const SidebarRightContainer: React.FC<Props> = ({
 
   const {mutate: readAllNotifyMutate} = useMutation({
     mutationKey: ['sidebar-right-read-notify'],
-    mutationFn: () => updateNotify({status: 'read'}),
+    mutationFn: () => readAllNotifyService(Number(currUserId)),
     onSuccess: () => {
       queryClient.invalidateQueries({queryKey: ['slideBar-right-get-notify']})
     }
   }) 
 
   const renderTime = (date: Dayjs) => {
-    const diffSecond = date.diff(dayjs(), 's');
+    const diffSecond = dayjs().diff(date, 's');
+
+    console.log(diffSecond);
     return date.format('lll')
   }
 
@@ -105,7 +115,7 @@ const SidebarRightContainer: React.FC<Props> = ({
                 {!Boolean(notify.isSeen) && <FiberManualRecordIcon sx={{ color: '#2172f2', fontSize: rem(12) }} />}
               </Box>
               <Box sx={{ ml: rem(12), pb: rem(12), borderBottom: '1px solid #DEDEDE', flexGrow: 1 }}>
-                <Typography sx={{ color: '#282828', fontSize: rem(14), lineHeight: rem(24), fontWeight: 500, minHeight: rem(24) }} variant="body1">
+                <Typography sx={{ color: '#282828', fontSize: rem(14), lineHeight: rem(24), fontWeight: 500 }} variant="body1">
                   {notify.title}
                 </Typography>
                 <Typography sx={{ color: '#282828', fontSize: rem(12), lineHeight: rem(20), fontWeight: 400 }} variant="body1">

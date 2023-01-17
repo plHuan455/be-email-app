@@ -28,6 +28,7 @@ import { RootState } from '@redux/configureStore';
 import { CatalogTabResponse } from '@api/email/interface';
 import Loading from '@components/atoms/Loading';
 import { isEmpty } from 'lodash';
+import useWebsocket from '@hooks/useWebsocket';
 
 export interface EmailList {
   userId: number;
@@ -133,6 +134,19 @@ const ModalEmailList: React.FC<Props> = ({
 
   const queryClient = useQueryClient();
 
+  useWebsocket({
+    onOpen: () => {
+      console.log('Websocket open ModalEmailList');
+    },
+    onMessage: (data) => {
+      console.log('Websocket message ModalEmailList', data);
+      queryClient.invalidateQueries({queryKey: ['get-email-manager']})
+    },
+    onClose: () => {
+      console.log('Websocket close ModalEmailList');
+    },
+  })
+
   const { data: dataGetEmailManagerByStatus, isLoading: isLoadingGetEmailData } =
     useQuery({
       queryKey: ['get-email-manager', pathName, value],
@@ -150,11 +164,11 @@ const ModalEmailList: React.FC<Props> = ({
     });
 
   // useEffect
-  useEffect(() => {
-    if (!isEmpty(notificationList)) {
-      queryClient.invalidateQueries({ queryKey: ['get-email-manager'] });
-    }
-  }, [notificationList]);
+  // useEffect(() => {
+  //   if (!isEmpty(notificationList)) {
+  //     queryClient.invalidateQueries({ queryKey: ['get-email-manager'] });
+  //   }
+  // }, [notificationList]);
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     if (value === newValue) {

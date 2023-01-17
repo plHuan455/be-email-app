@@ -1,1 +1,1 @@
-export const NOTIFY_API = '/user/notify';
+export const NOTIFY_API = '/user/notify/user';

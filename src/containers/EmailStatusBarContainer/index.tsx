@@ -2,11 +2,12 @@ import { useTranslation } from '@@packages/localization/src';
 import { getAllCatalogTab } from '@api/email';
 import { searchCatalog } from '@api/public';
 import { EmailList } from '@components/molecules/ModalEmailList';
+import useWebsocket from '@hooks/useWebsocket';
 import EmailStatusBar, { EmailTabs } from '@layouts/EmailStatusBar';
 import { RootState } from '@redux/configureStore';
 import { HashtagTabs, setHashtags, setPrivateHashtag } from '@redux/Email/reducer';
 import { setSearchCatalogValue } from '@redux/Global/reducer';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { isEmpty } from 'lodash';
 import React, { ChangeEvent, useCallback, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
@@ -110,6 +111,7 @@ const EmailTabsSecData: EmailTabs[] = [
 ];
 
 const EmailStatusBarContainer = () => {
+  const queryClient = useQueryClient();
   // useState
   const [hashtagEditingIndex, setHashtagEditingIndex] = useState<number>(-1);
   const [emailTabs, setEmailTabs] = useState<EmailTabs[]>(EmailTabsData);
@@ -123,6 +125,20 @@ const EmailStatusBarContainer = () => {
   const { searchCatalogValue } = useSelector((state: RootState) => state.global);
 
   // useQuery
+
+  
+  useWebsocket({
+    onOpen: () => {
+      console.log('Websocket open EmailStatusBar');
+    },
+    onMessage: (data) => {
+      console.log('Websocket message EmailStatusBarContainer', data);
+      queryClient.invalidateQueries({queryKey: ['get-all-email-status']})
+    },
+    onClose: () => {
+      console.log('Websocket close EmailStatusBarContainer');
+    },
+  })
 
   useQuery({
     queryKey: ['get-all-email-status'],

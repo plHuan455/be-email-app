@@ -21,6 +21,7 @@ import { useSearchParams } from 'react-router-dom';
 import Icon from '@components/atoms/Icon';
 import { SearchCatalogResponse } from '@api/public/interface';
 import Loading from '@components/atoms/Loading';
+import useWebsocket from '@hooks/useWebsocket';
 
 import Highlighter from 'react-highlight-words';
 import { setSearchCatalogValue } from '@redux/Global/reducer';
@@ -216,6 +217,19 @@ const EmailStatusBar: React.FC<Props> = ({
   }, [tab]);
 
   const queryClient = useQueryClient();
+
+  useEffect(() => {
+    if(!catalog) return;
+    if(!searchParams.get('tab') && tabHistory[catalog]) {
+      setSearchParams({tab: tabHistory[catalog]})
+    }
+  }, [catalog])
+
+  useEffect(() => {
+    if(catalog && tab) {
+      dispatch(addTabHistory({catalog, tab: tab as 'all' | 'me'}))
+    }
+  }, [tab])
 
   useEffect(() => {
     if (!isEmpty(notificationList))
