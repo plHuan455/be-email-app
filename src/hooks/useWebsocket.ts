@@ -1,9 +1,13 @@
 import { useEffect } from "react";
 
-
+interface WebSocketDataType {
+  type: number;
+  change: boolean;
+  chanel?: string;
+}
 interface UseWebSocketProps {
   onOpen?: () => void;
-  onMessage?: (event: MessageEvent<any>) => void;
+  onMessage?: (data: WebSocketDataType, event: MessageEvent<any>) => void;
   onClose?: () => void;
 }
 
@@ -18,15 +22,13 @@ const useWebsocket = ({
     const ws = new WebSocket(`${process.env.SOCKET_URL}/user?token=${JSON.stringify(token).replaceAll(/[",\\]/g, '')}`);
     ws.onopen = () => {
       onOpen && onOpen();
-      console.log('Connected to WebSocket');
     };
     ws.onmessage = (event) => {
-      onMessage && onMessage(event);
-      console.log(event.data);
+      const data = JSON.parse(event.data);
+      onMessage && onMessage({change: data?.change, type: data?.type ?? -1}, event);
     };
     ws.onclose = () => {
       onClose && onClose();
-      console.log('Disconnected from WebSocket');
     };
 
     () => {

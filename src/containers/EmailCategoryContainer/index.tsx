@@ -43,7 +43,6 @@ import AlertWithEmailAction from '@components/molecules/AlertWithEmailAction';
 import { toast } from 'react-toastify';
 import { addMailToBlackList } from '@api/blacklist';
 import { EmailComposeContext } from '@containers/MainWrapperContainer';
-import useWebsocket from '@hooks/useWebsocket';
 
 const myEmail = localStorage.getItem('current_email');
 const currRole = localStorage.getItem('current_role')?.toUpperCase();
@@ -53,19 +52,6 @@ const EmailCategoryContainer = () => {
   const [searchParams] = useSearchParams();
   const tabSearchParams = searchParams.get('tab');
   const queryClient = useQueryClient();
-
-useWebsocket({
-  onOpen: () => {
-    console.log('Websocket open');
-  },
-  onMessage: (data) => {
-    console.log('Websocket message', data);
-    queryClient.invalidateQueries({queryKey: ['get-emails-list']})
-  },
-  onClose: () => {
-    console.log('Websocket close');
-  },
-})
 
   const containerRef = useRef<HTMLDivElement>(null);
   const defaultApproveIn = useRef(dayjs('Thu Apr 07 2022 00:15:00'));

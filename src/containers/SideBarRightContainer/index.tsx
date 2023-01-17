@@ -39,7 +39,8 @@ const SidebarRightContainer: React.FC<Props> = ({
   const { isLoading, EmailsList } = useSelector((state: RootState) => state.email);
 
   useWebsocket({
-    onMessage: () => {
+    onMessage: (data) => {
+      if(!data.change) return;
       queryClient.invalidateQueries({queryKey: ['slideBar-right-get-notify']})
     }
   })
@@ -51,7 +52,7 @@ const SidebarRightContainer: React.FC<Props> = ({
       if(res.data) {
         dispatch(setNotificationList(res.data.map((value) => ({
           id: value.id,
-          body: value.notify_type_id === 1 ? `${value.sender} has sent a new email to ${value.receiver}. ` : '',
+          body: value.notify_type_id === 1 ? `${value?.sender ?? ''} has sent a new email to ${value?.receiver ?? ''}. ` : '',
           isSeen: value.status === 'read' ? true : false,
           title: value.content?.notify ?? '',
           createdAt: value.created_at

@@ -132,6 +132,7 @@ const EmailStatusBarContainer = () => {
       console.log('Websocket open EmailStatusBar');
     },
     onMessage: (data) => {
+      if(!data.change) return;
       console.log('Websocket message EmailStatusBarContainer', data);
       queryClient.invalidateQueries({queryKey: ['get-all-email-status']})
     },

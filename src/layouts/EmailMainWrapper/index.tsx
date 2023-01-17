@@ -12,6 +12,7 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { getAllEmailByCatalog, getEmailsListWithQueryParams } from '@api/email';
 import { toast } from 'react-toastify';
 import EmailCategoryContainer from '@containers/EmailCategoryContainer';
+import useWebsocket from '@hooks/useWebsocket';
 
 const receiverData: Receiver[] = [
   {
@@ -40,6 +41,20 @@ const EmailMainWrapper = () => {
 
   const queryClient = useQueryClient();
 
+  
+  useWebsocket({
+    onOpen: () => {
+      console.log('Websocket open EmailMainWrapper');
+    },
+    onMessage: (data) => {
+      if(!data.change) return;
+      console.log('Websocket message EmailMainWrapper', data);
+      queryClient.invalidateQueries({queryKey: ['get-emails-list']})
+    },
+    onClose: () => {
+      console.log('Websocket close EmailMainWrapper');
+    },
+  })
   // Get Emails List
 
   const { isLoading: isLoadingGetEmailsList } = useQuery({
