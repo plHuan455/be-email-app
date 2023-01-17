@@ -126,19 +126,18 @@ const EmailStatusBarContainer = () => {
 
   // useQuery
 
-  
   useWebsocket({
     onOpen: () => {
       console.log('Websocket open EmailStatusBar');
     },
     onMessage: (data) => {
       console.log('Websocket message EmailStatusBarContainer', data);
-      queryClient.invalidateQueries({queryKey: ['get-all-email-status']})
+      queryClient.invalidateQueries({ queryKey: ['get-all-email-status'] });
     },
     onClose: () => {
       console.log('Websocket close EmailStatusBarContainer');
     },
-  })
+  });
 
   useQuery({
     queryKey: ['get-all-email-status'],
@@ -216,6 +215,18 @@ const EmailStatusBarContainer = () => {
       toast(t('Have Error!'));
     },
   });
+  const {
+    mutate: mutateSearchCatalogUsers,
+    isLoading: isLoadingSearchCatalogUsers,
+    data: dataSearchCatalogUsers,
+  } = useMutation({
+    mutationKey: ['EmailStatusBarContainer-search'],
+    mutationFn: searchCatalog,
+    onError: (error) => {
+      dispatch(setSearchCatalogValue(''));
+      toast(t('Have Error!'));
+    },
+  });
 
   // Handler FNC
   const handleChangeHashtagEditing = useCallback(
@@ -233,7 +244,16 @@ const EmailStatusBarContainer = () => {
       const value = e.target.value.trim();
 
       dispatch(setSearchCatalogValue(value));
-      mutateSearchCatalog({ keyword: value, size: 10 * searchSize });
+      mutateSearchCatalog({
+        keyword: value,
+        size: 10 * searchSize,
+        'es-index': 'emails',
+      });
+      mutateSearchCatalogUsers({
+        keyword: value,
+        size: 10 * searchSize,
+        'es-index': 'users',
+      });
     }, 600);
   };
 
@@ -263,6 +283,7 @@ const EmailStatusBarContainer = () => {
           searchValue={searchCatalogValue}
           isLoadingSearch={isLoadingSearchCatalog}
           searchData={dataSearchCatalog}
+          searchUsersData={dataSearchCatalogUsers}
           onSearch={handleOnChangeSearch}
           searchSize={searchSize}
           onSearchShowMore={handleSearchShowMore}

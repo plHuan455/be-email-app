@@ -46,6 +46,7 @@ export interface EmailTabs {
 
 interface SearchResultProps {
   searchData: any;
+  searchUsersData: any;
   isLoading: boolean;
   searchValue: string;
   searchSize: number;
@@ -54,6 +55,7 @@ interface SearchResultProps {
 
 const SearchResult: React.FC<SearchResultProps> = ({
   searchData,
+  searchUsersData,
   isLoading,
   searchValue,
   searchSize,
@@ -69,18 +71,13 @@ const SearchResult: React.FC<SearchResultProps> = ({
     );
 
   const { total, data } = searchData;
+  const { total: totalUsers, data: dataUsers } = searchUsersData;
+
+  // useMemo
+  const mainTotal = useMemo(() => total + totalUsers, [total, totalUsers]);
 
   // Handle After Here
-  if (isEmpty(data)) return <Box>No matching results</Box>;
-
-  const dataSort = useMemo(() => {
-    return data.sort((a, b) => {
-      const esIndexA = a['es-index'].toUpperCase();
-      const esIndexB = b['es-index'].toUpperCase();
-
-      return esIndexA <= esIndexB;
-    });
-  }, [data]);
+  if (isEmpty(data) && isEmpty(dataUsers)) return <Box>No matching results</Box>;
 
   // useNavigate
   const navigate = useNavigate();
@@ -119,6 +116,29 @@ const SearchResult: React.FC<SearchResultProps> = ({
     },
     [data],
   );
+  const _renderUsersType = useCallback(
+    (item: SearchCatalogResponse) => {
+      const { id, email, status } = item;
+
+      return (
+        <Box
+          key={id}
+          className="flex items-center rounded-md overflow-hidden p-2 hover:bg-slate-400/40  hover:cursor-pointer"
+          onClick={() => navigate(`/emails/catalog/${status}/${email.writer_id}`)}>
+          <Icon className="mr-2" icon="email" />
+          <Box className="flex-1 border-l overflow-hidden border-slate-600/40 px-2">
+            <Highlighter
+              className="truncate"
+              searchWords={searchCharacters}
+              autoEscape={true}
+              textToHighlight={email.subject}
+            />
+          </Box>
+        </Box>
+      );
+    },
+    [data],
+  );
 
   const _renderSearchResultItem = useCallback(
     (item: SearchCatalogResponse) => {
@@ -126,6 +146,9 @@ const SearchResult: React.FC<SearchResultProps> = ({
       switch (esIndex) {
         case 'emails': {
           return _renderEmailsType(item);
+        }
+        case 'users': {
+          return _renderUsersType(item);
         }
 
         default: {
@@ -142,7 +165,7 @@ const SearchResult: React.FC<SearchResultProps> = ({
       <Box className="flex justify-between items-center bg-slate-500/40">
         <h3 className="font-bold text-lg">Total:</h3>
         <p>
-          {total} {total >= 1 ? 'results' : 'result'}{' '}
+          {mainTotal} {mainTotal >= 1 ? 'results' : 'result'}{' '}
         </p>
         <Icon
           className="hover:cursor-pointer"
@@ -151,9 +174,24 @@ const SearchResult: React.FC<SearchResultProps> = ({
         />
       </Box>
       <Box className="flex-1 py-2">
-        {dataSort.map((item) => _renderSearchResultItem(item))}
+        {data && (
+          <Box>
+            <Box>
+              <h4>Emails</h4>
+            </Box>
+            <Box>{data.map((item) => _renderSearchResultItem(item))}</Box>
+          </Box>
+        )}
+        {dataUsers && (
+          <Box>
+            <Box>
+              <h4>Users</h4>
+            </Box>
+            <Box>{dataUsers.map((item) => _renderSearchResultItem(item))}</Box>
+          </Box>
+        )}
       </Box>
-      {dataSort.length < total && (
+      {data.length < total && (
         <Box>
           <span
             className="text-blue-1 hover:cursor-pointer"
@@ -173,6 +211,7 @@ interface Props {
   searchValue?: string;
   isLoadingSearch?: boolean;
   searchData?: any;
+  searchUsersData?: any;
   searchSize?: number;
   onSearchShowMore?: () => void;
   onSearch: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -186,6 +225,7 @@ const EmailStatusBar: React.FC<Props> = ({
   searchValue = '',
   isLoadingSearch = false,
   searchData,
+  searchUsersData,
   searchSize,
   onSearchShowMore,
   onSearch,
@@ -219,17 +259,17 @@ const EmailStatusBar: React.FC<Props> = ({
   const queryClient = useQueryClient();
 
   useEffect(() => {
-    if(!catalog) return;
-    if(!searchParams.get('tab') && tabHistory[catalog]) {
-      setSearchParams({tab: tabHistory[catalog]})
+    if (!catalog) return;
+    if (!searchParams.get('tab') && tabHistory[catalog]) {
+      setSearchParams({ tab: tabHistory[catalog] });
     }
-  }, [catalog])
+  }, [catalog]);
 
   useEffect(() => {
-    if(catalog && tab) {
-      dispatch(addTabHistory({catalog, tab: tab as 'all' | 'me'}))
+    if (catalog && tab) {
+      dispatch(addTabHistory({ catalog, tab: tab as 'all' | 'me' }));
     }
-  }, [tab])
+  }, [tab]);
 
   useEffect(() => {
     if (!isEmpty(notificationList))
@@ -333,6 +373,7 @@ const EmailStatusBar: React.FC<Props> = ({
         ) : (
           <SearchResult
             searchData={searchData}
+            searchUsersData={searchUsersData}
             isLoading={isLoadingSearch}
             searchValue={searchValue}
             searchSize={searchSize ?? 0}
