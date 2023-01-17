@@ -18,6 +18,7 @@ import PeopleIcon from '@mui/icons-material/People';
 import { LayoutMoreActionInputType } from '@components/molecules/LayoutMoreActionsMenu';
 import useLocalStorage from '@hooks/useLocalStorage';
 import { useCheckPermissions } from '@hooks/useCheckPermissions';
+import { PERMISSIONS } from '@constants/constants';
 
 const Manager = () => {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
@@ -38,7 +39,9 @@ const Manager = () => {
 
   const params = useParams();
 
-  const isCanCreate = useCheckPermissions('RBAC_DEPARTMENT_CREATE');
+  const isCanCreate = useCheckPermissions(PERMISSIONS.RBAC_DEPARTMENT_CREATE);
+  const isCanUpdate = useCheckPermissions(PERMISSIONS.RBAC_DEPARTMENT_UPDATE);
+  const isCanDelete = useCheckPermissions(PERMISSIONS.RBAC_DEPARTMENT_DELETE);
 
   const { callback, description, isLoading, isOpen, onClose, setAlertData, title } =
     useAlertDialog();
@@ -98,38 +101,56 @@ const Manager = () => {
     }
   }, [menus]);
 
-  const moreActionsList: LayoutMoreActionInputType[] = [
+  const infoAction: LayoutMoreActionInputType[] = [
     {
       type: 'info',
       onClick: () => {
         setIsOpenModal(true);
       },
     },
-    {
-      type: 'edit',
-      onClick: () => {
-        navigate(`${ROOT_NAVIGATE}/department/edit/${params.idDepartment}`);
-      },
-    },
-    {
-      type: 'delete',
-      onClick: () => {
-        setAlertData(
-          '',
-          <>
-            <p>Are you sure want to "Delete" this department?</p>
-            <p>
-              <b>Department Name: </b>
-              <span>{currentDepartment?.name ?? undefined}</span>
-            </p>
-          </>,
-          () => {
-            mutateDeleteDepartment(params.idDepartment ? +params.idDepartment : 0);
-            onClose();
+  ];
+
+  const updateAction: LayoutMoreActionInputType[] = isCanUpdate
+    ? [
+        {
+          type: 'edit',
+          onClick: () => {
+            navigate(`${ROOT_NAVIGATE}/department/edit/${params.idDepartment}`);
           },
-        );
-      },
-    },
+        },
+      ]
+    : [];
+
+  const deleteAction: LayoutMoreActionInputType[] = isCanDelete
+    ? [
+        {
+          type: 'delete',
+          onClick: () => {
+            setAlertData(
+              '',
+              <>
+                <p>Are you sure want to "Delete" this department?</p>
+                <p>
+                  <b>Department Name: </b>
+                  <span>{currentDepartment?.name ?? undefined}</span>
+                </p>
+              </>,
+              () => {
+                mutateDeleteDepartment(
+                  params.idDepartment ? +params.idDepartment : 0,
+                );
+                onClose();
+              },
+            );
+          },
+        },
+      ]
+    : [];
+
+  const moreActionsList: LayoutMoreActionInputType[] = [
+    ...infoAction,
+    ...updateAction,
+    ...deleteAction,
   ];
 
   const _renderModalContent = useMemo(() => {
@@ -175,7 +196,7 @@ const Manager = () => {
         <SubSidebar
           menus={menus}
           title="Department"
-          headerBtnTitle={isCanCreate ? '' : 'Compose'}
+          headerBtnTitle={''}
           onClickCompose={
             isCanCreate
               ? () => navigate(`${ROOT_NAVIGATE}/department/add`)

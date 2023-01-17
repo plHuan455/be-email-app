@@ -2,8 +2,10 @@ import { useTranslation } from '@@packages/localization/src';
 import { DepartmentResponse } from '@api/deparment/interface';
 import InnerLayoutHeaderTabs from '@components/molecules/InnerLayoutTabs';
 import { LayoutMoreActionInputType } from '@components/molecules/LayoutMoreActionsMenu';
+import { PERMISSIONS } from '@constants/constants';
 import { TAB_DEPARTMENT_LIST } from '@constants/InnerHeaderLayoutTab';
 import { PositionContainer } from '@containers/PositionContainer';
+import { useCheckPermissions } from '@hooks/useCheckPermissions';
 import Layout from '@layouts/Layout';
 import { AxiosResponse } from 'axios';
 import { useNavigate, useOutletContext, useParams } from 'react-router-dom';
@@ -25,12 +27,14 @@ const ManagerPositionPage = () => {
     navigate(`/departments/department/${params.idDepartment}/position/add`);
   };
 
+  const isCanCreate = useCheckPermissions(PERMISSIONS.SYSTEM_POSITION_CREATE);
+
   return (
     <>
       <Layout.MainQueryClient
         headTitle={t('Positions')}
         isHaveHeader
-        onClickAdd={handleAddEmployee}
+        onClickAdd={isCanCreate ? handleAddEmployee : undefined}
         rightHeaderTabs={
           <InnerLayoutHeaderTabs
             tabs={TAB_DEPARTMENT_LIST}

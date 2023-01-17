@@ -465,7 +465,7 @@ const EmailMess: React.FC<Props> = ({
         </span>
       </h1>
     );
-  }, [emailData, isShowLimitTitle]);
+  }, [emailData, isShowLimitTitle, searchCharacters]);
 
   return (
     <Box

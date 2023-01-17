@@ -3,7 +3,7 @@ import Icon from '@components/atoms/Icon';
 import PageCrudData from '@components/organisms/PageCrudData';
 
 import { ColumnDef } from '@tanstack/react-table';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import UpdateIcon from '@mui/icons-material/Update';
 import ModalBase from '@components/atoms/ModalBase';
@@ -20,6 +20,8 @@ import TableActionsMenu from '@components/molecules/TableActionsMenu';
 import DeleteIcon from '@mui/icons-material/Delete';
 import { toast } from 'react-toastify';
 import { Avatar } from '@mui/material';
+import { useCheckPermissions } from '@hooks/useCheckPermissions';
+import { PERMISSIONS } from '@constants/constants';
 
 const EmployeeContainer = () => {
   const [isOpenModel, setIsOpenModal] = useState<boolean>(false);
@@ -28,6 +30,13 @@ const EmployeeContainer = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const params = useParams();
+
+  const isCanUpdate = useCheckPermissions(PERMISSIONS.USER_SETTING_UPDATE);
+  const isCanDelete = useCheckPermissions(PERMISSIONS.USER_SETTING_DELETE);
+
+  console.log('permission', isCanUpdate);
+  // useEffect(() => {
+  // }, [isCanUpdate]);
 
   const {
     isLoading,
@@ -69,6 +78,22 @@ const EmployeeContainer = () => {
       },
     );
   };
+
+  const tabItemClick = useCallback(
+    (info) =>
+      (value: string | number, e: React.MouseEvent<HTMLElement, MouseEvent>) => {
+        console.log('permissions', isCanUpdate);
+        if (value === 0)
+          isCanUpdate
+            ? onUpdateActionClick(Number(info.getValue().id))
+            : toast(t(`You don't have permission!`));
+        if (value === 1)
+          isCanDelete
+            ? onDeleteActionClick(info.getValue())
+            : toast(t(`You don't have permission!`));
+      },
+    [isCanDelete, isCanUpdate],
+  );
 
   const columns = React.useMemo<ColumnDef<any, any>[]>(
     () => [
@@ -140,10 +165,7 @@ const EmployeeContainer = () => {
               ]}
               onClick={(e) => e.stopPropagation()}
               onClose={(e) => e.stopPropagation()}
-              onItemClick={(value) => {
-                if (value === 0) onUpdateActionClick(Number(info.getValue().id));
-                if (value === 1) onDeleteActionClick(info.getValue());
-              }}
+              onItemClick={tabItemClick(info)}
             />
           );
         },
@@ -151,7 +173,7 @@ const EmployeeContainer = () => {
         footer: (props) => props.column.id,
       },
     ],
-    [],
+    [isCanDelete, isCanUpdate],
   );
 
   const {
@@ -239,8 +261,8 @@ const EmployeeContainer = () => {
         ) : (
           <ClientProfileLayout
             clientProfileData={dataMutateGetUserProfile?.data}
-            onDelete={handleOnDeleteClick}
-            onEdit={handleOnUpdateClick}
+            onDelete={isCanDelete ? handleOnDeleteClick : undefined}
+            onEdit={isCanUpdate ? handleOnUpdateClick : undefined}
           />
         )}
       </ModalBase>

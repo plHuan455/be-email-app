@@ -14,7 +14,7 @@ const useCheckPermissions = (permissionCheck: string) => {
       const data = res.data;
 
       setResult(
-        data.permissions?.find((value) => value.name === permissionCheck)
+        data.permissions?.find((value) => value.code === permissionCheck)
           ? true
           : false,
       );

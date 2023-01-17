@@ -7,8 +7,8 @@ import React from 'react';
 interface Props {
   clientProfileData?: UserProfileResponse;
 
-  onEdit: (id: number) => void;
-  onDelete: (user: UserProfileResponse) => void;
+  onEdit?: (id: number) => void;
+  onDelete?: (user: UserProfileResponse) => void;
 }
 
 const ClientProfileLayout: React.FC<Props> = ({
@@ -137,12 +137,16 @@ const ClientProfileLayout: React.FC<Props> = ({
           </Grid>
         </Grid>
       </Box>
-      <Box className="flex items-end justify-end gap-2 border-t border-slate-500 pt-2">
-        <Button color="error" onClick={() => onDelete(clientProfileData)}>
-          Delete
-        </Button>
-        <Button onClick={() => onEdit(id)}>Update</Button>
-      </Box>
+      {(onDelete || onEdit) && (
+        <Box className="flex items-end justify-end gap-2 border-t border-slate-500 pt-2">
+          {onDelete && (
+            <Button color="error" onClick={() => onDelete(clientProfileData)}>
+              Delete
+            </Button>
+          )}
+          {onEdit && <Button onClick={() => onEdit(id)}>Update</Button>}
+        </Box>
+      )}
     </Box>
   );
 };

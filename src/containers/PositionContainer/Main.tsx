@@ -3,7 +3,7 @@ import Icon from '@components/atoms/Icon';
 import PageCrudData from '@components/organisms/PageCrudData';
 
 import { ColumnDef } from '@tanstack/react-table';
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import UpdateIcon from '@mui/icons-material/Update';
 import ModalBase from '@components/atoms/ModalBase';
@@ -17,6 +17,8 @@ import { toast } from 'react-toastify';
 import TableActionsMenu from '@components/molecules/TableActionsMenu';
 
 import DeleteIcon from '@mui/icons-material/Delete';
+import { useCheckPermissions } from '@hooks/useCheckPermissions';
+import { PERMISSIONS } from '@constants/constants';
 
 const PositionContainer = () => {
   const [isOpenModal, setIsOpenModal] = useState<boolean>(false);
@@ -31,6 +33,9 @@ const PositionContainer = () => {
     console.log('mount', params);
   });
 
+  const isCanUpdate = useCheckPermissions(PERMISSIONS.SYSTEM_POSITION_UPDATE);
+  const isCanDelete = useCheckPermissions(PERMISSIONS.SYSTEM_POSITION_DELETE);
+
   const {
     callback,
     description,
@@ -44,30 +49,42 @@ const PositionContainer = () => {
     title,
   } = useAlertDialog();
 
-  const onUpdateActionClick = (id: number) => {
-    navigate(`/departments/department/${params.idDepartment}/position/edit/${id}`);
-  };
+  const onUpdateActionClick = useCallback(
+    (id: number) => {
+      if (isCanUpdate)
+        navigate(
+          `/departments/department/${params.idDepartment}/position/edit/${id}`,
+        );
+      else toast(t(`You don't have permission!`));
+    },
+    [isCanUpdate],
+  );
 
-  const onDeleteActionClick = (data) => {
-    setAlertData(
-      '',
-      <div>
-        <p>Are you sure want to "Delete" this position?</p>
-        <p>
-          <b>Position Name:</b>
-          <span>{data.name}</span>
-        </p>
-        <p>
-          <b>Description:</b>
-          <span>{data.describe}</span>
-        </p>
-      </div>,
-      () => {
-        mutateDeletePosition(data.id);
-        onClose();
-      },
-    );
-  };
+  const onDeleteActionClick = useCallback(
+    (data) => {
+      if (isCanDelete)
+        setAlertData(
+          '',
+          <div>
+            <p>Are you sure want to "Delete" this position?</p>
+            <p>
+              <b>Position Name:</b>
+              <span>{data.name}</span>
+            </p>
+            <p>
+              <b>Description:</b>
+              <span>{data.describe}</span>
+            </p>
+          </div>,
+          () => {
+            mutateDeletePosition(data.id);
+            onClose();
+          },
+        );
+      else toast(t(`You don't have permission!`));
+    },
+    [isCanDelete],
+  );
 
   const columns = React.useMemo<ColumnDef<any, any>[]>(() => {
     return [
@@ -179,14 +196,24 @@ const PositionContainer = () => {
             </Grid>
           </Grid>
         </Box>
-        <Box className="flex justify-end items-end gap-2">
-          <Button
-            color="error"
-            onClick={() => handleDeletePosition(positionData.id, positionData.name)}>
-            Delete
-          </Button>
-          <Button onClick={() => handleEditPosition(positionData.id)}>Edit</Button>
-        </Box>
+        {(isCanDelete || isCanUpdate) && (
+          <Box className="flex justify-end items-end gap-2">
+            {isCanDelete && (
+              <Button
+                color="error"
+                onClick={() =>
+                  handleDeletePosition(positionData.id, positionData.name)
+                }>
+                Delete
+              </Button>
+            )}
+            {isCanUpdate && (
+              <Button onClick={() => handleEditPosition(positionData.id)}>
+                Edit
+              </Button>
+            )}
+          </Box>
+        )}
       </Box>
     );
   }, [positionData]);

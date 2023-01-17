@@ -21,32 +21,6 @@ import { rem } from '@utils/functions';
 interface ActivePermissionTypes {
   [key: number]: string;
 }
-const responsePermissionsData: PermissionResponse[] = [
-  {
-    id: 4,
-    name: 'Permission4',
-    status: 'Active',
-    role_permissions: null,
-  },
-  {
-    id: 5,
-    name: 'Permission5',
-    status: 'Active',
-    role_permissions: null,
-  },
-  {
-    id: 6,
-    name: 'Permission6',
-    status: 'Active',
-    role_permissions: null,
-  },
-];
-
-const createPermissionSchema = yup
-  .object({
-    name: yup.string().required(),
-  })
-  .required();
 
 const SettingRolesContainer = () => {
   const queryClient = useQueryClient();

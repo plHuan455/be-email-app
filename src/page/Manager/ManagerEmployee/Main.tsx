@@ -3,8 +3,10 @@ import { DepartmentResponse } from '@api/deparment/interface';
 import ModalBase from '@components/atoms/ModalBase';
 import InnerLayoutHeaderTabs from '@components/molecules/InnerLayoutTabs';
 import { LayoutMoreActionInputType } from '@components/molecules/LayoutMoreActionsMenu';
+import { PERMISSIONS } from '@constants/constants';
 import { TAB_DEPARTMENT_LIST } from '@constants/InnerHeaderLayoutTab';
 import { EmployeeContainer } from '@containers/EmployeeContainer';
+import { useCheckPermissions } from '@hooks/useCheckPermissions';
 import Layout from '@layouts/Layout';
 import { AxiosResponse } from 'axios';
 import { useMemo, useState } from 'react';
@@ -19,6 +21,10 @@ const ManagerEmployeePage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const params = useParams();
+
+  const isCanCreate = useCheckPermissions(PERMISSIONS.USER_SETTING_CREATE);
+
+  console.log(isCanCreate);
 
   const { departmentQueryData, moreActionsList } =
     useOutletContext<OutletContextType>();
@@ -42,7 +48,7 @@ const ManagerEmployeePage = () => {
       <Layout.MainQueryClient
         headTitle={t(departmentName)}
         isHaveHeader
-        onClickAdd={handleAddEmployee}
+        onClickAdd={isCanCreate ? handleAddEmployee : undefined}
         rightHeaderTabs={
           <InnerLayoutHeaderTabs
             tabs={TAB_DEPARTMENT_LIST}
