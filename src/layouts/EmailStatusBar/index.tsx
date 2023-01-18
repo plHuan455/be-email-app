@@ -1,6 +1,6 @@
 import EmailStatusHeader from '@components/molecules/EmailStatusHeader';
 import { EmailList, StatusOptions } from '@components/molecules/ModalEmailList';
-import { Box } from '@mui/material';
+import { Avatar, Box } from '@mui/material';
 import React, {
   ChangeEvent,
   useCallback,
@@ -25,6 +25,8 @@ import Loading from '@components/atoms/Loading';
 import Highlighter from 'react-highlight-words';
 import { setSearchCatalogValue } from '@redux/Global/reducer';
 
+import { SearchCatalogUserResponse } from '@api/public/interface';
+
 export interface EmailItem {
   userAvt: string;
   userName: string;
@@ -43,13 +45,115 @@ export interface EmailTabs {
   color?: string;
 }
 
+interface EmailCatalogSearchByType {
+  type: 'emails' | 'users';
+  searchData: SearchCatalogResponse[] | SearchCatalogUserResponse[];
+  searchCharacters: string[];
+  isShowMore: boolean;
+  onShowMore?: (e) => void;
+}
+
+const EmailCatalogSearchByType: React.FC<EmailCatalogSearchByType> = ({
+  type,
+  searchData,
+  searchCharacters,
+  isShowMore,
+  onShowMore,
+}) => {
+  const navigate = useNavigate();
+
+  const _renderEmailsType = useCallback(
+    (item: SearchCatalogResponse | SearchCatalogUserResponse) => {
+      const { id, email, status } = item as SearchCatalogResponse;
+
+      return (
+        <Box
+          key={id}
+          className="flex items-center rounded-md overflow-hidden p-2 hover:bg-slate-400/40  hover:cursor-pointer"
+          onClick={() => navigate(`/emails/catalog/${status}/${email.writer_id}`)}>
+          <Icon className="mr-2" icon="email" />
+          <Box className="flex-1 border-l overflow-hidden border-slate-600/40 px-2">
+            <Highlighter
+              className="truncate"
+              searchWords={searchCharacters}
+              autoEscape={true}
+              textToHighlight={email.subject}
+            />
+          </Box>
+        </Box>
+      );
+    },
+    [searchData],
+  );
+  const _renderUsersType = useCallback(
+    (item: SearchCatalogResponse | SearchCatalogUserResponse) => {
+      const { id, email, avatar } = item as SearchCatalogUserResponse;
+
+      return (
+        <Box
+          key={id}
+          className="flex items-center rounded-md overflow-hidden p-2 hover:bg-slate-400/40  hover:cursor-pointer"
+          // onClick={() => navigate(`/emails/catalog/${status}/${email.writer_id}`)}
+        >
+          <Avatar
+            src={`http://${avatar}`}
+            sx={{
+              width: 18,
+              height: 18,
+              marginRight: 2,
+            }}
+          />
+          <Box className="flex-1 border-l overflow-hidden border-slate-600/40 px-2">
+            <Highlighter
+              className="truncate"
+              searchWords={searchCharacters}
+              autoEscape={true}
+              textToHighlight={email}
+            />
+          </Box>
+        </Box>
+      );
+    },
+    [searchData],
+  );
+
+  const _renderSearchResultItems = useMemo(() => {
+    switch (type.toLowerCase()) {
+      case 'users':
+        return searchData.map((item) => _renderUsersType(item));
+      case 'emails':
+        return searchData.map((item) => _renderEmailsType(item));
+
+      default:
+        return searchData.map((item) => _renderEmailsType(item));
+    }
+  }, [searchData]);
+
+  return (
+    <Box className="border-t border-slate-400">
+      <Box>
+        <h4 className="font-bold">{type.charAt(0).toUpperCase() + type.slice(1)}</h4>
+      </Box>
+      <Box>{_renderSearchResultItems}</Box>
+      {isShowMore && (
+        <Box>
+          <span className="text-blue-1 hover:cursor-pointer" onClick={onShowMore}>
+            Show More
+          </span>
+        </Box>
+      )}
+    </Box>
+  );
+};
+
 interface SearchResultProps {
   searchData: any;
   searchUsersData: any;
   isLoading: boolean;
   searchValue: string;
-  searchSize: number;
-  onSearchShowMore: () => void;
+  searchEmailsSize: number;
+  searchUsersSize: number;
+  onSearchShowMore?: (type: 'users' | 'emails') => (e: any) => void;
 }
 
 const SearchResult: React.FC<SearchResultProps> = ({
@@ -57,7 +161,8 @@ const SearchResult: React.FC<SearchResultProps> = ({
   searchUsersData,
   isLoading,
   searchValue,
-  searchSize,
+  searchEmailsSize,
+  searchUsersSize,
   onSearchShowMore,
 }) => {
   const dispatch = useDispatch();
@@ -69,14 +174,21 @@ const SearchResult: React.FC<SearchResultProps> = ({
       </Box>
     );
 
-  const { total, data } = searchData;
-  const { total: totalUsers, data: dataUsers } = searchUsersData;
+  const { data: dataEmails } = searchData;
+  const { data: dataUsersNotType } = searchUsersData;
+
+  const dataEmailsList: SearchCatalogResponse[] = dataEmails;
+  const dataUsersList: SearchCatalogUserResponse[] = dataUsersNotType;
 
   // useMemo
-  const mainTotal = useMemo(() => total + totalUsers, [total, totalUsers]);
+  const mainTotal = useMemo(
+    () => (searchData.total ?? 0) + (searchUsersData.total ?? 0),
+    [searchData, searchUsersData],
+  );
 
   // Handle After Here
-  if (isEmpty(data) && isEmpty(dataUsers)) return <Box>No matching results</Box>;
+  if (isEmpty(dataEmailsList) && isEmpty(dataUsersList))
+    return <Box>No matching results</Box>;
 
   // useNavigate
   const navigate = useNavigate();
@@ -91,81 +203,12 @@ const SearchResult: React.FC<SearchResultProps> = ({
     navigate('/emails');
   };
 
-  // Render FNC
-  const _renderEmailsType = useCallback(
-    (item: SearchCatalogResponse) => {
-      const { id, email, status } = item;
-
-      return (
-        <Box
-          key={id}
-          className="flex items-center rounded-md overflow-hidden p-2 hover:bg-slate-400/40  hover:cursor-pointer"
-          onClick={() => navigate(`/emails/catalog/${status}/${email.writer_id}`)}>
-          <Icon className="mr-2" icon="email" />
-          <Box className="flex-1 border-l overflow-hidden border-slate-600/40 px-2">
-            <Highlighter
-              className="truncate"
-              searchWords={searchCharacters}
-              autoEscape={true}
-              textToHighlight={email.subject}
-            />
-          </Box>
-        </Box>
-      );
-    },
-    [data],
-  );
-  const _renderUsersType = useCallback(
-    (item: SearchCatalogResponse) => {
-      const { id, email, status } = item;
-
-      return (
-        <Box
-          key={id}
-          className="flex items-center rounded-md overflow-hidden p-2 hover:bg-slate-400/40  hover:cursor-pointer"
-          onClick={() => navigate(`/emails/catalog/${status}/${email.writer_id}`)}>
-          <Icon className="mr-2" icon="email" />
-          <Box className="flex-1 border-l overflow-hidden border-slate-600/40 px-2">
-            <Highlighter
-              className="truncate"
-              searchWords={searchCharacters}
-              autoEscape={true}
-              textToHighlight={email.subject}
-            />
-          </Box>
-        </Box>
-      );
-    },
-    [data],
-  );
-
-  const _renderSearchResultItem = useCallback(
-    (item: SearchCatalogResponse) => {
-      const { ['es-index']: esIndex } = item;
-      switch (esIndex) {
-        case 'emails': {
-          return _renderEmailsType(item);
-        }
-        case 'users': {
-          return _renderUsersType(item);
-        }
-
-        default: {
-          return _renderEmailsType(item);
-        }
-      }
-    },
-    [data],
-  );
-
   // Main Render
   return (
     <Box className="flex flex-col pt-2">
       <Box className="flex justify-between items-center bg-slate-500/40">
-        <h3 className="font-bold text-lg">Total:</h3>
-        <p>
-          {mainTotal} {mainTotal >= 1 ? 'results' : 'result'}{' '}
-        </p>
+        <h3 className="font-bold text-lg">#Search</h3>
+        <p>{mainTotal}</p>
         <Icon
           className="hover:cursor-pointer"
           icon="close"
@@ -173,32 +216,25 @@ const SearchResult: React.FC<SearchResultProps> = ({
         />
       </Box>
       <Box className="flex-1 py-2">
-        {data && (
-          <Box>
-            <Box>
-              <h4>Emails</h4>
-            </Box>
-            <Box>{data.map((item) => _renderSearchResultItem(item))}</Box>
-          </Box>
+        {dataUsersList && (
+          <EmailCatalogSearchByType
+            type="users"
+            searchCharacters={searchCharacters}
+            searchData={dataUsersList}
+            isShowMore={dataUsersList.length < searchUsersData.total}
+            onShowMore={onSearchShowMore && onSearchShowMore('users')}
+          />
         )}
-        {dataUsers && (
-          <Box>
-            <Box>
-              <h4>Users</h4>
-            </Box>
-            <Box>{dataUsers.map((item) => _renderSearchResultItem(item))}</Box>
-          </Box>
+        {dataEmailsList && (
+          <EmailCatalogSearchByType
+            type="emails"
+            searchCharacters={searchCharacters}
+            searchData={dataEmailsList}
+            isShowMore={dataEmailsList.length < searchData.total}
+            onShowMore={onSearchShowMore && onSearchShowMore('emails')}
+          />
         )}
       </Box>
-      {data.length < total && (
-        <Box>
-          <span
-            className="text-blue-1 hover:cursor-pointer"
-            onClick={onSearchShowMore}>
-            Show More
-          </span>
-        </Box>
-      )}
     </Box>
   );
 };
@@ -211,8 +247,9 @@ interface Props {
   isLoadingSearch?: boolean;
   searchData?: any;
   searchUsersData?: any;
-  searchSize?: number;
-  onSearchShowMore?: () => void;
+  searchEmailsSize?: number;
+  searchUsersSize?: number;
+  onSearchShowMore?: (type: 'users' | 'emails') => (e: any) => void;
   onSearch: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onChangeHashtagEditing: (value: number) => void;
 }
@@ -225,7 +262,8 @@ const EmailStatusBar: React.FC<Props> = ({
   isLoadingSearch = false,
   searchData,
   searchUsersData,
-  searchSize,
+  searchEmailsSize,
+  searchUsersSize,
   onSearchShowMore,
   onSearch,
   onChangeHashtagEditing,
@@ -375,8 +413,9 @@ const EmailStatusBar: React.FC<Props> = ({
             searchUsersData={searchUsersData}
             isLoading={isLoadingSearch}
             searchValue={searchValue}
-            searchSize={searchSize ?? 0}
-            onSearchShowMore={onSearchShowMore ?? (() => {})}
+            searchEmailsSize={searchEmailsSize ?? 0}
+            searchUsersSize={searchUsersSize ?? 0}
+            onSearchShowMore={onSearchShowMore}
           />
         )}
       </Box>

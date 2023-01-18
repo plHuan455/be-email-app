@@ -116,7 +116,8 @@ const EmailStatusBarContainer = () => {
   const [hashtagEditingIndex, setHashtagEditingIndex] = useState<number>(-1);
   const [emailTabs, setEmailTabs] = useState<EmailTabs[]>(EmailTabsData);
   const [emailSecTabs, setEmailSecTab] = useState<EmailTabs[]>(EmailTabsSecData);
-  const [searchSize, setSearchSize] = useState<number>(1);
+  const [emailsSearchSize, setEmailsSearchSize] = useState<number>(1);
+  const [usersSearchSize, setUsersSearchSize] = useState<number>(1);
 
   //   useDispatch
   const dispatch = useDispatch();
@@ -131,7 +132,7 @@ const EmailStatusBarContainer = () => {
       console.log('Websocket open EmailStatusBar');
     },
     onMessage: (data) => {
-      if(!data.change) return;
+      if (!data.change) return;
       console.log('Websocket message EmailStatusBarContainer', data);
       queryClient.invalidateQueries({ queryKey: ['get-all-email-status'] });
     },
@@ -247,21 +248,31 @@ const EmailStatusBarContainer = () => {
       dispatch(setSearchCatalogValue(value));
       mutateSearchCatalog({
         keyword: value,
-        size: 10 * searchSize,
+        size: 10 * emailsSearchSize,
         'es-index': 'emails',
       });
       mutateSearchCatalogUsers({
         keyword: value,
-        size: 10 * searchSize,
+        size: 10 * usersSearchSize,
         'es-index': 'users',
       });
     }, 600);
   };
 
-  const handleSearchShowMore = () => {
-    setSearchSize(searchSize * 2);
+  const handleSearchShowMore = (type: 'users' | 'emails') => (e) => {
+    if (type === 'emails') setEmailsSearchSize(emailsSearchSize * 2);
     setTimeout(() => {
-      mutateSearchCatalog({ keyword: searchCatalogValue, size: 10 * searchSize });
+      mutateSearchCatalog({
+        keyword: searchCatalogValue,
+        size: 10 * emailsSearchSize,
+      });
+    }, 200);
+    if (type === 'users') setUsersSearchSize(usersSearchSize * 2);
+    setTimeout(() => {
+      mutateSearchCatalog({
+        keyword: searchCatalogValue,
+        size: 10 * usersSearchSize,
+      });
     }, 200);
   };
 
@@ -286,7 +297,8 @@ const EmailStatusBarContainer = () => {
           searchData={dataSearchCatalog}
           searchUsersData={dataSearchCatalogUsers}
           onSearch={handleOnChangeSearch}
-          searchSize={searchSize}
+          searchEmailsSize={emailsSearchSize}
+          searchUsersSize={usersSearchSize}
           onSearchShowMore={handleSearchShowMore}
         />
       )}

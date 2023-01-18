@@ -7,6 +7,7 @@ export interface SearchCatalogResponse extends EmailResponse {
 
 export interface SearchCatalogUserResponse {
   ['es-index']: string;
+  id?: number;
   Contacts?: string | null;
   address?: AddressType;
   avatar?: string;
