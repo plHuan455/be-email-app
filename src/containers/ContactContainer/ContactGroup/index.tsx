@@ -1,6 +1,6 @@
 import TableActionsMenu from '@components/molecules/TableActionsMenu';
 import ContactGroup from '@components/organisms/Contact/ContactGroup';
-import { Avatar, Box } from '@mui/material';
+import { Avatar, Box, Switch, Typography } from '@mui/material';
 import { GridColDef, GridRowId } from '@mui/x-data-grid';
 import { rem } from '@utils/functions';
 import React, { useEffect, useMemo } from 'react';
@@ -15,6 +15,11 @@ import { deleteContactGroups, setContactGroups } from '@redux/Contact/reducer';
 import { useNavigate } from 'react-router-dom';
 import AlertDialog, { useAlertDialog } from '@components/molecules/AlertDialog';
 import { toast } from 'react-toastify';
+import PageCrudData from '@components/organisms/PageCrudData';
+import { ColumnDef } from '@tanstack/react-table';
+import { ContactResponse } from '@api/contact/interface';
+import { ContactSharingGroupsType } from '../ContactSharingGroupsContainer';
+import { isEmpty } from 'lodash';
 
 const ContactGroupContainer = () => {
   // useSelector
@@ -31,72 +36,90 @@ const ContactGroupContainer = () => {
     if (localContactGroup) dispatch(setContactGroups(JSON.parse(localContactGroup)));
   }, [localContactGroup]);
 
-  const columns = useMemo(() => {
-    const colsDef: GridColDef[] = [
+  const columns = useMemo<ColumnDef<ContactSharingGroupsType, any>[]>(() => {
+    return [
       {
-        field: 'id',
-        headerName: 'ID',
-        align: 'center',
-        headerAlign: 'center',
-        width: 60,
+        accessorKey: 'id',
+        accessorFn: (row) => row.id,
+        id: 'id',
+        cell: (info) => info.getValue(),
+        header: () => <Typography>Id</Typography>,
+        footer: (props) => props.column.id,
+        size: 100,
       },
       {
-        field: 'group_name',
-        headerName: 'Group Name',
-        align: 'center',
-        headerAlign: 'center',
-        flex: 1,
+        accessorKey: 'name',
+        accessorFn: (row) => row.group_name,
+        id: 'name',
+        cell: (info) => `${info.getValue()}`,
+        header: () => <span>Name</span>,
+        footer: (props) => props.column,
       },
       {
-        field: 'members',
-        headerName: 'Amount',
-        align: 'center',
-        headerAlign: 'center',
-        flex: 1,
-        renderCell(params) {
-          return (
-            <div className="flex">
-              <Icon className="pr-2" icon="people" />
-              <span>{params.value.length}</span>
-            </div>
-          );
-        },
+        accessorKey: 'members',
+        accessorFn: (row) => row.members,
+        id: 'email',
+        cell: (info) => info.getValue(),
+        header: () => <span>Contacts</span>,
+        footer: (props) => props.column,
       },
       {
-        field: 'actions',
-        headerName: 'Actions',
-        align: 'center',
-        headerAlign: 'center',
-        flex: 1,
-        renderCell: (params) => (
-          // <Tooltip title="Delete" placement="right">
-          //   <IconButton onClick={handleClickDelete(params.id)}>
-          //     <DeleteIcon />
-          //   </IconButton>
-          // </Tooltip>
-          <TableActionsMenu
-            sx={{ maxWidth: rem(52), minWidth: rem(52) }}
-            options={[
-              // { value: 0, label: 'Share', icon: <ShareIcon /> },
-              { value: 1, label: 'Delete', icon: <DeleteIcon /> },
-            ]}
-            onItemClick={(value) => {
-              if (value === 0) {
-                console.log('Share click');
-                // onDepartmentUpdateClick(row.id);
-              }
-              if (value === 1) {
-                handleClickDelete(params.id);
-                // onDepartmentDeleteClick(row.id);
-              }
-            }}
-          />
+        accessorKey: 'share',
+        accessorFn: (row) => row.share_with,
+        id: 'share',
+        cell: (info) => <Switch size="small" checked={!isEmpty(info.getValue())} />,
+        header: () => (
+          <Typography variant="body2" sx={{ textAlign: 'center' }}>
+            Shared
+          </Typography>
         ),
+        footer: (props) => props.column.id,
+      },
+      {
+        accessorKey: 'action',
+        accessorFn: (row) => row.id,
+        id: 'actions',
+        cell: (info) => (
+          <Box sx={{ display: 'fex', justifyContent: 'center' }}>
+            <TableActionsMenu
+              options={[
+                { label: 'update', value: 0, icon: <UpdateIcon /> },
+                { label: 'delete', value: 1, icon: <DeleteIcon /> },
+              ]}
+              onClick={(e) => e.stopPropagation()}
+              onClose={(e) => e.stopPropagation()}
+              onItemClick={(value) => {
+                if (value === 0) handleUpdateClick(Number(info.getValue()));
+                if (value === 1) handleDeleteClick(Number(info.getValue()));
+              }}
+            />
+          </Box>
+        ),
+        header: () => (
+          <Typography variant="body2" sx={{ textAlign: 'center' }}>
+            Actions
+          </Typography>
+        ),
+        footer: (props) => props.column.id,
       },
     ];
+  }, []);
 
-    return colsDef;
-  }, [contactGroupsList]);
+  const handleUpdateClick = (id: number) => {
+    navigate(`edit/${id}`);
+  };
+
+  const handleDeleteClick = (id: number) => {
+    setAlertData(
+      '',
+      _renderAlertSelectedContact(id, `Are you sure want to "Delete" this contact?`),
+      () => {
+        // deleteContactMutate(id);
+        onClose();
+      },
+      () => {},
+    );
+  };
 
   // useAlertDialog
   const {
@@ -156,11 +179,26 @@ const ContactGroupContainer = () => {
 
   return (
     <>
-      <ContactGroup
+      {/* <ContactGroup
         columns={columns}
         rows={contactGroupsList}
         handleCellClick={handleCellClick}
-      />
+      /> */}
+      <Box
+        sx={{
+          '& .MuiTableCell-root': { verticalAlign: 'top' },
+          '& .MuiTableRow-root:not(.MuiTableRow-head)': {
+            cursor: 'pointer',
+          },
+        }}>
+        <PageCrudData
+          // refreshKey={queryKey}
+          disabledRowOnClick={false}
+          api={'add-when-have-api'}
+          columns={columns}
+          rowOnClick={(row) => {}}
+        />
+      </Box>
       <AlertDialog
         isOpen={isOpen}
         descriptionLabel={description}

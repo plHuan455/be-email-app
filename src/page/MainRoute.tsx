@@ -16,7 +16,7 @@ import Login from './Login';
 import EmailEmptyContainer from '@containers/EmailEmptyContainer';
 import EmailMainWrapper from '@layouts/EmailMainWrapper';
 import ChangePassword from './ChangePassword';
-import ContactGroups from './Contact/ContactGroup';
+import ContactGroups from './Contact/ContactGroup/main';
 import EmailComposePage from './Email/EmailComposePage';
 import Manager from './Manager';
 import {

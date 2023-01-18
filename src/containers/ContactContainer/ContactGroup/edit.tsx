@@ -1,3 +1,4 @@
+import { contactDummy } from '@assets/dummyData/contactDummy';
 import { RootState } from '@redux/configureStore';
 import { setContactsList } from '@redux/Contact/reducer';
 import React, { useEffect } from 'react';
@@ -30,6 +31,8 @@ const EditContactGroupContainer = () => {
         onSubmit={handleEdit}
         onCancel={handleCancel}
         disabledClear
+
+        contactList={contactDummy}
       />
     </div>
   );

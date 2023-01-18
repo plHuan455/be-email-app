@@ -27,6 +27,7 @@ interface AutoCompleteGroupProps {
   options: AutoCompleteGroupValueTypes[];
   autoAddOptionMatchRegex?: RegExp;
   isDisable?: boolean;
+  placeholder?: string;
   onGroupClick?: (option: AutoCompleteGroupValueTypes, e?: React.MouseEvent, ) => void;
   onChange: (value: AutoCompleteGroupValueTypes[]) => void;
   onChipClick?: (option: AutoCompleteGroupValueTypes) => void;
@@ -133,6 +134,7 @@ const AutoCompleteGroupTags: React.FC<AutoCompleteGroupTagsProps> = ({
 
 const AutoCompleteGroup: React.FC<AutoCompleteGroupProps> = ({
   value,
+  placeholder,
   isOpenOption,
   options,
   autoAddOptionMatchRegex,
@@ -307,7 +309,7 @@ const AutoCompleteGroup: React.FC<AutoCompleteGroupProps> = ({
             }}
             onInput={handleInputChange}
             className="a-hashtagInput_input"
-            // placeholder={placeholder}
+            placeholder={placeholder}
           />
         )}}
       />
