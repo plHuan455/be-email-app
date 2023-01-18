@@ -21,45 +21,16 @@ const NotifySlice = createSlice({
       localStorage.setItem(LOCAL_STORAGE_NOTIFY, JSON.stringify(state.notificationList));
       return state;
     },
-    seenNotification(state, action: PayloadAction<number>) {
-      const foundNotificationIndex = state.notificationList.findIndex(notify => notify.id === action.payload);
-      if(foundNotificationIndex !== -1) {
-        state.notificationList[foundNotificationIndex].isSeen = true;
-        localStorage.setItem(LOCAL_STORAGE_NOTIFY, JSON.stringify(state.notificationList));
-      }
-
-      return state;
-    },
     seenAllNotification(state) {
       state.notificationList = state.notificationList.map(value => ({...value, isSeen: true}));
       return state;
     },
-    sortNotification(state) {
-      const readNotificationList: NotificationList[] = [];
-      const unReadNotificationList: NotificationList[] = [];
-      state.notificationList.forEach(value => {
-        if(value.isSeen) {
-          readNotificationList.push({...value})
-          return;
-        };
-        unReadNotificationList.push({...value});
-      })
-      state.notificationList = [...unReadNotificationList, ...readNotificationList];
-      localStorage.setItem(LOCAL_STORAGE_NOTIFY, JSON.stringify(state.notificationList));
-      return state;
-    },
-    setUnReadCount(state, action: PayloadAction<number>) {
-      state.unreadCount = action.payload;
-      return state;
-    }
   },
 });
 
 export const { 
   unShiftNotificationList, 
   setNotificationList,
-  seenNotification,
-  sortNotification,
   seenAllNotification,
 } = NotifySlice.actions;
 
