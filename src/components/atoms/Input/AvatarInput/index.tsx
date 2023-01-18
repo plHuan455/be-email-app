@@ -67,6 +67,7 @@ const AvatarInput: React.FC<AvatarInputProps> = ({
   className,
   alt,
 }) => {
+  const inputRef = useRef<HTMLInputElement>(null);
   const [preViewImgSrc, setPreViewImgSrc] = useState<string>(
     placeholderImgSrc ?? '',
   );
@@ -96,7 +97,7 @@ const AvatarInput: React.FC<AvatarInputProps> = ({
   }, []);
 
   return (
-    <div className={`a-avatarInput`}>
+    <div className={`a-avatarInput`} onClick={() => inputRef.current?.click()}>
       <StyleLabelWrapper>
         <label htmlFor={id}>
           <Avatar src={preViewImgSrc} alt={alt} className={className} />
@@ -110,6 +111,7 @@ const AvatarInput: React.FC<AvatarInputProps> = ({
         </label>
       </StyleLabelWrapper>
       <input
+        ref={inputRef}
         type="file"
         hidden
         id={id}

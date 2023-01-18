@@ -1,7 +1,7 @@
 import TableActionsMenu from '@components/molecules/TableActionsMenu';
 import Contacts from '@components/organisms/Contact/Contacts';
 import useLocalStorage from '@hooks/useLocalStorage';
-import { Avatar, IconButton, Tooltip } from '@mui/material';
+import { Avatar, IconButton, Tooltip, Typography } from '@mui/material';
 import { GridColDef, GridRowId } from '@mui/x-data-grid';
 import { RootState } from '@redux/configureStore';
 import { deleteContacts, setContactsList } from '@redux/Contact/reducer';
@@ -15,6 +15,10 @@ import { useNavigate } from 'react-router-dom';
 import AlertDialog, { useAlertDialog } from '@components/molecules/AlertDialog';
 import { Box } from '@mui/system';
 import { toast } from 'react-toastify';
+import PageCrudData from '@components/organisms/PageCrudData';
+import { CONTACT_API } from '@constants/contactAPI';
+import { ColumnDef } from '@tanstack/react-table';
+import { ContactResponse } from '@api/contact/interface';
 
 const ContactsContainer = () => {
   // useNavigate
@@ -47,89 +51,71 @@ const ContactsContainer = () => {
     onClose,
   } = useAlertDialog();
 
-  const columns = useMemo(() => {
-    const colsDef: GridColDef[] = [
+  const columns = useMemo<ColumnDef<ContactResponse, any>[]>(() => {
+    return [
       {
-        field: 'id',
-        headerName: 'ID',
-        align: 'center',
-        headerAlign: 'center',
-        width: 60,
+        accessorKey: 'id',
+        accessorFn: (row) => row.id,
+        id: 'id',
+        cell: (info) => info.getValue(),
+        header: () => <Typography>Id</Typography>,
+        footer: (props) => props.column.id,
+        size: 100
       },
       {
-        field: 'avatar',
-        headerName: 'Avatar',
-        align: 'center',
-        headerAlign: 'center',
-        flex: 1,
-        renderCell: (params) =>
-          params.value ? (
-            <Avatar src={params.value} />
-          ) : (
-            <img
-              className="img-signature"
-              src={
-                'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?w=2000'
-              }
+        accessorKey: 'name',
+        accessorFn: (row) => ({firstName: row.first_name, lastName: row.last_name}),
+        id: 'name',
+        cell: (info) => `${info.getValue().firstName} ${info.getValue().lastName}`,
+        header: () => <span>Name</span>,
+        footer: (props) => props.column,
+      },
+      {
+        accessorKey: 'email',
+        accessorFn: (row) => row.email,
+        id: 'email',
+        cell: (info) => info.getValue(),
+        header: () => <span>Email</span>,
+        footer: (props) => props.column,
+      },
+      {
+        accessorKey: 'phone',
+        accessorFn: (row) => row.phone,
+        id: 'phone',
+        cell: (info) => info.getValue(),
+        header: () => <span>Phone Number</span>,
+        footer: (props) => props.column,
+      },
+      {
+        accessorKey: 'action',
+        accessorFn: (row) => row.id,
+        id: 'actions',
+        cell: (info) => (
+          <Box sx={{display: 'fex', justifyContent: 'center'}}>
+            <TableActionsMenu 
+              options={[{label: 'update', value: 0, icon: <UpdateIcon />}, {label: 'delete', value: 1, icon: <DeleteIcon />}]}
+              onClick={(e) => e.stopPropagation()}
+              onClose={(e) => e.stopPropagation()}
+              onItemClick={(value)=> {
+                if(value === 0) handleUpdateClick(Number(info.getValue()))
+                if(value === 1) handleDeleteClick(Number(info.getValue()));
+              }}
             />
-          ),
-      },
-      {
-        field: 'first_name',
-        headerName: 'First Name',
-        align: 'center',
-        headerAlign: 'center',
-        flex: 1,
-      },
-      {
-        field: 'last_name',
-        headerName: 'Last Name',
-        align: 'center',
-        headerAlign: 'center',
-        flex: 1,
-      },
-      {
-        field: 'mail',
-        headerName: 'Email',
-        align: 'center',
-        headerAlign: 'center',
-        flex: 1,
-      },
-      {
-        field: 'actions',
-        headerName: 'Actions',
-        align: 'center',
-        headerAlign: 'center',
-        flex: 1,
-        renderCell: (params) => (
-          // <Tooltip title="Delete" placement="right">
-          //   <IconButton onClick={handleClickDelete(params.id)}>
-          //     <DeleteIcon />
-          //   </IconButton>
-          // </Tooltip>
-          <TableActionsMenu
-            sx={{ maxWidth: rem(52), minWidth: rem(52) }}
-            options={[
-              { value: 0, label: 'Share', icon: <ShareIcon /> },
-              { value: 1, label: 'Delete', icon: <DeleteIcon /> },
-            ]}
-            onItemClick={(value) => {
-              if (value === 0) {
-                console.log('Share click');
-                // onDepartmentUpdateClick(row.id);
-              }
-              if (value === 1) {
-                handleClickDelete(params.id);
-                // onDepartmentDeleteClick(row.id);
-              }
-            }}
-          />
+          </Box>
         ),
+        header: () => <Typography variant="body2" sx={{textAlign: 'center'}}>Actions</Typography>,
+        footer: (props) => props.column.id,
       },
-    ];
+    ]
+  }, []);
 
-    return colsDef;
-  }, [contactsList]);
+  const handleUpdateClick = (id: number) => {
+
+  }
+
+  const handleDeleteClick = (id: number) => {
+
+  }
 
   //   Handler FNC
   const handleCellClick = (rowData) => {
@@ -147,7 +133,7 @@ const ContactsContainer = () => {
         onClose();
         toast.success('Delete successfully!');
       },
-      () => {},
+      () => { },
     );
   };
 
@@ -181,11 +167,21 @@ const ContactsContainer = () => {
 
   return (
     <>
-      <Contacts
-        rows={contactsList}
-        columns={columns}
-        handleCellClick={handleCellClick}
-      />
+      <Box sx={{
+        '& .MuiTableCell-root': { verticalAlign: 'top' },
+        '& .MuiTableRow-root:not(.MuiTableRow-head)': {
+          cursor: 'pointer'
+        }
+      }}
+      >
+        <PageCrudData
+          // refreshKey={queryKey}
+          disabledRowOnClick={false}
+          api={CONTACT_API}
+          columns={columns}
+          rowOnClick={(row) => {  }}
+        />
+      </Box>
       <AlertDialog
         isOpen={isOpen}
         descriptionLabel={description}
