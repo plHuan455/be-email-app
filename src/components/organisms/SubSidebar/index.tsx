@@ -218,6 +218,7 @@ const SubSidebar: React.FC<SubSidebarProps> = ({
                               backgroundColor: value.active
                                 ? '#e9e4ff'
                                 : 'transparent',
+                              ml: rem(12)
                             }}
                             onClick={() => {
                               handleSubMenuItemClick({
