@@ -295,10 +295,8 @@ const EmailStatusBarContainer = () => {
           searchValue={searchCatalogValue}
           isLoadingSearch={isLoadingSearchCatalog}
           searchData={dataSearchCatalog}
-          searchUsersData={dataSearchCatalogUsers}
           onSearch={handleOnChangeSearch}
           searchEmailsSize={emailsSearchSize}
-          searchUsersSize={usersSearchSize}
           onSearchShowMore={handleSearchShowMore}
         />
       )}

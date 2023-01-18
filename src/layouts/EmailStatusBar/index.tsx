@@ -148,21 +148,17 @@ const EmailCatalogSearchByType: React.FC<EmailCatalogSearchByType> = ({
 
 interface SearchResultProps {
   searchData: any;
-  searchUsersData: any;
   isLoading: boolean;
   searchValue: string;
   searchEmailsSize: number;
-  searchUsersSize: number;
   onSearchShowMore?: (type: 'users' | 'emails') => (e: any) => void;
 }
 
 const SearchResult: React.FC<SearchResultProps> = ({
   searchData,
-  searchUsersData,
   isLoading,
   searchValue,
   searchEmailsSize,
-  searchUsersSize,
   onSearchShowMore,
 }) => {
   const dispatch = useDispatch();
@@ -175,20 +171,14 @@ const SearchResult: React.FC<SearchResultProps> = ({
     );
 
   const { data: dataEmails } = searchData;
-  const { data: dataUsersNotType } = searchUsersData;
 
   const dataEmailsList: SearchCatalogResponse[] = dataEmails;
-  const dataUsersList: SearchCatalogUserResponse[] = dataUsersNotType;
 
   // useMemo
-  const mainTotal = useMemo(
-    () => (searchData.total ?? 0) + (searchUsersData.total ?? 0),
-    [searchData, searchUsersData],
-  );
+  const mainTotal = useMemo(() => searchData.total ?? 0, [searchData]);
 
   // Handle After Here
-  if (isEmpty(dataEmailsList) && isEmpty(dataUsersList))
-    return <Box>No matching results</Box>;
+  if (isEmpty(dataEmailsList)) return <Box>No matching results</Box>;
 
   // useNavigate
   const navigate = useNavigate();
@@ -206,9 +196,11 @@ const SearchResult: React.FC<SearchResultProps> = ({
   // Main Render
   return (
     <Box className="flex flex-col pt-2">
-      <Box className="flex justify-between items-center bg-slate-500/40">
-        <h3 className="font-bold text-lg">#Search</h3>
-        <p>{mainTotal}</p>
+      <Box className="flex justify-between items-center text-[#4BAAA2]">
+        <Box className="flex items-center">
+          <h3 className="font-bold text-lg">#Search</h3>
+          <p>({mainTotal})</p>
+        </Box>
         <Icon
           className="hover:cursor-pointer"
           icon="close"
@@ -216,7 +208,7 @@ const SearchResult: React.FC<SearchResultProps> = ({
         />
       </Box>
       <Box className="flex-1 py-2">
-        {dataUsersList && (
+        {/* {dataUsersList && (
           <EmailCatalogSearchByType
             type="users"
             searchCharacters={searchCharacters}
@@ -224,7 +216,7 @@ const SearchResult: React.FC<SearchResultProps> = ({
             isShowMore={dataUsersList.length < searchUsersData.total}
             onShowMore={onSearchShowMore && onSearchShowMore('users')}
           />
-        )}
+        )} */}
         {dataEmailsList && (
           <EmailCatalogSearchByType
             type="emails"
@@ -246,9 +238,7 @@ interface Props {
   searchValue?: string;
   isLoadingSearch?: boolean;
   searchData?: any;
-  searchUsersData?: any;
   searchEmailsSize?: number;
-  searchUsersSize?: number;
   onSearchShowMore?: (type: 'users' | 'emails') => (e: any) => void;
   onSearch: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onChangeHashtagEditing: (value: number) => void;
@@ -261,9 +251,7 @@ const EmailStatusBar: React.FC<Props> = ({
   searchValue = '',
   isLoadingSearch = false,
   searchData,
-  searchUsersData,
   searchEmailsSize,
-  searchUsersSize,
   onSearchShowMore,
   onSearch,
   onChangeHashtagEditing,
@@ -410,11 +398,9 @@ const EmailStatusBar: React.FC<Props> = ({
         ) : (
           <SearchResult
             searchData={searchData}
-            searchUsersData={searchUsersData}
             isLoading={isLoadingSearch}
             searchValue={searchValue}
             searchEmailsSize={searchEmailsSize ?? 0}
-            searchUsersSize={searchUsersSize ?? 0}
             onSearchShowMore={onSearchShowMore}
           />
         )}
