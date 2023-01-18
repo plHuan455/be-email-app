@@ -1,7 +1,8 @@
 import { FormLabel } from '@mui/material';
-import { Box } from '@mui/system';
+import { Box, SxProps } from '@mui/system';
 import { rem } from '@utils/functions';
 import PhoneInput from 'react-phone-input-2';
+import { Theme } from '@mui/material/styles/createTheme';
 
 interface PhoneInputProps {
   label?: string;

@@ -19,12 +19,18 @@ import PageCrudData from '@components/organisms/PageCrudData';
 import { CONTACT_API } from '@constants/contactAPI';
 import { ColumnDef } from '@tanstack/react-table';
 import { ContactResponse } from '@api/contact/interface';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteContactService } from '@api/contact';
+import ModalBase from '@components/atoms/ModalBase';
+import { contactDummy } from '@assets/dummyData/contactDummy';
+import ContactInfo from '@components/organisms/ContactInfo';
+import dayjs from 'dayjs';
 
 const ContactsContainer = () => {
   // useNavigate
+  const queryKey = 'contact-container-get'
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   // useDispatch
   const dispatch = useDispatch();
@@ -34,6 +40,9 @@ const ContactsContainer = () => {
 
   // useLocalStorage
   const [localContactsList] = useLocalStorage('contacts-list', undefined);
+
+  // To open contact info modal
+  const [selectedContactModal, setSelectedContactModal] = useState<ContactResponse>();
 
   // useEffect
   useEffect(() => {
@@ -58,6 +67,7 @@ const ContactsContainer = () => {
     mutationFn: deleteContactService,
     onSuccess: () => {
       toast.success('Delete successfully!');
+      queryClient.invalidateQueries({queryKey: [queryKey]})
     },
     onError: () => {
       toast.error("Can't delete contact");
@@ -139,11 +149,11 @@ const ContactsContainer = () => {
   }
 
   //   Handler FNC
-  const handleCellClick = (rowData) => {
-    console.log('row data ------->', rowData);
-    if (rowData.field === 'actions') return;
-    navigate(`edit/${rowData.id}`);
-  };
+  // const handleCellClick = (rowData) => {
+  //   console.log('row data ------->', rowData);
+  //   if (rowData.field === 'actions') return;
+  //   navigate(`edit/${rowData.id}`);
+  // };
 
   // const handleClickDelete = (id: GridRowId) => {
   //   setAlertData(
@@ -159,6 +169,10 @@ const ContactsContainer = () => {
   // };
 
   // render FNC
+
+  const handleRowClick = (contact: ContactResponse) => {
+    setSelectedContactModal(contact)
+  }
 
   const _renderAlertSelectedContact = (id: GridRowId, alertLabel: string) => {
     const selectedContact = contactsList.find((contact) => contact.id === +id);
@@ -191,18 +205,35 @@ const ContactsContainer = () => {
       <Box sx={{
         '& .MuiTableCell-root': { verticalAlign: 'top' },
         '& .MuiTableRow-root:not(.MuiTableRow-head)': {
-          cursor: 'pointer'
+          cursor: 'pointer' 
         }
       }}
       >
         <PageCrudData
-          // refreshKey={queryKey}
+          refreshKey={queryKey}
           disabledRowOnClick={false}
           api={CONTACT_API}
           columns={columns}
-          rowOnClick={(row) => {  }}
+          rowOnClick={(row) => handleRowClick(row.original)}
         />
       </Box>
+      <ModalBase 
+        isOpen={Boolean(selectedContactModal)} 
+        title="Contact detail" 
+        submitLabel='' 
+        onClose={() => setSelectedContactModal(undefined)}
+      >
+        <Box sx={{maxHeight: "80vh", maxWidth: "80vw", width: rem(400), pb: rem(20)}}>
+          <ContactInfo 
+            avatar={selectedContactModal?.avatar ?? ''}
+            firstName={selectedContactModal?.first_name ?? ''}
+            lastName={selectedContactModal?.last_name ?? ''}
+            email={selectedContactModal?.email ?? ''}
+            phone={selectedContactModal?.phone ?? ''}
+            createdAt={dayjs(selectedContactModal?.created_at).format('lll')}
+          />
+        </Box>
+      </ModalBase>
       <AlertDialog
         isOpen={isOpen}
         descriptionLabel={description}

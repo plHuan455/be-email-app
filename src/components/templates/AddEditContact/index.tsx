@@ -1,8 +1,10 @@
 import AvatarInput from "@components/atoms/Input/AvatarInput";
+import BasePhoneInput from "@components/atoms/Input/BasePhoneInput";
 import UploadArea from "@components/atoms/UploadArea"
 import Layout from "@layouts/Layout"
 import { FormControl, TextField, Typography } from "@mui/material"
 import { Box } from "@mui/system"
+import { rem } from "@utils/functions";
 import { Controller, FormProvider, UseFormReturn } from "react-hook-form";
 
 export interface ContactFields {
@@ -97,6 +99,18 @@ const AddEditContact: React.FC<AddEditContactProps> = ({
                   // defaultValue={formData.mail}
                   // onChange={handleInputChange}
                   size={'small'}
+                />
+              </FormControl>
+            )}
+          />
+          <Controller 
+            name="phone"
+            render={({field: {value, onChange}, fieldState}) => (
+              <FormControl fullWidth className="py-2" sx={{'& .country-list': { bottom: rem(50)}}}>
+                <Typography sx={{ fontWeight: 700 }}>Phone number:</Typography>
+                <BasePhoneInput
+                  value={value}
+                  onChange={onChange}
                 />
               </FormControl>
             )}

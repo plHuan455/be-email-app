@@ -1,11 +1,11 @@
 export interface ContactResponse {
   id: number;
-  name: string;
   first_name: string;
   last_name: string;
   email: string;
   phone?: string;
   avatar?: string;
+  created_at: string;
 }
 
 export interface ContactCreateParams {

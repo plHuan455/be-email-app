@@ -1,0 +1,5 @@
+.o-contactInfo {
+  &_field_text {
+    @include textOverflow(1);
+  }
+}
