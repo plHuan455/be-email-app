@@ -25,6 +25,7 @@ const useWebsocket = ({
     };
     ws.onmessage = (event) => {
       const data = JSON.parse(event.data);
+      console.log('useWebsocket', data);
       onMessage && onMessage({change: data?.change, type: data?.type ?? -1}, event);
     };
     ws.onclose = () => {

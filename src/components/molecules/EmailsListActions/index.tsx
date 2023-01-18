@@ -14,7 +14,6 @@ import {
 } from '@redux/Global/reducer';
 import NotificationsActiveIcon from '@mui/icons-material/NotificationsActive';
 import { useLocation } from 'react-router-dom';
-import { sortNotification } from '@redux/Notify/reducer';
 
 interface Props {
   className?: string;
@@ -46,7 +45,6 @@ const EmailsListActions: React.FC<Props> = ({ className, isShowInformationBtn })
         dispatch(openNotifySidebarRight());
       } else {
         dispatch(closeNotifySidebarRight());
-        dispatch(sortNotification());
       }
     }
   };

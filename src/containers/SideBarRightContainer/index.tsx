@@ -13,12 +13,7 @@ import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 
 import styles from './styles.module.scss';
 import dayjs, { Dayjs } from 'dayjs';
-import {
-  seenAllNotification,
-  seenNotification,
-  setNotificationList,
-  sortNotification,
-} from '@redux/Notify/reducer';
+import { setNotificationList } from '@redux/Notify/reducer';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import {
   getNotifications,
@@ -49,10 +44,11 @@ const SidebarRightContainer: React.FC<Props> = ({
 
   useWebsocket({
     onMessage: (data) => {
-      if (!data.change) return;
-      queryClient.invalidateQueries({ queryKey: ['slideBar-right-get-notify'] });
-    },
-  });
+      if(!data.change) return;
+      console.log('Websocket message SideBarRightContainer');
+      queryClient.invalidateQueries({queryKey: ['slideBar-right-get-notify']})
+    }
+  })
 
   const { data: notifyListData, isLoading: isNNotifyLoading } = useQuery({
     queryKey: ['slideBar-right-get-notify', currUserId],
@@ -96,10 +92,18 @@ const SidebarRightContainer: React.FC<Props> = ({
 
   const renderTime = (date: Dayjs) => {
     const diffSecond = dayjs().diff(date, 's');
-
-    console.log(diffSecond);
-    return date.format('lll');
-  };
+    const second = Math.round(diffSecond)
+    if(second < 10) {
+      return 'few seconds ago.'
+    }
+    if(second < 60) {
+      return `${second} seconds ago`
+    }
+    if(second < 60 * 60) {
+      return `${Math.round(diffSecond / 60)} minutes ago`
+    }
+    return date.format('lll')
+  }
 
   const handleNotifyClick = (notifyId: number) => {
     readNotifyMutate(notifyId);
@@ -170,23 +174,10 @@ const SidebarRightContainer: React.FC<Props> = ({
                   variant="body1">
                   {notify.title}
                 </Typography>
-                <Typography
-                  sx={{
-                    color: '#282828',
-                    fontSize: rem(12),
-                    lineHeight: rem(20),
-                    fontWeight: 400,
-                  }}
-                  variant="body1">
+                {/* <Typography sx={{ color: '#282828', fontSize: rem(12), lineHeight: rem(20), fontWeight: 400 }} variant="body1">
                   {notify.body}
-                </Typography>
-                <Typography
-                  sx={{
-                    color: notify.isSeen ? '#6c6c6c' : '#2172f2',
-                    fontSize: rem(12),
-                    mt: rem(4),
-                  }}
-                  variant="body2">
+                </Typography> */}
+                <Typography sx={{ color: notify.isSeen ? '#6c6c6c' : '#2172f2', fontSize: rem(12), mt: rem(4) }} variant="body2">
                   {renderTime(dayjs(notify.createdAt))}
                 </Typography>
               </Box>
