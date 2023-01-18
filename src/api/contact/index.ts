@@ -26,3 +26,9 @@ export const updateContactService = async (params: EditContactParams) => {
   const res = await ApiClient.put(url, undefined, params);
   return res.data;
 }
+
+export const deleteContactService = async (id: number) => {
+  const url = `${CONTACT_API}/${id}`;
+  const res = await ApiClient.delete(url, undefined);
+  return res.data;
+}

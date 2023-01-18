@@ -19,6 +19,8 @@ import PageCrudData from '@components/organisms/PageCrudData';
 import { CONTACT_API } from '@constants/contactAPI';
 import { ColumnDef } from '@tanstack/react-table';
 import { ContactResponse } from '@api/contact/interface';
+import { useMutation } from '@tanstack/react-query';
+import { deleteContactService } from '@api/contact';
 
 const ContactsContainer = () => {
   // useNavigate
@@ -50,6 +52,17 @@ const ContactsContainer = () => {
     setIsLoading,
     onClose,
   } = useAlertDialog();
+
+  const {mutate: deleteContactMutate} = useMutation({
+    mutationKey: ['contact-container-delete-contact'],
+    mutationFn: deleteContactService,
+    onSuccess: () => {
+      toast.success('Delete successfully!');
+    },
+    onError: () => {
+      toast.error("Can't delete contact");
+    }
+  })
 
   const columns = useMemo<ColumnDef<ContactResponse, any>[]>(() => {
     return [
@@ -110,11 +123,19 @@ const ContactsContainer = () => {
   }, []);
 
   const handleUpdateClick = (id: number) => {
-
+    navigate(`edit/${id}`)
   }
 
   const handleDeleteClick = (id: number) => {
-
+    setAlertData(
+      '',
+      _renderAlertSelectedContact(id, `Are you sure want to "Delete" this contact?`),
+      () => {
+        deleteContactMutate(id);
+        onClose();
+      },
+      () => { },
+    );
   }
 
   //   Handler FNC
@@ -124,18 +145,18 @@ const ContactsContainer = () => {
     navigate(`edit/${rowData.id}`);
   };
 
-  const handleClickDelete = (id: GridRowId) => {
-    setAlertData(
-      '',
-      _renderAlertSelectedContact(id, `Are you sure want to "Delete" this contact?`),
-      () => {
-        dispatch(deleteContacts(id));
-        onClose();
-        toast.success('Delete successfully!');
-      },
-      () => { },
-    );
-  };
+  // const handleClickDelete = (id: GridRowId) => {
+  //   setAlertData(
+  //     '',
+  //     _renderAlertSelectedContact(id, `Are you sure want to "Delete" this contact?`),
+  //     () => {
+  //       dispatch(deleteContacts(id));
+  //       onClose();
+  //       toast.success('Delete successfully!');
+  //     },
+  //     () => { },
+  //   );
+  // };
 
   // render FNC
 
