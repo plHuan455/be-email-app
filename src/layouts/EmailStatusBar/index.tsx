@@ -26,6 +26,7 @@ import Highlighter from 'react-highlight-words';
 import { setSearchCatalogValue } from '@redux/Global/reducer';
 
 import { SearchCatalogUserResponse } from '@api/public/interface';
+import { searchFakeData } from '@containers/EmailStatusBarContainer';
 
 export interface EmailItem {
   userAvt: string;
@@ -70,15 +71,31 @@ const EmailCatalogSearchByType: React.FC<EmailCatalogSearchByType> = ({
         <Box
           key={id}
           className="flex items-center rounded-md overflow-hidden p-2 hover:bg-slate-400/40  hover:cursor-pointer"
-          onClick={() => navigate(`/emails/catalog/${status}/${email.writer_id}`)}>
+          onClick={() =>
+            navigate(`/emails/catalog/${status}/${email.writer_id}`, {
+              state: { key: searchCharacters.join(' ') },
+            })
+          }>
           <Icon className="mr-2" icon="email" />
           <Box className="flex-1 border-l overflow-hidden border-slate-600/40 px-2">
-            <Highlighter
-              className="truncate"
-              searchWords={searchCharacters}
-              autoEscape={true}
-              textToHighlight={email.subject}
-            />
+            <p>
+              <b>Title:</b>
+              <Highlighter
+                className="truncate"
+                searchWords={searchCharacters}
+                autoEscape={true}
+                textToHighlight={email.subject}
+              />
+            </p>
+            <p>
+              <b>From:</b>
+              <Highlighter
+                className="truncate"
+                searchWords={searchCharacters}
+                autoEscape={true}
+                textToHighlight={`From: ${email.from}`}
+              />
+            </p>
           </Box>
         </Box>
       );
@@ -131,9 +148,9 @@ const EmailCatalogSearchByType: React.FC<EmailCatalogSearchByType> = ({
 
   return (
     <Box className="border-t border-slate-400">
-      <Box>
+      {/* <Box>
         <h4 className="font-bold">{type.charAt(0).toUpperCase() + type.slice(1)}</h4>
-      </Box>
+      </Box> */}
       <Box>{_renderSearchResultItems}</Box>
       {isShowMore && (
         <Box>
@@ -170,9 +187,10 @@ const SearchResult: React.FC<SearchResultProps> = ({
       </Box>
     );
 
-  const { data: dataEmails } = searchData;
+  // const { data: dataEmails } = searchData;
 
-  const dataEmailsList: SearchCatalogResponse[] = dataEmails;
+  // const dataEmailsList: SearchCatalogResponse[] = dataEmails;
+  const dataEmailsList: SearchCatalogResponse[] = searchFakeData;
 
   // useMemo
   const mainTotal = useMemo(() => searchData.total ?? 0, [searchData]);

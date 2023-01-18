@@ -1,6 +1,8 @@
 import { useTranslation } from '@@packages/localization/src';
+import { CuSAxiosResponse } from '@api/ApiClient';
 import { getAllCatalogTab } from '@api/email';
 import { searchCatalog } from '@api/public';
+import { SearchCatalogResponse } from '@api/public/interface';
 import { EmailList } from '@components/molecules/ModalEmailList';
 import useWebsocket from '@hooks/useWebsocket';
 import EmailStatusBar, { EmailTabs } from '@layouts/EmailStatusBar';
@@ -14,6 +16,34 @@ import { useDispatch, useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 
 // img
+
+// TODO: Khi nào api search oke bỏ const dưới
+export const searchFakeData: SearchCatalogResponse[] = [
+  {
+    'es-index': 'emails',
+    approve_at: '',
+    created_at: '',
+    email: {
+      bcc: [],
+      cc: [],
+      content: '',
+      from: 'giang@email.com',
+      html_body: '',
+      id: 1,
+      subject: '[test search]',
+      tags: [],
+      to: [],
+      type: 'send',
+      writer_id: 13,
+    },
+    email_id: '1',
+    id: 1,
+    send_at: '',
+    status: 'pending',
+    type: '',
+    user_id: '13',
+  },
+];
 
 export const emailData: EmailList[] = [
   {
@@ -246,16 +276,19 @@ const EmailStatusBarContainer = () => {
       const value = e.target.value.trim();
 
       dispatch(setSearchCatalogValue(value));
-      mutateSearchCatalog({
-        keyword: value,
-        size: 10 * emailsSearchSize,
-        'es-index': 'emails',
-      });
-      mutateSearchCatalogUsers({
-        keyword: value,
-        size: 10 * usersSearchSize,
-        'es-index': 'users',
-      });
+
+      // TODO: Nào Api ổn mở 2 cái dưới ra
+
+      // mutateSearchCatalog({
+      //   keyword: value,
+      //   size: 10 * emailsSearchSize,
+      //   'es-index': 'emails',
+      // });
+      // mutateSearchCatalogUsers({
+      //   keyword: value,
+      //   size: 10 * usersSearchSize,
+      //   'es-index': 'users',
+      // });
     }, 600);
   };
 
@@ -294,7 +327,7 @@ const EmailStatusBarContainer = () => {
           emailSecTabs={emailSecTabs}
           searchValue={searchCatalogValue}
           isLoadingSearch={isLoadingSearchCatalog}
-          searchData={dataSearchCatalog}
+          searchData={[]}
           onSearch={handleOnChangeSearch}
           searchEmailsSize={emailsSearchSize}
           onSearchShowMore={handleSearchShowMore}
